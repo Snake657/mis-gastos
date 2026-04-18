@@ -11,7 +11,6 @@
 <style>
 @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap');
 
-/* ── Temas ── */
 :root {
   --bg:#0d0d14; --surface:#161620; --surface2:#1e1e2a;
   --border:rgba(255,255,255,0.09); --text:#f0f0f5;
@@ -22,12 +21,11 @@
   --radius:14px; --radius-sm:10px;
 }
 [data-theme="light"] {
-  --bg:#f4f4f8; --surface:#ffffff; --surface2:#f0f0f5;
+  --bg:#f4f4f8; --surface:#ffffff; --surface2:#ebebf0;
   --border:rgba(0,0,0,0.09); --text:#111118;
   --muted:rgba(17,17,24,0.45); --muted2:rgba(17,17,24,0.3);
   --shadow:rgba(0,0,0,.12);
 }
-
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
 html,body{height:100%;background:var(--bg);color:var(--text);font-family:'DM Sans',system-ui,sans-serif;font-size:15px;line-height:1.5;transition:background .2s,color .2s;}
 body{overflow-x:hidden;}
@@ -41,15 +39,10 @@ header{position:sticky;top:0;z-index:20;background:var(--bg);backdrop-filter:blu
 .logo-title{font-weight:600;font-size:15px;letter-spacing:-.02em;}
 .sync-dot{width:8px;height:8px;border-radius:50%;background:var(--orange);transition:background .5s;flex-shrink:0;}
 .header-right{display:flex;align-items:center;gap:8px;}
-
-/* Botones icono */
 .btn-icon{width:32px;height:32px;background:transparent;border:1px solid var(--border);border-radius:8px;display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--muted);transition:all .15s;flex-shrink:0;}
 .btn-icon:active{background:rgba(128,128,128,.12);color:var(--text);}
 .btn-icon svg{width:15px;height:15px;}
-
-/* Theme toggle */
 .btn-theme{width:32px;height:32px;background:transparent;border:1px solid var(--border);border-radius:8px;display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--muted);transition:all .15s;flex-shrink:0;}
-.btn-theme:active{background:rgba(128,128,128,.12);}
 .btn-theme svg{width:16px;height:16px;}
 
 /* User menu */
@@ -57,20 +50,20 @@ header{position:sticky;top:0;z-index:20;background:var(--bg);backdrop-filter:blu
 .user-avatar{width:32px;height:32px;border-radius:50%;background:var(--violet);color:#fff;font-size:13px;font-weight:700;display:flex;align-items:center;justify-content:center;cursor:pointer;border:2px solid rgba(128,128,128,.2);background-size:cover;background-position:center;flex-shrink:0;user-select:none;}
 .user-menu{position:absolute;top:40px;right:0;background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:8px;min-width:190px;z-index:100;opacity:0;pointer-events:none;transform:translateY(-6px);transition:opacity .15s,transform .15s;box-shadow:0 8px 32px var(--shadow);}
 .user-menu.show{opacity:1;pointer-events:all;transform:translateY(0);}
-.user-menu-name{font-size:13px;font-weight:600;padding:8px 10px 2px;color:var(--text);}
+.user-menu-name{font-size:13px;font-weight:600;padding:8px 10px 2px;}
 .user-menu-email{font-size:11px;color:var(--muted2);padding:0 10px 10px;border-bottom:1px solid var(--border);margin-bottom:6px;word-break:break-all;}
 .btn-logout{width:100%;padding:9px 10px;border-radius:8px;background:transparent;border:none;color:var(--red);font-size:13px;font-weight:600;font-family:inherit;text-align:left;cursor:pointer;display:flex;align-items:center;gap:8px;}
 .btn-logout:hover{background:rgba(248,113,113,.1);}
 
 /* Nav mes */
 .month-nav{display:flex;align-items:center;justify-content:space-between;padding:20px 16px 4px;}
-.month-label{text-align:center;position:relative;}
+.month-label{text-align:center;}
 .month-label h1{font-size:20px;font-weight:700;letter-spacing:-.03em;}
 .month-label p{font-size:11px;color:var(--muted2);margin-top:2px;min-height:16px;}
 .month-dot{width:5px;height:5px;border-radius:50%;background:var(--violet);margin:4px auto 0;opacity:0;transition:opacity .2s;}
 .month-dot.show{opacity:1;}
 
-/* Exportar bajo nav */
+/* Exportar */
 .export-bar{padding:8px 16px 0;display:flex;justify-content:flex-end;}
 .btn-export-bar{display:flex;align-items:center;gap:6px;background:transparent;border:1px solid var(--border);border-radius:8px;padding:7px 12px;font-size:12px;font-weight:600;color:var(--muted);cursor:pointer;font-family:inherit;transition:all .15s;}
 .btn-export-bar:active{background:rgba(128,128,128,.1);color:var(--text);}
@@ -84,13 +77,23 @@ header{position:sticky;top:0;z-index:20;background:var(--bg);backdrop-filter:blu
 .total-card .sub{font-size:11px;color:var(--muted2);margin-top:2px;}
 .amount-usd{color:var(--green);}
 
+/* Barra de progreso de pago */
+.progress-bar-wrap{margin:12px 16px 0;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:12px 14px;}
+.progress-bar-track{height:5px;background:var(--surface2);border-radius:99px;margin:8px 0 6px;overflow:hidden;}
+.progress-bar-fill{height:100%;background:var(--green);border-radius:99px;transition:width .4s ease;}
+.progress-info{display:flex;justify-content:space-between;align-items:center;}
+.progress-label{font-size:12px;color:var(--muted);display:flex;align-items:center;gap:6px;}
+.progress-label strong{color:var(--text);font-weight:600;}
+.progress-pendiente{font-family:'DM Mono',monospace;font-size:12px;font-weight:600;color:var(--orange);}
+.progress-pendiente.ok{color:var(--green);}
+
 /* Sort bar */
 .sort-bar{display:flex;align-items:center;justify-content:flex-end;padding:10px 16px 4px;gap:6px;}
 .sort-label{font-size:11px;color:var(--muted2);}
 .btn-sort{background:transparent;border:1px solid var(--border);border-radius:6px;padding:4px 10px;font-size:11px;font-weight:600;color:var(--muted);cursor:pointer;font-family:inherit;transition:all .15s;}
 .btn-sort.active{background:rgba(124,92,252,.15);border-color:rgba(124,92,252,.4);color:var(--violet);}
 
-/* Botón agregar gasto grande */
+/* Botón agregar grande */
 .btn-agregar-grande{display:flex;align-items:center;justify-content:center;gap:8px;width:calc(100% - 32px);margin:14px 16px 0;background:var(--violet);color:#fff;border:none;border-radius:var(--radius);padding:15px 20px;font-size:16px;font-weight:700;cursor:pointer;font-family:inherit;transition:background .15s;box-shadow:0 4px 20px rgba(124,92,252,.3);}
 .btn-agregar-grande:active{background:var(--violet2);}
 .btn-agregar-grande svg{width:18px;height:18px;}
@@ -103,30 +106,47 @@ header{position:sticky;top:0;z-index:20;background:var(--bg);backdrop-filter:blu
 .empty small{font-size:12px;color:var(--muted2);margin-top:4px;display:block;}
 
 /* Cards */
-.gasto-card{border-radius:var(--radius);border:1px solid;padding:14px;display:flex;gap:12px;align-items:flex-start;animation:fadeUp .2s ease;}
+.gasto-card{border-radius:var(--radius);border:1px solid;padding:14px;display:flex;gap:10px;align-items:flex-start;animation:fadeUp .2s ease;transition:opacity .2s,border-color .2s,background .2s;}
 @keyframes fadeUp{from{opacity:0;transform:translateY(6px);}to{opacity:1;transform:translateY(0);}}
+
+/* Estados de la card */
+.gasto-card.pagado{opacity:.45;}
+.gasto-card.vencido-alert{border-color:rgba(248,113,113,.5)!important;background:rgba(248,113,113,.08)!important;}
+
 .cat-tarjeta{background:rgba(124,92,252,.1);border-color:rgba(124,92,252,.3);}
 .cat-expensas{background:rgba(251,191,36,.08);border-color:rgba(251,191,36,.3);}
 .cat-servicios{background:rgba(56,189,248,.08);border-color:rgba(56,189,248,.3);}
 .cat-internet{background:rgba(45,212,191,.08);border-color:rgba(45,212,191,.3);}
 .cat-seguro{background:rgba(52,211,153,.08);border-color:rgba(52,211,153,.3);}
 .cat-otro{background:rgba(248,113,113,.08);border-color:rgba(248,113,113,.3);}
-.gasto-icon{flex-shrink:0;width:38px;height:38px;border-radius:10px;border:1px solid;display:flex;align-items:center;justify-content:center;margin-top:1px;}
-.gasto-icon svg{width:18px;height:18px;}
+
+/* Check button */
+.check-btn{flex-shrink:0;width:26px;height:26px;border-radius:50%;border:2px solid var(--border);background:transparent;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s;margin-top:2px;}
+.check-btn:active{transform:scale(.9);}
+.check-btn.checked{background:var(--green);border-color:var(--green);}
+.check-btn svg{width:13px;height:13px;color:#fff;opacity:0;transition:opacity .15s;}
+.check-btn.checked svg{opacity:1;}
+.gasto-card.vencido-alert .check-btn{border-color:rgba(248,113,113,.6);}
+
+.gasto-icon{flex-shrink:0;width:36px;height:36px;border-radius:10px;border:1px solid;display:flex;align-items:center;justify-content:center;margin-top:1px;}
+.gasto-icon svg{width:16px;height:16px;}
 .icon-tarjeta{border-color:rgba(124,92,252,.4);background:rgba(124,92,252,.15);color:#7c5cfc;}
 .icon-expensas{border-color:rgba(251,191,36,.4);background:rgba(251,191,36,.15);color:#d97706;}
 .icon-servicios{border-color:rgba(56,189,248,.4);background:rgba(56,189,248,.15);color:#0ea5e9;}
 .icon-internet{border-color:rgba(45,212,191,.4);background:rgba(45,212,191,.15);color:#14b8a6;}
 .icon-seguro{border-color:rgba(52,211,153,.4);background:rgba(52,211,153,.15);color:#10b981;}
 .icon-otro{border-color:rgba(248,113,113,.4);background:rgba(248,113,113,.15);color:#ef4444;}
+
 .gasto-body{flex:1;min-width:0;}
 .gasto-top{display:flex;align-items:flex-start;justify-content:space-between;gap:8px;}
 .gasto-name{font-weight:600;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
 .badge-dias{flex-shrink:0;font-size:11px;font-weight:600;padding:2px 8px;border-radius:99px;white-space:nowrap;}
 .badge-ok{background:rgba(128,128,128,.1);color:var(--muted);}
 .badge-near{background:rgba(251,146,60,.15);color:var(--orange);}
-.badge-vencido{background:rgba(248,113,113,.15);color:var(--red);}
+.badge-vencido{background:rgba(248,113,113,.2);color:var(--red);}
 .badge-hoy{background:rgba(124,92,252,.2);color:#7c5cfc;}
+.badge-pagado{background:rgba(52,211,153,.15);color:var(--green);}
+
 .gasto-meta{font-size:11px;color:var(--muted2);margin:3px 0 8px;display:flex;align-items:center;gap:5px;flex-wrap:wrap;}
 .badge-small{font-size:10px;font-weight:600;padding:1px 7px;border-radius:99px;letter-spacing:.02em;}
 .bc-tarjeta{background:rgba(124,92,252,.15);color:#7c5cfc;}
@@ -136,12 +156,30 @@ header{position:sticky;top:0;z-index:20;background:var(--bg);backdrop-filter:blu
 .bc-seguro{background:rgba(52,211,153,.15);color:#10b981;}
 .bc-otro{background:rgba(248,113,113,.15);color:#ef4444;}
 .badge-recur{background:rgba(128,128,128,.1);color:var(--muted);display:inline-flex;align-items:center;gap:3px;}
+
 .gasto-amounts{display:flex;align-items:center;gap:12px;flex-wrap:wrap;}
 .amount-ars{font-family:'DM Mono',monospace;font-size:14px;font-weight:500;}
 .amount-ars .sym{font-size:12px;color:var(--muted);margin-right:2px;}
 .amount-usd-val{font-family:'DM Mono',monospace;font-size:14px;font-weight:500;color:var(--green);}
 .amount-usd-val .sym{font-size:10px;color:rgba(52,211,153,.5);margin-right:2px;}
 .gasto-actions{display:flex;flex-direction:column;gap:6px;flex-shrink:0;}
+
+/* Alerta vencimientos */
+.alert-venc{margin:12px 16px 0;background:rgba(248,113,113,.1);border:1px solid rgba(248,113,113,.3);border-radius:var(--radius);padding:12px 14px;display:none;}
+.alert-venc.show{display:block;}
+.alert-venc-title{font-size:13px;font-weight:700;color:var(--red);margin-bottom:6px;display:flex;align-items:center;gap:6px;}
+.alert-venc-items{font-size:12px;color:var(--muted);display:flex;flex-direction:column;gap:3px;}
+.alert-venc-item{display:flex;align-items:center;gap:6px;}
+.alert-venc-item::before{content:"•";color:var(--red);}
+
+/* Banner notificaciones */
+.notif-banner{margin:12px 16px 0;background:rgba(124,92,252,.1);border:1px solid rgba(124,92,252,.3);border-radius:var(--radius);padding:12px 14px;display:none;align-items:center;gap:10px;}
+.notif-banner.show{display:flex;}
+.notif-banner-text{flex:1;font-size:13px;line-height:1.4;}
+.notif-banner-text strong{display:block;font-weight:600;margin-bottom:2px;}
+.notif-banner-text span{color:var(--muted);font-size:12px;}
+.btn-notif{flex-shrink:0;background:var(--violet);color:#fff;border:none;border-radius:8px;padding:7px 12px;font-size:12px;font-weight:700;font-family:inherit;cursor:pointer;}
+.btn-notif-dismiss{flex-shrink:0;background:transparent;color:var(--muted);border:none;font-size:18px;cursor:pointer;padding:0 4px;line-height:1;}
 
 /* Guest banner */
 .guest-banner{display:none;align-items:center;gap:10px;background:rgba(251,146,60,.08);border-bottom:1px solid rgba(251,146,60,.2);padding:10px 16px;font-size:12px;color:var(--orange);}
@@ -165,16 +203,16 @@ header{position:sticky;top:0;z-index:20;background:var(--bg);backdrop-filter:blu
 /* Formulario */
 .field{margin-bottom:14px;}
 .field label{display:block;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.09em;color:var(--muted);margin-bottom:6px;}
-.field input,.field select{width:100%;background:var(--surface2);border:1.5px solid var(--border);border-radius:var(--radius-sm);padding:11px 13px;font-size:15px;color:var(--text);font-family:'DM Sans',system-ui,sans-serif;transition:border-color .15s,background .2s;-webkit-appearance:none;appearance:none;}
-.field input::placeholder{color:var(--muted2);}
-.field input:focus,.field select:focus{outline:none;border-color:var(--violet);}
+.field input,.field select,.field textarea{width:100%;background:var(--surface2);border:1.5px solid var(--border);border-radius:var(--radius-sm);padding:11px 13px;font-size:15px;color:var(--text);font-family:'DM Sans',system-ui,sans-serif;transition:border-color .15s,background .2s;-webkit-appearance:none;appearance:none;}
+.field textarea{resize:none;height:72px;line-height:1.5;}
+.field input::placeholder,.field textarea::placeholder{color:var(--muted2);}
+.field input:focus,.field select:focus,.field textarea:focus{outline:none;border-color:var(--violet);}
 .field select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='rgba(128,128,128,.6)' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center;padding-right:36px;}
 .field select option{background:var(--surface2);color:var(--text);}
 .freq-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;}
 .freq-pill{padding:10px 4px;border-radius:10px;border:1.5px solid var(--border);background:var(--surface2);color:var(--muted);font-size:12px;font-weight:600;text-align:center;cursor:pointer;transition:all .15s;font-family:inherit;line-height:1.3;}
 .freq-pill .freq-icon{display:block;font-size:16px;margin-bottom:3px;}
 .freq-pill.active{border-color:var(--violet);background:rgba(124,92,252,.15);color:var(--violet);}
-.freq-pill:active{transform:scale(.96);}
 .grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
 .input-wrap{position:relative;}
 .input-sym{position:absolute;left:12px;top:50%;transform:translateY(-50%);font-size:13px;color:var(--muted2);pointer-events:none;font-family:'DM Mono',monospace;}
@@ -184,20 +222,18 @@ header{position:sticky;top:0;z-index:20;background:var(--bg);backdrop-filter:blu
 .btn-save{width:100%;margin-top:18px;background:var(--violet);color:#fff;border:none;border-radius:var(--radius);padding:14px;font-size:15px;font-weight:700;font-family:inherit;cursor:pointer;transition:background .15s;}
 .btn-save:active{background:var(--violet2);}
 
-/* Eliminar */
+/* Eliminar / Descartar */
 .del-btns{display:flex;flex-direction:column;gap:8px;margin-top:20px;}
 .btn-cancel{padding:12px;border-radius:var(--radius-sm);background:transparent;border:1.5px solid var(--border);color:var(--muted);font-size:14px;font-weight:600;font-family:inherit;cursor:pointer;}
 .btn-delete{padding:12px;border-radius:var(--radius-sm);background:#dc2626;border:none;color:#fff;font-size:14px;font-weight:700;font-family:inherit;cursor:pointer;}
 .btn-skip{padding:12px;border-radius:var(--radius-sm);background:rgba(248,113,113,.1);border:1.5px solid rgba(248,113,113,.3);color:var(--red);font-size:14px;font-weight:600;font-family:inherit;cursor:pointer;}
 .del-icon{width:52px;height:52px;border-radius:50%;background:rgba(248,113,113,.1);border:1.5px solid rgba(248,113,113,.3);display:flex;align-items:center;justify-content:center;margin:0 auto 16px;}
 .del-icon svg{width:24px;height:24px;color:var(--red);}
+.discard-icon{width:52px;height:52px;border-radius:50%;background:rgba(251,146,60,.1);border:1.5px solid rgba(251,146,60,.3);display:flex;align-items:center;justify-content:center;margin:0 auto 16px;}
+.discard-icon svg{width:24px;height:24px;color:var(--orange);}
 .del-title{font-size:16px;font-weight:700;margin-bottom:6px;}
 .del-sub{font-size:13px;color:var(--muted);line-height:1.5;}
 .del-sub strong{color:var(--text);}
-
-/* Descartar cambios */
-.discard-icon{width:52px;height:52px;border-radius:50%;background:rgba(251,146,60,.1);border:1.5px solid rgba(251,146,60,.3);display:flex;align-items:center;justify-content:center;margin:0 auto 16px;}
-.discard-icon svg{width:24px;height:24px;color:var(--orange);}
 
 /* Exportar */
 .export-preview{background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:14px;font-family:'DM Mono',monospace;font-size:12px;color:var(--muted);line-height:1.8;margin-bottom:16px;max-height:200px;overflow-y:auto;white-space:pre;}
@@ -210,12 +246,10 @@ header{position:sticky;top:0;z-index:20;background:var(--bg);backdrop-filter:blu
 .btn-copy{padding:13px;border-radius:var(--radius-sm);background:var(--surface2);border:1.5px solid var(--border);color:var(--text);font-size:14px;font-weight:600;font-family:inherit;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;transition:all .15s;}
 .btn-copy.copied{border-color:var(--green);color:var(--green);}
 .btn-excel{padding:13px;border-radius:var(--radius-sm);background:#1d6f42;border:1.5px solid #1d6f42;color:#fff;font-size:14px;font-weight:600;font-family:inherit;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;}
-.btn-excel:active{background:#155233;}
 
 /* Resumen anual */
 .anual-grid{display:flex;flex-direction:column;gap:8px;max-height:70vh;overflow-y:auto;}
 .anual-row{display:flex;align-items:center;gap:10px;padding:12px;background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius-sm);cursor:pointer;transition:all .15s;}
-.anual-row:hover{border-color:rgba(124,92,252,.4);}
 .anual-row.activo{border-color:var(--violet);background:rgba(124,92,252,.1);}
 .anual-mes{font-weight:600;font-size:14px;min-width:90px;}
 .anual-nums{flex:1;display:flex;flex-direction:column;gap:2px;}
@@ -223,8 +257,7 @@ header{position:sticky;top:0;z-index:20;background:var(--bg);backdrop-filter:blu
 .anual-usd{font-family:'DM Mono',monospace;font-size:11px;color:var(--green);}
 .anual-vacio{font-size:12px;color:var(--muted2);}
 .anual-n{font-size:11px;color:var(--muted2);text-align:right;flex-shrink:0;}
-.btn-anual{display:flex;align-items:center;gap:6px;background:transparent;border:1px solid var(--border);border-radius:8px;padding:7px 10px;font-size:12px;font-weight:600;color:var(--muted);cursor:pointer;font-family:inherit;transition:all .15s;}
-.btn-anual:active{background:rgba(128,128,128,.1);}
+.btn-anual{display:flex;align-items:center;gap:6px;background:transparent;border:1px solid var(--border);border-radius:8px;padding:7px 10px;font-size:12px;font-weight:600;color:var(--muted);cursor:pointer;font-family:inherit;}
 .btn-anual svg{width:13px;height:13px;}
 
 /* Toast */
@@ -251,24 +284,20 @@ header{position:sticky;top:0;z-index:20;background:var(--bg);backdrop-filter:blu
 .login-logo svg{width:30px;height:30px;}
 .login-title{font-size:22px;font-weight:700;letter-spacing:-.03em;margin-bottom:6px;}
 .login-sub{font-size:14px;color:var(--muted);margin-bottom:32px;line-height:1.5;}
-.btn-login{width:100%;padding:13px 20px;background:#fff;color:#1f1f1f;border:none;border-radius:12px;font-size:15px;font-weight:600;font-family:inherit;display:flex;align-items:center;justify-content:center;gap:10px;cursor:pointer;transition:background .15s;}
-.btn-login:hover{background:#f0f0f0;}
+.btn-login{width:100%;padding:13px 20px;background:#fff;color:#1f1f1f;border:none;border-radius:12px;font-size:15px;font-weight:600;font-family:inherit;display:flex;align-items:center;justify-content:center;gap:10px;cursor:pointer;}
 .btn-login:disabled{opacity:.6;cursor:default;}
 .login-divider{display:flex;align-items:center;gap:10px;margin:14px 0;color:var(--muted2);font-size:12px;}
 .login-divider::before,.login-divider::after{content:"";flex:1;height:1px;background:var(--border);}
-.btn-guest{width:100%;padding:12px 20px;background:transparent;color:var(--muted);border:1.5px solid var(--border);border-radius:12px;font-size:14px;font-weight:600;font-family:inherit;cursor:pointer;transition:all .15s;}
-.btn-guest:hover{background:var(--surface2);color:var(--text);}
+.btn-guest{width:100%;padding:12px 20px;background:transparent;color:var(--muted);border:1.5px solid var(--border);border-radius:12px;font-size:14px;font-weight:600;font-family:inherit;cursor:pointer;}
 .login-footer{font-size:11px;color:var(--muted2);margin-top:20px;line-height:1.6;}
 </style>
 </head>
 <body>
 
-<!-- ══ LOGIN ═════════════════════════════════════════════════════════════ -->
+<!-- LOGIN -->
 <div class="screen-login" id="screen-login">
   <div class="login-card">
-    <div class="login-logo">
-      <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-    </div>
+    <div class="login-logo"><svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></div>
     <div class="login-title">Mis Gastos</div>
     <div class="login-sub">Tu calendario personal de gastos.<br>Sincronizado en todos tus dispositivos.</div>
     <button class="btn-login" id="btn-login" onclick="loginGoogle()">
@@ -281,7 +310,7 @@ header{position:sticky;top:0;z-index:20;background:var(--bg);backdrop-filter:blu
   </div>
 </div>
 
-<!-- ══ APP ════════════════════════════════════════════════════════════════ -->
+<!-- APP -->
 <div id="screen-app" style="display:none">
 
 <div class="toast" id="toast">
@@ -305,12 +334,10 @@ header{position:sticky;top:0;z-index:20;background:var(--bg);backdrop-filter:blu
     <div class="sync-dot" id="sync-dot" title="Conectando…"></div>
   </div>
   <div class="header-right">
-    <!-- Resumen anual -->
-    <button class="btn-anual" onclick="openAnual()" title="Resumen anual">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/><line x1="8" y1="14" x2="16" y2="14"/><line x1="8" y1="18" x2="12" y2="18"/></svg>
+    <button class="btn-anual" onclick="openAnual()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="13" height="13"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/><line x1="8" y1="14" x2="16" y2="14"/><line x1="8" y1="18" x2="12" y2="18"/></svg>
       Anual
     </button>
-    <!-- Tema -->
     <button class="btn-theme" onclick="toggleTheme()" id="btn-theme" title="Cambiar tema">
       <svg id="icon-theme" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
     </button>
@@ -332,6 +359,26 @@ header{position:sticky;top:0;z-index:20;background:var(--bg);backdrop-filter:blu
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
   <div class="guest-banner-text"><strong>Modo sin cuenta</strong><span>Los datos se guardan solo en este dispositivo</span></div>
   <button class="btn-guest-login" onclick="loginGoogle()">Conectar</button>
+</div>
+
+<!-- Banner notificaciones -->
+<div class="notif-banner" id="notif-banner">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="20" height="20" style="flex-shrink:0;color:var(--violet)"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+  <div class="notif-banner-text">
+    <strong>Activar recordatorios</strong>
+    <span>Recibí un aviso el día que vence cada gasto</span>
+  </div>
+  <button class="btn-notif" onclick="pedirPermiso()">Activar</button>
+  <button class="btn-notif-dismiss" onclick="dismissNotif()">✕</button>
+</div>
+
+<!-- Alerta vencimientos -->
+<div class="alert-venc" id="alert-venc">
+  <div class="alert-venc-title">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+    Vencidos sin pagar
+  </div>
+  <div class="alert-venc-items" id="alert-venc-items"></div>
 </div>
 
 <!-- Nav mes -->
@@ -357,6 +404,15 @@ header{position:sticky;top:0;z-index:20;background:var(--bg);backdrop-filter:blu
 <div class="totals">
   <div class="total-card"><div class="label">Total $</div><div class="amount" id="total-ars">0</div><div class="sub">pesos argentinos</div></div>
   <div class="total-card"><div class="label">Total USD</div><div class="amount amount-usd" id="total-usd">0.00</div><div class="sub">dólares</div></div>
+</div>
+
+<!-- Barra de progreso -->
+<div class="progress-bar-wrap" id="progress-wrap" style="display:none">
+  <div class="progress-info">
+    <span class="progress-label"><strong id="prog-pagados">0</strong> pagados de <strong id="prog-total">0</strong></span>
+    <span class="progress-pendiente" id="prog-pendiente"></span>
+  </div>
+  <div class="progress-bar-track"><div class="progress-bar-fill" id="progress-fill" style="width:0%"></div></div>
 </div>
 
 <!-- Botón agregar grande -->
@@ -409,6 +465,7 @@ header{position:sticky;top:0;z-index:20;background:var(--bg);backdrop-filter:blu
       <div class="field"><label>Importe $</label><div class="input-wrap"><span class="input-sym">$</span><input id="f-ars" type="number" placeholder="0" min="0" step="any"/></div></div>
       <div class="field"><label>Importe USD</label><div class="input-wrap usd"><span class="input-sym input-sym-usd">USD</span><input id="f-usd" type="number" placeholder="0.00" min="0" step="any"/></div></div>
     </div>
+    <div class="field"><label>Nota (opcional)</label><textarea id="f-nota" placeholder="Ej: incluye recargo, cuota 3/12…"></textarea></div>
     <button class="btn-save" id="btn-guardar" onclick="saveGasto()">Agregar gasto</button>
   </div>
 </div>
@@ -474,7 +531,6 @@ header{position:sticky;top:0;z-index:20;background:var(--bg);backdrop-filter:blu
 
 </div><!-- /screen-app -->
 
-<!-- Firebase -->
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
@@ -487,9 +543,8 @@ firebase.initializeApp({
   messagingSenderId:"340666288060",
   appId:"1:340666288060:web:867278822516383328cdb9"
 });
-const auth=firebase.auth(), db=firebase.firestore(), provider=new firebase.auth.GoogleAuthProvider();
+const auth=firebase.auth(),db=firebase.firestore(),provider=new firebase.auth.GoogleAuthProvider();
 
-// ── Constantes ────────────────────────────────────────────────────────────────
 const MESES=["Enero","Febrero","Marzo","Abril","Mayo","Junio","Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre"];
 const FREQ_LABEL={unico:"Único",mensual:"Mensual",bimestral:"Bimestral",trimestral:"Trimestral",semestral:"Semestral",anual:"Anual"};
 const FREQ_INT={unico:0,mensual:1,bimestral:2,trimestral:3,semestral:6,anual:12};
@@ -503,29 +558,27 @@ const CAT_ICONS={
   otro:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><circle cx="12" cy="16" r=".5" fill="currentColor"/></svg>',
 };
 const RECUR_ICON='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" style="width:9px;height:9px"><path d="M1 4v6h6"/><path d="M23 20v-6h-6"/><path d="M20.49 9A9 9 0 005.64 5.64L1 10m22 4l-4.64 4.36A9 9 0 013.51 15"/></svg>';
+const CHECK_ICON='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>';
 
-// ── Estado ────────────────────────────────────────────────────────────────────
-let gastos=[],mesActual={y:new Date().getFullYear(),m:new Date().getMonth()};
-let editId=null,deleteId=null,freqSel="mensual",currentUser=null,modoGuest=false,unsubscribe=null;
-let sortMode="fecha"; // "fecha" | "monto"
-let formDirty=false;
+// Estado
+let gastos=[],pagados={};  // pagados: { "gastoId-YYYY-MM": true }
+let mesActual={y:new Date().getFullYear(),m:new Date().getMonth()};
+let editId=null,deleteId=null,freqSel="mensual";
+let currentUser=null,modoGuest=false,unsubscribe=null;
+let sortMode="fecha",irAlMesHecho=false;
 
 // ── Tema ──────────────────────────────────────────────────────────────────────
 const DARK_ICON='<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>';
 const LIGHT_ICON='<circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>';
-
 function toggleTheme(){
-  const html=document.documentElement;
-  const isDark=html.getAttribute("data-theme")==="dark";
+  const html=document.documentElement,isDark=html.getAttribute("data-theme")==="dark";
   html.setAttribute("data-theme",isDark?"light":"dark");
   document.getElementById("icon-theme").innerHTML=isDark?DARK_ICON:LIGHT_ICON;
   localStorage.setItem("tema",isDark?"light":"dark");
 }
-// Aplicar tema guardado
 (function(){
   const t=localStorage.getItem("tema")||"dark";
   document.documentElement.setAttribute("data-theme",t);
-  // El ícono se actualiza cuando carga el app
 })();
 
 // ── Auth ──────────────────────────────────────────────────────────────────────
@@ -533,14 +586,14 @@ auth.onAuthStateChanged(user=>{
   currentUser=user;
   if(user){
     modoGuest=false;
-    const guestData=localStorage.getItem("gastos-guest");
-    if(guestData){
+    const gd=localStorage.getItem("gastos-guest");
+    if(gd){
       try{
-        const viejos=JSON.parse(guestData);
-        if(viejos.length>0){
+        const v=JSON.parse(gd);
+        if(v.length>0){
           const COL=db.collection("usuarios").doc(user.uid).collection("gastos");
           const batch=db.batch();
-          viejos.forEach(g=>batch.set(COL.doc(g.id),g));
+          v.forEach(g=>batch.set(COL.doc(g.id),g));
           batch.commit().then(()=>{localStorage.removeItem("gastos-guest");showToast("Datos migrados a tu cuenta");}).catch(()=>{});
         } else localStorage.removeItem("gastos-guest");
       }catch(e){}
@@ -561,7 +614,6 @@ function showLogin(){
 function showApp(user){
   document.getElementById("screen-login").style.display="none";
   document.getElementById("screen-app").style.display="block";
-  // Aplicar ícono de tema
   const t=localStorage.getItem("tema")||"dark";
   document.getElementById("icon-theme").innerHTML=t==="dark"?DARK_ICON:LIGHT_ICON;
   const av=document.getElementById("user-avatar");
@@ -577,6 +629,8 @@ function showApp(user){
     av.style.backgroundImage="";av.textContent="👤";
     document.getElementById("guest-banner").classList.add("show");
   }
+  // Pedir notificaciones después de 3 segundos
+  setTimeout(()=>ofrecerNotificaciones(),3000);
 }
 
 function loginGoogle(){
@@ -590,18 +644,19 @@ function loginGoogle(){
 
 function entrarSinCuenta(){
   modoGuest=true;
-  const cached=localStorage.getItem("gastos-guest");
-  if(cached){try{gastos=JSON.parse(cached);}catch(e){gastos=[];}}else{gastos=[];}
+  const c=localStorage.getItem("gastos-guest");
+  if(c){try{gastos=JSON.parse(c);}catch(e){gastos=[];}}else{gastos=[];}
+  pagados=JSON.parse(localStorage.getItem("pagados-guest")||"{}");
   window._COL=null;
   showApp(null);
-  irAlMesConGastos();
-  render();
+  irAlMesConGastos();render();
   showToast("Modo sin cuenta — datos locales");
 }
 
 function logout(){
   if(unsubscribe)unsubscribe();
-  modoGuest=false;gastos=[];window._COL=null;
+  modoGuest=false;gastos=[];pagados={};window._COL=null;
+  irAlMesHecho=false;
   auth.signOut();
   document.getElementById("menu-usuario").classList.remove("show");
 }
@@ -617,13 +672,13 @@ function startSync(uid){
   if(unsubscribe)unsubscribe();
   const COL=db.collection("usuarios").doc(uid).collection("gastos");
   window._COL=COL;
-  const cached=localStorage.getItem("gastos-"+uid);
-  if(cached){try{gastos=JSON.parse(cached);irAlMesConGastos();render();}catch(e){}}
+  pagados=JSON.parse(localStorage.getItem("pagados-"+uid)||"{}");
+  const c=localStorage.getItem("gastos-"+uid);
+  if(c){try{gastos=JSON.parse(c);irAlMesConGastos();render();}catch(e){}}
   unsubscribe=COL.onSnapshot(snap=>{
     gastos=snap.docs.map(d=>({id:d.id,...d.data()}));
     localStorage.setItem("gastos-"+uid,JSON.stringify(gastos));
-    irAlMesConGastos();
-    render();setSyncStatus(true);
+    irAlMesConGastos();render();setSyncStatus(true);
   },()=>setSyncStatus(false));
 }
 
@@ -632,25 +687,72 @@ function setSyncStatus(ok){
   if(el){el.title=ok?"Sincronizado":"Sin conexión";el.style.background=ok?"#34d399":"#fb923c";}
 }
 
+// ── Pagados ───────────────────────────────────────────────────────────────────
+function pagadoKey(id,y,m){return id+"-"+y+"-"+pad(m+1);}
+
+function togglePagado(id){
+  const key=pagadoKey(id,mesActual.y,mesActual.m);
+  if(pagados[key]) delete pagados[key];
+  else pagados[key]=true;
+  // Guardar pagados en localStorage (son datos de UI, no de Firebase)
+  const storeKey=currentUser?"pagados-"+currentUser.uid:"pagados-guest";
+  localStorage.setItem(storeKey,JSON.stringify(pagados));
+  render();
+}
+
+function esPagado(id,y,m){return !!pagados[pagadoKey(id,y,m)];}
+
+// ── Notificaciones ────────────────────────────────────────────────────────────
+function ofrecerNotificaciones(){
+  if(!("Notification" in window))return;
+  if(Notification.permission==="granted"){verificarVencimientosHoy();return;}
+  if(Notification.permission==="denied")return;
+  if(localStorage.getItem("notif-dismissed"))return;
+  document.getElementById("notif-banner").classList.add("show");
+}
+
+function pedirPermiso(){
+  document.getElementById("notif-banner").classList.remove("show");
+  Notification.requestPermission().then(p=>{
+    if(p==="granted"){showToast("Recordatorios activados ✓");verificarVencimientosHoy();}
+    else showToast("Recordatorios no activados");
+  });
+}
+
+function dismissNotif(){
+  document.getElementById("notif-banner").classList.remove("show");
+  localStorage.setItem("notif-dismissed","1");
+}
+
+function verificarVencimientosHoy(){
+  if(Notification.permission!=="granted")return;
+  const hoy=new Date(),y=hoy.getFullYear(),m=hoy.getMonth();
+  const hoyStr=y+"-"+pad(m+1)+"-"+pad(hoy.getDate());
+  const vencenHoy=gastos.filter(g=>{
+    if(esPagado(g.id,y,m))return false;
+    if(!aplicaEnMes(g,y,m))return false;
+    return fechaEnMes(g,y,m)===hoyStr;
+  });
+  vencenHoy.forEach(g=>{
+    const ars=parseNum(g.ars),usd=parseNum(g.usd);
+    let monto="";
+    if(ars>0)monto="$"+ars.toLocaleString("es-AR");
+    if(usd>0)monto+=(monto?" · ":"")+"USD "+usd.toLocaleString("en-US",{minimumFractionDigits:2});
+    new Notification("📅 Vence hoy: "+g.nombre,{body:monto||"Sin importe cargado",icon:"data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><rect width='64' height='64' rx='14' fill='%237c5cfc'/></svg>"});
+  });
+}
+
 // ── Ir al mes con gastos ──────────────────────────────────────────────────────
-let irAlMesHecho=false;
 function irAlMesConGastos(){
   if(irAlMesHecho||!gastos.length)return;
-  const hoy=new Date(), hoyY=hoy.getFullYear(), hoyM=hoy.getMonth();
-  // Si el mes actual tiene gastos, quedarse
-  if(gastos.some(g=>aplicaEnMes(g,hoyY,hoyM))){
-    mesActual={y:hoyY,m:hoyM};irAlMesHecho=true;return;
-  }
-  // Buscar el próximo mes con gastos (hacia adelante, hasta 12 meses)
+  const hoy=new Date(),hy=hoy.getFullYear(),hm=hoy.getMonth();
+  if(gastos.some(g=>aplicaEnMes(g,hy,hm))){mesActual={y:hy,m:hm};irAlMesHecho=true;return;}
   for(let i=1;i<=12;i++){
-    let m=hoyM+i, y=hoyY;
+    let m=hm+i,y=hy;
     if(m>11){m-=12;y++;}
-    if(gastos.some(g=>aplicaEnMes(g,y,m))){
-      mesActual={y,m};irAlMesHecho=true;return;
-    }
+    if(gastos.some(g=>aplicaEnMes(g,y,m))){mesActual={y,m};irAlMesHecho=true;return;}
   }
-  // Sino quedar en mes actual
-  mesActual={y:hoyY,m:hoyM};irAlMesHecho=true;
+  mesActual={y:hy,m:hm};irAlMesHecho=true;
 }
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
@@ -659,7 +761,6 @@ function mesStr(y,m){return y+"-"+pad(m+1);}
 function parseNum(v){const n=parseFloat(String(v||"0").replace(",","."));return isNaN(n)?0:n;}
 function escHTML(s){return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");}
 
-// ── Recurrencia ───────────────────────────────────────────────────────────────
 function aplicaEnMes(g,y,m){
   const orig=new Date(g.fechaOrigen+"T00:00:00"),oy=orig.getFullYear(),om=orig.getMonth();
   if(y<oy||(y===oy&&m<om))return false;
@@ -672,7 +773,6 @@ function fechaEnMes(g,y,m){
   return y+"-"+pad(m+1)+"-"+pad(Math.min(dia,max));
 }
 
-// ── Sort ──────────────────────────────────────────────────────────────────────
 function setSort(mode){
   sortMode=mode;
   document.getElementById("sort-fecha").classList.toggle("active",mode==="fecha");
@@ -680,7 +780,6 @@ function setSort(mode){
   render();
 }
 
-// ── Navegación ────────────────────────────────────────────────────────────────
 function navMes(d){
   mesActual.m+=d;
   if(mesActual.m>11){mesActual.m=0;mesActual.y++;}
@@ -695,33 +794,99 @@ function render(){
   document.getElementById("mes-titulo").textContent=MESES[m]+" "+y;
   document.getElementById("mes-sub").textContent=esHoy?"mes actual":"";
 
-  let del=gastos.filter(g=>aplicaEnMes(g,y,m)).map(g=>({...g,_fecha:fechaEnMes(g,y,m)}));
-
-  // Puntito indicador
+  let del=gastos.filter(g=>aplicaEnMes(g,y,m)).map(g=>({...g,_fecha:fechaEnMes(g,y,m),_pagado:esPagado(g.id,y,m)}));
   document.getElementById("month-dot").classList.toggle("show",del.length>0);
 
-  // Ordenar
-  if(sortMode==="monto"){
-    del.sort((a,b)=>(parseNum(b.ars)+parseNum(b.usd)*1000)-(parseNum(a.ars)+parseNum(a.usd)*1000));
+  // Totales siempre del mes completo
+  const tARS=del.reduce((s,g)=>s+parseNum(g.ars),0);
+  const tUSD=del.reduce((s,g)=>s+parseNum(g.usd),0);
+  document.getElementById("total-ars").textContent=tARS.toLocaleString("es-AR",{maximumFractionDigits:2});
+  document.getElementById("total-usd").textContent=tUSD.toLocaleString("en-US",{minimumFractionDigits:2,maximumFractionDigits:2});
+
+  // Barra de progreso
+  const nPag=del.filter(g=>g._pagado).length;
+  const pendARS=del.filter(g=>!g._pagado).reduce((s,g)=>s+parseNum(g.ars),0);
+  const pendUSD=del.filter(g=>!g._pagado).reduce((s,g)=>s+parseNum(g.usd),0);
+  const pw=document.getElementById("progress-wrap");
+  if(del.length>0){
+    pw.style.display="block";
+    document.getElementById("prog-pagados").textContent=nPag;
+    document.getElementById("prog-total").textContent=del.length;
+    const pct=del.length>0?Math.round(nPag/del.length*100):0;
+    document.getElementById("progress-fill").style.width=pct+"%";
+    const pp=document.getElementById("prog-pendiente");
+    if(nPag===del.length){pp.textContent="Todo pagado ✓";pp.className="progress-pendiente ok";}
+    else{
+      let txt="";
+      if(pendARS>0)txt="$"+pendARS.toLocaleString("es-AR",{maximumFractionDigits:0})+" pendiente";
+      if(pendUSD>0)txt+=(txt?" · ":"")+"USD "+pendUSD.toLocaleString("en-US",{minimumFractionDigits:2})+" pendiente";
+      pp.textContent=txt;pp.className="progress-pendiente";
+    }
   } else {
-    del.sort((a,b)=>a._fecha.localeCompare(b._fecha));
+    pw.style.display="none";
   }
 
-  document.getElementById("total-ars").textContent=del.reduce((s,g)=>s+parseNum(g.ars),0).toLocaleString("es-AR",{maximumFractionDigits:2});
-  document.getElementById("total-usd").textContent=del.reduce((s,g)=>s+parseNum(g.usd),0).toLocaleString("en-US",{minimumFractionDigits:2,maximumFractionDigits:2});
+  // Alerta vencidos sin pagar (solo en mes actual)
+  const av=document.getElementById("alert-venc");
+  const avi=document.getElementById("alert-venc-items");
+  if(esHoy){
+    const vencidos=del.filter(g=>!g._pagado&&Math.ceil((new Date(g._fecha+"T00:00:00")-hoy)/86400000)<0);
+    if(vencidos.length>0){
+      av.classList.add("show");
+      avi.innerHTML=vencidos.map(g=>'<div class="alert-venc-item">'+escHTML(g.nombre)+'</div>').join("");
+    } else {av.classList.remove("show");}
+  } else {av.classList.remove("show");}
+
+  // Ordenar: pagados siempre al final
+  const noPagados=del.filter(g=>!g._pagado);
+  const pagadosList=del.filter(g=>g._pagado);
+  const sortFn=sortMode==="monto"
+    ?(a,b)=>(parseNum(b.ars)+parseNum(b.usd)*1000)-(parseNum(a.ars)+parseNum(a.usd)*1000)
+    :(a,b)=>a._fecha.localeCompare(b._fecha);
+  noPagados.sort(sortFn);
+  pagadosList.sort(sortFn);
+  const ordenados=[...noPagados,...pagadosList];
 
   const lista=document.getElementById("lista");
-  if(!del.length){lista.innerHTML='<div class="empty"><div class="emoji">📭</div><p>Sin gastos para este mes</p><small>Tocá "Agregar gasto" para sumar uno</small></div>';return;}
+  if(!ordenados.length){lista.innerHTML='<div class="empty"><div class="emoji">📭</div><p>Sin gastos para este mes</p><small>Tocá "Agregar gasto" para sumar uno</small></div>';return;}
 
-  lista.innerHTML=del.map(g=>{
+  lista.innerHTML=ordenados.map(g=>{
     const cat=g.cat||"otro",d=new Date(g._fecha+"T00:00:00");
     const ars=parseNum(g.ars),usd=parseNum(g.usd);
     const fStr=d.toLocaleDateString("es-AR",{day:"numeric",month:"long"});
     const recur=g.frecuencia!=="unico";
+    const diff=Math.ceil((d-hoy)/86400000);
+    const vencidoSinPagar=!g._pagado&&diff<0&&esHoy;
+
     let dias="";
-    if(esHoy){const diff=Math.ceil((d-hoy)/86400000);dias=diff<0?'<span class="badge-dias badge-vencido">vencido</span>':diff===0?'<span class="badge-dias badge-hoy">hoy</span>':diff<=3?'<span class="badge-dias badge-near">'+diff+'d</span>':'<span class="badge-dias badge-ok">'+diff+'d</span>';}
-    const amts=[ars>0?'<span class="amount-ars"><span class="sym">$</span>'+ars.toLocaleString("es-AR")+'</span>':"",usd>0?'<span class="amount-usd-val"><span class="sym">USD</span>'+usd.toLocaleString("en-US",{minimumFractionDigits:2})+'</span>':""].filter(Boolean).join("");
-    return '<div class="gasto-card cat-'+cat+'"><div class="gasto-icon icon-'+cat+'">'+(CAT_ICONS[cat]||CAT_ICONS.otro)+'</div><div class="gasto-body"><div class="gasto-top"><span class="gasto-name">'+escHTML(g.nombre)+'</span>'+dias+'</div><div class="gasto-meta">'+fStr+' · <span class="badge-small bc-'+cat+'">'+(CAT_LABEL[cat]||cat)+'</span><span class="badge-small badge-recur">'+(recur?RECUR_ICON:"")+(FREQ_LABEL[g.frecuencia]||g.frecuencia)+'</span></div><div class="gasto-amounts">'+amts+'</div></div><div class="gasto-actions"><button class="btn-icon" onclick="openEdit(\''+g.id+'\')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button><button class="btn-icon" onclick="askDelete(\''+g.id+'\')" style="color:var(--red);opacity:.6"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6"/><path d="M10 11v6M14 11v6"/></svg></button></div></div>';
+    if(g._pagado){dias='<span class="badge-dias badge-pagado">✓ pagado</span>';}
+    else if(esHoy){
+      dias=diff<0?'<span class="badge-dias badge-vencido">vencido</span>':diff===0?'<span class="badge-dias badge-hoy">hoy</span>':diff<=3?'<span class="badge-dias badge-near">'+diff+'d</span>':'<span class="badge-dias badge-ok">'+diff+'d</span>';
+    }
+
+    const amts=[
+      ars>0?'<span class="amount-ars"><span class="sym">$</span>'+ars.toLocaleString("es-AR")+'</span>':"",
+      usd>0?'<span class="amount-usd-val"><span class="sym">USD</span>'+usd.toLocaleString("en-US",{minimumFractionDigits:2})+'</span>':"",
+    ].filter(Boolean).join("");
+
+    const notaHTML=g.nota?'<div style="font-size:11px;color:var(--muted2);margin-top:4px;font-style:italic">'+escHTML(g.nota)+'</div>':"";
+
+    const cardClasses=["gasto-card","cat-"+cat,g._pagado?"pagado":"",vencidoSinPagar?"vencido-alert":""].filter(Boolean).join(" ");
+
+    return '<div class="'+cardClasses+'">'
+      +'<button class="check-btn'+(g._pagado?" checked":"") +'" onclick="togglePagado(\''+g.id+'\')" title="'+(g._pagado?"Marcar como pendiente":"Marcar como pagado")+'">'+CHECK_ICON+'</button>'
+      +'<div class="gasto-icon icon-'+cat+'">'+(CAT_ICONS[cat]||CAT_ICONS.otro)+'</div>'
+      +'<div class="gasto-body">'
+        +'<div class="gasto-top"><span class="gasto-name">'+escHTML(g.nombre)+'</span>'+dias+'</div>'
+        +'<div class="gasto-meta">'+fStr+' · <span class="badge-small bc-'+cat+'">'+(CAT_LABEL[cat]||cat)+'</span><span class="badge-small badge-recur">'+(recur?RECUR_ICON:"")+(FREQ_LABEL[g.frecuencia]||g.frecuencia)+'</span></div>'
+        +'<div class="gasto-amounts">'+amts+'</div>'
+        +notaHTML
+      +'</div>'
+      +'<div class="gasto-actions">'
+        +'<button class="btn-icon" onclick="openEdit(\''+g.id+'\')" title="Editar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button>'
+        +'<button class="btn-icon" onclick="askDelete(\''+g.id+'\')" style="color:var(--red);opacity:.6" title="Eliminar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6"/><path d="M10 11v6M14 11v6"/></svg></button>'
+      +'</div>'
+      +'</div>';
   }).join("");
 }
 
@@ -732,11 +897,12 @@ function setFreq(val){freqSel=val;document.querySelectorAll(".freq-pill").forEac
 function formTieneCambios(){return document.getElementById("f-nombre").value.trim()!==""||document.getElementById("f-ars").value!==""||document.getElementById("f-usd").value!=="";}
 
 function openNew(){
-  editId=null;formDirty=false;
+  editId=null;
   document.getElementById("f-nombre").value="";
   document.getElementById("f-categoria").value="tarjeta";
   document.getElementById("f-fecha").value=mesActual.y+"-"+pad(mesActual.m+1)+"-01";
   document.getElementById("f-ars").value="";document.getElementById("f-usd").value="";
+  document.getElementById("f-nota").value="";
   setFreq("mensual");
   document.getElementById("form-titulo").textContent="Nuevo gasto";
   document.getElementById("btn-guardar").textContent="Agregar gasto";
@@ -746,12 +912,13 @@ function openNew(){
 
 function openEdit(id){
   const g=gastos.find(x=>x.id===id);if(!g)return;
-  editId=id;formDirty=false;
+  editId=id;
   document.getElementById("f-nombre").value=g.nombre;
   document.getElementById("f-categoria").value=g.cat||"otro";
   document.getElementById("f-fecha").value=g.fechaOrigen;
   document.getElementById("f-ars").value=g.ars||"";
   document.getElementById("f-usd").value=g.usd||"";
+  document.getElementById("f-nota").value=g.nota||"";
   setFreq(g.frecuencia||"mensual");
   document.getElementById("form-titulo").textContent="Editar gasto";
   document.getElementById("btn-guardar").textContent="Guardar cambios";
@@ -759,11 +926,8 @@ function openEdit(id){
 }
 
 function askDiscard(){
-  if(editId||formTieneCambios()){
-    document.getElementById("overlay-discard").classList.add("show");
-  } else {
-    closeForm();
-  }
+  if(editId||formTieneCambios()){document.getElementById("overlay-discard").classList.add("show");}
+  else{closeForm();}
 }
 function closeDiscard(){document.getElementById("overlay-discard").classList.remove("show");}
 function confirmarDescartar(){closeDiscard();closeForm();}
@@ -775,9 +939,10 @@ function saveGasto(){
   const fechaOrigen=document.getElementById("f-fecha").value;
   const ars=document.getElementById("f-ars").value;
   const usd=document.getElementById("f-usd").value;
+  const nota=document.getElementById("f-nota").value.trim();
   if(!nombre||!fechaOrigen)return;
   const id=editId||String(Date.now());
-  const gasto={id,nombre,cat,frecuencia:freqSel,fechaOrigen,ars,usd,excluidos:editId?(gastos.find(g=>g.id===editId)?.excluidos||{}):{} };
+  const gasto={id,nombre,cat,frecuencia:freqSel,fechaOrigen,ars,usd,nota,excluidos:editId?(gastos.find(g=>g.id===editId)?.excluidos||{}):{} };
   closeForm();
   if(!window._COL){
     if(editId)gastos=gastos.map(g=>g.id===id?gasto:g);else gastos.push(gasto);
@@ -844,9 +1009,11 @@ function generarTexto(del,y,m,tARS,tUSD){
   del.forEach(g=>{
     const d=new Date(g._fecha+"T00:00:00"),f=d.toLocaleDateString("es-AR",{day:"2-digit",month:"2-digit"});
     const ars=parseNum(g.ars),usd=parseNum(g.usd);
-    txt+="• "+g.nombre+"\n  "+f+"  |  "+(CAT_LABEL[g.cat]||g.cat||"Otro")+"  |  "+(FREQ_LABEL[g.frecuencia]||"")+"\n";
+    const pagadoMarca=esPagado(g.id,y,m)?" ✓":"";
+    txt+="• "+g.nombre+pagadoMarca+"\n  "+f+"  |  "+(CAT_LABEL[g.cat]||g.cat||"Otro")+"  |  "+(FREQ_LABEL[g.frecuencia]||"")+"\n";
     if(ars>0)txt+="  $ "+ars.toLocaleString("es-AR")+"\n";
     if(usd>0)txt+="  USD "+usd.toLocaleString("en-US",{minimumFractionDigits:2})+"\n";
+    if(g.nota)txt+="  📝 "+g.nota+"\n";
     txt+="\n";
   });
   txt+=sep+"\nTOTAL $    "+tARS.toLocaleString("es-AR",{maximumFractionDigits:2})+"\n";
@@ -863,16 +1030,18 @@ function copiarTexto(){
 function exportarExcel(){
   const{y,m}=mesActual,del=gastosDelMes();
   const tARS=del.reduce((s,g)=>s+parseNum(g.ars),0),tUSD=del.reduce((s,g)=>s+parseNum(g.usd),0);
-  let csv="\uFEFF"+"Servicio;Categoría;Frecuencia;Vencimiento;Importe $;Importe USD\n";
+  let csv="\uFEFF"+"Servicio;Categoría;Frecuencia;Vencimiento;Importe $;Importe USD;Pagado;Nota\n";
   del.forEach(g=>{
     const d=new Date(g._fecha+"T00:00:00"),f=d.toLocaleDateString("es-AR",{day:"2-digit",month:"2-digit",year:"numeric"});
     const ars=parseNum(g.ars),usd=parseNum(g.usd);
     csv+='"'+g.nombre.replace(/"/g,'""')+'";'
       +'"'+(CAT_LABEL[g.cat]||g.cat||"Otro")+'";'
       +'"'+(FREQ_LABEL[g.frecuencia]||"")+'";'
-      +f+";"+(ars>0?String(ars).replace(".",","):"")+";"+(usd>0?String(usd).replace(".",","):"")+"\n";
+      +f+";"+(ars>0?String(ars).replace(".",","):"")+";"+(usd>0?String(usd).replace(".",","): "")+";"
+      +(esPagado(g.id,y,m)?"Sí":"No")+";"
+      +'"'+(g.nota||"")+'"\n';
   });
-  csv+="\n\"TOTAL\";;;;\""+String(tARS).replace(".",",")+"\";\""+String(tUSD).replace(".",",")+"\"\n";
+  csv+="\n\"TOTAL\";;;;\""+String(tARS).replace(".",",")+"\";\""+String(tUSD).replace(".",",")+"\";;\"\"\n";
   const blob=new Blob([csv],{type:"text/csv;charset=utf-8;"}),url=URL.createObjectURL(blob),a=document.createElement("a");
   a.href=url;a.download="gastos-"+MESES[m].toLowerCase()+"-"+y+".csv";a.click();URL.revokeObjectURL(url);
   showToast("Excel descargado");
@@ -888,25 +1057,24 @@ function openAnual(){
     const del=gastos.filter(g=>aplicaEnMes(g,y,mi));
     const tARS=del.reduce((s,g)=>s+parseNum(g.ars),0);
     const tUSD=del.reduce((s,g)=>s+parseNum(g.usd),0);
-    const activo=mi===mesActual.m&&y===mesActual.y;
+    const nPag=del.filter(g=>esPagado(g.id,y,mi)).length;
+    const activo=mi===mesActual.m;
     let numsHTML='<div class="anual-vacio">Sin gastos</div>';
     if(del.length){
       numsHTML=(tARS>0?'<div class="anual-ars">$ '+tARS.toLocaleString("es-AR",{maximumFractionDigits:2})+'</div>':"")+
                (tUSD>0?'<div class="anual-usd">USD '+tUSD.toLocaleString("en-US",{minimumFractionDigits:2})+'</div>':"");
     }
+    const progHTML=del.length>0?'<div style="font-size:10px;color:var(--green)">'+nPag+'/'+del.length+' ✓</div>':"";
     return '<div class="anual-row'+(activo?" activo":"") +'" onclick="irAMes('+mi+')">'
       +'<div class="anual-mes">'+mes+'</div>'
       +'<div class="anual-nums">'+numsHTML+'</div>'
-      +'<div class="anual-n">'+(del.length>0?del.length+" gasto"+(del.length!==1?"s":""):"")+'</div>'
+      +'<div class="anual-n">'+(del.length>0?del.length+" gasto"+(del.length!==1?"s":""):"")+'<br>'+progHTML+'</div>'
       +'</div>';
   }).join("");
   document.getElementById("overlay-anual").classList.add("show");
-  // Scroll al mes actual
   setTimeout(()=>{const rows=grid.querySelectorAll(".anual-row");if(rows[mesActual.m])rows[mesActual.m].scrollIntoView({block:"center"});},100);
 }
-function irAMes(m){
-  mesActual.m=m;closeAnual();render();
-}
+function irAMes(m){mesActual.m=m;closeAnual();render();}
 function closeAnual(){document.getElementById("overlay-anual").classList.remove("show");}
 
 // ── Toast ─────────────────────────────────────────────────────────────────────
@@ -918,7 +1086,7 @@ function showToast(msg){
   toastTimer=setTimeout(()=>t.classList.remove("show"),2500);
 }
 
-// ── PWA Install ───────────────────────────────────────────────────────────────
+// ── PWA ───────────────────────────────────────────────────────────────────────
 let deferredPrompt=null;
 window.addEventListener("beforeinstallprompt",e=>{
   e.preventDefault();deferredPrompt=e;
