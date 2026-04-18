@@ -339,6 +339,67 @@ if ('serviceWorker' in navigator) {
     border-radius: 8px; padding: 8px 14px; font-size: 13px; font-weight: 700;
     font-family: inherit; cursor: pointer;
   }
+  /* ── Exportar ── */
+  .btn-export {
+    width: 30px; height: 30px; background: transparent;
+    border: 1px solid var(--border); border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer; color: var(--muted); transition: all .15s;
+  }
+  .btn-export:active { background: rgba(255,255,255,.08); color: var(--text); }
+  .btn-export svg { width: 15px; height: 15px; }
+
+  .export-sheet {
+    width: 100%; max-width: 480px;
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 22px 22px 0 0; padding: 20px 20px 36px;
+    transform: translateY(30px); transition: transform .25s cubic-bezier(.2,1,.4,1);
+    max-height: 85vh; overflow-y: auto;
+  }
+  .overlay.show .export-sheet { transform: translateY(0); }
+
+  .export-title { font-size: 16px; font-weight: 700; margin-bottom: 4px; }
+  .export-sub { font-size: 12px; color: var(--muted); margin-bottom: 20px; }
+
+  .export-preview {
+    background: var(--surface2); border: 1px solid var(--border);
+    border-radius: var(--radius-sm); padding: 14px;
+    font-family: 'DM Mono', monospace; font-size: 12px;
+    color: var(--muted); line-height: 1.8; margin-bottom: 16px;
+    max-height: 220px; overflow-y: auto; white-space: pre;
+  }
+
+  .export-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .btn-copy {
+    padding: 13px; border-radius: var(--radius-sm);
+    background: var(--surface2); border: 1.5px solid var(--border);
+    color: var(--text); font-size: 14px; font-weight: 600;
+    font-family: inherit; cursor: pointer; transition: all .15s;
+    display: flex; align-items: center; justify-content: center; gap: 8px;
+  }
+  .btn-copy:active { background: rgba(255,255,255,.08); }
+  .btn-copy.copied { border-color: var(--green); color: var(--green); }
+  .btn-excel {
+    padding: 13px; border-radius: var(--radius-sm);
+    background: #1d6f42; border: 1.5px solid #1d6f42;
+    color: #fff; font-size: 14px; font-weight: 600;
+    font-family: inherit; cursor: pointer; transition: all .15s;
+    display: flex; align-items: center; justify-content: center; gap: 8px;
+  }
+  .btn-excel:active { background: #155233; }
+
+  .export-summary {
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 8px; margin-bottom: 16px;
+  }
+  .export-summary-card {
+    background: var(--surface2); border: 1px solid var(--border);
+    border-radius: var(--radius-sm); padding: 10px 12px;
+  }
+  .export-summary-card .lbl { font-size: 10px; color: var(--muted2); text-transform: uppercase; letter-spacing: .08em; margin-bottom: 2px; }
+  .export-summary-card .val { font-family: 'DM Mono', monospace; font-size: 16px; font-weight: 500; }
+  .val-usd { color: var(--green); }
+
   /* ── Login screen ── */
   .screen-login {
     position: fixed; inset: 0; z-index: 200;
@@ -505,6 +566,9 @@ if ('serviceWorker' in navigator) {
     <div class="sync-dot" id="sync-dot" title="Conectando…"></div>
   </div>
   <div style="display:flex;align-items:center;gap:10px">
+    <button class="btn-export" onclick="openExport()" title="Exportar mes">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+    </button>
     <button class="btn-add" onclick="openNew()">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="14" height="14"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
       Agregar
@@ -635,6 +699,42 @@ if ('serviceWorker' in navigator) {
     <div class="del-title" id="del-title"></div>
     <div class="del-sub"   id="del-sub"></div>
     <div class="del-btns"  id="del-btns"></div>
+  </div>
+</div>
+
+<!-- ── Modal Exportar ── -->
+<div class="overlay" id="overlay-export" onclick="handleExportOverlay(event)">
+  <div class="export-sheet">
+    <div class="sheet-header">
+      <div>
+        <div class="export-title" id="export-titulo"></div>
+        <div class="export-sub" id="export-sub"></div>
+      </div>
+      <button class="btn-icon" onclick="closeExport()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+    <div class="export-summary">
+      <div class="export-summary-card">
+        <div class="lbl">Total $</div>
+        <div class="val" id="exp-total-ars">—</div>
+      </div>
+      <div class="export-summary-card">
+        <div class="lbl">Total USD</div>
+        <div class="val val-usd" id="exp-total-usd">—</div>
+      </div>
+    </div>
+    <div class="export-preview" id="export-preview"></div>
+    <div class="export-actions">
+      <button class="btn-copy" id="btn-copy" onclick="copiarTexto()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="15" height="15"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+        Copiar texto
+      </button>
+      <button class="btn-excel" onclick="exportarExcel()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="15" height="15"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+        Descargar Excel
+      </button>
+    </div>
   </div>
 </div>
 
@@ -1075,6 +1175,137 @@ function showToast(msg) {
   clearTimeout(toastTimer);
   toastTimer = setTimeout(() => t.classList.remove("show"), 2500);
 }
+
+// ── Exportar ─────────────────────────────────────────────────────────────────
+function gastosDelMesActual() {
+  const { y, m } = mesActual;
+  return gastos
+    .filter(g => aplicaEnMes(g, y, m))
+    .map(g => ({ ...g, _fecha: fechaEnMes(g, y, m) }))
+    .sort((a,b) => a._fecha.localeCompare(b._fecha));
+}
+
+function openExport() {
+  const { y, m } = mesActual;
+  const del = gastosDelMesActual();
+  const totalARS = del.reduce((s,g) => s + parseNum(g.ars), 0);
+  const totalUSD = del.reduce((s,g) => s + parseNum(g.usd), 0);
+
+  document.getElementById("export-titulo").textContent = "Exportar — " + MESES[m] + " " + y;
+  document.getElementById("export-sub").textContent    = del.length + " gasto" + (del.length !== 1 ? "s" : "");
+  document.getElementById("exp-total-ars").textContent = "$" + totalARS.toLocaleString("es-AR", {maximumFractionDigits:2});
+  document.getElementById("exp-total-usd").textContent = "USD " + totalUSD.toLocaleString("en-US", {minimumFractionDigits:2, maximumFractionDigits:2});
+
+  // Preview texto
+  const lines = generarTexto(del, y, m, totalARS, totalUSD);
+  document.getElementById("export-preview").textContent = lines;
+
+  // Reset copy button
+  const btn = document.getElementById("btn-copy");
+  btn.classList.remove("copied");
+  btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="15" height="15"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg> Copiar texto';
+
+  document.getElementById("overlay-export").classList.add("show");
+}
+
+function generarTexto(del, y, m, totalARS, totalUSD) {
+  const titulo  = "📅 GASTOS " + MESES[m].toUpperCase() + " " + y;
+  const sep     = "─".repeat(36);
+  let lines     = titulo + "
+" + sep + "
+
+";
+
+  del.forEach(g => {
+    const d      = new Date(g._fecha + "T00:00:00");
+    const fecha  = d.toLocaleDateString("es-AR", {day:"2-digit", month:"2-digit"});
+    const ars    = parseNum(g.ars);
+    const usd    = parseNum(g.usd);
+    const cat    = CAT_LABEL[g.cat] || g.cat || "Otro";
+    const freq   = FREQ_LABEL[g.frecuencia] || "";
+    lines += "• " + g.nombre + "
+";
+    lines += "  " + fecha + "  |  " + cat + "  |  " + freq + "
+";
+    if (ars > 0) lines += "  $ " + ars.toLocaleString("es-AR") + "
+";
+    if (usd > 0) lines += "  USD " + usd.toLocaleString("en-US", {minimumFractionDigits:2}) + "
+";
+    lines += "
+";
+  });
+
+  lines += sep + "
+";
+  lines += "TOTAL $    " + totalARS.toLocaleString("es-AR", {maximumFractionDigits:2}) + "
+";
+  if (totalUSD > 0)
+    lines += "TOTAL USD  " + totalUSD.toLocaleString("en-US", {minimumFractionDigits:2}) + "
+";
+  return lines;
+}
+
+function copiarTexto() {
+  const texto = document.getElementById("export-preview").textContent;
+  navigator.clipboard.writeText(texto).then(() => {
+    const btn = document.getElementById("btn-copy");
+    btn.classList.add("copied");
+    btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="15" height="15"><polyline points="20 6 9 17 4 12"/></svg> ¡Copiado!';
+    setTimeout(() => {
+      btn.classList.remove("copied");
+      btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="15" height="15"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg> Copiar texto';
+    }, 2500);
+  }).catch(() => showToast("No se pudo copiar"));
+}
+
+function exportarExcel() {
+  const { y, m } = mesActual;
+  const del = gastosDelMesActual();
+  const totalARS = del.reduce((s,g) => s + parseNum(g.ars), 0);
+  const totalUSD = del.reduce((s,g) => s + parseNum(g.usd), 0);
+
+  // Construir CSV con separador de punto y coma (compatible con Excel en español)
+  const BOM = "﻿"; // BOM para que Excel detecte UTF-8
+  let csv = BOM + "Servicio;Categoría;Frecuencia;Vencimiento;Importe $;Importe USD
+";
+
+  del.forEach(g => {
+    const d     = new Date(g._fecha + "T00:00:00");
+    const fecha = d.toLocaleDateString("es-AR", {day:"2-digit", month:"2-digit", year:"numeric"});
+    const ars   = parseNum(g.ars);
+    const usd   = parseNum(g.usd);
+    const cat   = CAT_LABEL[g.cat] || g.cat || "Otro";
+    const freq  = FREQ_LABEL[g.frecuencia] || "";
+    csv += [
+      '"' + g.nombre.replace(/"/g,'""') + '"',
+      '"' + cat + '"',
+      '"' + freq + '"',
+      fecha,
+      ars > 0 ? String(ars).replace(".", ",") : "",
+      usd > 0 ? String(usd).replace(".", ",") : ""
+    ].join(";") + "
+";
+  });
+
+  // Fila de totales
+  csv += "
+";
+  csv += '"TOTAL";;;;"' + String(totalARS).replace(".", ",") + '";"' + String(totalUSD).replace(".", ",") + '"
+';
+
+  // Descargar
+  const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+  const url  = URL.createObjectURL(blob);
+  const a    = document.createElement("a");
+  a.href     = url;
+  a.download = "gastos-" + MESES[m].toLowerCase() + "-" + y + ".csv";
+  a.click();
+  URL.revokeObjectURL(url);
+  showToast("Excel descargado ✓");
+}
+
+function closeExport() { document.getElementById("overlay-export").classList.remove("show"); }
+function handleExportOverlay(e) { if (e.target.id === "overlay-export") closeExport(); }
 
 // ── PWA Install ───────────────────────────────────────────────────────────────
 let deferredPrompt = null;
