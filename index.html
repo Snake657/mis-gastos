@@ -1171,8 +1171,11 @@ function openAnual(){
     const tARS=del.reduce((s,g)=>s+parseNum(g.ars),0),tUSD=del.reduce((s,g)=>s+parseNum(g.usd),0);
     const nPag=del.filter(g=>getPago(g.id,y,mi)).length;
     const activo=mi===mesActual.m;
-    let numsHTML=del.length?(tARS>0?'<div class="anual-ars">'+fmtARS(tARS)+'</div>":"")+(tUSD>0?'<div class="anual-usd">'+fmtUSD(tUSD)+'</div>':""):'<div class="anual-vacio">Sin gastos</div>';
-    const prog=del.length>0?'<div style="font-size:10px;color:var(--green)">'+nPag+"/"+del.length+" pag.</div>":'';
+    let numsHTML=del.length
+      ?(tARS>0?'<div class="anual-ars">$ '+fmtARS(tARS)+'</div>':'')+
+        (tUSD>0?'<div class="anual-usd">USD '+fmtUSD(tUSD)+'</div>':'')
+      :'<div class="anual-vacio">Sin gastos</div>';
+    const prog=del.length>0?'<div style="font-size:10px;color:var(--green)">'+nPag+'/'+del.length+' pag.</div>':'';
     return '<div class="anual-row'+(activo?" activo":"")+'" onclick="irAMes('+mi+')">'
       +'<div class="anual-mes">'+mes+'</div><div class="anual-nums">'+numsHTML+'</div>'
       +'<div class="anual-n">'+(del.length>0?del.length+" gasto"+(del.length!==1?"s":""):"")+'<br>'+prog+'</div></div>';
