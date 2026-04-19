@@ -550,9 +550,10 @@ header{position:sticky;top:0;z-index:20;background:var(--bg);backdrop-filter:blu
       <div class="pago-parcial-fields" id="pago-parcial-fields">
         <!-- Campos dinámicos según monedas -->
       </div>
-      <button class="btn-desmarcar" id="btn-desmarcar" style="display:none" onclick="desmarcarPago()">Quitar registro de pago</button>
     </div>
-    <button class="btn-cancel" style="margin-top:10px;width:100%" onclick="closePago()">Cancelar</button>
+    <!-- Desmarcar FUERA de pago-confirmar-section para que siempre sea visible -->
+    <button class="btn-desmarcar" id="btn-desmarcar" style="display:none" onclick="desmarcarPago()">Quitar registro de pago</button>
+    <button class="btn-cancel" style="margin-top:8px;width:100%" onclick="closePago()">Cancelar</button>
   </div>
 </div>
 
@@ -721,7 +722,7 @@ function loginGoogle(){
   auth.signInWithPopup(provider).catch(()=>showToast("Error al conectar. Intentá de nuevo."));
 }
 function dismissGuestBanner(){document.getElementById("guest-banner").classList.remove("show");localStorage.setItem("guest-banner-dismissed","1");}
-function logout(){if(unsubscribe)unsubscribe();currentUser=null;modoGuest=true;gastos=[];pagos={};ingresos={};window._COL=null;irAlMesHecho=false;auth.signOut();const c=localStorage.getItem("gastos-guest");if(c){try{gastos=JSON.parse(c);}catch(e){gastos=[];}}pagos=JSON.parse(localStorage.getItem("pagos-guest")||"{}");ingresos=JSON.parse(localStorage.getItem("ingresos-guest")||"{}");actualizarUI(null);irAlMesConGastos();render();document.getElementById("menu-usuario").classList.remove("show");localStorage.removeItem("guest-banner-dismissed");}
+function logout(){if(unsubscribe)unsubscribe();if(window._unsubUser)window._unsubUser();window._unsubUser=null;currentUser=null;modoGuest=true;gastos=[];pagos={};ingresos={};window._COL=null;irAlMesHecho=false;auth.signOut();const c=localStorage.getItem("gastos-guest");if(c){try{gastos=JSON.parse(c);}catch(e){gastos=[];}}pagos=JSON.parse(localStorage.getItem("pagos-guest")||"{}");ingresos=JSON.parse(localStorage.getItem("ingresos-guest")||"{}");actualizarUI(null);irAlMesConGastos();render();document.getElementById("menu-usuario").classList.remove("show");localStorage.removeItem("guest-banner-dismissed");}
 function toggleMenu(){document.getElementById("menu-usuario").classList.toggle("show");}
 document.addEventListener("click",e=>{const m=document.getElementById("menu-usuario"),a=document.getElementById("user-avatar");if(m&&a&&!m.contains(e.target)&&e.target!==a)m.classList.remove("show");});
 
@@ -753,6 +754,26 @@ function startSync(uid){
     localStorage.setItem("gastos-"+uid,JSON.stringify(gastos));
     irAlMesConGastos();render();setSyncStatus(true);
   },()=>setSyncStatus(false));
+
+  // Listener para ingresos y pagos del documento del usuario
+  // Esto permite que cuando otro dispositivo guarda ingresos, este los recibe en tiempo real
+  const unsubUser=db.collection("usuarios").doc(uid).onSnapshot(doc=>{
+    if(doc.exists){
+      const d=doc.data();
+      if(d.pagos){
+        pagos=d.pagos;
+        localStorage.setItem("pagos-"+uid,JSON.stringify(pagos));
+      }
+      if(d.ingresos){
+        ingresos=d.ingresos;
+        localStorage.setItem("ingresos-"+uid,JSON.stringify(ingresos));
+        cargarCamposIngreso();
+      }
+      renderBalance();
+    }
+  },()=>{});
+  // Guardar referencia para cleanup al logout
+  window._unsubUser=unsubUser;
 }
 
 function setSyncStatus(ok){const el=document.getElementById("sync-dot");if(el){el.style.background=ok?"#34d399":"#fb923c";}}
@@ -1087,7 +1108,12 @@ function abrirModalPago(id,nombre,ars,usd){
   document.getElementById("pago-parcial-fields").classList.remove("show");
   document.getElementById("btn-parcial-toggle").classList.remove("open");
   const yaP=getPago(id,mesActual.y,mesActual.m);
+  // Si ya está pagado, mostrar desmarcar inmediatamente y pre-seleccionar el tipo
   document.getElementById("btn-desmarcar").style.display=yaP?"block":"none";
+  if(yaP){
+    // Pre-seleccionar el tipo de pago actual para que se vea el estado
+    seleccionarTipo(yaP.tipo);
+  }
   document.getElementById("overlay-pago").classList.add("show");
 }
 
