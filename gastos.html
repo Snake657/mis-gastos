@@ -206,12 +206,18 @@ header{position:sticky;top:0;z-index:20;background:var(--bg);backdrop-filter:blu
 .notif-banner-text span{color:var(--muted);font-size:12px;}
 .btn-notif{flex-shrink:0;background:var(--violet);color:#fff;border:none;border-radius:8px;padding:7px 12px;font-size:12px;font-weight:700;font-family:inherit;cursor:pointer;}
 .btn-notif-dismiss{flex-shrink:0;background:transparent;color:var(--muted);border:none;font-size:18px;cursor:pointer;padding:0 4px;}
-.guest-banner{display:none;align-items:center;gap:10px;background:rgba(251,146,60,.08);border-bottom:1px solid rgba(251,146,60,.2);padding:10px 16px;font-size:12px;color:var(--orange);}
+.guest-banner{display:none;flex-direction:column;gap:10px;background:rgba(124,92,252,.08);border-bottom:1px solid rgba(124,92,252,.25);padding:14px 16px;font-size:13px;}
 .guest-banner.show{display:flex;}
+.guest-banner-row{display:flex;align-items:center;gap:10px;}
+.guest-banner-icon{width:32px;height:32px;border-radius:50%;background:rgba(124,92,252,.15);display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.guest-banner-icon svg{width:15px;height:15px;color:var(--violet);}
 .guest-banner-text{flex:1;line-height:1.4;}
-.guest-banner-text strong{display:block;font-weight:600;}
-.guest-banner-text span{opacity:.75;}
-.btn-guest-login{flex-shrink:0;background:var(--orange);color:#fff;border:none;border-radius:8px;padding:6px 12px;font-size:12px;font-weight:700;font-family:inherit;cursor:pointer;}
+.guest-banner-text strong{display:block;font-weight:700;color:var(--text);font-size:14px;}
+.guest-banner-text span{color:var(--muted);font-size:12px;}
+.guest-banner-btns{display:grid;grid-template-columns:1fr 1fr;gap:8px;width:100%;}
+.btn-guest-login{background:var(--violet);color:#fff;border:none;border-radius:10px;padding:11px 16px;font-size:14px;font-weight:700;font-family:inherit;cursor:pointer;transition:background .15s;}
+.btn-guest-login:active{background:var(--violet2);}
+.btn-guest-skip{background:transparent;color:var(--muted);border:1.5px solid var(--border);border-radius:10px;padding:11px 16px;font-size:13px;font-weight:600;font-family:inherit;cursor:pointer;}
 
 /* Overlays */
 .overlay{position:fixed;inset:0;z-index:50;background:rgba(0,0,0,.65);backdrop-filter:blur(8px);display:flex;align-items:flex-end;justify-content:center;opacity:0;pointer-events:none;transition:opacity .2s;}
@@ -409,9 +415,20 @@ header{position:sticky;top:0;z-index:20;background:var(--bg);backdrop-filter:blu
 </header>
 
 <div class="guest-banner" id="guest-banner">
-  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
-  <div class="guest-banner-text"><strong>Modo sin cuenta</strong><span>Los datos se guardan solo en este dispositivo</span></div>
-  <button class="btn-guest-login" onclick="loginGoogle()">Conectar</button>
+  <div class="guest-banner-row">
+    <div class="guest-banner-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg></div>
+    <div class="guest-banner-text">
+      <strong>Estás probando sin cuenta</strong>
+      <span>Los datos se guardan solo en este dispositivo. Conectate para sincronizar en todos lados.</span>
+    </div>
+  </div>
+  <div class="guest-banner-btns">
+    <button class="btn-guest-login" onclick="loginGoogle()">
+      <svg viewBox="0 0 24 24" width="14" height="14" style="vertical-align:middle;margin-right:5px"><path fill="#fff" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#fff" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#fff" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z"/><path fill="#fff" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
+      Conectar con Google
+    </button>
+    <button class="btn-guest-skip" onclick="dismissGuestBanner()">Seguir sin cuenta</button>
+  </div>
 </div>
 <div class="notif-banner" id="notif-banner">
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="20" height="20" style="flex-shrink:0;color:var(--violet)"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
@@ -673,9 +690,19 @@ auth.onAuthStateChanged(user=>{
     const gd=localStorage.getItem("gastos-guest");
     if(gd){try{const v=JSON.parse(gd);if(v.length>0){const COL=db.collection("usuarios").doc(user.uid).collection("gastos");const b=db.batch();v.forEach(g=>b.set(COL.doc(g.id),g));b.commit().then(()=>{localStorage.removeItem("gastos-guest");showToast("Datos migrados a tu cuenta");});}else localStorage.removeItem("gastos-guest");}catch(e){}}
     showApp(user);startSync(user.uid);
-  }else if(!modoGuest){showLogin();}
+  }else if(!modoGuest){autoEntrarSinCuenta();}
 });
 function showLogin(){document.getElementById("screen-login").style.display="flex";document.getElementById("screen-app").style.display="none";gastos=[];}
+function autoEntrarSinCuenta(){
+  // Entrar automáticamente en modo sin cuenta — login visible como banner
+  modoGuest=true;
+  const c=localStorage.getItem("gastos-guest");
+  if(c){try{gastos=JSON.parse(c);}catch(e){gastos=[];}}else{gastos=[];}
+  pagos=JSON.parse(localStorage.getItem("pagos-guest")||"{}");
+  ingresos=JSON.parse(localStorage.getItem("ingresos-guest")||"{}");
+  window._COL=null;
+  showApp(null);irAlMesConGastos();render();
+}
 function showApp(user){
   document.getElementById("screen-login").style.display="none";
   document.getElementById("screen-app").style.display="block";
@@ -696,6 +723,7 @@ function entrarSinCuenta(){
   window._COL=null;showApp(null);irAlMesConGastos();render();showToast("Modo sin cuenta — datos locales");
 }
 function logout(){if(unsubscribe)unsubscribe();modoGuest=false;gastos=[];pagos={};ingresos={};window._COL=null;irAlMesHecho=false;auth.signOut();document.getElementById("menu-usuario").classList.remove("show");}
+function dismissGuestBanner(){document.getElementById("guest-banner").classList.remove("show");localStorage.setItem("guest-banner-dismissed","1");}
 function toggleMenu(){document.getElementById("menu-usuario").classList.toggle("show");}
 document.addEventListener("click",e=>{const m=document.getElementById("menu-usuario"),a=document.getElementById("user-avatar");if(m&&a&&!m.contains(e.target)&&e.target!==a)m.classList.remove("show");});
 
@@ -1022,7 +1050,7 @@ function generarTexto(del,y,m,tARS,tUSD){
     const d=new Date(g._fecha+"T00:00:00"),f=d.toLocaleDateString("es-AR",{day:"2-digit",month:"2-digit"});
     const ars=parseNum(g.ars),usd=parseNum(g.usd),p=getPago(g.id,y,m);
     const marca=p?.tipo==="efectivo"?" ✓":p?.tipo==="tarjeta"?" 💳":"";
-    const montoPag=p?(getMontoPagadoARS(g,y,m)<(ars+usd*dolarBNA)*0.99?" (parcial "+fmtARS(getMontoPagadoARS(g,y,m))+")"):"":"";
+    const montoPag=p?(getMontoPagadoARS(g,y,m)<(ars+usd*dolarBNA)*0.99?" (parcial "+fmtARS(getMontoPagadoARS(g,y,m))+")":""):"";
     txt+="• "+g.nombre+marca+montoPag+"\n  "+f+"  |  "+(CAT_LABEL[g.cat]||g.cat||"Otro")+"  |  "+(FREQ_LABEL[g.frecuencia]||"")+"\n";
     if(ars>0)txt+="  "+fmtARS(ars)+"\n";
     if(usd>0)txt+="  "+fmtUSD(usd)+(dolarBNA>0?"  ≈ "+fmtARS(usd*dolarBNA):"")+"\n";
