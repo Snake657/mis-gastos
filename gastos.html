@@ -343,6 +343,11 @@ header{position:sticky;top:0;z-index:20;background:var(--bg);backdrop-filter:blu
 .install-banner-actions{display:flex;gap:8px;}
 .btn-install{background:var(--violet);color:#fff;border:none;border-radius:8px;padding:8px 14px;font-size:13px;font-weight:700;font-family:inherit;cursor:pointer;}
 .btn-install-dismiss{background:transparent;color:var(--muted);border:1px solid var(--border);border-radius:8px;padding:8px 12px;font-size:13px;font-weight:600;font-family:inherit;cursor:pointer;}
+/* Modal replicar importe */
+.replicar-icon{width:52px;height:52px;border-radius:50%;background:rgba(124,92,252,.1);border:1.5px solid rgba(124,92,252,.3);display:flex;align-items:center;justify-content:center;margin:0 auto 14px;font-size:22px;}
+.replicar-btns{display:flex;flex-direction:column;gap:8px;margin-top:18px;}
+.btn-replicar-si{padding:14px;border-radius:var(--radius-sm);background:var(--violet);border:none;color:#fff;font-size:14px;font-weight:700;font-family:inherit;cursor:pointer;}
+.btn-replicar-no{padding:12px;border-radius:var(--radius-sm);background:transparent;border:1.5px solid var(--border);color:var(--muted);font-size:13px;font-weight:600;font-family:inherit;cursor:pointer;}
 </style>
 </head>
 <body>
@@ -590,6 +595,19 @@ header{position:sticky;top:0;z-index:20;background:var(--bg);backdrop-filter:blu
   </div>
 </div>
 
+<!-- Modal replicar importe en meses futuros -->
+<div class="overlay overlay-center" id="overlay-replicar">
+  <div class="sheet sheet-center">
+    <div class="replicar-icon">📅</div>
+    <div class="del-title">¿Replicar el importe?</div>
+    <div class="del-sub" id="replicar-sub">El gasto se va a repetir todos los meses.<br>¿Querés que el importe se copie a los meses futuros?</div>
+    <div class="replicar-btns">
+      <button class="btn-replicar-si" id="btn-replicar-si" onclick="confirmarReplicar(true)">Sí, replicar el mismo importe</button>
+      <button class="btn-replicar-no" onclick="confirmarReplicar(false)">No, los meses futuros quedan en $0</button>
+    </div>
+  </div>
+</div>
+
 </div><!-- /screen-app -->
 
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
@@ -625,6 +643,7 @@ let gastos=[],pagos={},ingresos={};
 let dolarBNA=0;
 let mesActual={y:new Date().getFullYear(),m:new Date().getMonth()};
 let editId=null,editPendingData=null,deleteId=null,pagoId=null,pagoTipoSel=null,freqSel="mensual";
+let pendingGasto=null; // Gasto pendiente de confirmar replicar
 let pagoGastoARS=0,pagoGastoHasARS=false,pagoGastoHasUSD=false;
 let currentUser=null,modoGuest=true,unsubscribe=null;
 let irAlMesHecho=false;
@@ -711,17 +730,24 @@ function startSync(uid){
   if(unsubscribe)unsubscribe();
   const COL=db.collection("usuarios").doc(uid).collection("gastos");
   window._COL=COL;
-  // Cargar pagos e ingresos desde Firestore
+  // 1. Cargar desde localStorage del usuario como punto de partida rápido
+  const lsPagos=localStorage.getItem("pagos-"+uid);
+  const lsIngresos=localStorage.getItem("ingresos-"+uid);
+  if(lsPagos){try{pagos=JSON.parse(lsPagos);}catch(e){}}
+  if(lsIngresos){try{ingresos=JSON.parse(lsIngresos);cargarCamposIngreso();}catch(e){}}
+  // 2. Luego sincronizar con Firestore (fuente de verdad)
   db.collection("usuarios").doc(uid).get().then(doc=>{
     if(doc.exists){
       const d=doc.data();
-      if(d.pagos)pagos=d.pagos;
-      if(d.ingresos){ingresos=d.ingresos;cargarCamposIngreso();}
+      // Firestore tiene prioridad sobre localStorage
+      if(d.pagos){pagos=d.pagos;localStorage.setItem("pagos-"+uid,JSON.stringify(pagos));}
+      if(d.ingresos){ingresos=d.ingresos;localStorage.setItem("ingresos-"+uid,JSON.stringify(ingresos));cargarCamposIngreso();}
     }
     renderBalance();
-  });
-  const c=localStorage.getItem("gastos-"+uid);
-  if(c){try{gastos=JSON.parse(c);irAlMesConGastos();render();}catch(e){}}
+  }).catch(()=>renderBalance());
+  // 3. Suscribir a cambios de gastos
+  const lsGastos=localStorage.getItem("gastos-"+uid);
+  if(lsGastos){try{gastos=JSON.parse(lsGastos);irAlMesConGastos();render();}catch(e){}}
   unsubscribe=COL.onSnapshot(snap=>{
     gastos=snap.docs.map(d=>({id:d.id,...d.data()}));
     localStorage.setItem("gastos-"+uid,JSON.stringify(gastos));
@@ -733,13 +759,16 @@ function setSyncStatus(ok){const el=document.getElementById("sync-dot");if(el){e
 
 // Guardar pagos e ingresos: local para guest, Firestore para usuarios
 function saveLocal(){
-  if(currentUser&&window._COL){
-    // Guardar pagos e ingresos en el documento del usuario
-    db.collection("usuarios").doc(currentUser.uid).set({pagos,ingresos},{merge:true}).catch(()=>{});
-  }
   const uid=currentUser?.uid;
+  // Siempre guardar en localStorage como backup
   localStorage.setItem(uid?"pagos-"+uid:"pagos-guest",JSON.stringify(pagos));
   localStorage.setItem(uid?"ingresos-"+uid:"ingresos-guest",JSON.stringify(ingresos));
+  // Si hay usuario logueado, sincronizar con Firestore
+  if(uid){
+    db.collection("usuarios").doc(uid).set({pagos,ingresos},{merge:true})
+      .then(()=>setSyncStatus(true))
+      .catch(e=>{console.warn("Firestore save error:",e);setSyncStatus(false);});
+  }
 }
 
 function saveIngresos(){
@@ -748,6 +777,8 @@ function saveIngresos(){
   if(a>0||u>0)ingresos[k]={ars:a,usd:u};else delete ingresos[k];
   saveLocal();
 }
+// Alias para claridad
+function guardarIngresos(){saveIngresos();}
 
 // ── Pagos ─────────────────────────────────────────────────────────────────────
 function pagoKey(id,y,m){return id+"-"+y+"-"+pad(m+1);}
@@ -952,7 +983,53 @@ function saveGasto(){
     document.getElementById("overlay-edit-recur").classList.add("show");return;
   }
   const id=editId||String(Date.now());
-  doSaveGasto(id,{id,nombre,cat,frecuencia:freqSel,fechaOrigen,ars,usd,nota,subitems,excluidos:editId?(gOrig?.excluidos||{}):{}});
+  const gasto={id,nombre,cat,frecuencia:freqSel,fechaOrigen,ars,usd,nota,subitems,excluidos:editId?(gOrig?.excluidos||{}):{} };
+
+  // Si es gasto NUEVO (no edición) y es recurrente y tiene importe → preguntar si replicar
+  if(!editId&&freqSel!=="unico"&&(parseNum(ars)>0||parseNum(usd)>0)){
+    pendingGasto={id,gasto};
+    const fl=FREQ_LABEL[freqSel]||freqSel;
+    document.getElementById("replicar-sub").innerHTML=
+      'Es un gasto <strong>'+fl+'</strong>. ¿Querés que <strong>'+
+      (parseNum(ars)>0?fmtARS(parseNum(ars)):"")+(parseNum(ars)>0&&parseNum(usd)>0?" + ":"")+
+      (parseNum(usd)>0?fmtUSD(parseNum(usd)):"")+
+      '</strong> se repita en todos los meses futuros?';
+    document.getElementById("overlay-replicar").classList.add("show");
+    return;
+  }
+  doSaveGasto(id,gasto);
+}
+
+function confirmarReplicar(replicar){
+  document.getElementById("overlay-replicar").classList.remove("show");
+  if(!pendingGasto)return;
+  const{id,gasto}=pendingGasto;pendingGasto=null;
+  if(!replicar){
+    // Guardar versión con importe para el mes actual + versión sin importe desde el mes siguiente
+    const mesActualFin=gasto.fechaOrigen; // se cierra en el mes actual
+    const gastoConImporte={...gasto,fechaFin:mesActualFin};
+    // Nuevo gasto sin importe desde el mes siguiente
+    const nextM=mesActual.m+1>11?0:mesActual.m+1;
+    const nextY=mesActual.m+1>11?mesActual.y+1:mesActual.y;
+    const origDay=new Date(gasto.fechaOrigen+"T00:00:00").getDate();
+    const maxDay=new Date(nextY,nextM+1,0).getDate();
+    const newFO=nextY+"-"+pad(nextM+1)+"-"+pad(Math.min(origDay,maxDay));
+    const newId=String(Date.now()+1);
+    const gastoSinImporte={...gasto,id:newId,ars:"0",usd:"0",fechaOrigen:newFO,excluidos:{}};
+    // Guardar ambos
+    if(!window._COL){
+      gastos.push(gastoConImporte,gastoSinImporte);
+      localStorage.setItem("gastos-guest",JSON.stringify(gastos));
+      showToast("Gasto agregado — meses futuros en $0");render();return;
+    }
+    const batch=db.batch();
+    batch.set(window._COL.doc(id),gastoConImporte);
+    batch.set(window._COL.doc(newId),gastoSinImporte);
+    batch.commit().then(()=>showToast("Gasto agregado — meses futuros en $0")).catch(()=>{gastos.push(gastoConImporte,gastoSinImporte);localStorage.setItem("gastos-"+(currentUser?.uid||"guest"),JSON.stringify(gastos));showToast("Guardado localmente");render();});
+  }else{
+    // Replicar importe: guardar normalmente
+    doSaveGasto(id,gasto);
+  }
 }
 function confirmarEditRecurrente(){
   document.getElementById("overlay-edit-recur").classList.remove("show");
@@ -976,6 +1053,12 @@ function doSaveGasto(id,gasto){
   window._COL.doc(id).set(gasto).then(()=>showToast(editId?"Cambios guardados":"Gasto agregado")).catch(()=>{if(editId)gastos=gastos.map(g=>g.id===id?gasto:g);else gastos.push(gasto);localStorage.setItem("gastos-"+(currentUser?.uid||"guest"),JSON.stringify(gastos));showToast("Guardado localmente");render();});
 }
 document.getElementById("f-nombre").addEventListener("keydown",e=>{if(e.key==="Enter")saveGasto();});
+// Enter en campos de ingreso guarda y renderiza
+["ing-ars","ing-usd"].forEach(id=>{
+  document.getElementById(id).addEventListener("keydown",e=>{
+    if(e.key==="Enter"){saveIngresos();renderBalance();e.target.blur();showToast("Ingreso guardado");}
+  });
+});
 
 // ── Sub-ítems ─────────────────────────────────────────────────────────────────
 function agregarSubitem(nombre="",monto=""){
