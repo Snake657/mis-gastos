@@ -260,13 +260,15 @@ header{position:sticky;top:0;z-index:20;background:var(--bg);backdrop-filter:blu
 .pago-gasto-nombre{font-size:13px;color:var(--muted);text-align:center;margin-bottom:14px;}
 .pago-tipo-btns{display:flex;gap:10px;margin-bottom:14px;}
 .pago-tipo-btn{flex:1;padding:14px 8px;border-radius:var(--radius);border:2px solid var(--border);background:var(--surface2);cursor:pointer;font-family:inherit;text-align:center;transition:all .2s;}
-.pago-tipo-btn.ef{border-color:rgba(52,211,153,.4);background:rgba(52,211,153,.07);}
-.pago-tipo-btn.tj{border-color:rgba(124,92,252,.4);background:rgba(124,92,252,.07);}
-.pago-tipo-btn.selected{transform:scale(.97);}
+.pago-tipo-btn.ef{border-color:var(--border);background:var(--surface2);}
+.pago-tipo-btn.tj{border-color:var(--border);background:var(--surface2);}
+.pago-tipo-btn.ef.selected{border-color:rgba(52,211,153,.6);background:rgba(52,211,153,.12);transform:scale(.98);}
+.pago-tipo-btn.tj.selected{border-color:rgba(124,92,252,.6);background:rgba(124,92,252,.12);transform:scale(.98);}
+.pago-tipo-btn.no-selected{opacity:.45;}
 .pago-tipo-btn .pt-icon{font-size:22px;margin-bottom:5px;}
 .pago-tipo-btn .pt-label{font-size:13px;font-weight:700;display:block;margin-bottom:2px;}
-.pago-tipo-btn.ef .pt-label{color:var(--green);}
-.pago-tipo-btn.tj .pt-label{color:#a78bfa;}
+.pago-tipo-btn.ef.selected .pt-label{color:var(--green);}
+.pago-tipo-btn.tj.selected .pt-label{color:#a78bfa;}
 .pago-tipo-btn .pt-sub{font-size:10px;color:var(--muted2);line-height:1.4;display:block;}
 .pago-confirmar-section{display:none;flex-direction:column;gap:10px;}
 .pago-confirmar-section.show{display:flex;}
@@ -736,8 +738,8 @@ function startSync(uid){
   const lsIngresos=localStorage.getItem("ingresos-"+uid);
   if(lsPagos){try{pagos=JSON.parse(lsPagos);}catch(e){}}
   if(lsIngresos){try{ingresos=JSON.parse(lsIngresos);cargarCamposIngreso();}catch(e){}}
-  // 2. Luego sincronizar con Firestore (fuente de verdad)
-  db.collection("usuarios").doc(uid).get().then(doc=>{
+  // 2. Luego sincronizar con Firestore subcolección meta (fuente de verdad)
+  db.collection("usuarios").doc(uid).collection("meta").doc("data").get().then(doc=>{
     if(doc.exists){
       const d=doc.data();
       // Firestore tiene prioridad sobre localStorage
@@ -757,22 +759,25 @@ function startSync(uid){
 
   // Listener para ingresos y pagos del documento del usuario
   // Esto permite que cuando otro dispositivo guarda ingresos, este los recibe en tiempo real
-  const unsubUser=db.collection("usuarios").doc(uid).onSnapshot(doc=>{
+  const unsubUser=db.collection("usuarios").doc(uid).collection("meta").doc("data").onSnapshot(doc=>{
     if(doc.exists){
       const d=doc.data();
       if(d.pagos){
         pagos=d.pagos;
         localStorage.setItem("pagos-"+uid,JSON.stringify(pagos));
+        render(); // actualizar cards con estado de pago
       }
       if(d.ingresos){
         ingresos=d.ingresos;
         localStorage.setItem("ingresos-"+uid,JSON.stringify(ingresos));
-        cargarCamposIngreso();
+        // Solo actualizar campos si el usuario no los está editando
+        const arsActive=document.activeElement===document.getElementById("ing-ars");
+        const usdActive=document.activeElement===document.getElementById("ing-usd");
+        if(!arsActive&&!usdActive){cargarCamposIngreso();}
+        renderBalance();
       }
-      renderBalance();
     }
-  },()=>{});
-  // Guardar referencia para cleanup al logout
+  },err=>{console.warn("onSnapshot usuario error:",err);});
   window._unsubUser=unsubUser;
 }
 
@@ -784,11 +789,13 @@ function saveLocal(){
   // Siempre guardar en localStorage como backup
   localStorage.setItem(uid?"pagos-"+uid:"pagos-guest",JSON.stringify(pagos));
   localStorage.setItem(uid?"ingresos-"+uid:"ingresos-guest",JSON.stringify(ingresos));
-  // Si hay usuario logueado, sincronizar con Firestore
+  // Si hay usuario logueado, sincronizar con Firestore usando subcolección "meta"
+  // (evita depender de permisos del doc raíz del usuario)
   if(uid){
-    db.collection("usuarios").doc(uid).set({pagos,ingresos},{merge:true})
+    db.collection("usuarios").doc(uid).collection("meta").doc("data")
+      .set({pagos,ingresos},{merge:true})
       .then(()=>setSyncStatus(true))
-      .catch(e=>{console.warn("Firestore save error:",e);setSyncStatus(false);});
+      .catch(e=>{console.warn("Firestore saveLocal error:",e);setSyncStatus(false);});
   }
 }
 
@@ -1037,6 +1044,8 @@ function confirmarReplicar(replicar){
     const newFO=nextY+"-"+pad(nextM+1)+"-"+pad(Math.min(origDay,maxDay));
     const newId=String(Date.now()+1);
     const gastoSinImporte={...gasto,id:newId,ars:"0",usd:"0",fechaOrigen:newFO,excluidos:{}};
+    // Cerrar form antes de guardar
+    closeForm();
     // Guardar ambos
     if(!window._COL){
       gastos.push(gastoConImporte,gastoSinImporte);
@@ -1047,6 +1056,7 @@ function confirmarReplicar(replicar){
     batch.set(window._COL.doc(id),gastoConImporte);
     batch.set(window._COL.doc(newId),gastoSinImporte);
     batch.commit().then(()=>showToast("Gasto agregado — meses futuros en $0")).catch(()=>{gastos.push(gastoConImporte,gastoSinImporte);localStorage.setItem("gastos-"+(currentUser?.uid||"guest"),JSON.stringify(gastos));showToast("Guardado localmente");render();});
+    return;
   }else{
     // Replicar importe: guardar normalmente
     doSaveGasto(id,gasto);
@@ -1117,8 +1127,8 @@ function abrirModalPago(id,nombre,ars,usd){
   pagoGastoHasUSD=parseNum(usd)>0;
   document.getElementById("pago-nombre").textContent=nombre;
   // Resetear estado
-  document.getElementById("btn-tipo-ef").classList.remove("selected");
-  document.getElementById("btn-tipo-tj").classList.remove("selected");
+  document.getElementById("btn-tipo-ef").classList.remove("selected","no-selected");
+  document.getElementById("btn-tipo-tj").classList.remove("selected","no-selected");
   document.getElementById("pago-confirmar-section").classList.remove("show");
   document.getElementById("pago-parcial-fields").classList.remove("show");
   document.getElementById("btn-parcial-toggle").classList.remove("open");
@@ -1134,8 +1144,13 @@ function abrirModalPago(id,nombre,ars,usd){
 
 function seleccionarTipo(tipo){
   pagoTipoSel=tipo;
-  document.getElementById("btn-tipo-ef").classList.toggle("selected",tipo==="efectivo");
-  document.getElementById("btn-tipo-tj").classList.toggle("selected",tipo==="tarjeta");
+  const efBtn=document.getElementById("btn-tipo-ef");
+  const tjBtn=document.getElementById("btn-tipo-tj");
+  efBtn.classList.toggle("selected",tipo==="efectivo");
+  tjBtn.classList.toggle("selected",tipo==="tarjeta");
+  // Dim the non-selected button
+  efBtn.classList.toggle("no-selected",tipo==="tarjeta");
+  tjBtn.classList.toggle("no-selected",tipo==="efectivo");
   // Configurar botón total
   const btnTotal=document.getElementById("btn-pago-total");
   btnTotal.className="btn-pago-total "+(tipo==="efectivo"?"ef":"tj");
