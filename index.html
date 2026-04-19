@@ -566,21 +566,46 @@ function fmtUSD(n){return "USD "+Math.round(n).toLocaleString("es-AR",{maximumFr
 function fmtNum(n){return Math.round(n).toLocaleString("es-AR",{maximumFractionDigits:0});}
 
 // ── Dólar BNA ─────────────────────────────────────────────────────────────────
-async function fetchDolar(){
+function fetchDolar(){
   const chip=document.getElementById("dolar-chip"),val=document.getElementById("dolar-val");
   const cached=localStorage.getItem("dolar-bna"),ts=parseInt(localStorage.getItem("dolar-bna-ts")||"0");
-  if(cached&&Date.now()-ts<3600000){dolarBNA=parseFloat(cached);chip.classList.remove("loading");val.textContent="BNA "+fmtARS(dolarBNA);renderBalance();return;}
-  try{
-    const r=await fetch("https://dolarapi.com/v1/dolares/oficial",{signal:AbortSignal.timeout(5000)});
-    const d=await r.json();
-    dolarBNA=d.venta||d.compra||0;
-    if(dolarBNA>0){localStorage.setItem("dolar-bna",String(dolarBNA));localStorage.setItem("dolar-bna-ts",String(Date.now()));chip.classList.remove("loading");val.textContent="BNA "+fmtARS(dolarBNA);}
-    else{chip.classList.remove("loading");val.textContent="BNA N/D";}
-  }catch(e){
-    if(cached){dolarBNA=parseFloat(cached);chip.classList.remove("loading");val.textContent="BNA "+fmtARS(dolarBNA)+" *";}
-    else{chip.classList.remove("loading");val.textContent="BNA N/D";}
+  if(cached&&Date.now()-ts<3600000){
+    dolarBNA=parseFloat(cached);
+    chip.classList.remove("loading");
+    val.textContent="BNA $"+fmtARS(dolarBNA);
+    renderBalance();return;
   }
-  renderBalance();
+  // Usar timeout manual compatible con todos los navegadores
+  const controller=new AbortController();
+  const timer=setTimeout(()=>controller.abort(),5000);
+  fetch("https://dolarapi.com/v1/dolares/oficial",{signal:controller.signal})
+    .then(r=>r.json())
+    .then(d=>{
+      clearTimeout(timer);
+      dolarBNA=d.venta||d.compra||0;
+      if(dolarBNA>0){
+        localStorage.setItem("dolar-bna",String(dolarBNA));
+        localStorage.setItem("dolar-bna-ts",String(Date.now()));
+        chip.classList.remove("loading");
+        val.textContent="BNA $"+fmtARS(dolarBNA);
+      }else{
+        chip.classList.remove("loading");
+        val.textContent="BNA N/D";
+      }
+      renderBalance();
+    })
+    .catch(()=>{
+      clearTimeout(timer);
+      if(cached){
+        dolarBNA=parseFloat(cached);
+        chip.classList.remove("loading");
+        val.textContent="BNA $"+fmtARS(dolarBNA);
+      }else{
+        chip.classList.remove("loading");
+        val.textContent="BNA N/D";
+      }
+      renderBalance();
+    });
 }
 
 // ── Tema ──────────────────────────────────────────────────────────────────────
