@@ -1062,16 +1062,31 @@ function confirmarEditRecurrente(){
   const maxDay=new Date(mesActual.y,mesActual.m+1,0).getDate();
   const newFO=mesActual.y+"-"+pad(mesActual.m+1)+"-"+pad(Math.min(origDay,maxDay));
   const gNuevo={id:newId,...editPendingData,frecuencia:editPendingData.frecuencia,fechaOrigen:newFO,excluidos:{}};
+  // Capturar editId antes de closeForm
+  const editIdCopy=editId;
   closeForm();
-  if(!window._COL){gastos=gastos.map(g=>g.id===editId?gCerrado:g);gastos.push(gNuevo);localStorage.setItem("gastos-guest",JSON.stringify(gastos));showToast("Cambios guardados desde "+MESES[mesActual.m]);render();return;}
-  const batch=db.batch();batch.set(window._COL.doc(editId),gCerrado);batch.set(window._COL.doc(newId),gNuevo);
-  batch.commit().then(()=>showToast("Cambios guardados desde "+MESES[mesActual.m])).catch(()=>{gastos=gastos.map(g=>g.id===editId?gCerrado:g);gastos.push(gNuevo);localStorage.setItem("gastos-"+(currentUser?.uid||"guest"),JSON.stringify(gastos));showToast("Guardado localmente");render();});
+  if(!window._COL){gastos=gastos.map(g=>g.id===editIdCopy?gCerrado:g);gastos.push(gNuevo);localStorage.setItem("gastos-guest",JSON.stringify(gastos));showToast("Cambios guardados desde "+MESES[mesActual.m]);render();return;}
+  const batch=db.batch();batch.set(window._COL.doc(editIdCopy),gCerrado);batch.set(window._COL.doc(newId),gNuevo);
+  batch.commit().then(()=>showToast("Cambios guardados desde "+MESES[mesActual.m])).catch(()=>{gastos=gastos.map(g=>g.id===editIdCopy?gCerrado:g);gastos.push(gNuevo);localStorage.setItem("gastos-"+(currentUser?.uid||"guest"),JSON.stringify(gastos));showToast("Guardado localmente");render();});
 }
 function cancelarEditRecurrente(){document.getElementById("overlay-edit-recur").classList.remove("show");editPendingData=null;document.getElementById("overlay-form").classList.add("show");}
 function doSaveGasto(id,gasto){
+  // Capturar isEdit ANTES de closeForm() que pone editId=null
+  const isEdit=!!editId;
   closeForm();
-  if(!window._COL){if(editId)gastos=gastos.map(g=>g.id===id?gasto:g);else gastos.push(gasto);localStorage.setItem("gastos-guest",JSON.stringify(gastos));showToast(editId?"Cambios guardados":"Gasto agregado");render();return;}
-  window._COL.doc(id).set(gasto).then(()=>showToast(editId?"Cambios guardados":"Gasto agregado")).catch(()=>{if(editId)gastos=gastos.map(g=>g.id===id?gasto:g);else gastos.push(gasto);localStorage.setItem("gastos-"+(currentUser?.uid||"guest"),JSON.stringify(gastos));showToast("Guardado localmente");render();});
+  if(!window._COL){
+    if(isEdit)gastos=gastos.map(g=>g.id===id?gasto:g);else gastos.push(gasto);
+    localStorage.setItem("gastos-guest",JSON.stringify(gastos));
+    showToast(isEdit?"Cambios guardados":"Gasto agregado");render();return;
+  }
+  // .set() en Firestore siempre sobreescribe correctamente
+  window._COL.doc(id).set(gasto)
+    .then(()=>showToast(isEdit?"Cambios guardados":"Gasto agregado"))
+    .catch(()=>{
+      if(isEdit)gastos=gastos.map(g=>g.id===id?gasto:g);else gastos.push(gasto);
+      localStorage.setItem("gastos-"+(currentUser?.uid||"guest"),JSON.stringify(gastos));
+      showToast("Guardado localmente");render();
+    });
 }
 document.getElementById("f-nombre").addEventListener("keydown",e=>{if(e.key==="Enter")saveGasto();});
 // Enter en campos de ingreso guarda y renderiza
