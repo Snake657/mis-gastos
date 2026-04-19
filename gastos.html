@@ -724,7 +724,7 @@ function loginGoogle(){
   auth.signInWithPopup(provider).catch(()=>showToast("Error al conectar. Intentá de nuevo."));
 }
 function dismissGuestBanner(){document.getElementById("guest-banner").classList.remove("show");localStorage.setItem("guest-banner-dismissed","1");}
-function logout(){if(unsubscribe)unsubscribe();if(window._unsubUser)window._unsubUser();window._unsubUser=null;currentUser=null;modoGuest=true;gastos=[];pagos={};ingresos={};window._COL=null;irAlMesHecho=false;auth.signOut();const c=localStorage.getItem("gastos-guest");if(c){try{gastos=JSON.parse(c);}catch(e){gastos=[];}}pagos=JSON.parse(localStorage.getItem("pagos-guest")||"{}");ingresos=JSON.parse(localStorage.getItem("ingresos-guest")||"{}");actualizarUI(null);irAlMesConGastos();render();document.getElementById("menu-usuario").classList.remove("show");localStorage.removeItem("guest-banner-dismissed");}
+function logout(){clearTimeout(_saveLocalTimer);if(unsubscribe)unsubscribe();window._unsubUser=null;currentUser=null;modoGuest=true;gastos=[];pagos={};ingresos={};window._COL=null;irAlMesHecho=false;auth.signOut();const c=localStorage.getItem("gastos-guest");if(c){try{gastos=JSON.parse(c);}catch(e){gastos=[];}}pagos=JSON.parse(localStorage.getItem("pagos-guest")||"{}");ingresos=JSON.parse(localStorage.getItem("ingresos-guest")||"{}");actualizarUI(null);irAlMesConGastos();render();document.getElementById("menu-usuario").classList.remove("show");localStorage.removeItem("guest-banner-dismissed");}
 function toggleMenu(){document.getElementById("menu-usuario").classList.toggle("show");}
 document.addEventListener("click",e=>{const m=document.getElementById("menu-usuario"),a=document.getElementById("user-avatar");if(m&&a&&!m.contains(e.target)&&e.target!==a)m.classList.remove("show");});
 
@@ -738,11 +738,10 @@ function startSync(uid){
   const lsIngresos=localStorage.getItem("ingresos-"+uid);
   if(lsPagos){try{pagos=JSON.parse(lsPagos);}catch(e){}}
   if(lsIngresos){try{ingresos=JSON.parse(lsIngresos);cargarCamposIngreso();}catch(e){}}
-  // 2. Luego sincronizar con Firestore subcolección meta (fuente de verdad)
-  db.collection("usuarios").doc(uid).collection("meta").doc("data").get().then(doc=>{
+  // 2. Leer __meta__ de la subcolección gastos (mismos permisos, fuente de verdad)
+  COL.doc("__meta__").get().then(doc=>{
     if(doc.exists){
       const d=doc.data();
-      // Firestore tiene prioridad sobre localStorage
       if(d.pagos){pagos=d.pagos;localStorage.setItem("pagos-"+uid,JSON.stringify(pagos));}
       if(d.ingresos){ingresos=d.ingresos;localStorage.setItem("ingresos-"+uid,JSON.stringify(ingresos));cargarCamposIngreso();}
     }
@@ -752,51 +751,56 @@ function startSync(uid){
   const lsGastos=localStorage.getItem("gastos-"+uid);
   if(lsGastos){try{gastos=JSON.parse(lsGastos);irAlMesConGastos();render();}catch(e){}}
   unsubscribe=COL.onSnapshot(snap=>{
-    gastos=snap.docs.map(d=>({id:d.id,...d.data()}));
-    localStorage.setItem("gastos-"+uid,JSON.stringify(gastos));
-    irAlMesConGastos();render();setSyncStatus(true);
-  },()=>setSyncStatus(false));
-
-  // Listener para ingresos y pagos del documento del usuario
-  // Esto permite que cuando otro dispositivo guarda ingresos, este los recibe en tiempo real
-  const unsubUser=db.collection("usuarios").doc(uid).collection("meta").doc("data").onSnapshot(doc=>{
-    if(doc.exists){
-      const d=doc.data();
-      if(d.pagos){
-        pagos=d.pagos;
-        localStorage.setItem("pagos-"+uid,JSON.stringify(pagos));
-        render(); // actualizar cards con estado de pago
-      }
-      if(d.ingresos){
-        ingresos=d.ingresos;
+    // Separar __meta__ del resto de gastos
+    let metaDoc=null;
+    gastos=snap.docs.filter(d=>{
+      if(d.id==="__meta__"){metaDoc=d;return false;}
+      return true;
+    }).map(d=>({id:d.id,...d.data()}));
+    // Actualizar ingresos y pagos si llegó __meta__
+    if(metaDoc){
+      const m=metaDoc.data();
+      if(m.pagos){pagos=m.pagos;localStorage.setItem("pagos-"+uid,JSON.stringify(pagos));}
+      if(m.ingresos){
+        ingresos=m.ingresos;
         localStorage.setItem("ingresos-"+uid,JSON.stringify(ingresos));
-        // Solo actualizar campos si el usuario no los está editando
         const arsActive=document.activeElement===document.getElementById("ing-ars");
         const usdActive=document.activeElement===document.getElementById("ing-usd");
         if(!arsActive&&!usdActive){cargarCamposIngreso();}
         renderBalance();
       }
     }
-  },err=>{console.warn("onSnapshot usuario error:",err);});
-  window._unsubUser=unsubUser;
+    localStorage.setItem("gastos-"+uid,JSON.stringify(gastos));
+    irAlMesConGastos();render();setSyncStatus(true);
+  },()=>setSyncStatus(false));
+
+  // Listener para ingresos y pagos del documento del usuario
+  // Esto permite que cuando otro dispositivo guarda ingresos, este los recibe en tiempo real
+  // El listener de __meta__ está integrado en el onSnapshot de gastos arriba
+  // No se necesita listener separado
+  window._unsubUser=null;
 }
 
 function setSyncStatus(ok){const el=document.getElementById("sync-dot");if(el){el.style.background=ok?"#34d399":"#fb923c";}}
 
 // Guardar pagos e ingresos: local para guest, Firestore para usuarios
-function saveLocal(){
+let _saveLocalTimer=null;
+function saveLocal(immediate){
   const uid=currentUser?.uid;
-  // Siempre guardar en localStorage como backup
+  // Siempre guardar en localStorage como backup (inmediato)
   localStorage.setItem(uid?"pagos-"+uid:"pagos-guest",JSON.stringify(pagos));
   localStorage.setItem(uid?"ingresos-"+uid:"ingresos-guest",JSON.stringify(ingresos));
-  // Si hay usuario logueado, sincronizar con Firestore usando subcolección "meta"
-  // (evita depender de permisos del doc raíz del usuario)
-  if(uid){
-    db.collection("usuarios").doc(uid).collection("meta").doc("data")
-      .set({pagos,ingresos},{merge:true})
+  if(!uid)return;
+  // Debounce: esperar 800ms antes de escribir en Firestore
+  // Evita race conditions y escrituras por cada keystroke
+  clearTimeout(_saveLocalTimer);
+  const delay=immediate?0:800;
+  _saveLocalTimer=setTimeout(()=>{
+    // Guardar en gastos/__meta__ — misma subcolección con reglas ya correctas
+    window._COL.doc("__meta__").set({pagos,ingresos})
       .then(()=>setSyncStatus(true))
       .catch(e=>{console.warn("Firestore saveLocal error:",e);setSyncStatus(false);});
-  }
+  },delay);
 }
 
 function saveIngresos(){
