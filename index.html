@@ -225,6 +225,7 @@ section{position:relative;z-index:1;}
   font-size:24px;flex-shrink:0;
 }
 .tool-icon.gastos{background:linear-gradient(135deg,rgba(124,92,252,.15),rgba(124,92,252,.05));border:1px solid rgba(124,92,252,.2);}
+.tool-icon.retiro{background:linear-gradient(135deg,rgba(20,184,166,.15),rgba(20,184,166,.05));border:1px solid rgba(20,184,166,.2);}
 .tool-icon.coming-icon{background:rgba(13,102,81,.06);border:1px solid var(--border);}
 .tool-name{font-size:18px;font-weight:700;color:var(--gris);letter-spacing:-.02em;}
 .tool-badge{
@@ -454,16 +455,20 @@ footer{
         </div>
       </a>
 
-      <div class="tool-card coming">
+      <a href="/retiro" class="tool-card">
         <div class="tool-header">
-          <div class="tool-icon coming-icon">💱</div>
+          <div class="tool-icon retiro">🏖️</div>
           <div>
-            <div class="tool-name">Conversor de monedas</div>
-            <span class="tool-badge soon">Próximamente</span>
+            <div class="tool-name">Mi Retiro</div>
+            <span class="tool-badge live">● Disponible</span>
           </div>
         </div>
-        <div class="tool-desc">Convertí entre pesos y distintos tipos de dólar (oficial, blue, MEP, CCL) con cotizaciones en tiempo real.</div>
-      </div>
+        <div class="tool-desc">Calculá cuándo y cómo podés retirarte. Ingresá tus ahorros, gastos proyectados y rendimiento esperado — la app te dice cuánto tiempo te duran o cuánto necesitás ahorrar.</div>
+        <div class="tool-cta">
+          Ir a Mi Retiro
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="14" height="14"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+        </div>
+      </a>
 
       <div class="tool-card coming">
         <div class="tool-header">
