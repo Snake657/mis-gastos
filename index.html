@@ -26,8 +26,6 @@
       --orange-dim:rgba(251,146,60,0.10);
       --purple:    #a78bfa;
       --purple-dim:rgba(167,139,250,0.10);
-      --yellow:    #fbbf24;
-      --yellow-dim:rgba(251,191,36,0.10);
     }
 
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -62,24 +60,18 @@
       letter-spacing: -0.03em;
     }
     .nav-logo span { color: var(--accent); }
-    .nav-cta {
+    .nav-tag {
       font-family: 'IBM Plex Mono', monospace;
-      font-size: 0.78rem;
-      font-weight: 600;
-      color: var(--bg);
-      background: var(--accent);
-      padding: 7px 16px;
-      border-radius: 7px;
-      text-decoration: none;
-      transition: opacity 0.15s;
+      font-size: 0.72rem;
+      color: var(--text3);
+      letter-spacing: 0.04em;
     }
-    .nav-cta:hover { opacity: 0.85; }
 
     /* ── HERO ── */
     .hero {
-      max-width: 900px;
+      max-width: 720px;
       margin: 0 auto;
-      padding: 72px 24px 56px;
+      padding: 56px 24px 48px;
       text-align: center;
     }
     .hero-badge {
@@ -96,7 +88,7 @@
       color: var(--accent);
       letter-spacing: 0.06em;
       text-transform: uppercase;
-      margin-bottom: 28px;
+      margin-bottom: 24px;
     }
     .hero-badge::before {
       content: '';
@@ -111,142 +103,31 @@
     }
     .hero h1 {
       font-family: 'IBM Plex Mono', monospace;
-      font-size: clamp(2rem, 6vw, 3.4rem);
+      font-size: clamp(1.9rem, 5vw, 2.8rem);
       font-weight: 700;
       letter-spacing: -0.04em;
-      line-height: 1.05;
-      margin-bottom: 20px;
-    }
-    .hero h1 em {
-      font-style: normal;
-      color: var(--accent);
-    }
-    .hero p {
-      font-size: clamp(0.95rem, 2vw, 1.1rem);
-      color: var(--text2);
-      line-height: 1.65;
-      max-width: 520px;
-      margin: 0 auto 36px;
-    }
-    .hero-actions {
-      display: flex;
-      gap: 10px;
-      justify-content: center;
-      flex-wrap: wrap;
-    }
-    .btn-primary {
-      font-family: 'IBM Plex Mono', monospace;
-      font-size: 0.88rem;
-      font-weight: 700;
-      color: var(--bg);
-      background: var(--accent);
-      padding: 12px 28px;
-      border-radius: 9px;
-      text-decoration: none;
-      transition: opacity 0.15s, transform 0.15s;
-    }
-    .btn-primary:hover { opacity: 0.88; transform: translateY(-1px); }
-    .btn-secondary {
-      font-family: 'IBM Plex Mono', monospace;
-      font-size: 0.88rem;
-      font-weight: 500;
-      color: var(--text2);
-      background: var(--surface);
-      border: 1px solid var(--border);
-      padding: 12px 28px;
-      border-radius: 9px;
-      text-decoration: none;
-      transition: all 0.15s;
-    }
-    .btn-secondary:hover { color: var(--text); border-color: var(--border2); transform: translateY(-1px); }
-
-    /* ── MOCK PREVIEW ── */
-    .mock-preview {
-      max-width: 680px;
-      margin: 48px auto 0;
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 16px;
-      padding: 20px;
-      text-align: left;
-    }
-    .mock-bar {
-      display: flex;
-      align-items: center;
-      gap: 6px;
+      line-height: 1.08;
       margin-bottom: 16px;
     }
-    .mock-dot { width: 10px; height: 10px; border-radius: 50%; }
-    .mock-dot.r { background: #f87171; }
-    .mock-dot.y { background: var(--yellow); }
-    .mock-dot.g { background: var(--accent); }
-    .mock-title {
-      font-family: 'IBM Plex Mono', monospace;
-      font-size: 0.72rem;
-      color: var(--text3);
-      margin-left: 6px;
-    }
-    .mock-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 8px; }
-    .mock-card {
-      background: var(--surface2);
-      border-radius: 10px;
-      padding: 12px 13px;
-    }
-    .mock-card-label {
-      font-family: 'IBM Plex Mono', monospace;
-      font-size: 0.62rem;
-      color: var(--text3);
-      text-transform: uppercase;
-      letter-spacing: 0.08em;
-      margin-bottom: 5px;
-    }
-    .mock-card-val {
-      font-family: 'IBM Plex Mono', monospace;
-      font-size: 1.1rem;
-      font-weight: 700;
-      color: var(--text);
-    }
-    .mock-card-sub {
-      font-family: 'IBM Plex Mono', monospace;
-      font-size: 0.65rem;
-      margin-top: 3px;
-    }
-    .mock-card-sub.pos { color: var(--accent); }
-    .mock-card-sub.neg { color: #f87171; }
-
-    /* ── SECTION ── */
-    section {
-      max-width: 960px;
-      margin: 0 auto;
-      padding: 64px 24px;
-    }
-    .section-eyebrow {
-      font-family: 'IBM Plex Mono', monospace;
-      font-size: 0.68rem;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      color: var(--accent);
-      margin-bottom: 10px;
-    }
-    .section-title {
-      font-size: clamp(1.5rem, 3.5vw, 2rem);
-      font-weight: 600;
-      letter-spacing: -0.03em;
-      margin-bottom: 10px;
-      line-height: 1.15;
-    }
-    .section-sub {
+    .hero h1 em { font-style: normal; color: var(--accent); }
+    .hero p {
+      font-size: 1rem;
       color: var(--text2);
-      font-size: 0.92rem;
-      margin-bottom: 40px;
-      line-height: 1.6;
+      line-height: 1.65;
+      max-width: 480px;
+      margin: 0 auto;
     }
 
     /* ── TOOLS GRID ── */
+    .tools-section {
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 0 24px 64px;
+    }
     .tools-grid {
       display: grid;
       grid-template-columns: repeat(2, 1fr);
-      gap: 14px;
+      gap: 12px;
     }
     @media (max-width: 600px) {
       .tools-grid { grid-template-columns: 1fr; }
@@ -261,8 +142,7 @@
       color: inherit;
       display: flex;
       flex-direction: column;
-      gap: 0;
-      transition: border-color 0.18s, transform 0.15s;
+      transition: border-color 0.18s, transform 0.15s, background 0.18s;
       position: relative;
       overflow: hidden;
     }
@@ -282,52 +162,22 @@
     .tool-card:hover::before { opacity: 1; }
     .tool-card.gastos::before    { background: var(--accent); }
     .tool-card.retiro::before    { background: var(--blue); }
-    .tool-card.dolar-vivo::before   { background: var(--orange); }
-    .tool-card.dolar-hist::before  { background: var(--purple); }
+    .tool-card.dolar-vivo::before { background: var(--orange); }
+    .tool-card.dolar-hist::before { background: var(--purple); }
 
-    .tool-status {
-      display: inline-flex;
-      align-items: center;
-      gap: 5px;
-      font-family: 'IBM Plex Mono', monospace;
-      font-size: 0.65rem;
-      font-weight: 600;
-      letter-spacing: 0.06em;
-      text-transform: uppercase;
-      padding: 3px 9px;
-      border-radius: 5px;
-      margin-bottom: 16px;
-      width: fit-content;
-    }
-    .tool-status.available {
-      background: var(--accent-dim);
-      color: var(--accent);
-    }
-    .tool-status.available::before {
-      content: '';
-      width: 5px; height: 5px;
-      border-radius: 50%;
-      background: var(--accent);
-    }
-    .tool-status.soon {
-      background: var(--surface2);
-      color: var(--text3);
-    }
-    .tool-status.soon::before {
-      content: '';
-      width: 5px; height: 5px;
-      border-radius: 50%;
-      background: var(--text3);
-    }
+    .tool-card:hover.gastos    { background: rgba(74,222,128,0.04); }
+    .tool-card:hover.retiro    { background: rgba(96,165,250,0.04); }
+    .tool-card:hover.dolar-vivo { background: rgba(251,146,60,0.04); }
+    .tool-card:hover.dolar-hist { background: rgba(167,139,250,0.04); }
 
     .tool-emoji {
-      font-size: 1.8rem;
-      margin-bottom: 10px;
+      font-size: 1.9rem;
+      margin-bottom: 12px;
       line-height: 1;
     }
     .tool-name {
       font-weight: 600;
-      font-size: 1.05rem;
+      font-size: 1.1rem;
       letter-spacing: -0.02em;
       margin-bottom: 7px;
     }
@@ -336,7 +186,7 @@
       color: var(--text2);
       line-height: 1.55;
       flex: 1;
-      margin-bottom: 18px;
+      margin-bottom: 20px;
     }
     .tool-cta {
       display: inline-flex;
@@ -345,64 +195,103 @@
       font-family: 'IBM Plex Mono', monospace;
       font-size: 0.78rem;
       font-weight: 600;
-      color: var(--text2);
+      color: var(--text3);
       transition: color 0.15s;
     }
-    .tool-card:hover .tool-cta { color: var(--text); }
-    .tool-card.gastos:hover .tool-cta   { color: var(--accent); }
-    .tool-card.retiro:hover .tool-cta   { color: var(--blue); }
-    .tool-card.dolar-vivo:hover .tool-cta { color: var(--orange); }
-    .tool-card.dolar-hist:hover .tool-cta { color: var(--purple); }
-    .tool-cta::after { content: '→'; }
-    .tool-card-disabled { pointer-events: none; opacity: 0.55; }
+    .tool-cta::after { content: ' →'; }
+    .tool-card:hover.gastos    .tool-cta { color: var(--accent); }
+    .tool-card:hover.retiro    .tool-cta { color: var(--blue); }
+    .tool-card:hover.dolar-vivo .tool-cta { color: var(--orange); }
+    .tool-card:hover.dolar-hist .tool-cta { color: var(--purple); }
 
-    /* ── WHY ── */
-    .why-grid {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 12px;
-    }
-    @media (min-width: 700px) { .why-grid { grid-template-columns: repeat(3, 1fr); } }
-    .why-card {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      padding: 20px;
-    }
-    .why-icon { font-size: 1.4rem; margin-bottom: 10px; }
-    .why-title { font-weight: 600; font-size: 0.9rem; margin-bottom: 6px; letter-spacing: -0.01em; }
-    .why-text { font-size: 0.82rem; color: var(--text2); line-height: 1.5; }
-
-    /* ── CTA SECTION ── */
-    .cta-section {
+    /* ── DESCRIPCIONES ── */
+    .desc-section {
       max-width: 960px;
       margin: 0 auto;
       padding: 0 24px 80px;
     }
-    .cta-box {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 18px;
-      padding: 48px 32px;
-      text-align: center;
-      position: relative;
-      overflow: hidden;
+    .desc-divider {
+      border: none;
+      border-top: 1px solid var(--border);
+      margin-bottom: 56px;
     }
-    .cta-box::before {
-      content: '';
-      position: absolute;
-      top: 0; left: 50%; transform: translateX(-50%);
-      width: 200px; height: 1px;
-      background: linear-gradient(90deg, transparent, var(--accent), transparent);
-    }
-    .cta-box h2 {
+    .desc-eyebrow {
       font-family: 'IBM Plex Mono', monospace;
-      font-size: clamp(1.3rem, 3vw, 1.8rem);
-      font-weight: 700;
-      letter-spacing: -0.03em;
-      margin-bottom: 12px;
+      font-size: 0.65rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--text3);
+      margin-bottom: 48px;
     }
-    .cta-box p { color: var(--text2); font-size: 0.9rem; margin-bottom: 28px; line-height: 1.6; }
+    .desc-list {
+      display: flex;
+      flex-direction: column;
+      gap: 48px;
+    }
+    .desc-item {
+      display: grid;
+      grid-template-columns: 200px 1fr;
+      gap: 32px;
+      align-items: start;
+    }
+    @media (max-width: 640px) {
+      .desc-item { grid-template-columns: 1fr; gap: 14px; }
+    }
+    .desc-left {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .desc-icon { font-size: 1.5rem; line-height: 1; }
+    .desc-name {
+      font-family: 'IBM Plex Mono', monospace;
+      font-weight: 700;
+      font-size: 0.95rem;
+      letter-spacing: -0.02em;
+    }
+    .desc-name.gastos    { color: var(--accent); }
+    .desc-name.retiro    { color: var(--blue); }
+    .desc-name.dolar-vivo { color: var(--orange); }
+    .desc-name.dolar-hist { color: var(--purple); }
+    .desc-link {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.72rem;
+      font-weight: 600;
+      text-decoration: none;
+      color: var(--text3);
+      transition: color 0.15s;
+    }
+    .desc-link:hover { color: var(--text2); }
+    .desc-right h3 {
+      font-size: 1rem;
+      font-weight: 600;
+      letter-spacing: -0.02em;
+      margin-bottom: 10px;
+      color: var(--text);
+    }
+    .desc-right p {
+      font-size: 0.88rem;
+      color: var(--text2);
+      line-height: 1.7;
+      margin-bottom: 10px;
+    }
+    .desc-right p:last-child { margin-bottom: 0; }
+    .desc-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 14px;
+    }
+    .desc-tag {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.65rem;
+      font-weight: 600;
+      padding: 3px 9px;
+      border-radius: 5px;
+      background: var(--surface2);
+      color: var(--text3);
+      border: 1px solid var(--border);
+    }
 
     /* ── FOOTER ── */
     footer {
@@ -421,138 +310,144 @@
 <!-- NAV -->
 <nav>
   <a class="nav-logo" href="/index.html"><span>canuto</span>.ar</a>
-  <a class="nav-cta" href="/gastos.html">Empezar gratis →</a>
+  <span class="nav-tag">herramientas financieras · Argentina</span>
 </nav>
 
 <!-- HERO -->
 <div class="hero">
   <div class="hero-badge">Herramientas para Argentina</div>
-  <h1>Controlá tus finanzas<br><em>sin complicaciones</em></h1>
-  <p>Canuto.ar es una plataforma de herramientas financieras simples, pensadas para el día a día argentino. Pesos, dólares, vencimientos y más.</p>
-  <div class="hero-actions">
-    <a class="btn-primary" href="/gastos.html">Empezar con Mis Gastos</a>
-    <a class="btn-secondary" href="#herramientas">Ver herramientas</a>
-  </div>
-
-  <!-- MOCK PREVIEW -->
-  <div class="mock-preview">
-    <div class="mock-bar">
-      <div class="mock-dot r"></div>
-      <div class="mock-dot y"></div>
-      <div class="mock-dot g"></div>
-      <span class="mock-title">Mis Gastos · Abril 2026 · mes actual</span>
-    </div>
-    <div class="mock-grid">
-      <div class="mock-card">
-        <div class="mock-card-label">Total $</div>
-        <div class="mock-card-val">$842.500</div>
-        <div class="mock-card-sub pos">gastos del mes</div>
-      </div>
-      <div class="mock-card">
-        <div class="mock-card-label">Total USD</div>
-        <div class="mock-card-val">USD 210</div>
-        <div class="mock-card-sub pos">dólares</div>
-      </div>
-      <div class="mock-card">
-        <div class="mock-card-label">💳 Visa</div>
-        <div class="mock-card-val">$380.000</div>
-        <div class="mock-card-sub neg">Vence el 15</div>
-      </div>
-    </div>
-  </div>
+  <h1>Finanzas del día a día,<br><em>sin vueltas</em></h1>
+  <p>Dólar, gastos, retiro. Todo lo que necesitás para manejar tu plata en Argentina, gratis y sin registrarte.</p>
 </div>
 
 <!-- HERRAMIENTAS -->
-<section id="herramientas">
-  <div class="section-eyebrow">herramientas</div>
-  <h2 class="section-title">Todo lo que necesitás<br>en un solo lugar</h2>
-  <p class="section-sub">Cuatro herramientas pensadas para el argentino de hoy. Sin publicidad, sin suscripción.</p>
-
+<div class="tools-section">
   <div class="tools-grid">
 
-    <!-- GASTOS -->
-    <a class="tool-card gastos" href="/gastos.html">
-      <div class="tool-status available">Disponible</div>
-      <div class="tool-emoji">💳</div>
-      <div class="tool-name">Mis Gastos</div>
-      <p class="tool-desc">Calendario de gastos fijos mensuales. Vencimientos, recurrencias, pagos en efectivo y tarjeta, balance contra tus ingresos y cotización del dólar BNA.</p>
-      <span class="tool-cta">Ir a Mis Gastos</span>
-    </a>
-
-    <!-- RETIRO -->
-    <a class="tool-card retiro" href="/retiro.html">
-      <div class="tool-status available">Disponible</div>
-      <div class="tool-emoji">🏖️</div>
-      <div class="tool-name">Mi Retiro</div>
-      <p class="tool-desc">Calculá cuándo y cómo podés retirarte. Ingresá tus ahorros, gastos proyectados y rendimiento esperado — la app te dice cuánto tiempo te duran.</p>
-      <span class="tool-cta">Ir a Mi Retiro</span>
-    </a>
-
-    <!-- DÓLAR EN VIVO -->
     <a class="tool-card dolar-vivo" href="/dolar-en-vivo.html">
-      <div class="tool-status available">Disponible</div>
       <div class="tool-emoji">💵</div>
       <div class="tool-name">Dólar en Vivo</div>
-      <p class="tool-desc">Oficial BNA, Blue, MEP y CCL en tiempo real. Variación diaria en %, brecha vs oficial y auto-refresh cada 60 segundos. Sin recargar la página.</p>
+      <p class="tool-desc">Oficial, Blue, MEP y CCL en tiempo real. Variación diaria y brecha vs oficial. Se actualiza cada 60 segundos automáticamente.</p>
       <span class="tool-cta">Ver cotizaciones</span>
     </a>
 
-    <!-- DÓLAR HISTÓRICO -->
     <a class="tool-card dolar-hist" href="/dolar-historico.html">
-      <div class="tool-status available">Disponible</div>
       <div class="tool-emoji">📈</div>
       <div class="tool-name">Dólar Histórico</div>
-      <p class="tool-desc">Consultá la cotización de cualquier fecha desde 2003. Oficial, Blue, MEP y CCL con gráfico interactivo, buscador por fecha y comparación entre tipos.</p>
+      <p class="tool-desc">Cotización de cualquier fecha desde 2003. Gráfico interactivo con rango personalizable y variación del período.</p>
       <span class="tool-cta">Ver historial</span>
     </a>
 
-  </div>
-</section>
+    <a class="tool-card gastos" href="/gastos.html">
+      <div class="tool-emoji">💳</div>
+      <div class="tool-name">Mis Gastos</div>
+      <p class="tool-desc">Calendario de gastos fijos del mes. Vencimientos, recurrencias, pagos en efectivo y tarjeta, balance contra tus ingresos.</p>
+      <span class="tool-cta">Ir a Mis Gastos</span>
+    </a>
 
-<!-- POR QUÉ CANUTO -->
-<section style="padding-top:0;">
-  <div class="section-eyebrow">¿por qué canuto?</div>
-  <h2 class="section-title">Simple, argentino<br>y sin vueltas</h2>
-  <div class="why-grid">
-    <div class="why-card">
-      <div class="why-icon">💵</div>
-      <div class="why-title">Pesos y dólares</div>
-      <p class="why-text">Manejá gastos en ARS y USD con la cotización BNA actualizada automáticamente.</p>
-    </div>
-    <div class="why-card">
-      <div class="why-icon">📅</div>
-      <div class="why-title">Vencimientos claros</div>
-      <p class="why-text">Sabé qué vence cuándo. Gastos recurrentes, bimestrales, anuales — se generan solos.</p>
-    </div>
-    <div class="why-card">
-      <div class="why-icon">☁️</div>
-      <div class="why-title">Sincronizado</div>
-      <p class="why-text">Entrá con Google y tus datos están en la nube. Celu, compu, tablet — todo actualizado.</p>
-    </div>
-    <div class="why-card">
-      <div class="why-icon">✅</div>
-      <div class="why-title">Control de pagos</div>
-      <p class="why-text">Marcá cada gasto como pagado en efectivo o tarjeta. El balance te muestra qué te queda.</p>
-    </div>
-    <div class="why-card">
-      <div class="why-icon">📊</div>
-      <div class="why-title">Resumen anual</div>
-      <p class="why-text">Mirá todos los meses de un vistazo. El historial siempre a mano.</p>
-    </div>
-    <div class="why-card">
-      <div class="why-icon">🔒</div>
-      <div class="why-title">Tus datos son tuyos</div>
-      <p class="why-text">Sin publicidad, sin venta de datos. Podés usar la app sin registrarte para probarla.</p>
-    </div>
-  </div>
-</section>
+    <a class="tool-card retiro" href="/retiro.html">
+      <div class="tool-emoji">🏖️</div>
+      <div class="tool-name">Mi Retiro</div>
+      <p class="tool-desc">Calculá cuándo podés retirarte. Ingresá tus ahorros, gastos proyectados y rendimiento esperado — el resultado en segundos.</p>
+      <span class="tool-cta">Calcular mi retiro</span>
+    </a>
 
-<!-- CTA FINAL -->
-<div class="cta-section">
-  <div class="cta-box">
-    <h2>Empezá hoy, gratis</h2>
-    <p>Sin tarjeta de crédito. Sin instalación.<br>Funciona desde el navegador en cualquier dispositivo.</p>
-    <a class="btn-primary" href="/gastos.html">Abrir Mis Gastos</a>
+  </div>
+</div>
+
+<!-- DESCRIPCIONES -->
+<div class="desc-section">
+  <hr class="desc-divider" />
+  <div class="desc-eyebrow">Qué hace cada herramienta</div>
+
+  <div class="desc-list">
+
+    <!-- DÓLAR EN VIVO -->
+    <div class="desc-item">
+      <div class="desc-left">
+        <div class="desc-icon">💵</div>
+        <div class="desc-name dolar-vivo">Dólar en Vivo</div>
+        <a class="desc-link" href="/dolar-en-vivo.html">Ver cotizaciones →</a>
+      </div>
+      <div class="desc-right">
+        <h3>Todas las cotizaciones del dólar, actualizadas en tiempo real</h3>
+        <p>Muestra el dólar Oficial BNA, Blue, MEP y CCL con precio de compra y venta. La página se refresca automáticamente cada 60 segundos — sin recargar manualmente.</p>
+        <p>Para cada cotización se calcula la variación porcentual respecto al cierre del día anterior, de modo que de un vistazo sabés si el dólar subió o bajó hoy y cuánto. También se muestra la brecha de cada tipo respecto al oficial, útil para entender la distancia entre el mercado formal y el paralelo.</p>
+        <div class="desc-tags">
+          <span class="desc-tag">Oficial BNA</span>
+          <span class="desc-tag">Blue</span>
+          <span class="desc-tag">MEP</span>
+          <span class="desc-tag">CCL</span>
+          <span class="desc-tag">Variación diaria %</span>
+          <span class="desc-tag">Auto-refresh 60s</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- DÓLAR HISTÓRICO -->
+    <div class="desc-item">
+      <div class="desc-left">
+        <div class="desc-icon">📈</div>
+        <div class="desc-name dolar-hist">Dólar Histórico</div>
+        <a class="desc-link" href="/dolar-historico.html">Ver historial →</a>
+      </div>
+      <div class="desc-right">
+        <h3>La historia completa del dólar en Argentina desde 2003</h3>
+        <p>Consultá la cotización de cualquier tipo de dólar (Oficial, Blue, MEP o CCL) en cualquier fecha desde 2003. El gráfico es interactivo y permite elegir rangos predefinidos — 1 mes, 3 meses, 1 año, 5 años, todo — o ingresar un rango de fechas personalizado.</p>
+        <p>Debajo del gráfico se muestra la variación porcentual del período seleccionado: cuánto subió o bajó el dólar entre el primer y el último dato, con los valores de inicio y fin para que el contexto quede claro. También incluye un buscador por fecha exacta y una tabla con el detalle de cada día.</p>
+        <div class="desc-tags">
+          <span class="desc-tag">Desde 2003</span>
+          <span class="desc-tag">Rango personalizado</span>
+          <span class="desc-tag">Variación del período</span>
+          <span class="desc-tag">Búsqueda por fecha</span>
+          <span class="desc-tag">Tabla de datos</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- MIS GASTOS -->
+    <div class="desc-item">
+      <div class="desc-left">
+        <div class="desc-icon">💳</div>
+        <div class="desc-name gastos">Mis Gastos</div>
+        <a class="desc-link" href="/gastos.html">Ir a Mis Gastos →</a>
+      </div>
+      <div class="desc-right">
+        <h3>Un calendario de gastos fijos pensado para Argentina</h3>
+        <p>Registrá todos tus gastos recurrentes — alquiler, servicios, suscripciones, seguros, cuotas — y la app los muestra organizados mes a mes. Cada gasto puede tener frecuencia mensual, bimestral, trimestral o anual; se genera automáticamente en los meses que corresponde.</p>
+        <p>Podés marcar cada gasto como pagado (efectivo o tarjeta), ver el balance contra tus ingresos y consultar el resumen anual de un vistazo. Los gastos en dólares se convierten automáticamente usando la cotización BNA del día. Con cuenta de Google, tus datos se sincronizan entre dispositivos; sin cuenta, todo funciona igual pero solo en ese navegador.</p>
+        <div class="desc-tags">
+          <span class="desc-tag">Gastos recurrentes</span>
+          <span class="desc-tag">Control de pagos</span>
+          <span class="desc-tag">ARS y USD</span>
+          <span class="desc-tag">Balance mensual</span>
+          <span class="desc-tag">Sincronización Google</span>
+          <span class="desc-tag">Sin registro requerido</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- MI RETIRO -->
+    <div class="desc-item">
+      <div class="desc-left">
+        <div class="desc-icon">🏖️</div>
+        <div class="desc-name retiro">Mi Retiro</div>
+        <a class="desc-link" href="/retiro.html">Calcular mi retiro →</a>
+      </div>
+      <div class="desc-right">
+        <h3>Calculá cuándo podés dejar de trabajar</h3>
+        <p>Ingresás tu capital actual, cuánto ahorrás por mes, cuánto necesitás gastar mensualmente en el retiro y la tasa de rendimiento esperada (descontada la inflación). La calculadora te dice en cuántos años alcanzás tu número y a qué edad llegarías.</p>
+        <p>También muestra escenarios alternativos: qué pasa si ahorrás más, si gastás menos en el retiro o si el rendimiento cambia. Es una herramienta de planificación — no una asesoría financiera — útil para tener una referencia concreta de hacia dónde vas con tus finanzas personales.</p>
+        <div class="desc-tags">
+          <span class="desc-tag">Capital actual</span>
+          <span class="desc-tag">Ahorro mensual</span>
+          <span class="desc-tag">Rendimiento real</span>
+          <span class="desc-tag">Escenarios alternativos</span>
+          <span class="desc-tag">Edad de retiro estimada</span>
+        </div>
+      </div>
+    </div>
+
   </div>
 </div>
 
