@@ -1,0 +1,707 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="dark">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1"/>
+<meta name="mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-title" content="Mi Retiro"/>
+<meta name="theme-color" content="#0a0f1a"/>
+<title>Mi Retiro — Canuto.ar</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap');
+:root{
+  --bg:#0a0f1a;--surface:#111827;--surface2:#1a2436;--border:rgba(255,255,255,0.08);
+  --text:#f0f4ff;--muted:rgba(240,244,255,0.5);--muted2:rgba(240,244,255,0.28);
+  --teal:#14b8a6;--teal2:#0d9488;--tealfaint:rgba(20,184,166,0.12);
+  --orange:#fb923c;--green:#34d399;--red:#f87171;--violet:#7c5cfc;
+  --radius:14px;--radius-sm:10px;--shadow:rgba(0,0,0,.5);
+}
+[data-theme="light"]{
+  --bg:#f4f7f6;--surface:#ffffff;--surface2:#eef2f0;--border:rgba(0,0,0,0.08);
+  --text:#0d1f1c;--muted:rgba(13,31,28,0.5);--muted2:rgba(13,31,28,0.3);--shadow:rgba(0,0,0,.1);
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
+html,body{height:100%;background:var(--bg);color:var(--text);font-family:'DM Sans',system-ui,sans-serif;font-size:15px;line-height:1.5;overflow-x:hidden;}
+::-webkit-scrollbar{width:3px;} ::-webkit-scrollbar-thumb{background:#888;border-radius:4px;}
+
+/* Header */
+header{position:sticky;top:0;z-index:20;background:var(--bg);border-bottom:1px solid var(--border);padding:12px 16px;display:flex;align-items:center;justify-content:space-between;gap:8px;}
+.logo-wrap{display:flex;align-items:center;gap:8px;text-decoration:none;color:var(--text);}
+.logo-icon{width:30px;height:30px;border-radius:9px;background:linear-gradient(135deg,var(--teal),var(--teal2));display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0;}
+.logo-title{font-weight:700;font-size:15px;letter-spacing:-.02em;}
+.logo-sub{font-size:11px;color:var(--muted);margin-top:-1px;}
+.header-right{display:flex;align-items:center;gap:8px;}
+.btn-back{display:flex;align-items:center;gap:5px;padding:6px 12px;border-radius:8px;border:1px solid var(--border);background:transparent;color:var(--muted);font-size:12px;font-weight:600;font-family:inherit;cursor:pointer;text-decoration:none;}
+.btn-back svg{width:13px;height:13px;}
+.btn-theme{width:30px;height:30px;background:transparent;border:1px solid var(--border);border-radius:8px;display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--muted);flex-shrink:0;}
+.btn-theme svg{width:15px;height:15px;}
+
+/* Layout */
+.main{max-width:700px;margin:0 auto;padding:20px 16px 60px;}
+.page-title{font-size:24px;font-weight:700;letter-spacing:-.03em;margin-bottom:4px;}
+.page-sub{font-size:14px;color:var(--muted);margin-bottom:24px;}
+
+/* Tabs */
+.tabs{display:flex;gap:4px;background:var(--surface2);border-radius:12px;padding:4px;margin-bottom:20px;}
+.tab{flex:1;padding:9px;border-radius:9px;border:none;background:transparent;color:var(--muted);font-size:13px;font-weight:600;font-family:inherit;cursor:pointer;transition:all .15s;text-align:center;}
+.tab.active{background:var(--surface);color:var(--text);box-shadow:0 1px 4px rgba(0,0,0,.2);}
+
+/* Cards */
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:18px;margin-bottom:12px;}
+.card-title{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin-bottom:14px;display:flex;align-items:center;gap:6px;}
+.card-title svg{width:13px;height:13px;color:var(--teal);}
+
+/* Fields */
+.field{margin-bottom:14px;}
+.field:last-child{margin-bottom:0;}
+.field label{display:block;font-size:12px;font-weight:600;color:var(--muted);margin-bottom:6px;}
+.field-hint{font-size:11px;color:var(--muted2);margin-top:4px;}
+.input-wrap{position:relative;}
+.input-sym{position:absolute;left:12px;top:50%;transform:translateY(-50%);font-size:13px;color:var(--muted2);pointer-events:none;font-family:'DM Mono',monospace;}
+.input-sym.usd{color:rgba(20,184,166,.5);font-size:10px;font-weight:700;}
+.input-wrap input{width:100%;background:var(--surface2);border:1.5px solid var(--border);border-radius:var(--radius-sm);padding:11px 13px 11px 28px;font-size:15px;font-weight:600;color:var(--text);font-family:'DM Mono',monospace;-webkit-appearance:none;transition:border-color .15s;}
+.input-wrap input::placeholder{color:var(--muted2);font-weight:400;}
+.input-wrap input:focus{outline:none;border-color:var(--teal);}
+.input-wrap.usd input{padding-left:38px;}
+.input-no-sym input{padding-left:13px;}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;}
+
+/* Slider */
+.slider-wrap{display:flex;align-items:center;gap:12px;margin-top:6px;}
+.slider{flex:1;-webkit-appearance:none;height:4px;border-radius:2px;background:var(--surface2);outline:none;}
+.slider::-webkit-slider-thumb{-webkit-appearance:none;width:18px;height:18px;border-radius:50%;background:var(--teal);cursor:pointer;border:2px solid var(--bg);}
+.slider-val{font-family:'DM Mono',monospace;font-size:13px;font-weight:700;color:var(--teal);min-width:42px;text-align:right;}
+
+/* Moneda toggle */
+.moneda-toggle{display:flex;gap:6px;margin-bottom:14px;}
+.moneda-btn{flex:1;padding:8px;border-radius:8px;border:1.5px solid var(--border);background:transparent;color:var(--muted);font-size:13px;font-weight:600;font-family:inherit;cursor:pointer;transition:all .15s;}
+.moneda-btn.active.ars{border-color:var(--teal);background:var(--tealfaint);color:var(--teal);}
+.moneda-btn.active.usd{border-color:rgba(20,184,166,.6);background:rgba(20,184,166,.08);color:var(--teal);}
+
+/* Botón calcular */
+.btn-calc{width:100%;padding:15px;border-radius:var(--radius);border:none;background:linear-gradient(135deg,var(--teal),var(--teal2));color:#fff;font-size:16px;font-weight:700;font-family:inherit;cursor:pointer;margin-top:4px;transition:opacity .15s;}
+.btn-calc:active{opacity:.85;}
+
+/* Resultado */
+.result-panel{background:linear-gradient(135deg,rgba(20,184,166,.12),rgba(20,184,166,.04));border:1px solid rgba(20,184,166,.25);border-radius:var(--radius);padding:20px;margin-bottom:12px;display:none;}
+.result-panel.show{display:block;}
+.result-headline{font-size:28px;font-weight:700;letter-spacing:-.03em;color:var(--teal);margin-bottom:4px;line-height:1.1;}
+.result-sub{font-size:14px;color:var(--muted);margin-bottom:18px;}
+.result-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px;}
+.result-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-sm);padding:12px;}
+.result-card .lbl{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--muted2);margin-bottom:4px;}
+.result-card .val{font-family:'DM Mono',monospace;font-size:16px;font-weight:700;}
+.result-card .val.pos{color:var(--green);}
+.result-card .val.neg{color:var(--red);}
+.result-card .val.neutral{color:var(--teal);}
+
+/* Timeline visual */
+.timeline{margin-top:14px;}
+.timeline-label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--muted2);margin-bottom:8px;}
+.timeline-bar{height:10px;border-radius:99px;background:var(--surface2);overflow:hidden;margin-bottom:6px;}
+.timeline-fill{height:100%;border-radius:99px;background:linear-gradient(90deg,var(--teal),var(--green));transition:width .8s cubic-bezier(.4,0,.2,1);}
+.timeline-fill.danger{background:linear-gradient(90deg,var(--orange),var(--red));}
+.timeline-fill.warning{background:linear-gradient(90deg,var(--orange),#fbbf24);}
+.timeline-markers{display:flex;justify-content:space-between;font-size:10px;color:var(--muted2);font-family:'DM Mono',monospace;}
+
+/* Escenarios */
+.scenarios{display:flex;flex-direction:column;gap:8px;margin-top:12px;}
+.scenario-row{display:flex;align-items:center;gap:10px;padding:10px 12px;background:var(--surface2);border-radius:var(--radius-sm);border:1px solid var(--border);}
+.scenario-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
+.scenario-label{flex:1;font-size:13px;color:var(--muted);}
+.scenario-val{font-family:'DM Mono',monospace;font-size:13px;font-weight:700;}
+
+/* Proyección tabla */
+.proj-table{width:100%;border-collapse:collapse;font-size:12px;margin-top:4px;}
+.proj-table th{text-align:left;padding:6px 8px;color:var(--muted2);font-weight:600;font-size:10px;text-transform:uppercase;letter-spacing:.06em;border-bottom:1px solid var(--border);}
+.proj-table td{padding:7px 8px;border-bottom:1px solid rgba(255,255,255,.04);font-family:'DM Mono',monospace;}
+.proj-table tr:last-child td{border-bottom:none;}
+.proj-table td.year{color:var(--muted);font-family:'DM Sans',sans-serif;}
+.proj-table td.capital{color:var(--teal);}
+.proj-table td.neg{color:var(--red);}
+.proj-table .proj-agotado{background:rgba(248,113,113,.06);color:var(--red);font-weight:600;}
+
+/* Info boxes */
+.info-box{background:rgba(20,184,166,.06);border:1px solid rgba(20,184,166,.2);border-radius:var(--radius-sm);padding:12px 14px;font-size:13px;color:var(--muted);line-height:1.6;margin-top:8px;}
+.info-box strong{color:var(--text);}
+
+/* Toast */
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(20px);z-index:100;background:var(--surface);border:1px solid var(--border);color:var(--text);font-size:13px;font-weight:500;padding:10px 18px;border-radius:99px;display:flex;align-items:center;gap:8px;opacity:0;pointer-events:none;transition:opacity .2s,transform .2s;white-space:nowrap;box-shadow:0 8px 32px var(--shadow);}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+</style>
+</head>
+<body>
+
+<div class="toast" id="toast"><span id="toast-msg"></span></div>
+
+<header>
+  <a href="/" class="logo-wrap">
+    <div class="logo-icon">🏖️</div>
+    <div>
+      <div class="logo-title">Mi Retiro</div>
+      <div class="logo-sub">canuto.ar</div>
+    </div>
+  </a>
+  <div class="header-right">
+    <a href="/" class="btn-back">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polyline points="15 18 9 12 15 6"/></svg>
+      Inicio
+    </a>
+    <button class="btn-theme" onclick="toggleTheme()" id="btn-theme">
+      <svg id="icon-theme" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+    </button>
+  </div>
+</header>
+
+<div class="main">
+  <div class="page-title">¿Cuándo me puedo retirar?</div>
+  <div class="page-sub">Ingresá tus datos y calculá cuánto tiempo duran tus ahorros, cuánto necesitás juntar, o cuándo podés dejar de trabajar.</div>
+
+  <!-- Tabs -->
+  <div class="tabs">
+    <button class="tab active" onclick="setTab('duran')" id="tab-duran">¿Cuánto duran?</button>
+    <button class="tab" onclick="setTab('necesito')" id="tab-necesito">¿Cuánto necesito?</button>
+    <button class="tab" onclick="setTab('cuando')" id="tab-cuando">¿Cuándo me retiro?</button>
+  </div>
+
+  <!-- TAB 1: ¿Cuánto duran mis ahorros? -->
+  <div id="panel-duran">
+
+    <div class="card">
+      <div class="card-title">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>
+        Mis ahorros actuales
+      </div>
+      <div class="moneda-toggle">
+        <button class="moneda-btn active ars" id="m-ars" onclick="setMoneda('ars')">$ Pesos</button>
+        <button class="moneda-btn usd" id="m-usd" onclick="setMoneda('usd')">USD Dólares</button>
+      </div>
+      <div class="field" id="field-ars">
+        <label>Capital ahorrado en $</label>
+        <div class="input-wrap"><span class="input-sym">$</span><input type="number" id="capital-ars" placeholder="0" min="0" step="1000"/></div>
+      </div>
+      <div class="field" id="field-usd" style="display:none">
+        <label>Capital ahorrado en USD</label>
+        <div class="input-wrap usd"><span class="input-sym usd">USD</span><input type="number" id="capital-usd" placeholder="0" min="0" step="100"/></div>
+        <div class="field-hint">Se convierte a ARS al tipo de cambio que ingreses abajo</div>
+      </div>
+      <div class="field" id="field-tc" style="display:none">
+        <label>Tipo de cambio USD/ARS</label>
+        <div class="input-wrap input-no-sym"><span class="input-sym">$</span><input type="number" id="tipo-cambio" placeholder="1390" min="1" step="10"/></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2z"/><path d="M12 6v6l4 2"/></svg>
+        Gastos mensuales en el retiro
+      </div>
+      <div class="field">
+        <label>Gasto mensual estimado en $</label>
+        <div class="input-wrap"><span class="input-sym">$</span><input type="number" id="gasto-mensual" placeholder="0" min="0" step="1000"/></div>
+        <div class="field-hint">Cuánto necesitás por mes para vivir cómodamente</div>
+      </div>
+      <div class="field">
+        <label>Inflación anual estimada: <span id="inflacion-label" style="color:var(--teal)">60%</span></label>
+        <div class="slider-wrap">
+          <input type="range" class="slider" id="inflacion-slider" min="0" max="200" step="5" value="60" oninput="document.getElementById('inflacion-label').textContent=this.value+'%'"/>
+        </div>
+        <div class="field-hint">La inflación aumenta tus gastos nominales cada año</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+        Rendimiento de los ahorros
+      </div>
+      <div class="field">
+        <label>Rendimiento anual neto: <span id="rendimiento-label" style="color:var(--teal)">80%</span></label>
+        <div class="slider-wrap">
+          <input type="range" class="slider" id="rendimiento-slider" min="0" max="300" step="5" value="80" oninput="document.getElementById('rendimiento-label').textContent=this.value+'%'"/>
+        </div>
+        <div class="field-hint">Plazo fijo, fondos, acciones — rendimiento bruto antes de inflación</div>
+      </div>
+      <div class="info-box">
+        💡 <strong>Rendimiento real</strong> = rendimiento nominal − inflación. Si tu plazo fijo rinde 80% y la inflación es 60%, tu rendimiento real es <strong>~12.5% anual</strong>.
+      </div>
+    </div>
+
+    <button class="btn-calc" onclick="calcularDuran()">Calcular cuánto duran mis ahorros →</button>
+
+    <!-- Resultado -->
+    <div class="result-panel" id="result-duran">
+      <div class="result-headline" id="rd-headline">—</div>
+      <div class="result-sub" id="rd-sub"></div>
+      <div class="result-grid">
+        <div class="result-card"><div class="lbl">Capital inicial</div><div class="val neutral" id="rd-capital">—</div></div>
+        <div class="result-card"><div class="lbl">Gasto mes 1</div><div class="val neutral" id="rd-gasto">—</div></div>
+        <div class="result-card"><div class="lbl">Rend. real anual</div><div class="val" id="rd-rendreal">—</div></div>
+        <div class="result-card"><div class="lbl">Duración estimada</div><div class="val neutral" id="rd-duracion">—</div></div>
+      </div>
+      <div class="timeline">
+        <div class="timeline-label">Proyección del capital</div>
+        <div class="timeline-bar"><div class="timeline-fill" id="rd-bar" style="width:0%"></div></div>
+        <div class="timeline-markers"><span id="rd-m-inicio"></span><span id="rd-m-mitad"></span><span id="rd-m-fin"></span></div>
+      </div>
+      <div class="scenarios" id="rd-escenarios"></div>
+      <div style="margin-top:16px">
+        <div class="timeline-label">Detalle año por año</div>
+        <div style="overflow-x:auto">
+          <table class="proj-table" id="rd-tabla"></table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TAB 2: ¿Cuánto necesito ahorrar? -->
+  <div id="panel-necesito" style="display:none">
+
+    <div class="card">
+      <div class="card-title">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg>
+        Mi situación
+      </div>
+      <div class="grid2">
+        <div class="field">
+          <label>Edad actual</label>
+          <div class="input-wrap input-no-sym"><input type="number" id="n-edad-actual" placeholder="35" min="18" max="80" step="1"/></div>
+        </div>
+        <div class="field">
+          <label>Edad de retiro</label>
+          <div class="input-wrap input-no-sym"><input type="number" id="n-edad-retiro" placeholder="65" min="30" max="90" step="1"/></div>
+        </div>
+      </div>
+      <div class="field">
+        <label>Ahorros actuales en $</label>
+        <div class="input-wrap"><span class="input-sym">$</span><input type="number" id="n-ahorros-actuales" placeholder="0" min="0" step="10000"/></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2z"/><path d="M12 6v6l4 2"/></svg>
+        Mi retiro
+      </div>
+      <div class="field">
+        <label>Gasto mensual deseado en el retiro en $</label>
+        <div class="input-wrap"><span class="input-sym">$</span><input type="number" id="n-gasto-retiro" placeholder="0" min="0" step="1000"/></div>
+        <div class="field-hint">A pesos de hoy — la app ajusta por inflación</div>
+      </div>
+      <div class="field">
+        <label>Años que durará el retiro</label>
+        <div class="input-wrap input-no-sym"><input type="number" id="n-anios-retiro" placeholder="25" min="5" max="60" step="1"/></div>
+        <div class="field-hint">Ej: retirarte a 65 y planificar hasta los 90 = 25 años</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+        Parámetros
+      </div>
+      <div class="field">
+        <label>Inflación anual: <span id="n-inflacion-label" style="color:var(--teal)">60%</span></label>
+        <div class="slider-wrap"><input type="range" class="slider" id="n-inflacion-slider" min="0" max="200" step="5" value="60" oninput="document.getElementById('n-inflacion-label').textContent=this.value+'%'"/></div>
+      </div>
+      <div class="field">
+        <label>Rendimiento anual de los ahorros: <span id="n-rendimiento-label" style="color:var(--teal)">80%</span></label>
+        <div class="slider-wrap"><input type="range" class="slider" id="n-rendimiento-slider" min="0" max="300" step="5" value="80" oninput="document.getElementById('n-rendimiento-label').textContent=this.value+'%'"/></div>
+      </div>
+    </div>
+
+    <button class="btn-calc" onclick="calcularNecesito()">Calcular cuánto necesito →</button>
+
+    <div class="result-panel" id="result-necesito">
+      <div class="result-headline" id="rn-headline">—</div>
+      <div class="result-sub" id="rn-sub"></div>
+      <div class="result-grid">
+        <div class="result-card"><div class="lbl">Meta total</div><div class="val neutral" id="rn-meta">—</div></div>
+        <div class="result-card"><div class="lbl">Tenés hoy</div><div class="val neutral" id="rn-tengo">—</div></div>
+        <div class="result-card"><div class="lbl">Falta juntar</div><div class="val" id="rn-falta">—</div></div>
+        <div class="result-card"><div class="lbl">Ahorro mensual</div><div class="val neutral" id="rn-mensual">—</div></div>
+      </div>
+      <div class="info-box" id="rn-info"></div>
+    </div>
+  </div>
+
+  <!-- TAB 3: ¿Cuándo me puedo retirar? -->
+  <div id="panel-cuando" style="display:none">
+
+    <div class="card">
+      <div class="card-title">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg>
+        Mi situación actual
+      </div>
+      <div class="grid2">
+        <div class="field">
+          <label>Edad actual</label>
+          <div class="input-wrap input-no-sym"><input type="number" id="c-edad" placeholder="35" min="18" max="80" step="1"/></div>
+        </div>
+        <div class="field">
+          <label>Ahorros en $</label>
+          <div class="input-wrap"><span class="input-sym">$</span><input type="number" id="c-ahorros" placeholder="0" min="0" step="10000"/></div>
+        </div>
+      </div>
+      <div class="field">
+        <label>Ahorro mensual actual en $</label>
+        <div class="input-wrap"><span class="input-sym">$</span><input type="number" id="c-ahorro-mensual" placeholder="0" min="0" step="1000"/></div>
+        <div class="field-hint">Cuánto suma a tus ahorros cada mes hoy</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2z"/><path d="M12 6v6l4 2"/></svg>
+        Mi retiro ideal
+      </div>
+      <div class="field">
+        <label>Gasto mensual deseado en el retiro en $</label>
+        <div class="input-wrap"><span class="input-sym">$</span><input type="number" id="c-gasto" placeholder="0" min="0" step="1000"/></div>
+        <div class="field-hint">A pesos de hoy — la app ajusta por inflación</div>
+      </div>
+      <div class="field">
+        <label>Años deseados de retiro</label>
+        <div class="input-wrap input-no-sym"><input type="number" id="c-anios-retiro" placeholder="25" min="5" max="60" step="1"/></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+        Parámetros
+      </div>
+      <div class="field">
+        <label>Inflación anual: <span id="c-inflacion-label" style="color:var(--teal)">60%</span></label>
+        <div class="slider-wrap"><input type="range" class="slider" id="c-inflacion-slider" min="0" max="200" step="5" value="60" oninput="document.getElementById('c-inflacion-label').textContent=this.value+'%'"/></div>
+      </div>
+      <div class="field">
+        <label>Rendimiento anual de los ahorros: <span id="c-rendimiento-label" style="color:var(--teal)">80%</span></label>
+        <div class="slider-wrap"><input type="range" class="slider" id="c-rendimiento-slider" min="0" max="300" step="5" value="80" oninput="document.getElementById('c-rendimiento-label').textContent=this.value+'%'"/></div>
+      </div>
+    </div>
+
+    <button class="btn-calc" onclick="calcularCuando()">Calcular cuándo me puedo retirar →</button>
+
+    <div class="result-panel" id="result-cuando">
+      <div class="result-headline" id="rc-headline">—</div>
+      <div class="result-sub" id="rc-sub"></div>
+      <div class="result-grid">
+        <div class="result-card"><div class="lbl">Edad de retiro</div><div class="val neutral" id="rc-edad">—</div></div>
+        <div class="result-card"><div class="lbl">Años para retirarte</div><div class="val neutral" id="rc-anios">—</div></div>
+        <div class="result-card"><div class="lbl">Capital en retiro</div><div class="val neutral" id="rc-capital">—</div></div>
+        <div class="result-card"><div class="lbl">Gasto inicial mes</div><div class="val neutral" id="rc-gasto">—</div></div>
+      </div>
+      <div class="scenarios" id="rc-escenarios"></div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+// ── Tema ──────────────────────────────────────────────────────────────────────
+const DARK='<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>';
+const LIGHT='<circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>';
+function toggleTheme(){const h=document.documentElement,d=h.getAttribute('data-theme')==='dark';h.setAttribute('data-theme',d?'light':'dark');document.getElementById('icon-theme').innerHTML=d?DARK:LIGHT;localStorage.setItem('retiro-tema',d?'light':'dark');}
+(function(){const t=localStorage.getItem('retiro-tema')||'dark';document.documentElement.setAttribute('data-theme',t);document.getElementById('icon-theme').innerHTML=t==='dark'?DARK:LIGHT;})();
+
+// ── Helpers ───────────────────────────────────────────────────────────────────
+function fmt(n){if(n>=1e9)return '$'+Math.round(n/1e9*10)/10+'B';if(n>=1e6)return '$'+Math.round(n/1e6*10)/10+'M';if(n>=1e3)return '$'+Math.round(n/1e3)+'K';return '$'+Math.round(n).toLocaleString('es-AR');}
+function fmtFull(n){return '$'+Math.round(n).toLocaleString('es-AR');}
+function pn(id){return parseFloat(document.getElementById(id).value)||0;}
+function toast(msg){const t=document.getElementById('toast');document.getElementById('toast-msg').textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2500);}
+
+// ── Tabs ──────────────────────────────────────────────────────────────────────
+function setTab(tab){
+  ['duran','necesito','cuando'].forEach(t=>{
+    document.getElementById('panel-'+t).style.display=t===tab?'block':'none';
+    document.getElementById('tab-'+t).classList.toggle('active',t===tab);
+  });
+}
+
+// ── Moneda toggle ─────────────────────────────────────────────────────────────
+let moneda='ars';
+function setMoneda(m){
+  moneda=m;
+  document.getElementById('m-ars').classList.toggle('active',m==='ars');
+  document.getElementById('m-usd').classList.toggle('active',m==='usd');
+  document.getElementById('field-ars').style.display=m==='ars'?'block':'none';
+  document.getElementById('field-usd').style.display=m==='usd'?'block':'none';
+  document.getElementById('field-tc').style.display=m==='usd'?'block':'none';
+}
+
+// ── Cálculo de capital en ARS ─────────────────────────────────────────────────
+function getCapital(){
+  if(moneda==='ars') return pn('capital-ars');
+  const tc=pn('tipo-cambio')||1390;
+  return pn('capital-usd')*tc;
+}
+
+// ── TAB 1: ¿Cuánto duran mis ahorros? ────────────────────────────────────────
+function calcularDuran(){
+  const capital=getCapital();
+  const gastoMensual=pn('gasto-mensual');
+  const inflAnual=pn('inflacion-slider')/100;
+  const rendAnual=pn('rendimiento-slider')/100;
+
+  if(!capital||!gastoMensual){toast('Completá el capital y el gasto mensual');return;}
+
+  // Rendimiento real anual: (1+rend)/(1+infl) - 1
+  const rendReal=(1+rendAnual)/(1+inflAnual)-1;
+  // Rendimiento real mensual
+  const rendRealMensual=Math.pow(1+rendReal,1/12)-1;
+  // Inflación mensual
+  const inflMensual=Math.pow(1+inflAnual,1/12)-1;
+
+  let saldo=capital;
+  let mes=0;
+  const maxMeses=100*12; // 100 años máximo
+  const tabla=[];
+  let anioActual=new Date().getFullYear();
+  let gastoActualMensual=gastoMensual;
+
+  while(saldo>0&&mes<maxMeses){
+    if(mes%12===0&&mes>0){
+      gastoActualMensual*=(1+inflAnual);
+    }
+    const rendimientoMes=saldo*rendRealMensual;
+    saldo=saldo+rendimientoMes-gastoActualMensual;
+    mes++;
+
+    // Guardar dato anual
+    if(mes%12===0){
+      const anio=mes/12;
+      tabla.push({
+        anio,
+        year:anioActual+anio,
+        saldo:Math.max(0,saldo),
+        gasto:gastoActualMensual,
+        agotado:saldo<=0
+      });
+      if(saldo<=0) break;
+    }
+  }
+
+  const anios=mes/12;
+  const aniosReales=Math.min(anios,100);
+  const agotado=saldo<=0;
+
+  // Headline
+  document.getElementById('rd-headline').textContent=agotado
+    ? (anios>=100?'Más de 100 años 🎉':'~'+Math.round(aniosReales)+' años')
+    : '+100 años 🎉';
+  document.getElementById('rd-sub').textContent=agotado
+    ? (anios>=100?'¡Tus ahorros duran más de un siglo con este rendimiento!'
+      :'Tus ahorros alcanzan para unos '+Math.round(aniosReales)+' años de retiro')
+    : '¡Tus ahorros duran más de 100 años con este rendimiento!';
+
+  document.getElementById('rd-capital').textContent=fmt(capital);
+  document.getElementById('rd-gasto').textContent=fmtFull(gastoMensual);
+  const rendRealPct=Math.round(rendReal*1000)/10;
+  const rdEl=document.getElementById('rd-rendreal');
+  rdEl.textContent=(rendReal>=0?'+':'')+rendRealPct+'% anual';
+  rdEl.className='val '+(rendReal>=0?'pos':'neg');
+  document.getElementById('rd-duracion').textContent=agotado?(anios>=100?'+100 años':Math.round(aniosReales)+' años'):'+100 años';
+
+  // Barra
+  const pct=Math.min(100,Math.round(aniosReales));
+  const bar=document.getElementById('rd-bar');
+  bar.className='timeline-fill'+(aniosReales<10?' danger':aniosReales<20?' warning':'');
+  setTimeout(()=>bar.style.width=pct+'%',50);
+  document.getElementById('rd-m-inicio').textContent='Hoy';
+  document.getElementById('rd-m-mitad').textContent=Math.round(aniosReales/2)+' años';
+  document.getElementById('rd-m-fin').textContent=Math.round(aniosReales)+' años';
+
+  // Escenarios
+  const esc=document.getElementById('rd-escenarios');
+  esc.innerHTML='<div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--muted2);margin-bottom:6px;">Escenarios alternativos</div>'+
+    [0.5,0.75,1.25,1.5].map(factor=>{
+      const g2=gastoMensual*factor;
+      let s2=capital,m2=0,g2actual=g2;
+      while(s2>0&&m2<maxMeses){
+        if(m2%12===0&&m2>0)g2actual*=(1+inflAnual);
+        s2+=s2*rendRealMensual-g2actual;m2++;
+        if(s2<=0)break;
+      }
+      const a2=m2/12;
+      const pctChange=Math.round((factor-1)*100);
+      return `<div class="scenario-row">
+        <div class="scenario-dot" style="background:${factor<1?'var(--green)':factor>1.25?'var(--red)':'var(--orange)'}"></div>
+        <div class="scenario-label">Gasto ${pctChange>0?'+':''}${pctChange}% (${fmtFull(g2)}/mes)</div>
+        <div class="scenario-val" style="color:${a2>=100?'var(--green)':a2<10?'var(--red)':'var(--teal)'}">${a2>=100?'+100':Math.round(a2)} años</div>
+      </div>`;
+    }).join('');
+
+  // Tabla año por año (máx 30 filas)
+  const tablaEl=document.getElementById('rd-tabla');
+  const filas=tabla.slice(0,30);
+  tablaEl.innerHTML=`<thead><tr><th>Año</th><th>Capital</th><th>Gasto/mes</th></tr></thead><tbody>`+
+    filas.map(r=>`<tr class="${r.agotado?'proj-agotado':''}">
+      <td class="year">${r.year} (año ${r.anio})</td>
+      <td class="capital ${r.saldo<=0?'neg':''}">${r.saldo<=0?'Agotado':fmt(r.saldo)}</td>
+      <td>${fmt(r.gasto)}</td>
+    </tr>`).join('')+'</tbody>';
+
+  document.getElementById('result-duran').classList.add('show');
+  document.getElementById('result-duran').scrollIntoView({behavior:'smooth',block:'start'});
+}
+
+// ── TAB 2: ¿Cuánto necesito? ──────────────────────────────────────────────────
+function calcularNecesito(){
+  const edadActual=pn('n-edad-actual');
+  const edadRetiro=pn('n-edad-retiro');
+  const ahorrosActuales=pn('n-ahorros-actuales');
+  const gastoRetiro=pn('n-gasto-retiro'); // a pesos de hoy
+  const aniosRetiro=pn('n-anios-retiro');
+  const inflAnual=pn('n-inflacion-slider')/100;
+  const rendAnual=pn('n-rendimiento-slider')/100;
+
+  if(!edadActual||!edadRetiro||!gastoRetiro||!aniosRetiro){toast('Completá todos los campos');return;}
+  if(edadRetiro<=edadActual){toast('La edad de retiro debe ser mayor a la actual');return;}
+
+  const aniosHastaRetiro=edadRetiro-edadActual;
+  const rendReal=(1+rendAnual)/(1+inflAnual)-1;
+  const rendRealMensual=Math.pow(1+rendReal,1/12)-1;
+
+  // Gasto en el año del retiro (ajustado por inflación)
+  const gastoAlRetiro=gastoRetiro*Math.pow(1+inflAnual,aniosHastaRetiro);
+
+  // Capital necesario al momento del retiro para cubrir aniosRetiro años
+  // Usando valor presente de una anualidad creciente
+  let capitalNecesario=0;
+  if(Math.abs(rendRealMensual)<0.0001){
+    capitalNecesario=gastoAlRetiro*aniosRetiro*12;
+  }else{
+    const n=aniosRetiro*12;
+    capitalNecesario=gastoAlRetiro*(1-Math.pow(1+rendRealMensual,-n))/rendRealMensual;
+  }
+
+  // Cuánto crecerán los ahorros actuales hasta el retiro
+  const crecimientoAhorros=ahorrosActuales*Math.pow(1+rendAnual,aniosHastaRetiro);
+  const falta=Math.max(0,capitalNecesario-crecimientoAhorros);
+
+  // Ahorro mensual necesario para llegar a la meta
+  let ahorrMensual=0;
+  if(falta>0){
+    const n=aniosHastaRetiro*12;
+    const r=Math.pow(1+rendAnual,1/12)-1;
+    if(Math.abs(r)<0.0001){
+      ahorrMensual=falta/n;
+    }else{
+      ahorrMensual=falta*r/(Math.pow(1+r,n)-1);
+    }
+  }
+
+  document.getElementById('rn-headline').textContent=fmt(capitalNecesario);
+  document.getElementById('rn-sub').textContent=`Necesitás este capital al momento del retiro (a los ${edadRetiro} años) para vivir ${aniosRetiro} años con ese nivel de gastos.`;
+  document.getElementById('rn-meta').textContent=fmt(capitalNecesario);
+  document.getElementById('rn-tengo').textContent=fmt(crecimientoAhorros);
+  const faltaEl=document.getElementById('rn-falta');
+  faltaEl.textContent=falta>0?fmt(falta):'¡Suficiente! 🎉';
+  faltaEl.className='val '+(falta>0?'neg':'pos');
+  const mensualEl=document.getElementById('rn-mensual');
+  mensualEl.textContent=falta>0?fmtFull(ahorrMensual)+'/mes':'No necesitás ahorrar más';
+  mensualEl.className='val '+(falta>0?'neg':'pos');
+
+  document.getElementById('rn-info').innerHTML=falta>0
+    ?`💡 Con tus ahorros actuales de <strong>${fmtFull(ahorrosActuales)}</strong> creciendo al ${Math.round(rendAnual*100)}% anual, llegarás al retiro con <strong>${fmt(crecimientoAhorros)}</strong>. Para cubrir el déficit de <strong>${fmt(falta)}</strong>, necesitás ahorrar <strong>${fmtFull(ahorrMensual)}/mes</strong> adicionales.`
+    :`🎉 ¡Excelente! Con tus ahorros actuales y el rendimiento proyectado, ya tenés más de lo necesario para retirarte a los ${edadRetiro} años. Tu capital proyectado (<strong>${fmt(crecimientoAhorros)}</strong>) supera la meta (<strong>${fmt(capitalNecesario)}</strong>).`;
+
+  document.getElementById('result-necesito').classList.add('show');
+  document.getElementById('result-necesito').scrollIntoView({behavior:'smooth',block:'start'});
+}
+
+// ── TAB 3: ¿Cuándo me puedo retirar? ─────────────────────────────────────────
+function calcularCuando(){
+  const edadActual=pn('c-edad');
+  const ahorros=pn('c-ahorros');
+  const ahorrMensual=pn('c-ahorro-mensual');
+  const gastoDeseo=pn('c-gasto'); // a pesos de hoy
+  const aniosRetiroDeseo=pn('c-anios-retiro');
+  const inflAnual=pn('c-inflacion-slider')/100;
+  const rendAnual=pn('c-rendimiento-slider')/100;
+
+  if(!edadActual||!gastoDeseo||!aniosRetiroDeseo){toast('Completá todos los campos');return;}
+
+  const rendMensual=Math.pow(1+rendAnual,1/12)-1;
+  const rendReal=(1+rendAnual)/(1+inflAnual)-1;
+  const rendRealMensual=Math.pow(1+rendReal,1/12)-1;
+  let capitalActual=ahorros;
+  let aniosBuscados=null;
+  const resultados=[];
+
+  for(let a=1;a<=50;a++){
+    // Crecer capital por un año más
+    const meses=12;
+    for(let m=0;m<meses;m++){
+      capitalActual=capitalActual*(1+rendMensual)+ahorrMensual;
+    }
+
+    // Gasto al momento del retiro
+    const gastoAlRetiro=gastoDeseo*Math.pow(1+inflAnual,a);
+
+    // Capital necesario para aniosRetiroDeseo años
+    const n=aniosRetiroDeseo*12;
+    const capitalNecesario=Math.abs(rendRealMensual)<0.0001
+      ?gastoAlRetiro*n
+      :gastoAlRetiro*(1-Math.pow(1+rendRealMensual,-n))/rendRealMensual;
+
+    resultados.push({
+      anios:a,
+      edad:edadActual+a,
+      capital:capitalActual,
+      capitalNecesario,
+      gasto:gastoAlRetiro,
+      alcanza:capitalActual>=capitalNecesario
+    });
+
+    if(capitalActual>=capitalNecesario&&!aniosBuscados){
+      aniosBuscados=a;
+      break;
+    }
+  }
+
+  if(aniosBuscados){
+    const r=resultados[resultados.length-1];
+    document.getElementById('rc-headline').textContent=`A los ${r.edad} años 🎉`;
+    document.getElementById('rc-sub').textContent=`En ${aniosBuscados} ${aniosBuscados===1?'año':'años'} podrías retirarte con el nivel de vida que proyectás.`;
+    document.getElementById('rc-edad').textContent=r.edad+' años';
+    document.getElementById('rc-anios').textContent=aniosBuscados+' años';
+    document.getElementById('rc-capital').textContent=fmt(r.capital);
+    document.getElementById('rc-gasto').textContent=fmtFull(r.gasto)+'/mes';
+  }else{
+    document.getElementById('rc-headline').textContent='Más de 50 años';
+    document.getElementById('rc-sub').textContent='Con los parámetros actuales, no alcanzás la meta en los próximos 50 años. Considerá aumentar tu ahorro mensual o ajustar los gastos del retiro.';
+    const last=resultados[resultados.length-1];
+    document.getElementById('rc-edad').textContent=last?'+50 años':'—';
+    document.getElementById('rc-anios').textContent=last?'+50 años':'—';
+    document.getElementById('rc-capital').textContent=last?fmt(last.capital):'—';
+    document.getElementById('rc-gasto').textContent=last?fmtFull(last.gasto)+'/mes':'—';
+  }
+
+  // Escenarios
+  const esc=document.getElementById('rc-escenarios');
+  esc.innerHTML='<div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--muted2);margin-bottom:6px;">¿Qué pasa si ahorro más?</div>'+
+    [1.5,2,3].map(factor=>{
+      let cap2=ahorros,am2=ahorrMensual*factor,found2=null;
+      for(let a=1;a<=50;a++){
+        for(let m=0;m<12;m++) cap2=cap2*(1+rendMensual)+am2;
+        const gat=gastoDeseo*Math.pow(1+inflAnual,a);
+        const cn=Math.abs(rendRealMensual)<0.0001?gat*aniosRetiroDeseo*12:gat*(1-Math.pow(1+rendRealMensual,-aniosRetiroDeseo*12))/rendRealMensual;
+        if(cap2>=cn&&!found2){found2=a;break;}
+      }
+      return `<div class="scenario-row">
+        <div class="scenario-dot" style="background:${factor>=3?'var(--green)':'var(--teal)'}"></div>
+        <div class="scenario-label">Ahorrando ${fmtFull(ahorrMensual*factor)}/mes (×${factor})</div>
+        <div class="scenario-val" style="color:var(--teal)">${found2?'Año '+(edadActual+found2)+' ('+found2+'a)':'+50 años'}</div>
+      </div>`;
+    }).join('');
+
+  document.getElementById('result-cuando').classList.add('show');
+  document.getElementById('result-cuando').scrollIntoView({behavior:'smooth',block:'start'});
+}
+</script>
+</body>
+</html>
