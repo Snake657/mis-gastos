@@ -256,6 +256,101 @@
     tr:hover td { background:var(--surface2); }
     td.fecha { color:var(--text3); }
 
+    /* COMPARE TOGGLE */
+    .chart-controls { display:flex; flex-wrap:wrap; gap:8px; align-items:center; margin-bottom:14px; }
+    .compare-toggle {
+      display:flex; align-items:center; gap:6px;
+      padding:6px 13px; border-radius:7px; border:1px solid var(--border2);
+      background:transparent; color:var(--text2);
+      font-family:'IBM Plex Mono',monospace; font-size:0.72rem; font-weight:500;
+      cursor:pointer; transition:all .15s; white-space:nowrap;
+    }
+    .compare-toggle:hover { border-color:var(--accent); color:var(--text); }
+    .compare-toggle.active { background:var(--accent-dim); border-color:var(--accent); color:var(--accent); }
+    .compare-toggle svg { width:13px; height:13px; flex-shrink:0; }
+
+    /* SERIES CHECKBOXES */
+    .series-picker {
+      display:none; flex-wrap:wrap; gap:6px; margin-bottom:12px;
+      padding:12px; background:var(--surface2); border-radius:9px; border:1px solid var(--border);
+    }
+    .series-picker.visible { display:flex; }
+    .series-cb {
+      display:flex; align-items:center; gap:6px; padding:5px 11px;
+      border-radius:6px; border:1px solid var(--border2); cursor:pointer;
+      font-family:'IBM Plex Mono',monospace; font-size:0.72rem; color:var(--text2);
+      transition:all .15s; user-select:none;
+    }
+    .series-cb input { display:none; }
+    .series-cb .cb-dot { width:8px; height:8px; border-radius:50%; flex-shrink:0; border:1.5px solid currentColor; transition:background .15s; }
+    .series-cb.checked .cb-dot { background:currentColor; }
+    .series-cb.checked { border-color:currentColor; }
+    .series-cb[data-tipo="oficial"] { color:var(--accent); }
+    .series-cb[data-tipo="blue"]    { color:var(--blue); }
+    .series-cb[data-tipo="mep"]     { color:var(--orange); }
+    .series-cb[data-tipo="ccl"]     { color:var(--purple); }
+
+    /* CUSTOM DATE RANGE */
+    .custom-range {
+      display:none; align-items:flex-end; gap:8px; flex-wrap:wrap;
+      padding:12px; background:var(--surface2); border-radius:9px;
+      border:1px solid var(--border); margin-bottom:12px;
+    }
+    .custom-range.visible { display:flex; }
+    .custom-range label {
+      font-family:'IBM Plex Mono',monospace; font-size:0.65rem;
+      color:var(--text3); letter-spacing:.06em; text-transform:uppercase;
+      display:block; margin-bottom:4px;
+    }
+    .custom-range input[type="date"] {
+      background:var(--surface); border:1px solid var(--border2); border-radius:7px;
+      color:var(--text); font-family:'IBM Plex Mono',monospace; font-size:0.8rem;
+      padding:6px 10px; outline:none; transition:border-color .15s; color-scheme:dark;
+    }
+    .custom-range input[type="date"]:focus { border-color:var(--accent); }
+    .apply-btn {
+      padding:7px 16px; border-radius:7px; border:none;
+      background:var(--accent); color:var(--bg);
+      font-family:'IBM Plex Mono',monospace; font-size:0.78rem; font-weight:700;
+      cursor:pointer; transition:opacity .15s; white-space:nowrap;
+    }
+    .apply-btn:hover { opacity:.85; }
+
+    /* VARIATION PANEL */
+    .var-panel {
+      display:none; background:var(--surface); border:1px solid var(--border);
+      border-radius:12px; padding:16px; margin-bottom:14px;
+    }
+    .var-panel.visible { display:block; }
+    .var-panel-title {
+      font-family:'IBM Plex Mono',monospace; font-size:0.65rem;
+      text-transform:uppercase; letter-spacing:.1em; color:var(--text3); margin-bottom:4px;
+    }
+    .var-period {
+      font-family:'IBM Plex Mono',monospace; font-size:0.62rem; color:var(--text3);
+      margin-bottom:12px;
+    }
+    .var-grid { display:grid; grid-template-columns:repeat(2,1fr); gap:8px; }
+    @media(min-width:560px) { .var-grid { grid-template-columns:repeat(4,1fr); } }
+    .var-card {
+      background:var(--surface2); border:1px solid var(--border);
+      border-radius:9px; padding:12px 13px;
+    }
+    .var-card-label {
+      font-family:'IBM Plex Mono',monospace; font-size:0.6rem;
+      text-transform:uppercase; letter-spacing:.1em; margin-bottom:6px; font-weight:700;
+    }
+    .var-card[data-tipo="oficial"] .var-card-label { color:var(--accent); }
+    .var-card[data-tipo="blue"]    .var-card-label { color:var(--blue); }
+    .var-card[data-tipo="mep"]     .var-card-label { color:var(--orange); }
+    .var-card[data-tipo="ccl"]     .var-card-label { color:var(--purple); }
+    .var-pct { font-family:'IBM Plex Mono',monospace; font-size:1.3rem; font-weight:700; line-height:1; margin-bottom:5px; }
+    .var-pct.pos { color:var(--accent); }
+    .var-pct.neg { color:var(--red); }
+    .var-pct.neu { color:var(--text3); }
+    .var-row { display:flex; justify-content:space-between; font-family:'IBM Plex Mono',monospace; font-size:0.62rem; color:var(--text3); margin-top:3px; }
+    .var-row span:last-child { color:var(--text2); }
+
     /* LOADING */
     .state-msg {
       display:flex; align-items:center; justify-content:center;
@@ -322,8 +417,8 @@
   <h1>Cotización histórica<br>del dólar</h1>
   <p class="subtitle">Oficial, Blue, MEP y CCL — datos diarios desde 2003.</p>
 
-  <!-- TIPO TABS -->
-  <div class="tipo-tabs">
+  <!-- TIPO TABS (modo single) -->
+  <div class="tipo-tabs" id="tipo-tabs-single">
     <button class="tipo-tab active" data-tipo="oficial"><span class="dot"></span>Oficial</button>
     <button class="tipo-tab" data-tipo="blue"><span class="dot"></span>Blue</button>
     <button class="tipo-tab" data-tipo="mep"><span class="dot"></span>MEP</button>
@@ -353,19 +448,49 @@
   <div class="chart-panel">
     <div class="chart-toolbar">
       <span class="chart-title" id="chart-title">DÓLAR OFICIAL — VENTA</span>
-      <div class="range-tabs">
-        <button class="range-tab" data-range="1M">1M</button>
-        <button class="range-tab" data-range="3M">3M</button>
-        <button class="range-tab" data-range="6M">6M</button>
-        <button class="range-tab active" data-range="1A">1A</button>
-        <button class="range-tab" data-range="5A">5A</button>
-        <button class="range-tab" data-range="TODO">Todo</button>
+      <div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap;">
+        <div class="range-tabs">
+          <button class="range-tab" data-range="1M">1M</button>
+          <button class="range-tab" data-range="3M">3M</button>
+          <button class="range-tab" data-range="6M">6M</button>
+          <button class="range-tab active" data-range="1A">1A</button>
+          <button class="range-tab" data-range="5A">5A</button>
+          <button class="range-tab" data-range="TODO">Todo</button>
+          <button class="range-tab" data-range="CUSTOM">📅 Custom</button>
+        </div>
+        <button class="compare-toggle" id="btn-compare">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+          Comparar
+        </button>
       </div>
     </div>
+
+    <!-- Custom date range picker -->
+    <div class="custom-range" id="custom-range">
+      <div><label>Desde</label><input type="date" id="cr-from" /></div>
+      <div><label>Hasta</label><input type="date" id="cr-to" /></div>
+      <button class="apply-btn" id="btn-apply-custom">Aplicar</button>
+    </div>
+
+    <!-- Series picker (compare mode) -->
+    <div class="series-picker" id="series-picker">
+      <label class="series-cb checked" data-tipo="oficial"><input type="checkbox" checked /><span class="cb-dot"></span>Oficial</label>
+      <label class="series-cb" data-tipo="blue"><input type="checkbox" /><span class="cb-dot"></span>Blue</label>
+      <label class="series-cb" data-tipo="mep"><input type="checkbox" /><span class="cb-dot"></span>MEP</label>
+      <label class="series-cb" data-tipo="ccl"><input type="checkbox" /><span class="cb-dot"></span>CCL</label>
+    </div>
+
     <div class="chart-wrap">
       <div class="state-msg" id="chart-loading"><div class="spinner"></div><span>Cargando…</span></div>
       <canvas id="mainChart" style="display:none;"></canvas>
     </div>
+  </div>
+
+  <!-- VARIATION PANEL -->
+  <div class="var-panel" id="var-panel">
+    <div class="var-panel-title">Variación del período</div>
+    <div class="var-period" id="var-period-label">—</div>
+    <div class="var-grid" id="var-grid"></div>
   </div>
 
   <!-- SEARCH -->
@@ -440,14 +565,17 @@
 <script>
 // ── CONFIG ──────────────────────────────────────────────
 const TIPOS = {
-  oficial: { label:'Dólar Oficial',    color:'#4ade80', key:'oficial' },
-  blue:    { label:'Dólar Blue',       color:'#60a5fa', key:'blue' },
-  mep:     { label:'Dólar MEP',        color:'#fb923c', key:'bolsa' },
-  ccl:     { label:'Dólar CCL',        color:'#a78bfa', key:'contadoconliqui' },
+  oficial: { label:'Dólar Oficial', color:'#4ade80', key:'oficial' },
+  blue:    { label:'Dólar Blue',    color:'#60a5fa', key:'blue' },
+  mep:     { label:'Dólar MEP',     color:'#fb923c', key:'bolsa' },
+  ccl:     { label:'Dólar CCL',     color:'#a78bfa', key:'contadoconliqui' },
 };
 const API_BASE = 'https://api.argentinadatos.com/v1/cotizaciones/dolares/';
 
 let currentTipo = 'oficial', currentRange = '1A';
+let customFrom = null, customTo = null;
+let compareMode = false;
+let activeSeries = new Set(['oficial']);
 let allData = {}, chart = null, searchMode = 'exacta';
 
 // ── UTILS ────────────────────────────────────────────────
@@ -463,8 +591,12 @@ function fmtDS(d) {
   const [y,m] = d.slice(0,10).split('-');
   return `${m}/${y.slice(2)}`;
 }
-function filterRange(data, range) {
+function filterRange(data, range, from, to) {
   if (!data?.length) return [];
+  if (range === 'CUSTOM') {
+    if (!from || !to) return data;
+    return data.filter(d => d.fecha.slice(0,10) >= from && d.fecha.slice(0,10) <= to);
+  }
   const now = new Date(), cut = new Date(now);
   if (range==='1M') cut.setMonth(now.getMonth()-1);
   else if (range==='3M') cut.setMonth(now.getMonth()-3);
@@ -475,7 +607,7 @@ function filterRange(data, range) {
   return data.filter(d => new Date(d.fecha) >= cut);
 }
 
-// ── LIVE PATCH (dolarapi.com) ────────────────────────────
+// ── LIVE PATCH ────────────────────────────────────────────
 const LIVE_API = 'https://dolarapi.com/v1/dolares';
 const LIVE_CASA = { oficial:'oficial', blue:'blue', mep:'bolsa', ccl:'contadoconliqui' };
 let _liveCache = null;
@@ -495,10 +627,10 @@ async function injectToday(tipo, data) {
   if (!live) return data;
   const match = live.find(d => d.casa === LIVE_CASA[tipo]);
   if (!match?.venta) return data;
-  const today = new Date().toLocaleDateString('sv-SE', { timeZone: 'America/Argentina/Buenos_Aires' }); // YYYY-MM-DD
-  const lastFecha = data.length ? data[data.length - 1].fecha.slice(0, 10) : '';
+  const today = new Date().toLocaleDateString('sv-SE', { timeZone: 'America/Argentina/Buenos_Aires' });
+  const lastFecha = data.length ? data[data.length-1].fecha.slice(0,10) : '';
   if (today > lastFecha) {
-    data = [...data, { fecha: today, compra: match.compra, venta: match.venta, _live: true }];
+    data = [...data, { fecha:today, compra:match.compra, venta:match.venta, _live:true }];
   }
   return data;
 }
@@ -521,7 +653,8 @@ function downsample(arr, n) {
   for (let i=0;i<n;i++) r.push(arr[Math.floor(i*step)]);
   return r;
 }
-function buildChart(data, tipo) {
+
+function buildChartSingle(data, tipo) {
   const cfg = TIPOS[tipo];
   const canvas = document.getElementById('mainChart');
   const ctx = canvas.getContext('2d');
@@ -533,48 +666,136 @@ function buildChart(data, tipo) {
   grad.addColorStop(0, cfg.color+'28');
   grad.addColorStop(1, cfg.color+'00');
   const datasets = [
-    { label:'Venta',  data:ventas,  borderColor:cfg.color, backgroundColor:grad,          borderWidth:1.5, pointRadius:0, tension:0.3, fill:true },
+    { label:'Venta',  data:ventas,  borderColor:cfg.color, backgroundColor:grad, borderWidth:1.5, pointRadius:0, tension:0.3, fill:true },
     { label:'Compra', data:compras, borderColor:cfg.color+'60', backgroundColor:'transparent', borderWidth:1, pointRadius:0, tension:0.3, fill:false, borderDash:[4,3] }
   ];
+  const tickCb = (_,i) => i % Math.max(1,Math.floor(pts.length/8))===0 ? fmtDS(labels[i]) : '';
   if (chart) {
     chart.data.labels = labels;
     chart.data.datasets = datasets;
-    chart.options.scales.x.ticks.callback = (_,i) => i % Math.max(1,Math.floor(pts.length/8))===0 ? fmtDS(labels[i]) : '';
+    chart.options.scales.x.ticks.callback = tickCb;
     chart.update('none'); return;
   }
   chart = new Chart(ctx, {
     type:'line', data:{labels, datasets},
-    options:{
-      responsive:true, maintainAspectRatio:false,
-      interaction:{intersect:false, mode:'index'},
-      plugins:{
-        legend:{display:false},
-        tooltip:{
-          backgroundColor:'#1a1e28', borderColor:'#232736', borderWidth:1,
-          titleColor:'#8b90a4', bodyColor:'#e8eaf0',
-          titleFont:{family:'IBM Plex Mono',size:11},
-          bodyFont:{family:'IBM Plex Mono',size:12}, padding:10,
-          callbacks:{
-            title:items=>fmtD(items[0].label),
-            label:item=>` ${item.dataset.label}: ${fmt(item.raw)}`
-          }
-        }
-      },
-      scales:{
-        x:{grid:{color:'#232736',drawTicks:false}, border:{color:'#232736'},
-          ticks:{color:'#545870', font:{family:'IBM Plex Mono',size:10}, maxRotation:0,
-            callback:function(_,i){ return i%Math.max(1,Math.floor(pts.length/8))===0?fmtDS(labels[i]):''; }
-          }
-        },
-        y:{position:'right', grid:{color:'#232736',drawTicks:false}, border:{color:'#232736',dash:[3,3]},
-          ticks:{color:'#545870', font:{family:'IBM Plex Mono',size:10},
-            callback:v=>'$'+Number(v).toLocaleString('es-AR',{maximumFractionDigits:0})
-          }
-        }
-      },
-      animation:{duration:200}
-    }
+    options: chartOptions(tickCb, true)
   });
+}
+
+function buildChartCompare(dataMap) {
+  // Merge all dates into one master label set
+  const allDates = [...new Set(
+    Object.values(dataMap).flatMap(arr => arr.map(d=>d.fecha.slice(0,10)))
+  )].sort();
+  const pts = allDates.length > 800 ? downsample(allDates.map(d=>({d})),800).map(x=>x.d) : allDates;
+
+  const canvas = document.getElementById('mainChart');
+  const ctx = canvas.getContext('2d');
+
+  const datasets = Object.entries(dataMap).map(([tipo, raw]) => {
+    const cfg = TIPOS[tipo];
+    // Map data to master date index
+    const byDate = Object.fromEntries(raw.map(d=>[d.fecha.slice(0,10), d.venta]));
+    const values = pts.map(d => byDate[d] ?? null);
+    const grad = ctx.createLinearGradient(0,0,0,260);
+    grad.addColorStop(0, cfg.color+'18');
+    grad.addColorStop(1, cfg.color+'00');
+    return {
+      label: cfg.label,
+      data: values,
+      borderColor: cfg.color,
+      backgroundColor: grad,
+      borderWidth: 1.5,
+      pointRadius: 0,
+      tension: 0.3,
+      fill: false,
+      spanGaps: true,
+    };
+  });
+
+  const tickCb = (_,i) => i % Math.max(1,Math.floor(pts.length/8))===0 ? fmtDS(pts[i]) : '';
+
+  if (chart) {
+    chart.data.labels = pts;
+    chart.data.datasets = datasets;
+    chart.options.scales.x.ticks.callback = tickCb;
+    chart.options.plugins.legend.display = true;
+    chart.update('none'); return;
+  }
+  const opts = chartOptions(tickCb, false);
+  opts.plugins.legend.display = true;
+  opts.plugins.legend.labels = {
+    color:'#8b90a4', font:{family:'IBM Plex Mono',size:10},
+    boxWidth:10, boxHeight:10, usePointStyle:true, pointStyle:'circle'
+  };
+  chart = new Chart(ctx, { type:'line', data:{labels:pts, datasets}, options:opts });
+}
+
+function chartOptions(tickCb, singleMode) {
+  return {
+    responsive:true, maintainAspectRatio:false,
+    interaction:{intersect:false, mode:'index'},
+    plugins:{
+      legend:{display:false},
+      tooltip:{
+        backgroundColor:'#1a1e28', borderColor:'#232736', borderWidth:1,
+        titleColor:'#8b90a4', bodyColor:'#e8eaf0',
+        titleFont:{family:'IBM Plex Mono',size:11},
+        bodyFont:{family:'IBM Plex Mono',size:12}, padding:10,
+        callbacks:{
+          title:items=>fmtD(items[0].label),
+          label:item=>` ${item.dataset.label}: ${fmt(item.raw)}`
+        }
+      }
+    },
+    scales:{
+      x:{grid:{color:'#232736',drawTicks:false}, border:{color:'#232736'},
+        ticks:{color:'#545870', font:{family:'IBM Plex Mono',size:10}, maxRotation:0, callback:tickCb}
+      },
+      y:{position:'right', grid:{color:'#232736',drawTicks:false}, border:{color:'#232736',dash:[3,3]},
+        ticks:{color:'#545870', font:{family:'IBM Plex Mono',size:10},
+          callback:v=>'$'+Number(v).toLocaleString('es-AR',{maximumFractionDigits:0})
+        }
+      }
+    },
+    animation:{duration:200}
+  };
+}
+
+// ── VARIATION PANEL ──────────────────────────────────────
+function updateVarPanel(dataMap, range, from, to) {
+  const panel = document.getElementById('var-panel');
+  const grid  = document.getElementById('var-grid');
+  const label = document.getElementById('var-period-label');
+
+  const entries = Object.entries(dataMap);
+  if (!entries.length) { panel.classList.remove('visible'); return; }
+
+  // Period label
+  const allFiltered = Object.values(dataMap);
+  const minDate = allFiltered.flatMap(a=>a).map(d=>d.fecha.slice(0,10)).sort()[0];
+  const maxDate = allFiltered.flatMap(a=>a).map(d=>d.fecha.slice(0,10)).sort().pop();
+  if (!minDate) { panel.classList.remove('visible'); return; }
+  label.textContent = `${fmtD(minDate)} → ${fmtD(maxDate)}`;
+
+  grid.innerHTML = entries.map(([tipo, data]) => {
+    if (!data.length) return '';
+    const first = data.find(d=>d.venta>0);
+    const last  = [...data].reverse().find(d=>d.venta>0);
+    if (!first || !last) return '';
+    const pct = ((last.venta - first.venta) / first.venta) * 100;
+    const cls = pct > 0 ? 'pos' : pct < 0 ? 'neg' : 'neu';
+    const sign = pct >= 0 ? '+' : '';
+    return `<div class="var-card" data-tipo="${tipo}">
+      <div class="var-card-label">${TIPOS[tipo].label}</div>
+      <div class="var-pct ${cls}">${sign}${pct.toFixed(1)}%</div>
+      <div class="var-row"><span>Inicio</span><span>${fmt(first.venta)}</span></div>
+      <div class="var-row"><span>Fin</span><span>${fmt(last.venta)}</span></div>
+      <div class="var-row"><span>Variación</span><span style="color:${pct>0?'var(--accent)':pct<0?'var(--red)':'var(--text3)'}">
+        ${sign}${fmt(Math.abs(last.venta-first.venta))}</span></div>
+    </div>`;
+  }).join('');
+  panel.classList.add('visible');
 }
 
 // ── CARDS ────────────────────────────────────────────────
@@ -584,9 +805,7 @@ function updateCards(data) {
   const vs = data.map(d=>d.venta).filter(v=>v>0);
   const maxV = Math.max(...vs), minV = Math.min(...vs);
   document.getElementById('card-current').textContent = fmt(last.venta);
-  document.getElementById('card-current-date').textContent = last._live
-    ? 'hoy · en vivo ⚡'
-    : fmtD(last.fecha);
+  document.getElementById('card-current-date').textContent = last._live ? 'hoy · en vivo ⚡' : fmtD(last.fecha);
   document.getElementById('card-max').textContent = fmt(maxV);
   document.getElementById('card-max-date').textContent = fmtD(data.find(d=>d.venta===maxV)?.fecha||'');
   document.getElementById('card-min').textContent = fmt(minV);
@@ -606,18 +825,41 @@ function updateTable(data) {
 }
 
 // ── RENDER ───────────────────────────────────────────────
-async function render(tipo, range) {
+async function render() {
   document.getElementById('chart-loading').style.display='flex';
   document.getElementById('mainChart').style.display='none';
+  if (chart) { chart.destroy(); chart=null; }
+
   try {
-    const raw = await loadData(tipo);
-    const data = filterRange(raw, range);
-    document.getElementById('chart-loading').style.display='none';
-    document.getElementById('mainChart').style.display='block';
-    buildChart(data, tipo);
-    updateCards(data);
-    updateTable(data);
-    document.getElementById('chart-title').textContent = TIPOS[tipo].label.toUpperCase()+' — VENTA';
+    if (compareMode) {
+      // Load all active series
+      const tiposArr = [...activeSeries];
+      await Promise.all(tiposArr.map(t=>loadData(t)));
+      const dataMap = {};
+      for (const t of tiposArr) {
+        dataMap[t] = filterRange(allData[t]||[], currentRange, customFrom, customTo);
+      }
+      document.getElementById('chart-loading').style.display='none';
+      document.getElementById('mainChart').style.display='block';
+      buildChartCompare(dataMap);
+      updateVarPanel(dataMap, currentRange, customFrom, customTo);
+      // Cards show first active series
+      if (tiposArr[0]) updateCards(dataMap[tiposArr[0]]);
+      const names = tiposArr.map(t=>TIPOS[t].label).join(' + ');
+      document.getElementById('chart-title').textContent = names.toUpperCase() + ' — VENTA';
+      // Table shows first active
+      if (tiposArr[0]) updateTable(dataMap[tiposArr[0]]);
+    } else {
+      const raw = await loadData(currentTipo);
+      const data = filterRange(raw, currentRange, customFrom, customTo);
+      document.getElementById('chart-loading').style.display='none';
+      document.getElementById('mainChart').style.display='block';
+      buildChartSingle(data, currentTipo);
+      updateCards(data);
+      updateTable(data);
+      updateVarPanel({[currentTipo]:data}, currentRange, customFrom, customTo);
+      document.getElementById('chart-title').textContent = TIPOS[currentTipo].label.toUpperCase()+' — VENTA';
+    }
   } catch(err) {
     document.getElementById('chart-loading').innerHTML = `<span style="color:#f87171">Error: ${err.message}</span>`;
   }
@@ -647,8 +889,7 @@ function renderExact(dateStr) {
     el.classList.add('visible'); return;
   }
   const first = results.find(r=>r.r)?.r;
-  const wasExact = first?.exact;
-  const headline = wasExact
+  const headline = first?.exact
     ? `Cotizaciones del ${fmtD(dateStr)}`
     : `${fmtD(dateStr)} es día no hábil — mostrando el anterior: ${fmtD(first.fecha)}`;
   el.innerHTML = `
@@ -697,17 +938,76 @@ function renderRange(from, to) {
 }
 
 // ── EVENTS ───────────────────────────────────────────────
+
+// Tipo tabs (single mode)
 document.querySelectorAll('.tipo-tab').forEach(btn=>btn.addEventListener('click',()=>{
   document.querySelectorAll('.tipo-tab').forEach(b=>b.classList.remove('active'));
-  btn.classList.add('active'); currentTipo=btn.dataset.tipo;
-  if (chart){chart.destroy();chart=null;}
-  render(currentTipo, currentRange);
+  btn.classList.add('active');
+  currentTipo = btn.dataset.tipo;
+  render();
 }));
+
+// Range tabs
 document.querySelectorAll('.range-tab').forEach(btn=>btn.addEventListener('click',()=>{
   document.querySelectorAll('.range-tab').forEach(b=>b.classList.remove('active'));
-  btn.classList.add('active'); currentRange=btn.dataset.range;
-  render(currentTipo, currentRange);
+  btn.classList.add('active');
+  currentRange = btn.dataset.range;
+  const cr = document.getElementById('custom-range');
+  if (currentRange === 'CUSTOM') {
+    cr.classList.add('visible');
+  } else {
+    cr.classList.remove('visible');
+    customFrom = null; customTo = null;
+    render();
+  }
 }));
+
+// Custom date range apply
+document.getElementById('btn-apply-custom').addEventListener('click', ()=>{
+  const f = document.getElementById('cr-from').value;
+  const t = document.getElementById('cr-to').value;
+  if (!f || !t) return;
+  if (f > t) { alert('La fecha de inicio debe ser anterior.'); return; }
+  customFrom = f; customTo = t;
+  render();
+});
+
+// Compare toggle
+document.getElementById('btn-compare').addEventListener('click', ()=>{
+  compareMode = !compareMode;
+  const btn = document.getElementById('btn-compare');
+  const singleTabs = document.getElementById('tipo-tabs-single');
+  const picker = document.getElementById('series-picker');
+  btn.classList.toggle('active', compareMode);
+  singleTabs.style.display = compareMode ? 'none' : 'flex';
+  picker.classList.toggle('visible', compareMode);
+  if (compareMode) {
+    // Start with current tipo selected
+    activeSeries = new Set([currentTipo]);
+    document.querySelectorAll('.series-cb').forEach(cb=>{
+      const t = cb.dataset.tipo;
+      cb.classList.toggle('checked', activeSeries.has(t));
+      cb.querySelector('input').checked = activeSeries.has(t);
+    });
+  }
+  render();
+});
+
+// Series checkboxes
+document.querySelectorAll('.series-cb').forEach(cb=>{
+  cb.addEventListener('click', ()=>{
+    const tipo = cb.dataset.tipo;
+    const checked = !cb.classList.contains('checked');
+    if (!checked && activeSeries.size === 1) return; // keep at least 1
+    cb.classList.toggle('checked', checked);
+    cb.querySelector('input').checked = checked;
+    if (checked) activeSeries.add(tipo);
+    else activeSeries.delete(tipo);
+    render();
+  });
+});
+
+// Search modes
 document.querySelectorAll('.smode-btn').forEach(btn=>btn.addEventListener('click',()=>{
   document.querySelectorAll('.smode-btn').forEach(b=>b.classList.remove('active'));
   btn.classList.add('active'); searchMode=btn.dataset.mode;
@@ -737,7 +1037,7 @@ document.getElementById('btn-clr-range').addEventListener('click',()=>{
 });
 
 // ── INIT ─────────────────────────────────────────────────
-render('oficial','1A');
+render();
 </script>
 </body>
 </html>
