@@ -6,128 +6,129 @@
 <meta name="mobile-web-app-capable" content="yes"/>
 <meta name="apple-mobile-web-app-capable" content="yes"/>
 <meta name="apple-mobile-web-app-title" content="Mi Retiro"/>
-<meta name="theme-color" content="#0a0f1a"/>
+<meta name="theme-color" content="#080e1a"/>
 <title>Mi Retiro — Canuto.ar</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap');
 :root{
-  --bg:#0a0f1a;--surface:#111827;--surface2:#1a2436;--border:rgba(255,255,255,0.08);
-  --text:#f0f4ff;--muted:rgba(240,244,255,0.5);--muted2:rgba(240,244,255,0.28);
-  --teal:#14b8a6;--teal2:#0d9488;--tealfaint:rgba(20,184,166,0.12);
-  --orange:#fb923c;--green:#34d399;--red:#f87171;--violet:#7c5cfc;
-  --radius:14px;--radius-sm:10px;--shadow:rgba(0,0,0,.5);
+  --bg:#080e1a;--surface:#0f1929;--surface2:#162035;--surface3:#1c2840;
+  --border:rgba(255,255,255,0.07);--border2:rgba(255,255,255,0.12);
+  --text:#eef2ff;--muted:rgba(238,242,255,0.5);--muted2:rgba(238,242,255,0.28);
+  --teal:#2dd4bf;--teal2:#14b8a6;--teal3:#0d9488;
+  --tealfaint:rgba(45,212,191,0.1);--tealfaint2:rgba(45,212,191,0.06);
+  --green:#4ade80;--red:#f87171;--orange:#fb923c;--yellow:#fbbf24;
+  --radius:14px;--radius-sm:10px;--radius-xs:7px;--shadow:rgba(0,0,0,.6);
 }
 [data-theme="light"]{
-  --bg:#f4f7f6;--surface:#ffffff;--surface2:#eef2f0;--border:rgba(0,0,0,0.08);
-  --text:#0d1f1c;--muted:rgba(13,31,28,0.5);--muted2:rgba(13,31,28,0.3);--shadow:rgba(0,0,0,.1);
+  --bg:#f0f4f3;--surface:#ffffff;--surface2:#e8efed;--surface3:#dde6e3;
+  --border:rgba(0,0,0,0.07);--border2:rgba(0,0,0,0.12);
+  --text:#0a1a16;--muted:rgba(10,26,22,0.5);--muted2:rgba(10,26,22,0.3);--shadow:rgba(0,0,0,.1);
 }
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
-html,body{height:100%;background:var(--bg);color:var(--text);font-family:'DM Sans',system-ui,sans-serif;font-size:15px;line-height:1.5;overflow-x:hidden;}
-::-webkit-scrollbar{width:3px;} ::-webkit-scrollbar-thumb{background:#888;border-radius:4px;}
+html,body{height:100%;background:var(--bg);color:var(--text);font-family:'DM Sans',system-ui,sans-serif;font-size:15px;line-height:1.5;overflow-x:hidden;transition:background .2s,color .2s;}
+::-webkit-scrollbar{width:3px;} ::-webkit-scrollbar-thumb{background:rgba(128,128,128,.3);border-radius:4px;}
+input[type=number]::-webkit-inner-spin-button,input[type=number]::-webkit-outer-spin-button{-webkit-appearance:none;}
+input[type=number]{-moz-appearance:textfield;}
 
-/* Header */
-header{position:sticky;top:0;z-index:20;background:var(--bg);border-bottom:1px solid var(--border);padding:12px 16px;display:flex;align-items:center;justify-content:space-between;gap:8px;}
-.logo-wrap{display:flex;align-items:center;gap:8px;text-decoration:none;color:var(--text);}
-.logo-icon{width:30px;height:30px;border-radius:9px;background:linear-gradient(135deg,var(--teal),var(--teal2));display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0;}
-.logo-title{font-weight:700;font-size:15px;letter-spacing:-.02em;}
-.logo-sub{font-size:11px;color:var(--muted);margin-top:-1px;}
-.header-right{display:flex;align-items:center;gap:8px;}
-.btn-back{display:flex;align-items:center;gap:5px;padding:6px 12px;border-radius:8px;border:1px solid var(--border);background:transparent;color:var(--muted);font-size:12px;font-weight:600;font-family:inherit;cursor:pointer;text-decoration:none;}
+header{position:sticky;top:0;z-index:30;background:var(--bg);border-bottom:1px solid var(--border);padding:11px 16px;display:flex;align-items:center;justify-content:space-between;gap:8px;backdrop-filter:blur(12px);}
+.logo-wrap{display:flex;align-items:center;gap:9px;text-decoration:none;color:var(--text);}
+.logo-icon{width:32px;height:32px;border-radius:10px;background:linear-gradient(135deg,var(--teal2),var(--teal3));display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;box-shadow:0 4px 14px rgba(20,184,166,.3);}
+.logo-text strong{display:block;font-weight:700;font-size:14px;letter-spacing:-.02em;line-height:1.2;}
+.logo-text span{font-size:10px;color:var(--muted2);letter-spacing:.04em;text-transform:uppercase;}
+.header-right{display:flex;align-items:center;gap:7px;}
+.btn-back{display:flex;align-items:center;gap:5px;padding:6px 12px;border-radius:8px;border:1px solid var(--border);background:transparent;color:var(--muted);font-size:12px;font-weight:600;font-family:inherit;cursor:pointer;text-decoration:none;transition:border-color .15s,color .15s;}
+.btn-back:hover{border-color:var(--border2);color:var(--text);}
 .btn-back svg{width:13px;height:13px;}
-.btn-theme{width:30px;height:30px;background:transparent;border:1px solid var(--border);border-radius:8px;display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--muted);flex-shrink:0;}
-.btn-theme svg{width:15px;height:15px;}
+.btn-theme{width:30px;height:30px;background:transparent;border:1px solid var(--border);border-radius:8px;display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--muted);}
+.btn-theme svg{width:14px;height:14px;}
 
-/* Layout */
-.main{max-width:700px;margin:0 auto;padding:20px 16px 60px;}
-.page-title{font-size:24px;font-weight:700;letter-spacing:-.03em;margin-bottom:4px;}
-.page-sub{font-size:14px;color:var(--muted);margin-bottom:24px;}
+.main{max-width:640px;margin:0 auto;padding:22px 16px 80px;}
+.page-eyebrow{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--teal);margin-bottom:8px;}
+.page-title{font-size:26px;font-weight:700;letter-spacing:-.03em;margin-bottom:6px;line-height:1.15;}
+.page-sub{font-size:14px;color:var(--muted);margin-bottom:26px;line-height:1.6;}
 
-/* Tabs */
-.tabs{display:flex;gap:4px;background:var(--surface2);border-radius:12px;padding:4px;margin-bottom:20px;}
-.tab{flex:1;padding:9px;border-radius:9px;border:none;background:transparent;color:var(--muted);font-size:13px;font-weight:600;font-family:inherit;cursor:pointer;transition:all .15s;text-align:center;}
-.tab.active{background:var(--surface);color:var(--text);box-shadow:0 1px 4px rgba(0,0,0,.2);}
+.tabs{display:flex;gap:3px;background:var(--surface2);border-radius:12px;padding:3px;margin-bottom:22px;border:1px solid var(--border);}
+.tab{flex:1;padding:9px 6px;border-radius:10px;border:none;background:transparent;color:var(--muted);font-size:12px;font-weight:600;font-family:inherit;cursor:pointer;transition:all .15s;text-align:center;line-height:1.3;}
+.tab.active{background:var(--surface);color:var(--text);box-shadow:0 1px 6px rgba(0,0,0,.25);}
 
-/* Cards */
-.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:18px;margin-bottom:12px;}
-.card-title{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin-bottom:14px;display:flex;align-items:center;gap:6px;}
-.card-title svg{width:13px;height:13px;color:var(--teal);}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:18px;margin-bottom:10px;transition:background .2s;}
+.card-title{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.09em;color:var(--muted);margin-bottom:16px;display:flex;align-items:center;gap:7px;}
+.card-title-icon{width:22px;height:22px;border-radius:6px;background:var(--tealfaint);display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.card-title-icon svg{width:11px;height:11px;color:var(--teal);}
 
-/* Fields */
-.field{margin-bottom:14px;}
+.field{margin-bottom:13px;}
 .field:last-child{margin-bottom:0;}
-.field label{display:block;font-size:12px;font-weight:600;color:var(--muted);margin-bottom:6px;}
-.field-hint{font-size:11px;color:var(--muted2);margin-top:4px;}
+.field label{display:block;font-size:12px;font-weight:600;color:var(--muted);margin-bottom:7px;}
+.field-hint{font-size:11px;color:var(--muted2);margin-top:5px;line-height:1.5;}
 .input-wrap{position:relative;}
-.input-sym{position:absolute;left:12px;top:50%;transform:translateY(-50%);font-size:13px;color:var(--muted2);pointer-events:none;font-family:'DM Mono',monospace;}
-.input-sym.usd{color:rgba(20,184,166,.5);font-size:10px;font-weight:700;}
-.input-wrap input{width:100%;background:var(--surface2);border:1.5px solid var(--border);border-radius:var(--radius-sm);padding:11px 13px 11px 28px;font-size:15px;font-weight:600;color:var(--text);font-family:'DM Mono',monospace;-webkit-appearance:none;transition:border-color .15s;}
-.input-wrap input::placeholder{color:var(--muted2);font-weight:400;}
-.input-wrap input:focus{outline:none;border-color:var(--teal);}
-.input-wrap.usd input{padding-left:38px;}
-.input-no-sym input{padding-left:13px;}
+.input-sym{position:absolute;left:13px;top:50%;transform:translateY(-50%);font-size:11px;font-weight:700;color:var(--teal);pointer-events:none;font-family:'DM Mono',monospace;letter-spacing:.02em;}
+.input-wrap input{width:100%;background:var(--surface2);border:1.5px solid var(--border);border-radius:var(--radius-sm);padding:12px 13px 12px 52px;font-size:16px;font-weight:700;color:var(--text);font-family:'DM Mono',monospace;-webkit-appearance:none;transition:border-color .15s,background .15s;letter-spacing:.01em;}
+.input-wrap input.sym-short{padding-left:44px;}
+.input-wrap input.sym-pct{padding-left:28px;}
+.input-wrap input::placeholder{color:var(--muted2);font-weight:400;font-size:14px;}
+.input-wrap input:focus{outline:none;border-color:var(--teal2);background:var(--surface3);}
 .grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
-.grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;}
 
-/* Slider */
-.slider-wrap{display:flex;align-items:center;gap:12px;margin-top:6px;}
-.slider{flex:1;-webkit-appearance:none;height:4px;border-radius:2px;background:var(--surface2);outline:none;}
-.slider::-webkit-slider-thumb{-webkit-appearance:none;width:18px;height:18px;border-radius:50%;background:var(--teal);cursor:pointer;border:2px solid var(--bg);}
-.slider-val{font-family:'DM Mono',monospace;font-size:13px;font-weight:700;color:var(--teal);min-width:42px;text-align:right;}
+.profiles-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+.profile-btn{padding:12px 10px;border-radius:var(--radius-sm);border:1.5px solid var(--border);background:var(--surface2);cursor:pointer;text-align:left;transition:all .18s;font-family:inherit;display:block;width:100%;}
+.profile-btn:hover{border-color:var(--border2);}
+.profile-btn.active{border-color:var(--teal2);background:var(--tealfaint);}
+.profile-emoji{font-size:18px;margin-bottom:5px;display:block;}
+.profile-name{font-size:12px;font-weight:700;color:var(--text);display:block;margin-bottom:2px;}
+.profile-rend{font-size:11px;font-weight:700;color:var(--teal);font-family:'DM Mono',monospace;display:block;margin-bottom:2px;}
+.profile-desc{font-size:10px;color:var(--muted2);line-height:1.4;display:block;}
+.profile-custom{grid-column:span 2;}
+.custom-input-wrap{display:none;padding-top:10px;}
+.custom-input-wrap.show{display:block;}
 
-/* Moneda toggle */
-.moneda-toggle{display:flex;gap:6px;margin-bottom:14px;}
-.moneda-btn{flex:1;padding:8px;border-radius:8px;border:1.5px solid var(--border);background:transparent;color:var(--muted);font-size:13px;font-weight:600;font-family:inherit;cursor:pointer;transition:all .15s;}
-.moneda-btn.active.ars{border-color:var(--teal);background:var(--tealfaint);color:var(--teal);}
-.moneda-btn.active.usd{border-color:rgba(20,184,166,.6);background:rgba(20,184,166,.08);color:var(--teal);}
+.inflation-wrap{margin-top:4px;}
+.slider{width:100%;-webkit-appearance:none;height:4px;border-radius:2px;background:var(--surface3);outline:none;margin-top:2px;}
+.slider::-webkit-slider-thumb{-webkit-appearance:none;width:18px;height:18px;border-radius:50%;background:var(--teal2);cursor:pointer;border:2px solid var(--bg);}
 
-/* Botón calcular */
-.btn-calc{width:100%;padding:15px;border-radius:var(--radius);border:none;background:linear-gradient(135deg,var(--teal),var(--teal2));color:#fff;font-size:16px;font-weight:700;font-family:inherit;cursor:pointer;margin-top:4px;transition:opacity .15s;}
-.btn-calc:active{opacity:.85;}
+.btn-calc{width:100%;padding:15px;border-radius:var(--radius);border:none;background:linear-gradient(135deg,var(--teal2),var(--teal3));color:#fff;font-size:15px;font-weight:700;font-family:inherit;cursor:pointer;margin-top:6px;transition:opacity .15s,transform .1s;box-shadow:0 4px 18px rgba(20,184,166,.3);letter-spacing:-.01em;}
+.btn-calc:active{opacity:.87;transform:scale(.99);}
 
-/* Resultado */
-.result-panel{background:linear-gradient(135deg,rgba(20,184,166,.12),rgba(20,184,166,.04));border:1px solid rgba(20,184,166,.25);border-radius:var(--radius);padding:20px;margin-bottom:12px;display:none;}
+.result-panel{background:linear-gradient(160deg,rgba(45,212,191,.09),rgba(45,212,191,.03));border:1px solid rgba(45,212,191,.22);border-radius:var(--radius);padding:20px;margin-top:10px;display:none;animation:fadeUp .3s ease;}
 .result-panel.show{display:block;}
-.result-headline{font-size:28px;font-weight:700;letter-spacing:-.03em;color:var(--teal);margin-bottom:4px;line-height:1.1;}
-.result-sub{font-size:14px;color:var(--muted);margin-bottom:18px;}
-.result-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px;}
-.result-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-sm);padding:12px;}
-.result-card .lbl{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--muted2);margin-bottom:4px;}
-.result-card .val{font-family:'DM Mono',monospace;font-size:16px;font-weight:700;}
-.result-card .val.pos{color:var(--green);}
-.result-card .val.neg{color:var(--red);}
-.result-card .val.neutral{color:var(--teal);}
+@keyframes fadeUp{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:translateY(0);}}
+.result-headline{font-size:30px;font-weight:700;letter-spacing:-.04em;color:var(--teal);margin-bottom:3px;line-height:1.1;font-family:'DM Mono',monospace;}
+.result-sub{font-size:13px;color:var(--muted);margin-bottom:18px;line-height:1.6;}
 
-/* Timeline visual */
-.timeline{margin-top:14px;}
-.timeline-label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--muted2);margin-bottom:8px;}
-.timeline-bar{height:10px;border-radius:99px;background:var(--surface2);overflow:hidden;margin-bottom:6px;}
-.timeline-fill{height:100%;border-radius:99px;background:linear-gradient(90deg,var(--teal),var(--green));transition:width .8s cubic-bezier(.4,0,.2,1);}
-.timeline-fill.danger{background:linear-gradient(90deg,var(--orange),var(--red));}
-.timeline-fill.warning{background:linear-gradient(90deg,var(--orange),#fbbf24);}
-.timeline-markers{display:flex;justify-content:space-between;font-size:10px;color:var(--muted2);font-family:'DM Mono',monospace;}
+.kpis{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:16px;}
+.kpi{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-sm);padding:12px 13px;}
+.kpi .lbl{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--muted2);margin-bottom:4px;}
+.kpi .val{font-family:'DM Mono',monospace;font-size:14px;font-weight:700;line-height:1.2;}
+.kpi .val.pos{color:var(--green);}
+.kpi .val.neg{color:var(--red);}
+.kpi .val.teal{color:var(--teal);}
+.kpi .val.warn{color:var(--orange);}
 
-/* Escenarios */
-.scenarios{display:flex;flex-direction:column;gap:8px;margin-top:12px;}
-.scenario-row{display:flex;align-items:center;gap:10px;padding:10px 12px;background:var(--surface2);border-radius:var(--radius-sm);border:1px solid var(--border);}
-.scenario-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
-.scenario-label{flex:1;font-size:13px;color:var(--muted);}
-.scenario-val{font-family:'DM Mono',monospace;font-size:13px;font-weight:700;}
+.sec-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.09em;color:var(--muted2);margin-bottom:8px;}
+.bar-track{height:10px;border-radius:99px;background:var(--surface2);overflow:hidden;margin-bottom:6px;}
+.bar-fill{height:100%;border-radius:99px;transition:width .9s cubic-bezier(.4,0,.2,1);}
+.bar-fill.good{background:linear-gradient(90deg,var(--teal2),var(--green));}
+.bar-fill.warn{background:linear-gradient(90deg,var(--orange),var(--yellow));}
+.bar-fill.danger{background:linear-gradient(90deg,var(--red),var(--orange));}
+.bar-markers{display:flex;justify-content:space-between;font-size:10px;color:var(--muted2);font-family:'DM Mono',monospace;margin-bottom:16px;}
 
-/* Proyección tabla */
-.proj-table{width:100%;border-collapse:collapse;font-size:12px;margin-top:4px;}
-.proj-table th{text-align:left;padding:6px 8px;color:var(--muted2);font-weight:600;font-size:10px;text-transform:uppercase;letter-spacing:.06em;border-bottom:1px solid var(--border);}
-.proj-table td{padding:7px 8px;border-bottom:1px solid rgba(255,255,255,.04);font-family:'DM Mono',monospace;}
+.scenarios{display:flex;flex-direction:column;gap:6px;margin-bottom:14px;}
+.sc-row{display:flex;align-items:center;gap:10px;padding:10px 12px;background:var(--surface);border-radius:var(--radius-xs);border:1px solid var(--border);}
+.sc-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0;}
+.sc-label{flex:1;font-size:12px;color:var(--muted);}
+.sc-val{font-family:'DM Mono',monospace;font-size:12px;font-weight:700;}
+
+.proj-wrap{overflow-x:auto;margin-top:4px;}
+.proj-table{width:100%;border-collapse:collapse;font-size:11px;}
+.proj-table th{text-align:left;padding:6px 8px;color:var(--muted2);font-weight:700;font-size:10px;text-transform:uppercase;letter-spacing:.06em;border-bottom:1px solid var(--border);}
+.proj-table td{padding:7px 8px;border-bottom:1px solid rgba(255,255,255,.03);font-family:'DM Mono',monospace;}
 .proj-table tr:last-child td{border-bottom:none;}
-.proj-table td.year{color:var(--muted);font-family:'DM Sans',sans-serif;}
-.proj-table td.capital{color:var(--teal);}
-.proj-table td.neg{color:var(--red);}
-.proj-table .proj-agotado{background:rgba(248,113,113,.06);color:var(--red);font-weight:600;}
+.proj-table .yr{color:var(--muted);font-family:'DM Sans',sans-serif;font-size:11px;}
+.proj-table .cap{color:var(--teal);}
+.proj-table .depleted td{color:var(--red);background:rgba(248,113,113,.05);}
 
-/* Info boxes */
-.info-box{background:rgba(20,184,166,.06);border:1px solid rgba(20,184,166,.2);border-radius:var(--radius-sm);padding:12px 14px;font-size:13px;color:var(--muted);line-height:1.6;margin-top:8px;}
+.info-box{background:var(--tealfaint2);border:1px solid rgba(45,212,191,.15);border-radius:var(--radius-xs);padding:12px 14px;font-size:12px;color:var(--muted);line-height:1.7;margin-top:10px;}
 .info-box strong{color:var(--text);}
 
-/* Toast */
 .toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(20px);z-index:100;background:var(--surface);border:1px solid var(--border);color:var(--text);font-size:13px;font-weight:500;padding:10px 18px;border-radius:99px;display:flex;align-items:center;gap:8px;opacity:0;pointer-events:none;transition:opacity .2s,transform .2s;white-space:nowrap;box-shadow:0 8px 32px var(--shadow);}
 .toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
 </style>
@@ -139,9 +140,9 @@ header{position:sticky;top:0;z-index:20;background:var(--bg);border-bottom:1px s
 <header>
   <a href="/" class="logo-wrap">
     <div class="logo-icon">🏖️</div>
-    <div>
-      <div class="logo-title">Mi Retiro</div>
-      <div class="logo-sub">canuto.ar</div>
+    <div class="logo-text">
+      <strong>Mi Retiro</strong>
+      <span>canuto.ar</span>
     </div>
   </a>
   <div class="header-right">
@@ -156,245 +157,153 @@ header{position:sticky;top:0;z-index:20;background:var(--bg);border-bottom:1px s
 </header>
 
 <div class="main">
+  <div class="page-eyebrow">Planificación financiera</div>
   <div class="page-title">¿Cuándo me puedo retirar?</div>
-  <div class="page-sub">Ingresá tus datos y calculá cuánto tiempo duran tus ahorros, cuánto necesitás juntar, o cuándo podés dejar de trabajar.</div>
+  <div class="page-sub">Calculá tu independencia financiera en dólares. Ingresá tus ahorros, elegí tu perfil de inversión y descubrí tu número.</div>
 
-  <!-- Tabs -->
   <div class="tabs">
     <button class="tab active" onclick="setTab('duran')" id="tab-duran">¿Cuánto duran?</button>
     <button class="tab" onclick="setTab('necesito')" id="tab-necesito">¿Cuánto necesito?</button>
     <button class="tab" onclick="setTab('cuando')" id="tab-cuando">¿Cuándo me retiro?</button>
   </div>
 
-  <!-- TAB 1: ¿Cuánto duran mis ahorros? -->
+  <!-- TAB 1 -->
   <div id="panel-duran">
-
     <div class="card">
-      <div class="card-title">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>
-        Mis ahorros actuales
-      </div>
-      <div class="moneda-toggle">
-        <button class="moneda-btn active ars" id="m-ars" onclick="setMoneda('ars')">$ Pesos</button>
-        <button class="moneda-btn usd" id="m-usd" onclick="setMoneda('usd')">USD Dólares</button>
-      </div>
-      <div class="field" id="field-ars">
-        <label>Capital ahorrado en $</label>
-        <div class="input-wrap"><span class="input-sym">$</span><input type="number" id="capital-ars" placeholder="0" min="0" step="1000"/></div>
-      </div>
-      <div class="field" id="field-usd" style="display:none">
-        <label>Capital ahorrado en USD</label>
-        <div class="input-wrap usd"><span class="input-sym usd">USD</span><input type="number" id="capital-usd" placeholder="0" min="0" step="100"/></div>
-        <div class="field-hint">Se convierte a ARS al tipo de cambio que ingreses abajo</div>
-      </div>
-      <div class="field" id="field-tc" style="display:none">
-        <label>Tipo de cambio USD/ARS</label>
-        <div class="input-wrap input-no-sym"><span class="input-sym">$</span><input type="number" id="tipo-cambio" placeholder="1390" min="1" step="10"/></div>
+      <div class="card-title"><div class="card-title-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg></div>Capital inicial</div>
+      <div class="field">
+        <label>¿Cuánto tenés ahorrado en USD?</label>
+        <div class="input-wrap"><span class="input-sym">USD</span><input type="text" id="d-capital" class="sym-short" placeholder="100.000" inputmode="numeric"/></div>
       </div>
     </div>
-
     <div class="card">
-      <div class="card-title">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2z"/><path d="M12 6v6l4 2"/></svg>
-        Gastos mensuales en el retiro
-      </div>
+      <div class="card-title"><div class="card-title-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg></div>Gasto mensual en el retiro</div>
       <div class="field">
-        <label>Gasto mensual estimado en $</label>
-        <div class="input-wrap"><span class="input-sym">$</span><input type="number" id="gasto-mensual" placeholder="0" min="0" step="1000"/></div>
-        <div class="field-hint">Cuánto necesitás por mes para vivir cómodamente</div>
+        <label>¿Cuánto necesitás por mes en USD?</label>
+        <div class="input-wrap"><span class="input-sym">USD</span><input type="text" id="d-gasto" class="sym-short" placeholder="3.000" inputmode="numeric"/></div>
+        <div class="field-hint">Incluí alquiler, comida, salud, ocio y todos tus gastos habituales.</div>
       </div>
-      <div class="field">
-        <label>Inflación anual estimada: <span id="inflacion-label" style="color:var(--teal)">60%</span></label>
-        <div class="slider-wrap">
-          <input type="range" class="slider" id="inflacion-slider" min="0" max="200" step="5" value="60" oninput="document.getElementById('inflacion-label').textContent=this.value+'%'"/>
+    </div>
+    <div class="card">
+      <div class="card-title"><div class="card-title-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></div>Perfil de inversión</div>
+      <div class="profiles-grid" id="d-profiles">
+        <button class="profile-btn" data-rend="4.5" onclick="selectProfile('d',this)"><span class="profile-emoji">🏦</span><span class="profile-name">Conservador</span><span class="profile-rend">~4.5% anual</span><span class="profile-desc">Treasuries, bonos investment grade, depósitos USD</span></button>
+        <button class="profile-btn active" data-rend="7.5" onclick="selectProfile('d',this)"><span class="profile-emoji">⚖️</span><span class="profile-name">Moderado</span><span class="profile-rend">~7.5% anual</span><span class="profile-desc">60% acciones / 40% bonos (portafolio balanceado)</span></button>
+        <button class="profile-btn" data-rend="10" onclick="selectProfile('d',this)"><span class="profile-emoji">📈</span><span class="profile-name">Crecimiento</span><span class="profile-rend">~10% anual</span><span class="profile-desc">S&amp;P 500 índice (rendimiento histórico ~10% anual)</span></button>
+        <button class="profile-btn" data-rend="14" onclick="selectProfile('d',this)"><span class="profile-emoji">🚀</span><span class="profile-name">Agresivo</span><span class="profile-rend">~14% anual</span><span class="profile-desc">Acciones individuales, emergentes, REITs, cripto</span></button>
+        <button class="profile-btn profile-custom" data-rend="custom" onclick="selectProfile('d',this)"><span class="profile-emoji">⚙️</span><span class="profile-name">Personalizado</span><span class="profile-rend">Ingresá tu propio %</span><span class="profile-desc">Definí el rendimiento anual exacto de tu inversión</span></button>
+        <div class="custom-input-wrap" id="d-custom-wrap">
+          <div class="field"><label>Rendimiento anual esperado</label><div class="input-wrap"><span class="input-sym" style="color:var(--muted)">%</span><input type="text" id="d-custom-rend" class="sym-pct" placeholder="8.0" inputmode="decimal"/></div></div>
         </div>
-        <div class="field-hint">La inflación aumenta tus gastos nominales cada año</div>
       </div>
-    </div>
-
-    <div class="card">
-      <div class="card-title">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
-        Rendimiento de los ahorros
-      </div>
-      <div class="field">
-        <label>Rendimiento anual neto: <span id="rendimiento-label" style="color:var(--teal)">80%</span></label>
-        <div class="slider-wrap">
-          <input type="range" class="slider" id="rendimiento-slider" min="0" max="300" step="5" value="80" oninput="document.getElementById('rendimiento-label').textContent=this.value+'%'"/>
+      <div style="margin-top:14px">
+        <div class="field" style="margin-bottom:0">
+          <label>Inflación anual en USD: <span id="d-infl-val" style="color:var(--teal);font-family:'DM Mono',monospace;font-weight:700">4%</span></label>
+          <div class="inflation-wrap"><input type="range" class="slider" id="d-infl-slider" min="1" max="10" step="0.5" value="4" oninput="document.getElementById('d-infl-val').textContent=this.value+'%'"/></div>
+          <div class="field-hint">Promedio histórico USD: ~3–4% anual. Refleja el encarecimiento real de tu estilo de vida.</div>
         </div>
-        <div class="field-hint">Plazo fijo, fondos, acciones — rendimiento bruto antes de inflación</div>
-      </div>
-      <div class="info-box">
-        💡 <strong>Rendimiento real</strong> = rendimiento nominal − inflación. Si tu plazo fijo rinde 80% y la inflación es 60%, tu rendimiento real es <strong>~12.5% anual</strong>.
       </div>
     </div>
-
-    <button class="btn-calc" onclick="calcularDuran()">Calcular cuánto duran mis ahorros →</button>
-
-    <!-- Resultado -->
+    <button class="btn-calc" onclick="calcDuran()">Calcular cuánto duran mis ahorros →</button>
     <div class="result-panel" id="result-duran">
-      <div class="result-headline" id="rd-headline">—</div>
+      <div class="result-headline" id="rd-hl">—</div>
       <div class="result-sub" id="rd-sub"></div>
-      <div class="result-grid">
-        <div class="result-card"><div class="lbl">Capital inicial</div><div class="val neutral" id="rd-capital">—</div></div>
-        <div class="result-card"><div class="lbl">Gasto mes 1</div><div class="val neutral" id="rd-gasto">—</div></div>
-        <div class="result-card"><div class="lbl">Rend. real anual</div><div class="val" id="rd-rendreal">—</div></div>
-        <div class="result-card"><div class="lbl">Duración estimada</div><div class="val neutral" id="rd-duracion">—</div></div>
+      <div class="kpis">
+        <div class="kpi"><div class="lbl">Capital inicial</div><div class="val teal" id="rd-cap">—</div></div>
+        <div class="kpi"><div class="lbl">Gasto mes 1</div><div class="val teal" id="rd-gasto">—</div></div>
+        <div class="kpi"><div class="lbl">Rend. real anual</div><div class="val" id="rd-rreal">—</div></div>
+        <div class="kpi"><div class="lbl">Duración est.</div><div class="val teal" id="rd-dur">—</div></div>
       </div>
-      <div class="timeline">
-        <div class="timeline-label">Proyección del capital</div>
-        <div class="timeline-bar"><div class="timeline-fill" id="rd-bar" style="width:0%"></div></div>
-        <div class="timeline-markers"><span id="rd-m-inicio"></span><span id="rd-m-mitad"></span><span id="rd-m-fin"></span></div>
-      </div>
-      <div class="scenarios" id="rd-escenarios"></div>
-      <div style="margin-top:16px">
-        <div class="timeline-label">Detalle año por año</div>
-        <div style="overflow-x:auto">
-          <table class="proj-table" id="rd-tabla"></table>
-        </div>
-      </div>
+      <div class="sec-label">Proyección del capital</div>
+      <div class="bar-track"><div class="bar-fill good" id="rd-bar" style="width:0%"></div></div>
+      <div class="bar-markers"><span id="rd-m0">Hoy</span><span id="rd-m1"></span><span id="rd-m2"></span></div>
+      <div class="sec-label">Escenarios según gasto</div>
+      <div class="scenarios" id="rd-esc"></div>
+      <div class="sec-label" style="margin-top:14px">Proyección año por año</div>
+      <div class="proj-wrap"><table class="proj-table" id="rd-tabla"></table></div>
     </div>
   </div>
 
-  <!-- TAB 2: ¿Cuánto necesito ahorrar? -->
+  <!-- TAB 2 -->
   <div id="panel-necesito" style="display:none">
-
     <div class="card">
-      <div class="card-title">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg>
-        Mi situación
-      </div>
+      <div class="card-title"><div class="card-title-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg></div>Tu situación hoy</div>
       <div class="grid2">
-        <div class="field">
-          <label>Edad actual</label>
-          <div class="input-wrap input-no-sym"><input type="number" id="n-edad-actual" placeholder="35" min="18" max="80" step="1"/></div>
-        </div>
-        <div class="field">
-          <label>Edad de retiro</label>
-          <div class="input-wrap input-no-sym"><input type="number" id="n-edad-retiro" placeholder="65" min="30" max="90" step="1"/></div>
-        </div>
+        <div class="field"><label>Edad actual</label><div class="input-wrap"><span class="input-sym" style="color:var(--muted)">✦</span><input type="text" id="n-edad" class="sym-pct" placeholder="35" inputmode="numeric"/></div></div>
+        <div class="field"><label>Edad de retiro</label><div class="input-wrap"><span class="input-sym" style="color:var(--muted)">✦</span><input type="text" id="n-edad-ret" class="sym-pct" placeholder="60" inputmode="numeric"/></div></div>
       </div>
-      <div class="field">
-        <label>Ahorros actuales en $</label>
-        <div class="input-wrap"><span class="input-sym">$</span><input type="number" id="n-ahorros-actuales" placeholder="0" min="0" step="10000"/></div>
-      </div>
+      <div class="field"><label>Ahorros actuales en USD</label><div class="input-wrap"><span class="input-sym">USD</span><input type="text" id="n-ahorros" class="sym-short" placeholder="50.000" inputmode="numeric"/></div></div>
     </div>
-
     <div class="card">
-      <div class="card-title">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2z"/><path d="M12 6v6l4 2"/></svg>
-        Mi retiro
-      </div>
-      <div class="field">
-        <label>Gasto mensual deseado en el retiro en $</label>
-        <div class="input-wrap"><span class="input-sym">$</span><input type="number" id="n-gasto-retiro" placeholder="0" min="0" step="1000"/></div>
-        <div class="field-hint">A pesos de hoy — la app ajusta por inflación</div>
-      </div>
-      <div class="field">
-        <label>Años que durará el retiro</label>
-        <div class="input-wrap input-no-sym"><input type="number" id="n-anios-retiro" placeholder="25" min="5" max="60" step="1"/></div>
-        <div class="field-hint">Ej: retirarte a 65 y planificar hasta los 90 = 25 años</div>
-      </div>
+      <div class="card-title"><div class="card-title-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2z"/><path d="M12 6v6l4 2"/></svg></div>Tu retiro ideal</div>
+      <div class="field"><label>Gasto mensual deseado en USD</label><div class="input-wrap"><span class="input-sym">USD</span><input type="text" id="n-gasto" class="sym-short" placeholder="3.000" inputmode="numeric"/></div><div class="field-hint">A dólares de hoy — la app ajusta por inflación hasta el retiro.</div></div>
+      <div class="field"><label>¿Cuántos años durará tu retiro?</label><div class="input-wrap"><span class="input-sym" style="color:var(--muted)">✦</span><input type="text" id="n-anios" class="sym-pct" placeholder="30" inputmode="numeric"/></div><div class="field-hint">Ej: retirarte a 60 y planificar hasta los 90 = 30 años.</div></div>
     </div>
-
     <div class="card">
-      <div class="card-title">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
-        Parámetros
+      <div class="card-title"><div class="card-title-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></div>Perfil de inversión</div>
+      <div class="profiles-grid" id="n-profiles">
+        <button class="profile-btn" data-rend="4.5" onclick="selectProfile('n',this)"><span class="profile-emoji">🏦</span><span class="profile-name">Conservador</span><span class="profile-rend">~4.5% anual</span><span class="profile-desc">Treasuries, bonos, depósitos USD</span></button>
+        <button class="profile-btn active" data-rend="7.5" onclick="selectProfile('n',this)"><span class="profile-emoji">⚖️</span><span class="profile-name">Moderado</span><span class="profile-rend">~7.5% anual</span><span class="profile-desc">60% acciones / 40% bonos</span></button>
+        <button class="profile-btn" data-rend="10" onclick="selectProfile('n',this)"><span class="profile-emoji">📈</span><span class="profile-name">Crecimiento</span><span class="profile-rend">~10% anual</span><span class="profile-desc">S&amp;P 500 índice histórico</span></button>
+        <button class="profile-btn" data-rend="14" onclick="selectProfile('n',this)"><span class="profile-emoji">🚀</span><span class="profile-name">Agresivo</span><span class="profile-rend">~14% anual</span><span class="profile-desc">Acciones, emergentes, REITs</span></button>
+        <button class="profile-btn profile-custom" data-rend="custom" onclick="selectProfile('n',this)"><span class="profile-emoji">⚙️</span><span class="profile-name">Personalizado</span><span class="profile-rend">Ingresá tu propio %</span><span class="profile-desc">Rendimiento anual exacto</span></button>
+        <div class="custom-input-wrap" id="n-custom-wrap"><div class="field"><label>Rendimiento anual esperado</label><div class="input-wrap"><span class="input-sym" style="color:var(--muted)">%</span><input type="text" id="n-custom-rend" class="sym-pct" placeholder="8.0" inputmode="decimal"/></div></div></div>
       </div>
-      <div class="field">
-        <label>Inflación anual: <span id="n-inflacion-label" style="color:var(--teal)">60%</span></label>
-        <div class="slider-wrap"><input type="range" class="slider" id="n-inflacion-slider" min="0" max="200" step="5" value="60" oninput="document.getElementById('n-inflacion-label').textContent=this.value+'%'"/></div>
-      </div>
-      <div class="field">
-        <label>Rendimiento anual de los ahorros: <span id="n-rendimiento-label" style="color:var(--teal)">80%</span></label>
-        <div class="slider-wrap"><input type="range" class="slider" id="n-rendimiento-slider" min="0" max="300" step="5" value="80" oninput="document.getElementById('n-rendimiento-label').textContent=this.value+'%'"/></div>
-      </div>
+      <div style="margin-top:14px"><div class="field" style="margin-bottom:0"><label>Inflación anual USD: <span id="n-infl-val" style="color:var(--teal);font-family:'DM Mono',monospace;font-weight:700">4%</span></label><div class="inflation-wrap"><input type="range" class="slider" id="n-infl-slider" min="1" max="10" step="0.5" value="4" oninput="document.getElementById('n-infl-val').textContent=this.value+'%'"/></div></div></div>
     </div>
-
-    <button class="btn-calc" onclick="calcularNecesito()">Calcular cuánto necesito →</button>
-
+    <button class="btn-calc" onclick="calcNecesito()">Calcular cuánto necesito →</button>
     <div class="result-panel" id="result-necesito">
-      <div class="result-headline" id="rn-headline">—</div>
+      <div class="result-headline" id="rn-hl">—</div>
       <div class="result-sub" id="rn-sub"></div>
-      <div class="result-grid">
-        <div class="result-card"><div class="lbl">Meta total</div><div class="val neutral" id="rn-meta">—</div></div>
-        <div class="result-card"><div class="lbl">Tenés hoy</div><div class="val neutral" id="rn-tengo">—</div></div>
-        <div class="result-card"><div class="lbl">Falta juntar</div><div class="val" id="rn-falta">—</div></div>
-        <div class="result-card"><div class="lbl">Ahorro mensual</div><div class="val neutral" id="rn-mensual">—</div></div>
+      <div class="kpis">
+        <div class="kpi"><div class="lbl">Meta al retiro</div><div class="val teal" id="rn-meta">—</div></div>
+        <div class="kpi"><div class="lbl">Proyección actual</div><div class="val" id="rn-proyec">—</div></div>
+        <div class="kpi"><div class="lbl">Déficit / superávit</div><div class="val" id="rn-dif">—</div></div>
+        <div class="kpi"><div class="lbl">Ahorro mensual extra</div><div class="val" id="rn-mensual">—</div></div>
       </div>
       <div class="info-box" id="rn-info"></div>
     </div>
   </div>
 
-  <!-- TAB 3: ¿Cuándo me puedo retirar? -->
+  <!-- TAB 3 -->
   <div id="panel-cuando" style="display:none">
-
     <div class="card">
-      <div class="card-title">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg>
-        Mi situación actual
-      </div>
+      <div class="card-title"><div class="card-title-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg></div>Tu situación hoy</div>
       <div class="grid2">
-        <div class="field">
-          <label>Edad actual</label>
-          <div class="input-wrap input-no-sym"><input type="number" id="c-edad" placeholder="35" min="18" max="80" step="1"/></div>
-        </div>
-        <div class="field">
-          <label>Ahorros en $</label>
-          <div class="input-wrap"><span class="input-sym">$</span><input type="number" id="c-ahorros" placeholder="0" min="0" step="10000"/></div>
-        </div>
+        <div class="field"><label>Edad actual</label><div class="input-wrap"><span class="input-sym" style="color:var(--muted)">✦</span><input type="text" id="c-edad" class="sym-pct" placeholder="35" inputmode="numeric"/></div></div>
+        <div class="field"><label>Ahorros actuales en USD</label><div class="input-wrap"><span class="input-sym">USD</span><input type="text" id="c-ahorros" class="sym-short" placeholder="30.000" inputmode="numeric"/></div></div>
       </div>
-      <div class="field">
-        <label>Ahorro mensual actual en $</label>
-        <div class="input-wrap"><span class="input-sym">$</span><input type="number" id="c-ahorro-mensual" placeholder="0" min="0" step="1000"/></div>
-        <div class="field-hint">Cuánto suma a tus ahorros cada mes hoy</div>
-      </div>
+      <div class="field"><label>Ahorro mensual en USD</label><div class="input-wrap"><span class="input-sym">USD</span><input type="text" id="c-ahorro-mes" class="sym-short" placeholder="500" inputmode="numeric"/></div><div class="field-hint">¿Cuánto sumás a tus ahorros cada mes?</div></div>
     </div>
-
     <div class="card">
-      <div class="card-title">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2z"/><path d="M12 6v6l4 2"/></svg>
-        Mi retiro ideal
-      </div>
-      <div class="field">
-        <label>Gasto mensual deseado en el retiro en $</label>
-        <div class="input-wrap"><span class="input-sym">$</span><input type="number" id="c-gasto" placeholder="0" min="0" step="1000"/></div>
-        <div class="field-hint">A pesos de hoy — la app ajusta por inflación</div>
-      </div>
-      <div class="field">
-        <label>Años deseados de retiro</label>
-        <div class="input-wrap input-no-sym"><input type="number" id="c-anios-retiro" placeholder="25" min="5" max="60" step="1"/></div>
-      </div>
+      <div class="card-title"><div class="card-title-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2z"/><path d="M12 6v6l4 2"/></svg></div>Tu retiro ideal</div>
+      <div class="field"><label>Gasto mensual deseado en USD</label><div class="input-wrap"><span class="input-sym">USD</span><input type="text" id="c-gasto" class="sym-short" placeholder="3.000" inputmode="numeric"/></div><div class="field-hint">A dólares de hoy — la app ajusta por inflación.</div></div>
+      <div class="field"><label>¿Cuántos años durará tu retiro?</label><div class="input-wrap"><span class="input-sym" style="color:var(--muted)">✦</span><input type="text" id="c-anios-ret" class="sym-pct" placeholder="30" inputmode="numeric"/></div></div>
     </div>
-
     <div class="card">
-      <div class="card-title">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
-        Parámetros
+      <div class="card-title"><div class="card-title-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></div>Perfil de inversión</div>
+      <div class="profiles-grid" id="c-profiles">
+        <button class="profile-btn" data-rend="4.5" onclick="selectProfile('c',this)"><span class="profile-emoji">🏦</span><span class="profile-name">Conservador</span><span class="profile-rend">~4.5% anual</span><span class="profile-desc">Treasuries, bonos, depósitos USD</span></button>
+        <button class="profile-btn active" data-rend="7.5" onclick="selectProfile('c',this)"><span class="profile-emoji">⚖️</span><span class="profile-name">Moderado</span><span class="profile-rend">~7.5% anual</span><span class="profile-desc">60% acciones / 40% bonos</span></button>
+        <button class="profile-btn" data-rend="10" onclick="selectProfile('c',this)"><span class="profile-emoji">📈</span><span class="profile-name">Crecimiento</span><span class="profile-rend">~10% anual</span><span class="profile-desc">S&amp;P 500 índice histórico</span></button>
+        <button class="profile-btn" data-rend="14" onclick="selectProfile('c',this)"><span class="profile-emoji">🚀</span><span class="profile-name">Agresivo</span><span class="profile-rend">~14% anual</span><span class="profile-desc">Acciones, emergentes, REITs</span></button>
+        <button class="profile-btn profile-custom" data-rend="custom" onclick="selectProfile('c',this)"><span class="profile-emoji">⚙️</span><span class="profile-name">Personalizado</span><span class="profile-rend">Ingresá tu propio %</span><span class="profile-desc">Rendimiento anual exacto</span></button>
+        <div class="custom-input-wrap" id="c-custom-wrap"><div class="field"><label>Rendimiento anual esperado</label><div class="input-wrap"><span class="input-sym" style="color:var(--muted)">%</span><input type="text" id="c-custom-rend" class="sym-pct" placeholder="8.0" inputmode="decimal"/></div></div></div>
       </div>
-      <div class="field">
-        <label>Inflación anual: <span id="c-inflacion-label" style="color:var(--teal)">60%</span></label>
-        <div class="slider-wrap"><input type="range" class="slider" id="c-inflacion-slider" min="0" max="200" step="5" value="60" oninput="document.getElementById('c-inflacion-label').textContent=this.value+'%'"/></div>
-      </div>
-      <div class="field">
-        <label>Rendimiento anual de los ahorros: <span id="c-rendimiento-label" style="color:var(--teal)">80%</span></label>
-        <div class="slider-wrap"><input type="range" class="slider" id="c-rendimiento-slider" min="0" max="300" step="5" value="80" oninput="document.getElementById('c-rendimiento-label').textContent=this.value+'%'"/></div>
-      </div>
+      <div style="margin-top:14px"><div class="field" style="margin-bottom:0"><label>Inflación anual USD: <span id="c-infl-val" style="color:var(--teal);font-family:'DM Mono',monospace;font-weight:700">4%</span></label><div class="inflation-wrap"><input type="range" class="slider" id="c-infl-slider" min="1" max="10" step="0.5" value="4" oninput="document.getElementById('c-infl-val').textContent=this.value+'%'"/></div></div></div>
     </div>
-
-    <button class="btn-calc" onclick="calcularCuando()">Calcular cuándo me puedo retirar →</button>
-
+    <button class="btn-calc" onclick="calcCuando()">Calcular cuándo me retiro →</button>
     <div class="result-panel" id="result-cuando">
-      <div class="result-headline" id="rc-headline">—</div>
+      <div class="result-headline" id="rc-hl">—</div>
       <div class="result-sub" id="rc-sub"></div>
-      <div class="result-grid">
-        <div class="result-card"><div class="lbl">Edad de retiro</div><div class="val neutral" id="rc-edad">—</div></div>
-        <div class="result-card"><div class="lbl">Años para retirarte</div><div class="val neutral" id="rc-anios">—</div></div>
-        <div class="result-card"><div class="lbl">Capital en retiro</div><div class="val neutral" id="rc-capital">—</div></div>
-        <div class="result-card"><div class="lbl">Gasto inicial mes</div><div class="val neutral" id="rc-gasto">—</div></div>
+      <div class="kpis">
+        <div class="kpi"><div class="lbl">Edad de retiro</div><div class="val teal" id="rc-edad">—</div></div>
+        <div class="kpi"><div class="lbl">Años hasta retiro</div><div class="val teal" id="rc-anios">—</div></div>
+        <div class="kpi"><div class="lbl">Capital acumulado</div><div class="val teal" id="rc-cap">—</div></div>
+        <div class="kpi"><div class="lbl">Gasto inicial/mes</div><div class="val teal" id="rc-gasto">—</div></div>
       </div>
-      <div class="scenarios" id="rc-escenarios"></div>
+      <div class="sec-label">¿Qué pasa si ahorrás más?</div>
+      <div class="scenarios" id="rc-esc"></div>
     </div>
   </div>
 
@@ -407,300 +316,257 @@ const LIGHT='<circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/
 function toggleTheme(){const h=document.documentElement,d=h.getAttribute('data-theme')==='dark';h.setAttribute('data-theme',d?'light':'dark');document.getElementById('icon-theme').innerHTML=d?DARK:LIGHT;localStorage.setItem('retiro-tema',d?'light':'dark');}
 (function(){const t=localStorage.getItem('retiro-tema')||'dark';document.documentElement.setAttribute('data-theme',t);document.getElementById('icon-theme').innerHTML=t==='dark'?DARK:LIGHT;})();
 
-// ── Helpers ───────────────────────────────────────────────────────────────────
-function fmt(n){if(n>=1e9)return '$'+Math.round(n/1e9*10)/10+'B';if(n>=1e6)return '$'+Math.round(n/1e6*10)/10+'M';if(n>=1e3)return '$'+Math.round(n/1e3)+'K';return '$'+Math.round(n).toLocaleString('es-AR');}
-function fmtFull(n){return '$'+Math.round(n).toLocaleString('es-AR');}
-function pn(id){return parseFloat(document.getElementById(id).value)||0;}
-function toast(msg){const t=document.getElementById('toast');document.getElementById('toast-msg').textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2500);}
+// ── Formateo de números con separadores de miles ──────────────────────────────
+function applyFormatter(el){
+  el.addEventListener('input',function(){
+    // Guardar posición del cursor
+    const pos=this.selectionStart;
+    const prevLen=this.value.length;
+    // Solo dígitos
+    const raw=this.value.replace(/\D/g,'');
+    if(!raw){this.value='';return;}
+    // Formatear con puntos como separadores de miles
+    const formatted=raw.replace(/\B(?=(\d{3})+(?!\d))/g,'.');
+    this.value=formatted;
+    // Ajustar cursor
+    const diff=formatted.length-prevLen;
+    const newPos=Math.max(0,pos+diff);
+    this.setSelectionRange(newPos,newPos);
+  });
+  el.addEventListener('keydown',function(e){
+    // Permitir: backspace, delete, flechas, tab, escape, ctrl+a/c/v/x
+    if([8,9,27,46,37,38,39,40].includes(e.keyCode))return;
+    if((e.ctrlKey||e.metaKey)&&[65,67,86,88].includes(e.keyCode))return;
+    // Solo números
+    if(!/^[0-9]$/.test(e.key))e.preventDefault();
+  });
+}
+function applyDecimalFormatter(el){
+  el.addEventListener('keydown',function(e){
+    if([8,9,27,46,37,38,39,40].includes(e.keyCode))return;
+    if((e.ctrlKey||e.metaKey)&&[65,67,86,88].includes(e.keyCode))return;
+    if(!/^[0-9.]$/.test(e.key))e.preventDefault();
+  });
+}
+// Inicializar al cargar
+(function initFormatters(){
+  document.querySelectorAll('input[inputmode="numeric"]').forEach(applyFormatter);
+  document.querySelectorAll('input[inputmode="decimal"]').forEach(applyDecimalFormatter);
+})();
+
+// Leer valor numérico de input formateado
+function pn(id){
+  const v=document.getElementById(id).value.replace(/\./g,'').replace(',','.');
+  return parseFloat(v)||0;
+}
 
 // ── Tabs ──────────────────────────────────────────────────────────────────────
-function setTab(tab){
-  ['duran','necesito','cuando'].forEach(t=>{
-    document.getElementById('panel-'+t).style.display=t===tab?'block':'none';
-    document.getElementById('tab-'+t).classList.toggle('active',t===tab);
+function setTab(t){
+  ['duran','necesito','cuando'].forEach(x=>{
+    document.getElementById('panel-'+x).style.display=x===t?'block':'none';
+    document.getElementById('tab-'+x).classList.toggle('active',x===t);
   });
 }
 
-// ── Moneda toggle ─────────────────────────────────────────────────────────────
-let moneda='ars';
-function setMoneda(m){
-  moneda=m;
-  document.getElementById('m-ars').classList.toggle('active',m==='ars');
-  document.getElementById('m-usd').classList.toggle('active',m==='usd');
-  document.getElementById('field-ars').style.display=m==='ars'?'block':'none';
-  document.getElementById('field-usd').style.display=m==='usd'?'block':'none';
-  document.getElementById('field-tc').style.display=m==='usd'?'block':'none';
+// ── Perfiles ──────────────────────────────────────────────────────────────────
+function selectProfile(prefix,btn){
+  document.querySelectorAll('#'+prefix+'-profiles .profile-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  const cw=document.getElementById(prefix+'-custom-wrap');
+  if(cw)cw.classList.toggle('show',btn.dataset.rend==='custom');
+}
+function getRend(prefix){
+  const a=document.querySelector('#'+prefix+'-profiles .profile-btn.active');
+  if(!a)return 7.5;
+  if(a.dataset.rend==='custom')return parseFloat(document.getElementById(prefix+'-custom-rend').value)||7.5;
+  return parseFloat(a.dataset.rend)||7.5;
 }
 
-// ── Cálculo de capital en ARS ─────────────────────────────────────────────────
-function getCapital(){
-  if(moneda==='ars') return pn('capital-ars');
-  const tc=pn('tipo-cambio')||1390;
-  return pn('capital-usd')*tc;
+// ── Formato de salida ─────────────────────────────────────────────────────────
+function fmtU(n,short){
+  const abs=Math.abs(n);
+  let str;
+  if(short){
+    if(abs>=1e9)str=(Math.round(n/1e8)/10)+'B';
+    else if(abs>=1e6)str=(Math.round(n/1e5)/10)+'M';
+    else if(abs>=1e3)str=(Math.round(n/100)/10)+'K';
+    else str=Math.round(n).toLocaleString('es-AR');
+  }else{
+    str=Math.round(n).toLocaleString('es-AR');
+  }
+  return 'USD '+str;
+}
+function fmtY(y){
+  if(y>=100)return '+100 años';
+  const yr=Math.floor(y),mo=Math.round((y-yr)*12);
+  if(mo===0)return yr+(yr===1?' año':' años');
+  return yr+(yr===1?' año':' años')+' y '+mo+(mo===1?' mes':' meses');
 }
 
-// ── TAB 1: ¿Cuánto duran mis ahorros? ────────────────────────────────────────
-function calcularDuran(){
-  const capital=getCapital();
-  const gastoMensual=pn('gasto-mensual');
-  const inflAnual=pn('inflacion-slider')/100;
-  const rendAnual=pn('rendimiento-slider')/100;
+// ── Toast ─────────────────────────────────────────────────────────────────────
+let _tt=null;
+function toast(m){const t=document.getElementById('toast');document.getElementById('toast-msg').textContent=m;t.classList.add('show');clearTimeout(_tt);_tt=setTimeout(()=>t.classList.remove('show'),2800);}
 
-  if(!capital||!gastoMensual){toast('Completá el capital y el gasto mensual');return;}
-
-  // Rendimiento real anual: (1+rend)/(1+infl) - 1
-  const rendReal=(1+rendAnual)/(1+inflAnual)-1;
-  // Rendimiento real mensual
-  const rendRealMensual=Math.pow(1+rendReal,1/12)-1;
-  // Inflación mensual
-  const inflMensual=Math.pow(1+inflAnual,1/12)-1;
-
-  let saldo=capital;
-  let mes=0;
-  const maxMeses=100*12; // 100 años máximo
-  const tabla=[];
-  let anioActual=new Date().getFullYear();
-  let gastoActualMensual=gastoMensual;
-
-  while(saldo>0&&mes<maxMeses){
-    if(mes%12===0&&mes>0){
-      gastoActualMensual*=(1+inflAnual);
-    }
-    const rendimientoMes=saldo*rendRealMensual;
-    saldo=saldo+rendimientoMes-gastoActualMensual;
+// ── Simulación duración ───────────────────────────────────────────────────────
+function simDuran(cap,gasto,rend,infl,maxA){
+  const rr=(1+rend/100)/(1+infl/100)-1;
+  const rrm=Math.pow(1+rr,1/12)-1;
+  let s=cap,mes=0,g=gasto;
+  const filas=[];
+  while(s>0&&mes<maxA*12){
+    if(mes>0&&mes%12===0)g*=(1+infl/100);
+    s=s*(1+rrm)-g;
     mes++;
-
-    // Guardar dato anual
     if(mes%12===0){
-      const anio=mes/12;
-      tabla.push({
-        anio,
-        year:anioActual+anio,
-        saldo:Math.max(0,saldo),
-        gasto:gastoActualMensual,
-        agotado:saldo<=0
-      });
-      if(saldo<=0) break;
+      filas.push({a:mes/12,s:Math.max(0,s),g,ok:s>0});
+      if(s<=0)break;
     }
   }
+  return{anios:mes/12,filas,rr:rr*100,agotado:s<=0&&mes<maxA*12};
+}
 
-  const anios=mes/12;
-  const aniosReales=Math.min(anios,100);
-  const agotado=saldo<=0;
+// ── TAB 1 ─────────────────────────────────────────────────────────────────────
+function calcDuran(){
+  const cap=pn('d-capital'),gasto=pn('d-gasto');
+  const rend=getRend('d'),infl=parseFloat(document.getElementById('d-infl-slider').value)||4;
+  if(!cap){toast('⚠️  Ingresá tu capital ahorrado');return;}
+  if(!gasto){toast('⚠️  Ingresá tu gasto mensual');return;}
 
-  // Headline
-  document.getElementById('rd-headline').textContent=agotado
-    ? (anios>=100?'Más de 100 años 🎉':'~'+Math.round(aniosReales)+' años')
-    : '+100 años 🎉';
-  document.getElementById('rd-sub').textContent=agotado
-    ? (anios>=100?'¡Tus ahorros duran más de un siglo con este rendimiento!'
-      :'Tus ahorros alcanzan para unos '+Math.round(aniosReales)+' años de retiro')
-    : '¡Tus ahorros duran más de 100 años con este rendimiento!';
+  const sim=simDuran(cap,gasto,rend,infl,100);
+  const ag=sim.agotado&&sim.anios<99.5;
 
-  document.getElementById('rd-capital').textContent=fmt(capital);
-  document.getElementById('rd-gasto').textContent=fmtFull(gastoMensual);
-  const rendRealPct=Math.round(rendReal*1000)/10;
-  const rdEl=document.getElementById('rd-rendreal');
-  rdEl.textContent=(rendReal>=0?'+':'')+rendRealPct+'% anual';
-  rdEl.className='val '+(rendReal>=0?'pos':'neg');
-  document.getElementById('rd-duracion').textContent=agotado?(anios>=100?'+100 años':Math.round(aniosReales)+' años'):'+100 años';
+  document.getElementById('rd-hl').textContent=ag?'~'+fmtY(sim.anios):'+100 años 🎉';
+  document.getElementById('rd-sub').textContent=ag
+    ?`Con ${fmtU(cap)} de capital y ${fmtU(gasto)}/mes de gasto, tus ahorros duran aproximadamente ${fmtY(sim.anios)}.`
+    :`¡Excelente! Con este perfil de inversión, tus ahorros se mantienen durante más de 100 años.`;
+  document.getElementById('rd-cap').textContent=fmtU(cap);
+  document.getElementById('rd-gasto').textContent=fmtU(gasto)+'/mes';
+  const rr=Math.round(sim.rr*10)/10;
+  const rrEl=document.getElementById('rd-rreal');
+  rrEl.textContent=(rr>=0?'+':'')+rr+'% anual';
+  rrEl.className='val '+(rr>=0?'pos':'neg');
+  document.getElementById('rd-dur').textContent=ag?fmtY(sim.anios):'+100 años';
 
-  // Barra
-  const pct=Math.min(100,Math.round(aniosReales));
+  const pct=Math.min(100,Math.round(Math.min(sim.anios,100)));
   const bar=document.getElementById('rd-bar');
-  bar.className='timeline-fill'+(aniosReales<10?' danger':aniosReales<20?' warning':'');
-  setTimeout(()=>bar.style.width=pct+'%',50);
-  document.getElementById('rd-m-inicio').textContent='Hoy';
-  document.getElementById('rd-m-mitad').textContent=Math.round(aniosReales/2)+' años';
-  document.getElementById('rd-m-fin').textContent=Math.round(aniosReales)+' años';
+  bar.className='bar-fill '+(sim.anios<10?'danger':sim.anios<20?'warn':'good');
+  setTimeout(()=>bar.style.width=pct+'%',60);
+  document.getElementById('rd-m0').textContent='Hoy';
+  document.getElementById('rd-m1').textContent=Math.round(Math.min(sim.anios,100)/2)+'a';
+  document.getElementById('rd-m2').textContent=ag?Math.round(sim.anios)+'a':'+100a';
 
-  // Escenarios
-  const esc=document.getElementById('rd-escenarios');
-  esc.innerHTML='<div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--muted2);margin-bottom:6px;">Escenarios alternativos</div>'+
-    [0.5,0.75,1.25,1.5].map(factor=>{
-      const g2=gastoMensual*factor;
-      let s2=capital,m2=0,g2actual=g2;
-      while(s2>0&&m2<maxMeses){
-        if(m2%12===0&&m2>0)g2actual*=(1+inflAnual);
-        s2+=s2*rendRealMensual-g2actual;m2++;
-        if(s2<=0)break;
-      }
-      const a2=m2/12;
-      const pctChange=Math.round((factor-1)*100);
-      return `<div class="scenario-row">
-        <div class="scenario-dot" style="background:${factor<1?'var(--green)':factor>1.25?'var(--red)':'var(--orange)'}"></div>
-        <div class="scenario-label">Gasto ${pctChange>0?'+':''}${pctChange}% (${fmtFull(g2)}/mes)</div>
-        <div class="scenario-val" style="color:${a2>=100?'var(--green)':a2<10?'var(--red)':'var(--teal)'}">${a2>=100?'+100':Math.round(a2)} años</div>
-      </div>`;
-    }).join('');
+  document.getElementById('rd-esc').innerHTML=[0.7,0.85,1.15,1.3].map(f=>{
+    const g2=gasto*f,s2=simDuran(cap,g2,rend,infl,100);
+    const pc=Math.round((f-1)*100);
+    const col=s2.anios>=50?'var(--green)':s2.anios>=20?'var(--teal)':s2.anios>=10?'var(--orange)':'var(--red)';
+    return`<div class="sc-row"><div class="sc-dot" style="background:${col}"></div><div class="sc-label">Gasto ${pc>0?'+':''}${pc}% → ${fmtU(g2)}/mes</div><div class="sc-val" style="color:${col}">${s2.anios>=99?'+100 años':fmtY(s2.anios)}</div></div>`;
+  }).join('');
 
-  // Tabla año por año (máx 30 filas)
-  const tablaEl=document.getElementById('rd-tabla');
-  const filas=tabla.slice(0,30);
-  tablaEl.innerHTML=`<thead><tr><th>Año</th><th>Capital</th><th>Gasto/mes</th></tr></thead><tbody>`+
-    filas.map(r=>`<tr class="${r.agotado?'proj-agotado':''}">
-      <td class="year">${r.year} (año ${r.anio})</td>
-      <td class="capital ${r.saldo<=0?'neg':''}">${r.saldo<=0?'Agotado':fmt(r.saldo)}</td>
-      <td>${fmt(r.gasto)}</td>
-    </tr>`).join('')+'</tbody>';
+  const anioBase=new Date().getFullYear();
+  document.getElementById('rd-tabla').innerHTML=
+    '<thead><tr><th>Año</th><th>Capital</th><th>Gasto/mes</th></tr></thead><tbody>'+
+    sim.filas.slice(0,40).map(r=>`<tr class="${!r.ok?'depleted':''}"><td class="yr">${anioBase+r.a} (año ${r.a})</td><td class="cap">${r.s<=0?'Agotado':fmtU(r.s,true)}</td><td>${fmtU(r.g)}</td></tr>`).join('')+
+    '</tbody>';
 
-  document.getElementById('result-duran').classList.add('show');
-  document.getElementById('result-duran').scrollIntoView({behavior:'smooth',block:'start'});
+  const p=document.getElementById('result-duran');
+  p.classList.add('show');
+  setTimeout(()=>p.scrollIntoView({behavior:'smooth',block:'start'}),50);
 }
 
-// ── TAB 2: ¿Cuánto necesito? ──────────────────────────────────────────────────
-function calcularNecesito(){
-  const edadActual=pn('n-edad-actual');
-  const edadRetiro=pn('n-edad-retiro');
-  const ahorrosActuales=pn('n-ahorros-actuales');
-  const gastoRetiro=pn('n-gasto-retiro'); // a pesos de hoy
-  const aniosRetiro=pn('n-anios-retiro');
-  const inflAnual=pn('n-inflacion-slider')/100;
-  const rendAnual=pn('n-rendimiento-slider')/100;
+// ── TAB 2 ─────────────────────────────────────────────────────────────────────
+function calcNecesito(){
+  const ea=pn('n-edad'),er=pn('n-edad-ret'),ah=pn('n-ahorros'),g=pn('n-gasto'),ay=pn('n-anios');
+  const rend=getRend('n'),infl=parseFloat(document.getElementById('n-infl-slider').value)||4;
+  if(!ea||!er){toast('⚠️  Ingresá tu edad actual y la de retiro');return;}
+  if(er<=ea){toast('⚠️  La edad de retiro debe ser mayor a la actual');return;}
+  if(!g){toast('⚠️  Ingresá el gasto mensual deseado');return;}
+  if(!ay){toast('⚠️  Ingresá cuántos años durará tu retiro');return;}
 
-  if(!edadActual||!edadRetiro||!gastoRetiro||!aniosRetiro){toast('Completá todos los campos');return;}
-  if(edadRetiro<=edadActual){toast('La edad de retiro debe ser mayor a la actual');return;}
-
-  const aniosHastaRetiro=edadRetiro-edadActual;
-  const rendReal=(1+rendAnual)/(1+inflAnual)-1;
-  const rendRealMensual=Math.pow(1+rendReal,1/12)-1;
-
-  // Gasto en el año del retiro (ajustado por inflación)
-  const gastoAlRetiro=gastoRetiro*Math.pow(1+inflAnual,aniosHastaRetiro);
-
-  // Capital necesario al momento del retiro para cubrir aniosRetiro años
-  // Usando valor presente de una anualidad creciente
-  let capitalNecesario=0;
-  if(Math.abs(rendRealMensual)<0.0001){
-    capitalNecesario=gastoAlRetiro*aniosRetiro*12;
-  }else{
-    const n=aniosRetiro*12;
-    capitalNecesario=gastoAlRetiro*(1-Math.pow(1+rendRealMensual,-n))/rendRealMensual;
-  }
-
-  // Cuánto crecerán los ahorros actuales hasta el retiro
-  const crecimientoAhorros=ahorrosActuales*Math.pow(1+rendAnual,aniosHastaRetiro);
-  const falta=Math.max(0,capitalNecesario-crecimientoAhorros);
-
-  // Ahorro mensual necesario para llegar a la meta
-  let ahorrMensual=0;
+  const anh=er-ea;
+  const rr=(1+rend/100)/(1+infl/100)-1;
+  const rrm=Math.pow(1+rr,1/12)-1;
+  const rm=Math.pow(1+rend/100,1/12)-1;
+  const gRet=g*Math.pow(1+infl/100,anh);
+  const n=ay*12;
+  const capNec=Math.abs(rrm)<0.00001?gRet*n:gRet*(1-Math.pow(1+rrm,-n))/rrm;
+  const proy=ah*Math.pow(1+rend/100,anh);
+  const dif=proy-capNec;
+  const falta=Math.max(0,-dif);
+  let ahMes=0;
   if(falta>0){
-    const n=aniosHastaRetiro*12;
-    const r=Math.pow(1+rendAnual,1/12)-1;
-    if(Math.abs(r)<0.0001){
-      ahorrMensual=falta/n;
-    }else{
-      ahorrMensual=falta*r/(Math.pow(1+r,n)-1);
-    }
+    const m=anh*12;
+    ahMes=Math.abs(rm)<0.00001?falta/m:falta*rm/(Math.pow(1+rm,m)-1);
   }
 
-  document.getElementById('rn-headline').textContent=fmt(capitalNecesario);
-  document.getElementById('rn-sub').textContent=`Necesitás este capital al momento del retiro (a los ${edadRetiro} años) para vivir ${aniosRetiro} años con ese nivel de gastos.`;
-  document.getElementById('rn-meta').textContent=fmt(capitalNecesario);
-  document.getElementById('rn-tengo').textContent=fmt(crecimientoAhorros);
-  const faltaEl=document.getElementById('rn-falta');
-  faltaEl.textContent=falta>0?fmt(falta):'¡Suficiente! 🎉';
-  faltaEl.className='val '+(falta>0?'neg':'pos');
-  const mensualEl=document.getElementById('rn-mensual');
-  mensualEl.textContent=falta>0?fmtFull(ahorrMensual)+'/mes':'No necesitás ahorrar más';
-  mensualEl.className='val '+(falta>0?'neg':'pos');
+  document.getElementById('rn-hl').textContent=fmtU(capNec,true);
+  document.getElementById('rn-sub').textContent=`Necesitás ${fmtU(capNec)} al momento de retirarte (a los ${er} años) para vivir ${ay} años con USD ${Math.round(g).toLocaleString('es-AR')}/mes.`;
+  document.getElementById('rn-meta').textContent=fmtU(capNec,true);
+  const pe=document.getElementById('rn-proyec');
+  pe.textContent=fmtU(proy,true);pe.className='val '+(proy>=capNec?'pos':'warn');
+  const de=document.getElementById('rn-dif');
+  if(dif>=0){de.textContent='+'+fmtU(dif,true);de.className='val pos';}else{de.textContent='-'+fmtU(falta,true);de.className='val neg';}
+  const me=document.getElementById('rn-mensual');
+  if(falta>0){me.textContent=fmtU(ahMes)+'/mes';me.className='val neg';}else{me.textContent='No hace falta 🎉';me.className='val pos';}
+  document.getElementById('rn-info').innerHTML=dif>=0
+    ?`🎉 <strong>¡Ya estás en camino!</strong> Con tus ahorros actuales de <strong>${fmtU(ah)}</strong> creciendo al <strong>${rend}% anual</strong>, proyectás <strong>${fmtU(proy)}</strong> para el retiro — <strong>${fmtU(dif)}</strong> más de lo necesario.`
+    :`💡 Te falta acumular <strong>${fmtU(falta)}</strong>. Necesitás ahorrar <strong>${fmtU(ahMes)}/mes</strong> durante los próximos <strong>${anh} años</strong> para alcanzar la meta de <strong>${fmtU(capNec)}</strong>.`;
 
-  document.getElementById('rn-info').innerHTML=falta>0
-    ?`💡 Con tus ahorros actuales de <strong>${fmtFull(ahorrosActuales)}</strong> creciendo al ${Math.round(rendAnual*100)}% anual, llegarás al retiro con <strong>${fmt(crecimientoAhorros)}</strong>. Para cubrir el déficit de <strong>${fmt(falta)}</strong>, necesitás ahorrar <strong>${fmtFull(ahorrMensual)}/mes</strong> adicionales.`
-    :`🎉 ¡Excelente! Con tus ahorros actuales y el rendimiento proyectado, ya tenés más de lo necesario para retirarte a los ${edadRetiro} años. Tu capital proyectado (<strong>${fmt(crecimientoAhorros)}</strong>) supera la meta (<strong>${fmt(capitalNecesario)}</strong>).`;
-
-  document.getElementById('result-necesito').classList.add('show');
-  document.getElementById('result-necesito').scrollIntoView({behavior:'smooth',block:'start'});
+  const p=document.getElementById('result-necesito');
+  p.classList.add('show');
+  setTimeout(()=>p.scrollIntoView({behavior:'smooth',block:'start'}),50);
 }
 
-// ── TAB 3: ¿Cuándo me puedo retirar? ─────────────────────────────────────────
-function calcularCuando(){
-  const edadActual=pn('c-edad');
-  const ahorros=pn('c-ahorros');
-  const ahorrMensual=pn('c-ahorro-mensual');
-  const gastoDeseo=pn('c-gasto'); // a pesos de hoy
-  const aniosRetiroDeseo=pn('c-anios-retiro');
-  const inflAnual=pn('c-inflacion-slider')/100;
-  const rendAnual=pn('c-rendimiento-slider')/100;
-
-  if(!edadActual||!gastoDeseo||!aniosRetiroDeseo){toast('Completá todos los campos');return;}
-
-  const rendMensual=Math.pow(1+rendAnual,1/12)-1;
-  const rendReal=(1+rendAnual)/(1+inflAnual)-1;
-  const rendRealMensual=Math.pow(1+rendReal,1/12)-1;
-  let capitalActual=ahorros;
-  let aniosBuscados=null;
-  const resultados=[];
-
-  for(let a=1;a<=50;a++){
-    // Crecer capital por un año más
-    const meses=12;
-    for(let m=0;m<meses;m++){
-      capitalActual=capitalActual*(1+rendMensual)+ahorrMensual;
-    }
-
-    // Gasto al momento del retiro
-    const gastoAlRetiro=gastoDeseo*Math.pow(1+inflAnual,a);
-
-    // Capital necesario para aniosRetiroDeseo años
-    const n=aniosRetiroDeseo*12;
-    const capitalNecesario=Math.abs(rendRealMensual)<0.0001
-      ?gastoAlRetiro*n
-      :gastoAlRetiro*(1-Math.pow(1+rendRealMensual,-n))/rendRealMensual;
-
-    resultados.push({
-      anios:a,
-      edad:edadActual+a,
-      capital:capitalActual,
-      capitalNecesario,
-      gasto:gastoAlRetiro,
-      alcanza:capitalActual>=capitalNecesario
-    });
-
-    if(capitalActual>=capitalNecesario&&!aniosBuscados){
-      aniosBuscados=a;
-      break;
-    }
+// ── TAB 3 ─────────────────────────────────────────────────────────────────────
+function simCuando(ah,ams,g,ay,rend,infl,maxA){
+  const rm=Math.pow(1+rend/100,1/12)-1;
+  const rr=(1+rend/100)/(1+infl/100)-1;
+  const rrm=Math.pow(1+rr,1/12)-1;
+  let cap=ah;
+  for(let a=1;a<=maxA;a++){
+    for(let m=0;m<12;m++)cap=cap*(1+rm)+ams;
+    const gRet=g*Math.pow(1+infl/100,a);
+    const n=ay*12;
+    const cn=Math.abs(rrm)<0.00001?gRet*n:gRet*(1-Math.pow(1+rrm,-n))/rrm;
+    if(cap>=cn)return{anios:a,cap,gRet,found:true};
   }
+  return{anios:maxA,cap,found:false};
+}
 
-  if(aniosBuscados){
-    const r=resultados[resultados.length-1];
-    document.getElementById('rc-headline').textContent=`A los ${r.edad} años 🎉`;
-    document.getElementById('rc-sub').textContent=`En ${aniosBuscados} ${aniosBuscados===1?'año':'años'} podrías retirarte con el nivel de vida que proyectás.`;
-    document.getElementById('rc-edad').textContent=r.edad+' años';
-    document.getElementById('rc-anios').textContent=aniosBuscados+' años';
-    document.getElementById('rc-capital').textContent=fmt(r.capital);
-    document.getElementById('rc-gasto').textContent=fmtFull(r.gasto)+'/mes';
+function calcCuando(){
+  const edad=pn('c-edad'),ah=pn('c-ahorros'),ams=pn('c-ahorro-mes'),g=pn('c-gasto'),ay=pn('c-anios-ret');
+  const rend=getRend('c'),infl=parseFloat(document.getElementById('c-infl-slider').value)||4;
+  if(!edad){toast('⚠️  Ingresá tu edad actual');return;}
+  if(!g){toast('⚠️  Ingresá tu gasto mensual deseado');return;}
+  if(!ay){toast('⚠️  Ingresá cuántos años durará tu retiro');return;}
+
+  const sim=simCuando(ah,ams,g,ay,rend,infl,60);
+  if(sim.found){
+    document.getElementById('rc-hl').textContent=`A los ${Math.round(edad+sim.anios)} años 🎉`;
+    document.getElementById('rc-sub').textContent=`En ${sim.anios} ${sim.anios===1?'año':'años'} alcanzás tu meta de independencia financiera.`;
+    document.getElementById('rc-edad').textContent=Math.round(edad+sim.anios)+' años';
+    document.getElementById('rc-anios').textContent=sim.anios+(sim.anios===1?' año':' años');
+    document.getElementById('rc-cap').textContent=fmtU(sim.cap,true);
+    document.getElementById('rc-gasto').textContent=fmtU(sim.gRet)+'/mes';
   }else{
-    document.getElementById('rc-headline').textContent='Más de 50 años';
-    document.getElementById('rc-sub').textContent='Con los parámetros actuales, no alcanzás la meta en los próximos 50 años. Considerá aumentar tu ahorro mensual o ajustar los gastos del retiro.';
-    const last=resultados[resultados.length-1];
-    document.getElementById('rc-edad').textContent=last?'+50 años':'—';
-    document.getElementById('rc-anios').textContent=last?'+50 años':'—';
-    document.getElementById('rc-capital').textContent=last?fmt(last.capital):'—';
-    document.getElementById('rc-gasto').textContent=last?fmtFull(last.gasto)+'/mes':'—';
+    document.getElementById('rc-hl').textContent='Más de 60 años';
+    document.getElementById('rc-sub').textContent='Con los parámetros actuales no alcanzás la meta en 60 años. Considerá aumentar el ahorro mensual o ajustar el gasto deseado.';
+    document.getElementById('rc-edad').textContent='+60 años';document.getElementById('rc-anios').textContent='+60 años';
+    document.getElementById('rc-cap').textContent=fmtU(sim.cap,true);document.getElementById('rc-gasto').textContent='—';
   }
 
-  // Escenarios
-  const esc=document.getElementById('rc-escenarios');
-  esc.innerHTML='<div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--muted2);margin-bottom:6px;">¿Qué pasa si ahorro más?</div>'+
-    [1.5,2,3].map(factor=>{
-      let cap2=ahorros,am2=ahorrMensual*factor,found2=null;
-      for(let a=1;a<=50;a++){
-        for(let m=0;m<12;m++) cap2=cap2*(1+rendMensual)+am2;
-        const gat=gastoDeseo*Math.pow(1+inflAnual,a);
-        const cn=Math.abs(rendRealMensual)<0.0001?gat*aniosRetiroDeseo*12:gat*(1-Math.pow(1+rendRealMensual,-aniosRetiroDeseo*12))/rendRealMensual;
-        if(cap2>=cn&&!found2){found2=a;break;}
-      }
-      return `<div class="scenario-row">
-        <div class="scenario-dot" style="background:${factor>=3?'var(--green)':'var(--teal)'}"></div>
-        <div class="scenario-label">Ahorrando ${fmtFull(ahorrMensual*factor)}/mes (×${factor})</div>
-        <div class="scenario-val" style="color:var(--teal)">${found2?'Año '+(edadActual+found2)+' ('+found2+'a)':'+50 años'}</div>
-      </div>`;
-    }).join('');
+  const s0=simCuando(ah,0,g,ay,rend,infl,60);
+  const col0=s0.found?'var(--muted)':'var(--red)';
+  let escHtml=`<div class="sc-row"><div class="sc-dot" style="background:${col0}"></div><div class="sc-label">Sin ahorro mensual adicional</div><div class="sc-val" style="color:${col0}">${s0.found?'Edad '+(Math.round(edad+s0.anios))+' ('+s0.anios+'a)':'+60 años'}</div></div>`;
+  escHtml+=[1.5,2,3].map(f=>{
+    const sf=simCuando(ah,ams*f,g,ay,rend,infl,60);
+    const col=sf.found&&sf.anios<=15?'var(--green)':sf.found?'var(--teal)':'var(--orange)';
+    return`<div class="sc-row"><div class="sc-dot" style="background:${col}"></div><div class="sc-label">Ahorrando ${fmtU(ams*f)}/mes (×${f})</div><div class="sc-val" style="color:${col}">${sf.found?'Edad '+(Math.round(edad+sf.anios))+' ('+sf.anios+'a)':'+60 años'}</div></div>`;
+  }).join('');
+  document.getElementById('rc-esc').innerHTML=escHtml;
 
-  document.getElementById('result-cuando').classList.add('show');
-  document.getElementById('result-cuando').scrollIntoView({behavior:'smooth',block:'start'});
+  const p=document.getElementById('result-cuando');
+  p.classList.add('show');
+  setTimeout(()=>p.scrollIntoView({behavior:'smooth',block:'start'}),50);
 }
 </script>
 </body>
