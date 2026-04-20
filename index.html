@@ -276,6 +276,201 @@
       cursor: pointer;
     }
 
+    /* ── SEARCH PANEL ── */
+    .search-panel {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 20px;
+      margin-bottom: 16px;
+    }
+    .search-panel-title {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.78rem;
+      color: var(--text2);
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      margin-bottom: 14px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .search-panel-title::before {
+      content: '';
+      display: inline-block;
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: var(--accent);
+      flex-shrink: 0;
+    }
+    .search-modes {
+      display: flex;
+      gap: 4px;
+      margin-bottom: 14px;
+      background: var(--surface2);
+      border-radius: 8px;
+      padding: 3px;
+      width: fit-content;
+    }
+    .search-mode-btn {
+      padding: 6px 16px;
+      border-radius: 6px;
+      border: none;
+      background: transparent;
+      color: var(--text3);
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.78rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.12s;
+    }
+    .search-mode-btn:hover { color: var(--text2); }
+    .search-mode-btn.active {
+      background: var(--surface);
+      color: var(--text);
+      box-shadow: 0 1px 4px rgba(0,0,0,0.3);
+    }
+    .search-inputs {
+      display: flex;
+      gap: 10px;
+      align-items: flex-end;
+      flex-wrap: wrap;
+    }
+    .input-group {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+    .input-group label {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.68rem;
+      color: var(--text3);
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+    .input-group input[type="date"] {
+      background: var(--surface2);
+      border: 1px solid var(--border2);
+      border-radius: 7px;
+      color: var(--text);
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.85rem;
+      padding: 8px 12px;
+      outline: none;
+      transition: border-color 0.15s;
+      color-scheme: dark;
+    }
+    .input-group input[type="date"]:focus { border-color: var(--accent); }
+    .search-btn {
+      padding: 9px 20px;
+      border-radius: 7px;
+      border: none;
+      background: var(--accent);
+      color: var(--bg);
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.82rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: opacity 0.15s;
+      white-space: nowrap;
+    }
+    .search-btn:hover { opacity: 0.85; }
+    .clear-btn {
+      padding: 9px 14px;
+      border-radius: 7px;
+      border: 1px solid var(--border2);
+      background: transparent;
+      color: var(--text3);
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.82rem;
+      cursor: pointer;
+      transition: all 0.12s;
+    }
+    .clear-btn:hover { color: var(--text2); }
+
+    /* ── SEARCH RESULTS ── */
+    .search-results {
+      margin-top: 16px;
+      display: none;
+    }
+    .search-results.visible { display: block; }
+    .search-result-headline {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.72rem;
+      color: var(--text3);
+      margin-bottom: 10px;
+      letter-spacing: 0.04em;
+    }
+    /* Fecha exacta: grid de 4 cards */
+    .search-result-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 8px;
+    }
+    @media (min-width: 560px) {
+      .search-result-grid { grid-template-columns: repeat(4, 1fr); }
+    }
+    .src-card {
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 13px 15px;
+    }
+    .src-label {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.65rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      margin-bottom: 10px;
+      font-weight: 600;
+    }
+    .src-label.oficial { color: var(--accent); }
+    .src-label.blue    { color: var(--blue); }
+    .src-label.mep     { color: var(--orange); }
+    .src-label.ccl     { color: var(--purple); }
+    .src-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 4px;
+    }
+    .src-row:last-child { margin-bottom: 0; }
+    .src-key { font-family: 'IBM Plex Mono', monospace; font-size: 0.68rem; color: var(--text3); }
+    .src-val { font-family: 'IBM Plex Mono', monospace; font-size: 0.9rem; font-weight: 600; color: var(--text); }
+    .src-no-data { font-family: 'IBM Plex Mono', monospace; font-size: 0.78rem; color: var(--text3); }
+
+    /* Rango: tabla comparativa */
+    .range-scroll { max-height: 320px; overflow-y: auto; border-radius: 8px; border: 1px solid var(--border); }
+    .range-result-table { width: 100%; border-collapse: collapse; }
+    .range-result-table th {
+      position: sticky; top: 0;
+      background: var(--surface2); color: var(--text3);
+      font-family: 'IBM Plex Mono', monospace; font-size: 0.68rem;
+      padding: 8px 12px; text-align: left;
+      border-bottom: 1px solid var(--border); letter-spacing: 0.06em;
+    }
+    .range-result-table th.r { text-align: right; }
+    .range-result-table td {
+      padding: 7px 12px; color: var(--text2);
+      border-bottom: 1px solid rgba(35,39,54,0.4);
+      font-family: 'IBM Plex Mono', monospace; font-size: 0.8rem;
+    }
+    .range-result-table td.r { text-align: right; color: var(--text); }
+    .range-result-table tr:last-child td { border-bottom: none; }
+    .range-result-table tr:hover td { background: rgba(26,30,40,0.6); }
+    .tipo-badge {
+      display: inline-block; padding: 2px 8px;
+      border-radius: 4px; font-size: 0.63rem; font-weight: 600; letter-spacing: 0.06em;
+    }
+    .badge-oficial { background: rgba(74,222,128,0.15); color: var(--accent); }
+    .badge-blue    { background: rgba(96,165,250,0.15); color: var(--blue); }
+    .badge-mep     { background: rgba(251,146,60,0.15); color: var(--orange); }
+    .badge-ccl     { background: rgba(167,139,250,0.15); color: var(--purple); }
+    .no-results {
+      padding: 24px; text-align: center;
+      font-family: 'IBM Plex Mono', monospace; font-size: 0.82rem; color: var(--text3);
+    }
+
     /* ── TABLE ── */
     .table-panel {
       background: var(--surface);
@@ -453,6 +648,43 @@
       </div>
       <canvas id="mainChart" style="display:none;"></canvas>
     </div>
+  </div>
+
+  <!-- SEARCH PANEL -->
+  <div class="search-panel">
+    <div class="search-panel-title">Consultar cotización por fecha</div>
+
+    <div class="search-modes">
+      <button class="search-mode-btn active" data-mode="exacta">Fecha exacta</button>
+      <button class="search-mode-btn" data-mode="rango">Entre fechas</button>
+    </div>
+
+    <!-- Fecha exacta -->
+    <div id="mode-exacta" class="search-inputs">
+      <div class="input-group">
+        <label>Fecha</label>
+        <input type="date" id="search-date-single" />
+      </div>
+      <button class="search-btn" id="btn-search-single">Consultar</button>
+      <button class="clear-btn" id="btn-clear-single">Limpiar</button>
+    </div>
+
+    <!-- Entre fechas -->
+    <div id="mode-rango" class="search-inputs" style="display:none;">
+      <div class="input-group">
+        <label>Desde</label>
+        <input type="date" id="search-date-from" />
+      </div>
+      <div class="input-group">
+        <label>Hasta</label>
+        <input type="date" id="search-date-to" />
+      </div>
+      <button class="search-btn" id="btn-search-range">Consultar</button>
+      <button class="clear-btn" id="btn-clear-range">Limpiar</button>
+    </div>
+
+    <!-- Resultados -->
+    <div class="search-results" id="search-results"></div>
   </div>
 
   <!-- TABLE -->
@@ -822,6 +1054,210 @@ document.querySelectorAll('.range-tab').forEach(btn => {
     currentRange = btn.dataset.range;
     render(currentTipo, currentRange);
   });
+});
+
+// ============================================================
+// SEARCH FUNCTIONALITY
+// ============================================================
+
+let searchMode = 'exacta';
+
+// Toggle modes
+document.querySelectorAll('.search-mode-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.search-mode-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    searchMode = btn.dataset.mode;
+    document.getElementById('mode-exacta').style.display = searchMode === 'exacta' ? 'flex' : 'none';
+    document.getElementById('mode-rango').style.display  = searchMode === 'rango'  ? 'flex' : 'none';
+    hideSearchResults();
+  });
+});
+
+function hideSearchResults() {
+  const el = document.getElementById('search-results');
+  el.classList.remove('visible');
+  el.innerHTML = '';
+}
+
+// ── Encontrar valor más cercano a una fecha ──
+function findClosest(data, dateStr) {
+  if (!data || !data.length) return null;
+  // Buscamos exacto primero
+  const exact = data.find(d => d.fecha.slice(0, 10) === dateStr);
+  if (exact) return { ...exact, exact: true };
+  // Si no hay exacto (finde/feriado), buscamos el día hábil anterior más cercano
+  const sorted = [...data].sort((a, b) => b.fecha.localeCompare(a.fecha));
+  const prev = sorted.find(d => d.fecha.slice(0, 10) < dateStr);
+  if (prev) return { ...prev, exact: false };
+  return null;
+}
+
+// ── Buscar en rango ──
+function findRange(data, from, to) {
+  if (!data || !data.length) return [];
+  return data.filter(d => {
+    const f = d.fecha.slice(0, 10);
+    return f >= from && f <= to;
+  });
+}
+
+// ── Cargar todos los tipos para búsqueda ──
+async function ensureAllLoaded() {
+  const tipos = ['oficial', 'blue', 'mep', 'ccl'];
+  await Promise.all(tipos.map(t => loadData(t).catch(() => null)));
+}
+
+// ── Render resultado fecha exacta ──
+function renderExactResult(dateStr) {
+  const el = document.getElementById('search-results');
+  const tipos = [
+    { id: 'oficial', label: 'Oficial' },
+    { id: 'blue',    label: 'Blue' },
+    { id: 'mep',     label: 'MEP' },
+    { id: 'ccl',     label: 'CCL' },
+  ];
+
+  const results = tipos.map(t => ({ ...t, result: findClosest(allData[t.id] || [], dateStr) }));
+  const anyFound = results.some(r => r.result);
+
+  if (!anyFound) {
+    el.innerHTML = `<div class="no-results">No se encontraron datos para esa fecha.</div>`;
+    el.classList.add('visible');
+    return;
+  }
+
+  // Headline: fecha real del resultado (puede ser distinta si es finde)
+  const firstResult = results.find(r => r.result)?.result;
+  const realDate = firstResult ? fmtDate(firstResult.fecha) : fmtDate(dateStr);
+  const wasExact = firstResult?.exact;
+  const requestedFormatted = fmtDate(dateStr);
+
+  let headline = wasExact
+    ? `Cotizaciones del ${realDate}`
+    : `No hay datos para el ${requestedFormatted} (día no hábil). Mostrando el día hábil anterior: ${realDate}`;
+
+  el.innerHTML = `
+    <div class="search-result-headline">${headline}</div>
+    <div class="search-result-grid">
+      ${results.map(t => {
+        const r = t.result;
+        if (!r) return `
+          <div class="src-card">
+            <div class="src-label ${t.id}">${t.label}</div>
+            <div class="src-no-data">Sin datos</div>
+          </div>`;
+        return `
+          <div class="src-card">
+            <div class="src-label ${t.id}">${t.label}</div>
+            <div class="src-row"><span class="src-key">Compra</span><span class="src-val">${fmt(r.compra)}</span></div>
+            <div class="src-row"><span class="src-key">Venta</span><span class="src-val">${fmt(r.venta)}</span></div>
+          </div>`;
+      }).join('')}
+    </div>`;
+  el.classList.add('visible');
+}
+
+// ── Render resultado rango ──
+function renderRangeResult(from, to) {
+  const el = document.getElementById('search-results');
+  const tipos = [
+    { id: 'oficial', label: 'Oficial', badge: 'badge-oficial' },
+    { id: 'blue',    label: 'Blue',    badge: 'badge-blue' },
+    { id: 'mep',     label: 'MEP',     badge: 'badge-mep' },
+    { id: 'ccl',     label: 'CCL',     badge: 'badge-ccl' },
+  ];
+
+  // Combinar todas las fechas únicas del rango
+  const dateMap = new Map(); // fecha → { oficial, blue, mep, ccl }
+
+  for (const t of tipos) {
+    const data = allData[t.id] || [];
+    const rows = findRange(data, from, to);
+    for (const row of rows) {
+      const key = row.fecha.slice(0, 10);
+      if (!dateMap.has(key)) dateMap.set(key, { fecha: key });
+      dateMap.get(key)[t.id] = row;
+    }
+  }
+
+  const rows = Array.from(dateMap.values()).sort((a, b) => b.fecha.localeCompare(a.fecha));
+
+  if (!rows.length) {
+    el.innerHTML = `<div class="no-results">No hay datos en ese rango de fechas.</div>`;
+    el.classList.add('visible');
+    return;
+  }
+
+  const headline = `${rows.length} días entre ${fmtDate(from)} y ${fmtDate(to)}`;
+
+  el.innerHTML = `
+    <div class="search-result-headline">${headline}</div>
+    <div class="range-scroll">
+      <table class="range-result-table">
+        <thead>
+          <tr>
+            <th>Fecha</th>
+            <th>Tipo</th>
+            <th class="r">Compra</th>
+            <th class="r">Venta</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${rows.flatMap(row =>
+            tipos.map(t => {
+              const d = row[t.id];
+              if (!d) return '';
+              return `<tr>
+                <td>${fmtDate(row.fecha)}</td>
+                <td><span class="tipo-badge ${t.badge}">${t.label}</span></td>
+                <td class="r">${fmt(d.compra)}</td>
+                <td class="r">${fmt(d.venta)}</td>
+              </tr>`;
+            })
+          ).join('')}
+        </tbody>
+      </table>
+    </div>`;
+  el.classList.add('visible');
+}
+
+// ── Event listeners búsqueda ──
+document.getElementById('btn-search-single').addEventListener('click', async () => {
+  const val = document.getElementById('search-date-single').value;
+  if (!val) return;
+  await ensureAllLoaded();
+  renderExactResult(val);
+});
+
+document.getElementById('search-date-single').addEventListener('keydown', async e => {
+  if (e.key === 'Enter') {
+    await ensureAllLoaded();
+    renderExactResult(document.getElementById('search-date-single').value);
+  }
+});
+
+document.getElementById('btn-clear-single').addEventListener('click', () => {
+  document.getElementById('search-date-single').value = '';
+  hideSearchResults();
+});
+
+document.getElementById('btn-search-range').addEventListener('click', async () => {
+  const from = document.getElementById('search-date-from').value;
+  const to   = document.getElementById('search-date-to').value;
+  if (!from || !to) return;
+  if (from > to) {
+    alert('La fecha de inicio debe ser anterior a la fecha de fin.');
+    return;
+  }
+  await ensureAllLoaded();
+  renderRangeResult(from, to);
+});
+
+document.getElementById('btn-clear-range').addEventListener('click', () => {
+  document.getElementById('search-date-from').value = '';
+  document.getElementById('search-date-to').value = '';
+  hideSearchResults();
 });
 
 // ============================================================

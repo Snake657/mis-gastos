@@ -1,0 +1,38 @@
+name: Actualizar datos dólar
+
+on:
+  # Corre de lunes a viernes a las 19:00 hs Argentina (22:00 UTC)
+  # Justo después del cierre de los mercados
+  schedule:
+    - cron: '0 22 * * 1-5'
+
+  # También se puede disparar manualmente desde GitHub → Actions → "Run workflow"
+  workflow_dispatch:
+
+jobs:
+  update-dolar-data:
+    runs-on: ubuntu-latest
+    name: Descargar y commitear datos del dólar
+
+    steps:
+      - name: Checkout del repo
+        uses: actions/checkout@v4
+
+      - name: Configurar Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Correr script de actualización
+        run: node dolar-historico/fetch-dolar-data.js
+
+      - name: Commitear datos actualizados (si hay cambios)
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: "data: actualizar cotizaciones dólar (${{ github.run_id }})"
+          file_pattern: 'dolar-historico/data/*.json'
+          commit_user_name: 'github-actions[bot]'
+          commit_user_email: 'github-actions[bot]@users.noreply.github.com'
+          commit_author: 'github-actions[bot] <github-actions[bot]@users.noreply.github.com>'
+          # Si no hay cambios en los archivos, no hace commit (evita ruido en el historial)
+          skip_dirty_check: false
