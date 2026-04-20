@@ -536,11 +536,11 @@ const watermarkPlugin = {
     const x = (left + right) / 2;
     const y = (top + bottom) / 2;
     ctx.save();
-    ctx.font = 'bold 13px "IBM Plex Mono", monospace';
-    ctx.fillStyle = 'rgba(255,255,255,0.045)';
+    ctx.font = 'bold 22px "IBM Plex Mono", monospace';
+    ctx.fillStyle = 'rgba(255,255,255,0.13)';
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
-    ctx.letterSpacing = '0.06em';
+    ctx.letterSpacing = '0.08em';
     ctx.fillText('canuto.ar', x, y);
     ctx.restore();
   }
