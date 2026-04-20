@@ -632,19 +632,45 @@ function fmtTime(s) {
   return new Date(s).toLocaleTimeString('es-AR', { hour: '2-digit', minute: '2-digit' });
 }
 
-// Baseline diario en sessionStorage para calcular variación del día
-function getBase(casa) {
-  const k = `cn_base_${casa}_${new Date().toDateString()}`;
-  const v = sessionStorage.getItem(k);
-  return v ? parseFloat(v) : null;
+// Cierre del día anterior desde ArgentinaDatos — base real para la variación diaria
+const HIST_API = 'https://api.argentinadatos.com/v1/cotizaciones/dolares/';
+const HIST_KEY  = { oficial:'oficial', blue:'blue', mep:'bolsa', ccl:'contadoconliqui' };
+let _ayer = {};   // { oficial: 1000, blue: 1100, mep: 1050, ccl: 1060 }
+
+async function fetchAyer() {
+  // Fecha de ayer en Argentina
+  const arg = new Date(new Date().toLocaleString('en-US', { timeZone: 'America/Argentina/Buenos_Aires' }));
+  arg.setDate(arg.getDate() - 1);
+  const yyyy = arg.getFullYear();
+  const mm   = String(arg.getMonth() + 1).padStart(2, '0');
+  const dd   = String(arg.getDate()).padStart(2, '0');
+  const fecha = `${yyyy}-${mm}-${dd}`;
+
+  const tipos = ['oficial', 'blue', 'mep', 'ccl'];
+  await Promise.all(tipos.map(async tipo => {
+    // Intentamos con la fecha exacta; si no hay dato (día no hábil) buscamos el último disponible
+    try {
+      let res = await fetch(`${HIST_API}${HIST_KEY[tipo]}/${fecha}`, { cache: 'no-store' });
+      if (res.ok) {
+        const d = await res.json();
+        if (d?.venta) { _ayer[tipo] = d.venta; return; }
+      }
+      // Fallback: traer la serie completa y tomar el penúltimo dato
+      res = await fetch(`${HIST_API}${HIST_KEY[tipo]}`, { cache: 'no-store' });
+      if (!res.ok) return;
+      const serie = await res.json();
+      // Filtrar datos hasta ayer (excluir hoy)
+      const hoyStr = new Date(new Date().toLocaleString('en-US', { timeZone: 'America/Argentina/Buenos_Aires' }))
+        .toLocaleDateString('sv-SE');
+      const previos = serie.filter(d => d.fecha.slice(0,10) < hoyStr && d.venta > 0);
+      if (previos.length) _ayer[tipo] = previos[previos.length - 1].venta;
+    } catch { /* silencioso */ }
+  }));
 }
-function setBase(casa, val) {
-  const k = `cn_base_${casa}_${new Date().toDateString()}`;
-  if (!sessionStorage.getItem(k) && val) sessionStorage.setItem(k, String(val));
-}
-function varPct(casa, cur) {
-  const b = getBase(casa);
-  return b && cur ? ((cur - b) / b) * 100 : null;
+
+function varPct(tipo, cur) {
+  const b = _ayer[tipo];
+  return (b && cur) ? ((cur - b) / b) * 100 : null;
 }
 
 // Estado de mercado
@@ -668,7 +694,6 @@ let prev = {};
 function renderCard(id, data, casa) {
   const d = data.find(x => x.casa === casa);
   if (!d) return;
-  setBase(id, d.venta);
   const vp = varPct(id, d.venta);
 
   document.getElementById(`v-${id}-venta`).textContent  = fmt(d.venta);
@@ -680,7 +705,7 @@ function renderCard(id, data, casa) {
     badge.textContent  = fmtPct(vp);
     badge.className    = `card-badge ${vp > 0 ? 'badge-pos' : vp < 0 ? 'badge-neg' : 'badge-neu'}`;
   } else {
-    badge.textContent = 'sin cambios';
+    badge.textContent = 'cargando…';
     badge.className   = 'card-badge badge-neu';
   }
 
@@ -694,13 +719,15 @@ function renderCard(id, data, casa) {
 
 function renderTicker(data) {
   const items = [
-    { id:'of', casa:'oficial' }, { id:'bl', casa:'blue' },
-    { id:'me', casa:'bolsa'  }, { id:'cc', casa:'contadoconliqui' }
+    { id:'of', tipo:'oficial', casa:'oficial'         },
+    { id:'bl', tipo:'blue',    casa:'blue'            },
+    { id:'me', tipo:'mep',     casa:'bolsa'           },
+    { id:'cc', tipo:'ccl',     casa:'contadoconliqui' }
   ];
   for (const it of items) {
     const d = data.find(x => x.casa === it.casa);
     if (!d) continue;
-    const vp  = varPct(it.id === 'of' ? 'oficial' : it.id === 'bl' ? 'blue' : it.id === 'me' ? 'mep' : 'ccl', d.venta);
+    const vp  = varPct(it.tipo, d.venta);
     const vs  = vp !== null ? fmtPct(vp) : '—';
     const cls = vp === null ? 'neu' : vp > 0 ? 'pos' : vp < 0 ? 'neg' : 'neu';
     for (const sfx of ['', '2']) {
@@ -765,8 +792,12 @@ function startCountdown() {
 
 updateMarket();
 setInterval(updateMarket, 60_000);
-fetchData(); startCountdown();
-setInterval(() => { fetchData(); startCountdown(); }, REFRESH * 1000);
+
+// Primero traemos el cierre de ayer, luego arrancamos el ciclo en vivo
+fetchAyer().finally(() => {
+  fetchData(); startCountdown();
+  setInterval(() => { fetchData(); startCountdown(); }, REFRESH * 1000);
+});
 </script>
 </body>
 </html>
