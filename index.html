@@ -3,34 +3,35 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Dólar en Vivo — Canuto.ar</title>
-  <meta name="description" content="Cotización del dólar en Argentina en tiempo real. Oficial BNA, Blue, MEP y CCL con variación diaria." />
+  <title>Canuto.ar — Herramientas financieras para Argentina</title>
+  <meta name="description" content="Canuto.ar es una plataforma de herramientas financieras simples, pensadas para el día a día argentino. Pesos, dólares, vencimientos y más." />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,400;0,500;0,600;0,700;1,400&family=IBM+Plex+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
 
   <style>
     :root {
-      --bg:       #0a0c10;
-      --surface:  #111318;
-      --surface2: #181b22;
-      --surface3: #1e2230;
-      --border:   #1e2230;
-      --border2:  #2a2f42;
-      --text:     #dde0ea;
-      --text2:    #7a7f96;
-      --text3:    #44485c;
-      --green:    #22d65f;
-      --green-dim: rgba(34,214,95,0.1);
-      --red:      #f05050;
-      --red-dim:  rgba(240,80,80,0.1);
-      --blue:     #4fa8f5;
-      --orange:   #f5a623;
-      --purple:   #9b7ef5;
-      --yellow:   #f5d623;
+      --bg:        #0d0f14;
+      --surface:   #13161e;
+      --surface2:  #1a1e28;
+      --border:    #232736;
+      --border2:   #2d3245;
+      --text:      #e8eaf0;
+      --text2:     #8b90a4;
+      --text3:     #545870;
+      --accent:    #4ade80;
+      --accent-dim:rgba(74,222,128,0.10);
+      --blue:      #60a5fa;
+      --blue-dim:  rgba(96,165,250,0.10);
+      --orange:    #fb923c;
+      --orange-dim:rgba(251,146,60,0.10);
+      --purple:    #a78bfa;
+      --purple-dim:rgba(167,139,250,0.10);
+      --yellow:    #fbbf24;
+      --yellow-dim:rgba(251,191,36,0.10);
     }
 
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    html { font-size: 16px; }
+    html { font-size: 16px; scroll-behavior: smooth; }
     body {
       background: var(--bg);
       color: var(--text);
@@ -39,911 +40,525 @@
       -webkit-font-smoothing: antialiased;
     }
 
-    /* ── TICKER BAND ── */
-    .ticker-band {
-      background: var(--surface);
-      border-bottom: 1px solid var(--border);
-      overflow: hidden;
-      height: 36px;
-      display: flex;
-      align-items: center;
-    }
-    .ticker-track {
-      display: flex;
-      gap: 0;
-      animation: ticker 28s linear infinite;
-      white-space: nowrap;
-    }
-    .ticker-band:hover .ticker-track { animation-play-state: paused; }
-    @keyframes ticker {
-      0%   { transform: translateX(0); }
-      100% { transform: translateX(-50%); }
-    }
-    .ticker-item {
-      display: inline-flex;
-      align-items: center;
-      gap: 10px;
-      padding: 0 28px;
-      border-right: 1px solid var(--border);
-      font-family: 'IBM Plex Mono', monospace;
-      font-size: 0.72rem;
-    }
-    .ticker-item .t-name {
-      color: var(--text3);
-      letter-spacing: 0.08em;
-      font-weight: 500;
-    }
-    .ticker-item .t-val { color: var(--text); font-weight: 600; }
-    .ticker-item .t-var { font-weight: 500; }
-    .ticker-item .t-var.pos { color: var(--green); }
-    .ticker-item .t-var.neg { color: var(--red); }
-    .ticker-item .t-var.neu { color: var(--text3); }
-
-    /* ── MAIN ── */
-    main {
-      max-width: 980px;
-      margin: 0 auto;
-      padding: 36px 20px 80px;
-    }
-
-    /* ── HEADER ── */
-    .page-header {
-      display: flex;
-      align-items: flex-start;
-      justify-content: space-between;
-      gap: 16px;
-      margin-bottom: 36px;
-      flex-wrap: wrap;
-    }
-    .header-left .eyebrow {
-      font-family: 'IBM Plex Mono', monospace;
-      font-size: 0.68rem;
-      letter-spacing: 0.14em;
-      text-transform: uppercase;
-      color: var(--green);
-      margin-bottom: 6px;
-      display: flex;
-      align-items: center;
-      gap: 7px;
-    }
-    .live-dot {
-      width: 7px; height: 7px;
-      border-radius: 50%;
-      background: var(--green);
-      animation: pulse 2s ease-in-out infinite;
-      flex-shrink: 0;
-    }
-    @keyframes pulse {
-      0%, 100% { opacity: 1; transform: scale(1); }
-      50%       { opacity: 0.4; transform: scale(0.7); }
-    }
-    .header-left h1 {
-      font-size: clamp(1.7rem, 4vw, 2.4rem);
-      font-weight: 600;
-      letter-spacing: -0.04em;
-      line-height: 1;
-      font-family: 'IBM Plex Mono', monospace;
-    }
-    .header-left h1 em {
-      font-style: normal;
-      color: var(--green);
-    }
-    .header-right {
-      text-align: right;
-      flex-shrink: 0;
-    }
-    .refresh-status {
-      font-family: 'IBM Plex Mono', monospace;
-      font-size: 0.72rem;
-      color: var(--text3);
-      margin-bottom: 6px;
-    }
-    .refresh-bar-wrap {
-      width: 120px;
-      height: 2px;
-      background: var(--surface3);
-      border-radius: 2px;
-      overflow: hidden;
-      margin-left: auto;
-    }
-    .refresh-bar {
-      height: 100%;
-      background: var(--green);
-      border-radius: 2px;
-      width: 100%;
-      transition: width 1s linear;
-      opacity: 0.6;
-    }
-    .last-update {
-      font-family: 'IBM Plex Mono', monospace;
-      font-size: 0.68rem;
-      color: var(--text3);
-      margin-top: 6px;
-    }
-
-    /* ── CARDS GRID ── */
-    .cards-grid {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 12px;
-      margin-bottom: 32px;
-    }
-    @media (max-width: 560px) {
-      .cards-grid { grid-template-columns: 1fr; }
-    }
-
-    .dolar-card {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 14px;
-      padding: 22px 22px 18px;
-      position: relative;
-      overflow: hidden;
-      transition: border-color 0.2s, transform 0.15s;
-      cursor: default;
-    }
-    .dolar-card:hover {
-      border-color: var(--border2);
-      transform: translateY(-1px);
-    }
-    .dolar-card::before {
-      content: '';
-      position: absolute;
-      top: 0; left: 0; right: 0;
-      height: 3px;
-      border-radius: 14px 14px 0 0;
-    }
-    .dolar-card.oficial::before { background: var(--green); }
-    .dolar-card.blue::before    { background: var(--blue); }
-    .dolar-card.mep::before     { background: var(--orange); }
-    .dolar-card.ccl::before     { background: var(--purple); }
-
-    .card-top {
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-start;
-      margin-bottom: 16px;
-    }
-    .card-name {
-      font-family: 'IBM Plex Mono', monospace;
-      font-size: 0.7rem;
-      font-weight: 700;
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-    }
-    .dolar-card.oficial .card-name { color: var(--green); }
-    .dolar-card.blue    .card-name { color: var(--blue); }
-    .dolar-card.mep     .card-name { color: var(--orange); }
-    .dolar-card.ccl     .card-name { color: var(--purple); }
-
-    .card-badge {
-      font-family: 'IBM Plex Mono', monospace;
-      font-size: 0.65rem;
-      padding: 3px 8px;
-      border-radius: 4px;
-      font-weight: 600;
-      letter-spacing: 0.04em;
-    }
-    .badge-pos { background: var(--green-dim); color: var(--green); }
-    .badge-neg { background: var(--red-dim); color: var(--red); }
-    .badge-neu { background: var(--surface3); color: var(--text3); }
-
-    .card-prices {
-      display: flex;
-      gap: 20px;
-      margin-bottom: 14px;
-      align-items: flex-end;
-    }
-    .price-block {}
-    .price-label {
-      font-family: 'IBM Plex Mono', monospace;
-      font-size: 0.62rem;
-      color: var(--text3);
-      text-transform: uppercase;
-      letter-spacing: 0.08em;
-      margin-bottom: 3px;
-    }
-    .price-value {
-      font-family: 'IBM Plex Mono', monospace;
-      font-size: clamp(1.4rem, 3.5vw, 1.9rem);
-      font-weight: 700;
-      color: var(--text);
-      letter-spacing: -0.03em;
-      line-height: 1;
-    }
-    .price-value.secondary {
-      font-size: clamp(1.1rem, 2.5vw, 1.4rem);
-      color: var(--text2);
-      font-weight: 500;
-    }
-
-    .card-meta {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      border-top: 1px solid var(--border);
-      padding-top: 10px;
-    }
-    .card-source {
-      font-family: 'IBM Plex Mono', monospace;
-      font-size: 0.65rem;
-      color: var(--text3);
-    }
-    .card-time {
-      font-family: 'IBM Plex Mono', monospace;
-      font-size: 0.65rem;
-      color: var(--text3);
-    }
-    .card-var-detail {
-      font-family: 'IBM Plex Mono', monospace;
-      font-size: 0.72rem;
-      color: var(--text3);
-    }
-
-    /* Loading shimmer */
-    .shimmer {
-      background: linear-gradient(90deg, var(--surface2) 25%, var(--surface3) 50%, var(--surface2) 75%);
-      background-size: 200% 100%;
-      animation: shimmer 1.4s infinite;
-      border-radius: 4px;
-      display: inline-block;
-    }
-    @keyframes shimmer { to { background-position: -200% 0; } }
-    .shimmer-val { width: 110px; height: 1.9rem; }
-    .shimmer-sm  { width: 70px; height: 0.85rem; }
-
-    /* ── BRECHA ── */
-    .brecha-section {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 14px;
-      padding: 20px 22px;
-      margin-bottom: 32px;
-    }
-    .section-title {
-      font-family: 'IBM Plex Mono', monospace;
-      font-size: 0.7rem;
-      text-transform: uppercase;
-      letter-spacing: 0.1em;
-      color: var(--text3);
-      margin-bottom: 16px;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-    .section-title::after {
-      content: '';
-      flex: 1;
-      height: 1px;
-      background: var(--border);
-    }
-    .brecha-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 10px;
-    }
-    @media (max-width: 480px) {
-      .brecha-grid { grid-template-columns: repeat(3, 1fr); gap: 6px; }
-    }
-    .brecha-item {
-      background: var(--surface2);
-      border-radius: 10px;
-      padding: 12px 14px;
-      text-align: center;
-    }
-    .brecha-label {
-      font-family: 'IBM Plex Mono', monospace;
-      font-size: 0.62rem;
-      color: var(--text3);
-      text-transform: uppercase;
-      letter-spacing: 0.08em;
-      margin-bottom: 6px;
-    }
-    .brecha-value {
-      font-family: 'IBM Plex Mono', monospace;
-      font-size: 1.15rem;
-      font-weight: 700;
-      color: var(--yellow);
-    }
-    .brecha-value.ok { color: var(--green); }
-
-    /* ── HORARIO MERCADO ── */
-    .market-status {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      padding: 5px 12px;
-      border-radius: 6px;
-      font-family: 'IBM Plex Mono', monospace;
-      font-size: 0.7rem;
-      font-weight: 600;
-      margin-bottom: 24px;
-    }
-    .market-status.open {
-      background: var(--green-dim);
-      color: var(--green);
-    }
-    .market-status.closed {
-      background: var(--surface2);
-      color: var(--text3);
-    }
-    .market-status .ms-dot {
-      width: 6px; height: 6px;
-      border-radius: 50%;
-      flex-shrink: 0;
-    }
-    .market-status.open .ms-dot { background: var(--green); animation: pulse 2s infinite; }
-    .market-status.closed .ms-dot { background: var(--text3); }
-
-    /* ── INFO BOX ── */
-    .info-box {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 10px;
-      padding: 16px 18px;
-      margin-bottom: 12px;
-      font-size: 0.8rem;
-      color: var(--text3);
-      line-height: 1.6;
-      font-family: 'IBM Plex Mono', monospace;
-    }
-    .info-box a {
-      color: var(--text2);
-      text-decoration: underline;
-      text-underline-offset: 3px;
-    }
-    .info-box strong { color: var(--text2); }
-
-    /* ── TOOL NAV FOOTER ── */
-    .tools-footer {
-      margin-top: 48px;
-      border-top: 1px solid var(--border);
-      padding-top: 28px;
-    }
-    .tools-footer-title {
-      font-family: 'IBM Plex Mono', monospace;
-      font-size: 0.68rem;
-      text-transform: uppercase;
-      letter-spacing: 0.1em;
-      color: var(--text3);
-      margin-bottom: 14px;
-    }
-    .tools-footer-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-      gap: 8px;
-    }
-    .tool-link {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      padding: 12px 14px;
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 10px;
-      text-decoration: none;
-      color: var(--text2);
-      font-size: 0.82rem;
-      font-family: 'IBM Plex Mono', monospace;
-      transition: all 0.15s;
-    }
-    .tool-link:hover {
-      border-color: var(--border2);
-      color: var(--text);
-      background: var(--surface2);
-    }
-    .tool-link.current {
-      border-color: var(--green);
-      color: var(--green);
-      background: var(--green-dim);
-    }
-    .tool-link .tl-emoji { font-size: 1rem; }
-    .tool-link .tl-info {}
-    .tool-link .tl-name { font-weight: 600; font-size: 0.78rem; }
-    .tool-link .tl-desc { font-size: 0.65rem; color: var(--text3); margin-top: 2px; }
-
     /* ── NAV ── */
-    nav.top-nav {
+    nav {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: 14px 24px;
+      padding: 16px 24px;
       border-bottom: 1px solid var(--border);
       position: sticky;
       top: 0;
-      background: rgba(10,12,16,0.94);
+      background: rgba(13,15,20,0.95);
       backdrop-filter: blur(14px);
       z-index: 100;
     }
     .nav-logo {
       font-family: 'IBM Plex Mono', monospace;
       font-weight: 700;
-      font-size: 0.95rem;
+      font-size: 1rem;
       color: var(--text);
       text-decoration: none;
       letter-spacing: -0.03em;
     }
-    .nav-logo span { color: var(--green); }
-    .nav-links {
-      display: flex;
-      gap: 4px;
-      overflow-x: auto;
-      scrollbar-width: none;
-    }
-    .nav-links::-webkit-scrollbar { display: none; }
-    .nav-links a {
-      color: var(--text2);
-      text-decoration: none;
-      font-size: 0.75rem;
+    .nav-logo span { color: var(--accent); }
+    .nav-cta {
       font-family: 'IBM Plex Mono', monospace;
-      padding: 5px 10px;
-      border-radius: 6px;
-      transition: all 0.12s;
-      white-space: nowrap;
-      flex-shrink: 0;
-    }
-    .nav-links a:hover { color: var(--text); background: var(--surface2); }
-    .nav-links a.active {
+      font-size: 0.78rem;
+      font-weight: 600;
       color: var(--bg);
-      background: var(--green);
-      font-weight: 700;
+      background: var(--accent);
+      padding: 7px 16px;
+      border-radius: 7px;
+      text-decoration: none;
+      transition: opacity 0.15s;
     }
+    .nav-cta:hover { opacity: 0.85; }
 
-    footer {
-      border-top: 1px solid var(--border);
-      padding: 20px 24px;
+    /* ── HERO ── */
+    .hero {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 72px 24px 56px;
       text-align: center;
+    }
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      padding: 5px 14px;
+      background: var(--accent-dim);
+      border: 1px solid rgba(74,222,128,0.2);
+      border-radius: 20px;
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.72rem;
+      font-weight: 600;
+      color: var(--accent);
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      margin-bottom: 28px;
+    }
+    .hero-badge::before {
+      content: '';
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: var(--accent);
+      animation: pulse 2s ease-in-out infinite;
+    }
+    @keyframes pulse {
+      0%,100% { opacity:1; transform:scale(1); }
+      50%      { opacity:0.3; transform:scale(0.6); }
+    }
+    .hero h1 {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: clamp(2rem, 6vw, 3.4rem);
+      font-weight: 700;
+      letter-spacing: -0.04em;
+      line-height: 1.05;
+      margin-bottom: 20px;
+    }
+    .hero h1 em {
+      font-style: normal;
+      color: var(--accent);
+    }
+    .hero p {
+      font-size: clamp(0.95rem, 2vw, 1.1rem);
+      color: var(--text2);
+      line-height: 1.65;
+      max-width: 520px;
+      margin: 0 auto 36px;
+    }
+    .hero-actions {
+      display: flex;
+      gap: 10px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+    .btn-primary {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.88rem;
+      font-weight: 700;
+      color: var(--bg);
+      background: var(--accent);
+      padding: 12px 28px;
+      border-radius: 9px;
+      text-decoration: none;
+      transition: opacity 0.15s, transform 0.15s;
+    }
+    .btn-primary:hover { opacity: 0.88; transform: translateY(-1px); }
+    .btn-secondary {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.88rem;
+      font-weight: 500;
+      color: var(--text2);
+      background: var(--surface);
+      border: 1px solid var(--border);
+      padding: 12px 28px;
+      border-radius: 9px;
+      text-decoration: none;
+      transition: all 0.15s;
+    }
+    .btn-secondary:hover { color: var(--text); border-color: var(--border2); transform: translateY(-1px); }
+
+    /* ── MOCK PREVIEW ── */
+    .mock-preview {
+      max-width: 680px;
+      margin: 48px auto 0;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 20px;
+      text-align: left;
+    }
+    .mock-bar {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin-bottom: 16px;
+    }
+    .mock-dot { width: 10px; height: 10px; border-radius: 50%; }
+    .mock-dot.r { background: #f87171; }
+    .mock-dot.y { background: var(--yellow); }
+    .mock-dot.g { background: var(--accent); }
+    .mock-title {
+      font-family: 'IBM Plex Mono', monospace;
       font-size: 0.72rem;
       color: var(--text3);
+      margin-left: 6px;
+    }
+    .mock-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 8px; }
+    .mock-card {
+      background: var(--surface2);
+      border-radius: 10px;
+      padding: 12px 13px;
+    }
+    .mock-card-label {
       font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.62rem;
+      color: var(--text3);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-bottom: 5px;
+    }
+    .mock-card-val {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--text);
+    }
+    .mock-card-sub {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.65rem;
+      margin-top: 3px;
+    }
+    .mock-card-sub.pos { color: var(--accent); }
+    .mock-card-sub.neg { color: #f87171; }
+
+    /* ── SECTION ── */
+    section {
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 64px 24px;
+    }
+    .section-eyebrow {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.68rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 10px;
+    }
+    .section-title {
+      font-size: clamp(1.5rem, 3.5vw, 2rem);
+      font-weight: 600;
+      letter-spacing: -0.03em;
+      margin-bottom: 10px;
+      line-height: 1.15;
+    }
+    .section-sub {
+      color: var(--text2);
+      font-size: 0.92rem;
+      margin-bottom: 40px;
+      line-height: 1.6;
+    }
+
+    /* ── TOOLS GRID ── */
+    .tools-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 14px;
+    }
+    @media (max-width: 600px) {
+      .tools-grid { grid-template-columns: 1fr; }
+    }
+
+    .tool-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 24px 22px 20px;
+      text-decoration: none;
+      color: inherit;
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+      transition: border-color 0.18s, transform 0.15s;
+      position: relative;
+      overflow: hidden;
+    }
+    .tool-card:hover {
+      border-color: var(--border2);
+      transform: translateY(-2px);
+    }
+    .tool-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 2px;
+      border-radius: 16px 16px 0 0;
+      opacity: 0;
+      transition: opacity 0.18s;
+    }
+    .tool-card:hover::before { opacity: 1; }
+    .tool-card.gastos::before    { background: var(--accent); }
+    .tool-card.retiro::before    { background: var(--blue); }
+    .tool-card.dolar-vivo::before   { background: var(--orange); }
+    .tool-card.dolar-hist::before  { background: var(--purple); }
+
+    .tool-status {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.65rem;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      padding: 3px 9px;
+      border-radius: 5px;
+      margin-bottom: 16px;
+      width: fit-content;
+    }
+    .tool-status.available {
+      background: var(--accent-dim);
+      color: var(--accent);
+    }
+    .tool-status.available::before {
+      content: '';
+      width: 5px; height: 5px;
+      border-radius: 50%;
+      background: var(--accent);
+    }
+    .tool-status.soon {
+      background: var(--surface2);
+      color: var(--text3);
+    }
+    .tool-status.soon::before {
+      content: '';
+      width: 5px; height: 5px;
+      border-radius: 50%;
+      background: var(--text3);
+    }
+
+    .tool-emoji {
+      font-size: 1.8rem;
+      margin-bottom: 10px;
+      line-height: 1;
+    }
+    .tool-name {
+      font-weight: 600;
+      font-size: 1.05rem;
+      letter-spacing: -0.02em;
+      margin-bottom: 7px;
+    }
+    .tool-desc {
+      font-size: 0.85rem;
+      color: var(--text2);
+      line-height: 1.55;
+      flex: 1;
+      margin-bottom: 18px;
+    }
+    .tool-cta {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: var(--text2);
+      transition: color 0.15s;
+    }
+    .tool-card:hover .tool-cta { color: var(--text); }
+    .tool-card.gastos:hover .tool-cta   { color: var(--accent); }
+    .tool-card.retiro:hover .tool-cta   { color: var(--blue); }
+    .tool-card.dolar-vivo:hover .tool-cta { color: var(--orange); }
+    .tool-card.dolar-hist:hover .tool-cta { color: var(--purple); }
+    .tool-cta::after { content: '→'; }
+    .tool-card-disabled { pointer-events: none; opacity: 0.55; }
+
+    /* ── WHY ── */
+    .why-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+    }
+    @media (min-width: 700px) { .why-grid { grid-template-columns: repeat(3, 1fr); } }
+    .why-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 20px;
+    }
+    .why-icon { font-size: 1.4rem; margin-bottom: 10px; }
+    .why-title { font-weight: 600; font-size: 0.9rem; margin-bottom: 6px; letter-spacing: -0.01em; }
+    .why-text { font-size: 0.82rem; color: var(--text2); line-height: 1.5; }
+
+    /* ── CTA SECTION ── */
+    .cta-section {
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 0 24px 80px;
+    }
+    .cta-box {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 48px 32px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    .cta-box::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 50%; transform: translateX(-50%);
+      width: 200px; height: 1px;
+      background: linear-gradient(90deg, transparent, var(--accent), transparent);
+    }
+    .cta-box h2 {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: clamp(1.3rem, 3vw, 1.8rem);
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      margin-bottom: 12px;
+    }
+    .cta-box p { color: var(--text2); font-size: 0.9rem; margin-bottom: 28px; line-height: 1.6; }
+
+    /* ── FOOTER ── */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 24px;
+      text-align: center;
+      font-size: 0.78rem;
+      color: var(--text3);
     }
     footer a { color: var(--text2); text-decoration: none; }
+    footer a:hover { color: var(--text); }
   </style>
 </head>
 <body>
 
 <!-- NAV -->
-<nav class="top-nav">
-  <a class="nav-logo" href="/"><span>canuto</span>.ar</a>
-  <div class="nav-links">
-    <a href="/gastos/">💳 Gastos</a>
-    <a href="/retiro/">🏖️ Retiro</a>
-    <a href="/dolar-en-vivo/" class="active">💵 Dólar en Vivo</a>
-    <a href="/dolar-historico/">📈 Histórico</a>
-  </div>
+<nav>
+  <a class="nav-logo" href="/index.html"><span>canuto</span>.ar</a>
+  <a class="nav-cta" href="/gastos.html">Empezar gratis →</a>
 </nav>
 
-<!-- TICKER -->
-<div class="ticker-band" id="ticker-band" aria-hidden="true">
-  <div class="ticker-track" id="ticker-track">
-    <span class="ticker-item"><span class="t-name">OFICIAL</span><span class="t-val" id="tick-oficial-v">—</span><span class="t-var neu" id="tick-oficial-d">—</span></span>
-    <span class="ticker-item"><span class="t-name">BLUE</span><span class="t-val" id="tick-blue-v">—</span><span class="t-var neu" id="tick-blue-d">—</span></span>
-    <span class="ticker-item"><span class="t-name">MEP</span><span class="t-val" id="tick-mep-v">—</span><span class="t-var neu" id="tick-mep-d">—</span></span>
-    <span class="ticker-item"><span class="t-name">CCL</span><span class="t-val" id="tick-ccl-v">—</span><span class="t-var neu" id="tick-ccl-d">—</span></span>
-    <span class="ticker-item"><span class="t-name">OFICIAL</span><span class="t-val" id="tick-oficial-v2">—</span><span class="t-var neu" id="tick-oficial-d2">—</span></span>
-    <span class="ticker-item"><span class="t-name">BLUE</span><span class="t-val" id="tick-blue-v2">—</span><span class="t-var neu" id="tick-blue-d2">—</span></span>
-    <span class="ticker-item"><span class="t-name">MEP</span><span class="t-val" id="tick-mep-v2">—</span><span class="t-var neu" id="tick-mep-d2">—</span></span>
-    <span class="ticker-item"><span class="t-name">CCL</span><span class="t-val" id="tick-ccl-v2">—</span><span class="t-var neu" id="tick-ccl-d2">—</span></span>
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-badge">Herramientas para Argentina</div>
+  <h1>Controlá tus finanzas<br><em>sin complicaciones</em></h1>
+  <p>Canuto.ar es una plataforma de herramientas financieras simples, pensadas para el día a día argentino. Pesos, dólares, vencimientos y más.</p>
+  <div class="hero-actions">
+    <a class="btn-primary" href="/gastos.html">Empezar con Mis Gastos</a>
+    <a class="btn-secondary" href="#herramientas">Ver herramientas</a>
+  </div>
+
+  <!-- MOCK PREVIEW -->
+  <div class="mock-preview">
+    <div class="mock-bar">
+      <div class="mock-dot r"></div>
+      <div class="mock-dot y"></div>
+      <div class="mock-dot g"></div>
+      <span class="mock-title">Mis Gastos · Abril 2026 · mes actual</span>
+    </div>
+    <div class="mock-grid">
+      <div class="mock-card">
+        <div class="mock-card-label">Total $</div>
+        <div class="mock-card-val">$842.500</div>
+        <div class="mock-card-sub pos">gastos del mes</div>
+      </div>
+      <div class="mock-card">
+        <div class="mock-card-label">Total USD</div>
+        <div class="mock-card-val">USD 210</div>
+        <div class="mock-card-sub pos">dólares</div>
+      </div>
+      <div class="mock-card">
+        <div class="mock-card-label">💳 Visa</div>
+        <div class="mock-card-val">$380.000</div>
+        <div class="mock-card-sub neg">Vence el 15</div>
+      </div>
+    </div>
   </div>
 </div>
 
-<main>
+<!-- HERRAMIENTAS -->
+<section id="herramientas">
+  <div class="section-eyebrow">herramientas</div>
+  <h2 class="section-title">Todo lo que necesitás<br>en un solo lugar</h2>
+  <p class="section-sub">Cuatro herramientas pensadas para el argentino de hoy. Sin publicidad, sin suscripción.</p>
 
-  <!-- HEADER -->
-  <div class="page-header">
-    <div class="header-left">
-      <div class="eyebrow">
-        <span class="live-dot"></span>
-        COTIZACIONES EN VIVO
-      </div>
-      <h1>Dólar<br><em>en Vivo</em></h1>
-    </div>
-    <div class="header-right">
-      <div class="refresh-status" id="refresh-status">Actualizando…</div>
-      <div class="refresh-bar-wrap">
-        <div class="refresh-bar" id="refresh-bar"></div>
-      </div>
-      <div class="last-update" id="last-update">—</div>
-    </div>
-  </div>
+  <div class="tools-grid">
 
-  <!-- MARKET STATUS -->
-  <div class="market-status closed" id="market-status">
-    <span class="ms-dot"></span>
-    <span id="market-status-text">Verificando horario…</span>
-  </div>
+    <!-- GASTOS -->
+    <a class="tool-card gastos" href="/gastos.html">
+      <div class="tool-status available">Disponible</div>
+      <div class="tool-emoji">💳</div>
+      <div class="tool-name">Mis Gastos</div>
+      <p class="tool-desc">Calendario de gastos fijos mensuales. Vencimientos, recurrencias, pagos en efectivo y tarjeta, balance contra tus ingresos y cotización del dólar BNA.</p>
+      <span class="tool-cta">Ir a Mis Gastos</span>
+    </a>
 
-  <!-- CARDS -->
-  <div class="cards-grid">
+    <!-- RETIRO -->
+    <a class="tool-card retiro" href="/retiro.html">
+      <div class="tool-status available">Disponible</div>
+      <div class="tool-emoji">🏖️</div>
+      <div class="tool-name">Mi Retiro</div>
+      <p class="tool-desc">Calculá cuándo y cómo podés retirarte. Ingresá tus ahorros, gastos proyectados y rendimiento esperado — la app te dice cuánto tiempo te duran.</p>
+      <span class="tool-cta">Ir a Mi Retiro</span>
+    </a>
 
-    <!-- OFICIAL BNA -->
-    <div class="dolar-card oficial" id="card-oficial">
-      <div class="card-top">
-        <div class="card-name">Oficial BNA</div>
-        <div class="card-badge badge-neu" id="badge-oficial">—</div>
-      </div>
-      <div class="card-prices">
-        <div class="price-block">
-          <div class="price-label">Venta</div>
-          <div class="price-value" id="val-oficial-venta"><span class="shimmer shimmer-val"></span></div>
-        </div>
-        <div class="price-block">
-          <div class="price-label">Compra</div>
-          <div class="price-value secondary" id="val-oficial-compra"><span class="shimmer shimmer-sm"></span></div>
-        </div>
-      </div>
-      <div class="card-meta">
-        <span class="card-source">Fuente: BNA / DolarApi</span>
-        <span class="card-time" id="time-oficial">—</span>
-      </div>
-    </div>
+    <!-- DÓLAR EN VIVO -->
+    <a class="tool-card dolar-vivo" href="/dolar-en-vivo.html">
+      <div class="tool-status available">Disponible</div>
+      <div class="tool-emoji">💵</div>
+      <div class="tool-name">Dólar en Vivo</div>
+      <p class="tool-desc">Oficial BNA, Blue, MEP y CCL en tiempo real. Variación diaria en %, brecha vs oficial y auto-refresh cada 60 segundos. Sin recargar la página.</p>
+      <span class="tool-cta">Ver cotizaciones</span>
+    </a>
 
-    <!-- BLUE -->
-    <div class="dolar-card blue" id="card-blue">
-      <div class="card-top">
-        <div class="card-name">Blue</div>
-        <div class="card-badge badge-neu" id="badge-blue">—</div>
-      </div>
-      <div class="card-prices">
-        <div class="price-block">
-          <div class="price-label">Venta</div>
-          <div class="price-value" id="val-blue-venta"><span class="shimmer shimmer-val"></span></div>
-        </div>
-        <div class="price-block">
-          <div class="price-label">Compra</div>
-          <div class="price-value secondary" id="val-blue-compra"><span class="shimmer shimmer-sm"></span></div>
-        </div>
-      </div>
-      <div class="card-meta">
-        <span class="card-source">Mercado informal</span>
-        <span class="card-time" id="time-blue">—</span>
-      </div>
-    </div>
-
-    <!-- MEP -->
-    <div class="dolar-card mep" id="card-mep">
-      <div class="card-top">
-        <div class="card-name">MEP / Bolsa</div>
-        <div class="card-badge badge-neu" id="badge-mep">—</div>
-      </div>
-      <div class="card-prices">
-        <div class="price-block">
-          <div class="price-label">Venta</div>
-          <div class="price-value" id="val-mep-venta"><span class="shimmer shimmer-val"></span></div>
-        </div>
-        <div class="price-block">
-          <div class="price-label">Compra</div>
-          <div class="price-value secondary" id="val-mep-compra"><span class="shimmer shimmer-sm"></span></div>
-        </div>
-      </div>
-      <div class="card-meta">
-        <span class="card-source">Mercado bursátil</span>
-        <span class="card-time" id="time-mep">—</span>
-      </div>
-    </div>
-
-    <!-- CCL -->
-    <div class="dolar-card ccl" id="card-ccl">
-      <div class="card-top">
-        <div class="card-name">CCL</div>
-        <div class="card-badge badge-neu" id="badge-ccl">—</div>
-      </div>
-      <div class="card-prices">
-        <div class="price-block">
-          <div class="price-label">Venta</div>
-          <div class="price-value" id="val-ccl-venta"><span class="shimmer shimmer-val"></span></div>
-        </div>
-        <div class="price-block">
-          <div class="price-label">Compra</div>
-          <div class="price-value secondary" id="val-ccl-compra"><span class="shimmer shimmer-sm"></span></div>
-        </div>
-      </div>
-      <div class="card-meta">
-        <span class="card-source">Contado con liqui</span>
-        <span class="card-time" id="time-ccl">—</span>
-      </div>
-    </div>
+    <!-- DÓLAR HISTÓRICO -->
+    <a class="tool-card dolar-hist" href="/dolar-historico.html">
+      <div class="tool-status available">Disponible</div>
+      <div class="tool-emoji">📈</div>
+      <div class="tool-name">Dólar Histórico</div>
+      <p class="tool-desc">Consultá la cotización de cualquier fecha desde 2003. Oficial, Blue, MEP y CCL con gráfico interactivo, buscador por fecha y comparación entre tipos.</p>
+      <span class="tool-cta">Ver historial</span>
+    </a>
 
   </div>
+</section>
 
-  <!-- BRECHA -->
-  <div class="brecha-section">
-    <div class="section-title">Brecha vs Oficial</div>
-    <div class="brecha-grid">
-      <div class="brecha-item">
-        <div class="brecha-label">Blue</div>
-        <div class="brecha-value" id="brecha-blue">—</div>
-      </div>
-      <div class="brecha-item">
-        <div class="brecha-label">MEP</div>
-        <div class="brecha-value" id="brecha-mep">—</div>
-      </div>
-      <div class="brecha-item">
-        <div class="brecha-label">CCL</div>
-        <div class="brecha-value" id="brecha-ccl">—</div>
-      </div>
+<!-- POR QUÉ CANUTO -->
+<section style="padding-top:0;">
+  <div class="section-eyebrow">¿por qué canuto?</div>
+  <h2 class="section-title">Simple, argentino<br>y sin vueltas</h2>
+  <div class="why-grid">
+    <div class="why-card">
+      <div class="why-icon">💵</div>
+      <div class="why-title">Pesos y dólares</div>
+      <p class="why-text">Manejá gastos en ARS y USD con la cotización BNA actualizada automáticamente.</p>
+    </div>
+    <div class="why-card">
+      <div class="why-icon">📅</div>
+      <div class="why-title">Vencimientos claros</div>
+      <p class="why-text">Sabé qué vence cuándo. Gastos recurrentes, bimestrales, anuales — se generan solos.</p>
+    </div>
+    <div class="why-card">
+      <div class="why-icon">☁️</div>
+      <div class="why-title">Sincronizado</div>
+      <p class="why-text">Entrá con Google y tus datos están en la nube. Celu, compu, tablet — todo actualizado.</p>
+    </div>
+    <div class="why-card">
+      <div class="why-icon">✅</div>
+      <div class="why-title">Control de pagos</div>
+      <p class="why-text">Marcá cada gasto como pagado en efectivo o tarjeta. El balance te muestra qué te queda.</p>
+    </div>
+    <div class="why-card">
+      <div class="why-icon">📊</div>
+      <div class="why-title">Resumen anual</div>
+      <p class="why-text">Mirá todos los meses de un vistazo. El historial siempre a mano.</p>
+    </div>
+    <div class="why-card">
+      <div class="why-icon">🔒</div>
+      <div class="why-title">Tus datos son tuyos</div>
+      <p class="why-text">Sin publicidad, sin venta de datos. Podés usar la app sin registrarte para probarla.</p>
     </div>
   </div>
+</section>
 
-  <!-- INFO -->
-  <div class="info-box">
-    📡 Datos provistos por <strong>DolarApi.com</strong> (MIT, sin API key). El <strong>Oficial BNA</strong> se actualiza 1 vez por día hábil (~12:30hs). Blue, MEP y CCL se actualizan cada 15–30 min. Esta página refresca automáticamente cada <strong>60 segundos</strong>. Para cotizaciones históricas →
-    <a href="/dolar-historico/">Dólar Histórico</a>.
+<!-- CTA FINAL -->
+<div class="cta-section">
+  <div class="cta-box">
+    <h2>Empezá hoy, gratis</h2>
+    <p>Sin tarjeta de crédito. Sin instalación.<br>Funciona desde el navegador en cualquier dispositivo.</p>
+    <a class="btn-primary" href="/gastos.html">Abrir Mis Gastos</a>
   </div>
-
-  <!-- TOOLS FOOTER NAV -->
-  <div class="tools-footer">
-    <div class="tools-footer-title">Otras herramientas</div>
-    <div class="tools-footer-grid">
-      <a class="tool-link" href="/gastos/">
-        <span class="tl-emoji">💳</span>
-        <div class="tl-info">
-          <div class="tl-name">Mis Gastos</div>
-          <div class="tl-desc">Calendario de gastos fijos</div>
-        </div>
-      </a>
-      <a class="tool-link" href="/retiro/">
-        <span class="tl-emoji">🏖️</span>
-        <div class="tl-info">
-          <div class="tl-name">Mi Retiro</div>
-          <div class="tl-desc">Calculá cuándo retirarte</div>
-        </div>
-      </a>
-      <a class="tool-link current" href="/dolar-en-vivo/">
-        <span class="tl-emoji">💵</span>
-        <div class="tl-info">
-          <div class="tl-name">Dólar en Vivo</div>
-          <div class="tl-desc">Estás acá</div>
-        </div>
-      </a>
-      <a class="tool-link" href="/dolar-historico/">
-        <span class="tl-emoji">📈</span>
-        <div class="tl-info">
-          <div class="tl-name">Dólar Histórico</div>
-          <div class="tl-desc">Serie desde 2003</div>
-        </div>
-      </a>
-    </div>
-  </div>
-
-</main>
+</div>
 
 <footer>
-  <a href="/">canuto.ar</a> · Herramientas financieras para Argentina 🇦🇷 ·
-  Datos: <a href="https://dolarapi.com" target="_blank" rel="noopener">DolarApi.com</a>
+  <a href="/index.html">canuto.ar</a> © 2026 · Hecho en Argentina 🇦🇷
 </footer>
 
-<script>
-// ═══════════════════════════════════════════════════════════
-// CONFIG
-// ═══════════════════════════════════════════════════════════
-const API = 'https://dolarapi.com/v1/dolares';
-const REFRESH_SECS = 60;  // segundos entre refreshes
-
-// ═══════════════════════════════════════════════════════════
-// UTILS
-// ═══════════════════════════════════════════════════════════
-function fmt(n) {
-  if (n == null || isNaN(n)) return '—';
-  return '$' + Number(n).toLocaleString('es-AR', { minimumFractionDigits: 0, maximumFractionDigits: 0 });
-}
-
-function fmtPct(n) {
-  if (n == null || isNaN(n)) return '—';
-  const sign = n >= 0 ? '+' : '';
-  return sign + n.toFixed(2) + '%';
-}
-
-function timeAgo(dateStr) {
-  if (!dateStr) return '—';
-  const d = new Date(dateStr);
-  const now = new Date();
-  const diff = Math.floor((now - d) / 1000);
-  if (diff < 60)  return `hace ${diff}s`;
-  if (diff < 3600) return `hace ${Math.floor(diff/60)}m`;
-  if (diff < 86400) return `hace ${Math.floor(diff/3600)}h`;
-  return d.toLocaleDateString('es-AR');
-}
-
-function fmtTime(dateStr) {
-  if (!dateStr) return '—';
-  const d = new Date(dateStr);
-  return d.toLocaleTimeString('es-AR', { hour: '2-digit', minute: '2-digit' });
-}
-
-// ═══════════════════════════════════════════════════════════
-// MARKET HOURS (Argentina: lun-vie 11:00-17:00 ART = UTC-3)
-// ═══════════════════════════════════════════════════════════
-function getMarketStatus() {
-  const now = new Date();
-  // Argentina UTC-3
-  const arg = new Date(now.toLocaleString('en-US', { timeZone: 'America/Argentina/Buenos_Aires' }));
-  const day  = arg.getDay();   // 0=dom, 6=sab
-  const hour = arg.getHours();
-  const min  = arg.getMinutes();
-  const timeNum = hour * 100 + min;
-
-  if (day === 0 || day === 6) return { open: false, reason: 'Fin de semana — mercado cerrado' };
-  if (timeNum < 1100) return { open: false, reason: `Abre a las 11:00 hs` };
-  if (timeNum >= 1700) return { open: false, reason: 'Mercado cerrado — reabre el próximo día hábil' };
-  return { open: true, reason: `Mercado abierto · cierra a las 17:00 hs` };
-}
-
-function updateMarketStatus() {
-  const s = getMarketStatus();
-  const el = document.getElementById('market-status');
-  const txt = document.getElementById('market-status-text');
-  el.className = `market-status ${s.open ? 'open' : 'closed'}`;
-  txt.textContent = s.reason;
-}
-
-// ═══════════════════════════════════════════════════════════
-// VARIACIÓN DIARIA
-// Guardamos el primer valor del día en sessionStorage como baseline
-// ═══════════════════════════════════════════════════════════
-function getBaseline(casa) {
-  const key = `canuto_base_${casa}_${new Date().toDateString()}`;
-  const stored = sessionStorage.getItem(key);
-  return stored ? parseFloat(stored) : null;
-}
-
-function setBaseline(casa, value) {
-  // Solo guardar si no hay baseline hoy todavía
-  const key = `canuto_base_${casa}_${new Date().toDateString()}`;
-  if (!sessionStorage.getItem(key) && value) {
-    sessionStorage.setItem(key, value.toString());
-  }
-}
-
-function calcVariacion(casa, current) {
-  const base = getBaseline(casa);
-  if (!base || !current) return null;
-  return ((current - base) / base) * 100;
-}
-
-// ═══════════════════════════════════════════════════════════
-// RENDER
-// ═══════════════════════════════════════════════════════════
-let prevData = {};
-
-function renderCard(tipo, data, claveApi) {
-  const d = data.find(x => x.casa === claveApi);
-  if (!d) return;
-
-  setBaseline(tipo, d.venta);
-  const varPct = calcVariacion(tipo, d.venta);
-
-  // Valores
-  document.getElementById(`val-${tipo}-venta`).textContent  = fmt(d.venta);
-  document.getElementById(`val-${tipo}-compra`).textContent = fmt(d.compra);
-  document.getElementById(`time-${tipo}`).textContent       = fmtTime(d.fechaActualizacion);
-
-  // Badge variación
-  const badge = document.getElementById(`badge-${tipo}`);
-  if (varPct !== null) {
-    badge.textContent = fmtPct(varPct);
-    if (varPct > 0)       { badge.className = 'card-badge badge-pos'; }
-    else if (varPct < 0)  { badge.className = 'card-badge badge-neg'; }
-    else                  { badge.className = 'card-badge badge-neu'; }
-  } else {
-    badge.textContent = 'sin cambios';
-    badge.className = 'card-badge badge-neu';
-  }
-
-  // Flash animation si cambió
-  if (prevData[tipo] && prevData[tipo] !== d.venta) {
-    const card = document.getElementById(`card-${tipo}`);
-    card.style.transition = 'background 0.3s';
-    card.style.background = '#1e2e1e';
-    setTimeout(() => { card.style.background = ''; }, 600);
-  }
-  prevData[tipo] = d.venta;
-}
-
-function renderBrechas(data) {
-  const oficial = data.find(x => x.casa === 'oficial');
-  if (!oficial || !oficial.venta) return;
-  const base = oficial.venta;
-
-  const tipos = [
-    { id: 'blue', casa: 'blue' },
-    { id: 'mep',  casa: 'bolsa' },
-    { id: 'ccl',  casa: 'contadoconliqui' },
-  ];
-  for (const t of tipos) {
-    const d = data.find(x => x.casa === t.casa);
-    const el = document.getElementById(`brecha-${t.id}`);
-    if (d && d.venta) {
-      const brecha = ((d.venta - base) / base) * 100;
-      el.textContent = fmtPct(brecha);
-      el.className = `brecha-value ${brecha < 5 ? 'ok' : ''}`;
-    }
-  }
-}
-
-function renderTicker(data) {
-  const items = [
-    { id: 'oficial', casa: 'oficial',          label: 'OFICIAL' },
-    { id: 'blue',    casa: 'blue',             label: 'BLUE' },
-    { id: 'mep',     casa: 'bolsa',            label: 'MEP' },
-    { id: 'ccl',     casa: 'contadoconliqui',  label: 'CCL' },
-  ];
-  for (const item of items) {
-    const d = data.find(x => x.casa === item.casa);
-    if (!d) continue;
-    const varPct = calcVariacion(item.id, d.venta);
-    const varStr = varPct !== null ? fmtPct(varPct) : '—';
-    const varClass = varPct === null ? 'neu' : varPct > 0 ? 'pos' : varPct < 0 ? 'neg' : 'neu';
-
-    for (const suffix of ['', '2']) {
-      const vEl = document.getElementById(`tick-${item.id}-v${suffix}`);
-      const dEl = document.getElementById(`tick-${item.id}-d${suffix}`);
-      if (vEl) vEl.textContent = fmt(d.venta);
-      if (dEl) { dEl.textContent = varStr; dEl.className = `t-var ${varClass}`; }
-    }
-  }
-}
-
-// ═══════════════════════════════════════════════════════════
-// FETCH
-// ═══════════════════════════════════════════════════════════
-async function fetchData() {
-  try {
-    const res = await fetch(API, { cache: 'no-store' });
-    if (!res.ok) throw new Error(`HTTP ${res.status}`);
-    const data = await res.json();
-
-    renderCard('oficial', data, 'oficial');
-    renderCard('blue',    data, 'blue');
-    renderCard('mep',     data, 'bolsa');
-    renderCard('ccl',     data, 'contadoconliqui');
-    renderBrechas(data);
-    renderTicker(data);
-
-    document.getElementById('last-update').textContent = `últ. actualización: ${new Date().toLocaleTimeString('es-AR')}`;
-    document.getElementById('refresh-status').textContent = `Próximo refresh en ${REFRESH_SECS}s`;
-
-  } catch(err) {
-    document.getElementById('refresh-status').textContent = 'Error al conectar — reintentando…';
-    console.error('Fetch error:', err);
-  }
-}
-
-// ═══════════════════════════════════════════════════════════
-// REFRESH BAR COUNTDOWN
-// ═══════════════════════════════════════════════════════════
-let countdown = REFRESH_SECS;
-let refreshTimer, countdownTimer;
-
-function startCountdown() {
-  countdown = REFRESH_SECS;
-  clearInterval(countdownTimer);
-  countdownTimer = setInterval(() => {
-    countdown--;
-    const pct = (countdown / REFRESH_SECS) * 100;
-    document.getElementById('refresh-bar').style.width = pct + '%';
-    document.getElementById('refresh-status').textContent = `Próximo refresh en ${countdown}s`;
-    if (countdown <= 0) {
-      clearInterval(countdownTimer);
-    }
-  }, 1000);
-}
-
-function startAutoRefresh() {
-  fetchData();
-  startCountdown();
-  refreshTimer = setInterval(() => {
-    fetchData();
-    startCountdown();
-  }, REFRESH_SECS * 1000);
-}
-
-// ═══════════════════════════════════════════════════════════
-// INIT
-// ═══════════════════════════════════════════════════════════
-updateMarketStatus();
-setInterval(updateMarketStatus, 60_000);
-startAutoRefresh();
-</script>
 </body>
 </html>

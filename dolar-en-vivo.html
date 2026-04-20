@@ -1,0 +1,772 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dólar en Vivo — Canuto.ar</title>
+  <meta name="description" content="Cotización del dólar en Argentina en tiempo real. Oficial BNA, Blue, MEP y CCL con variación diaria." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=IBM+Plex+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
+
+  <style>
+    :root {
+      --bg:        #0a0c10;
+      --surface:   #111318;
+      --surface2:  #181b22;
+      --surface3:  #1e2230;
+      --border:    #1e2230;
+      --border2:   #2a2f42;
+      --text:      #dde0ea;
+      --text2:     #7a7f96;
+      --text3:     #44485c;
+      --green:     #22d65f;
+      --green-dim: rgba(34,214,95,0.1);
+      --red:       #f05050;
+      --red-dim:   rgba(240,80,80,0.1);
+      --blue:      #4fa8f5;
+      --orange:    #f5a623;
+      --purple:    #9b7ef5;
+      --yellow:    #f5d623;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { font-size: 16px; }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'IBM Plex Sans', sans-serif;
+      min-height: 100vh;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ── NAV ── */
+    nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 14px 20px;
+      border-bottom: 1px solid var(--border);
+      position: sticky;
+      top: 0;
+      background: rgba(10,12,16,0.95);
+      backdrop-filter: blur(14px);
+      z-index: 100;
+    }
+    .nav-logo {
+      font-family: 'IBM Plex Mono', monospace;
+      font-weight: 700;
+      font-size: 0.95rem;
+      color: var(--text);
+      text-decoration: none;
+      letter-spacing: -0.03em;
+      flex-shrink: 0;
+    }
+    .nav-logo span { color: var(--green); }
+    .nav-links {
+      display: flex;
+      gap: 3px;
+      overflow-x: auto;
+      scrollbar-width: none;
+      -webkit-overflow-scrolling: touch;
+    }
+    .nav-links::-webkit-scrollbar { display: none; }
+    .nav-links a {
+      color: var(--text2);
+      text-decoration: none;
+      font-size: 0.72rem;
+      font-family: 'IBM Plex Mono', monospace;
+      padding: 5px 9px;
+      border-radius: 6px;
+      transition: all 0.12s;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+    .nav-links a:hover { color: var(--text); background: var(--surface2); }
+    .nav-links a.active {
+      color: var(--bg);
+      background: var(--green);
+      font-weight: 700;
+    }
+
+    /* ── TICKER ── */
+    .ticker-band {
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      overflow: hidden;
+      height: 34px;
+      display: flex;
+      align-items: center;
+    }
+    .ticker-track {
+      display: flex;
+      animation: ticker 24s linear infinite;
+      white-space: nowrap;
+    }
+    .ticker-band:hover .ticker-track { animation-play-state: paused; }
+    @keyframes ticker { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
+    .ticker-item {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 0 24px;
+      border-right: 1px solid var(--border);
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.7rem;
+    }
+    .t-name { color: var(--text3); letter-spacing: 0.08em; font-weight: 600; }
+    .t-val  { color: var(--text); font-weight: 600; }
+    .t-var.pos { color: var(--green); }
+    .t-var.neg { color: var(--red); }
+    .t-var.neu { color: var(--text3); }
+
+    /* ── MAIN ── */
+    main { max-width: 960px; margin: 0 auto; padding: 32px 20px 80px; }
+
+    /* ── HEADER ── */
+    .page-header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 28px;
+      flex-wrap: wrap;
+    }
+    .eyebrow {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.68rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--green);
+      margin-bottom: 6px;
+      display: flex;
+      align-items: center;
+      gap: 7px;
+    }
+    .live-dot {
+      width: 7px; height: 7px;
+      border-radius: 50%;
+      background: var(--green);
+      animation: pulse 2s ease-in-out infinite;
+      flex-shrink: 0;
+    }
+    @keyframes pulse {
+      0%,100% { opacity:1; transform:scale(1); }
+      50%      { opacity:0.3; transform:scale(0.6); }
+    }
+    h1 {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: clamp(1.8rem, 5vw, 2.6rem);
+      font-weight: 700;
+      letter-spacing: -0.04em;
+      line-height: 1;
+    }
+    h1 em { font-style: normal; color: var(--green); }
+
+    .header-right { text-align: right; flex-shrink: 0; }
+    .refresh-status {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.7rem;
+      color: var(--text3);
+      margin-bottom: 5px;
+    }
+    .refresh-bar-wrap {
+      width: 100px;
+      height: 2px;
+      background: var(--surface3);
+      border-radius: 2px;
+      overflow: hidden;
+      margin-left: auto;
+    }
+    .refresh-bar {
+      height: 100%;
+      background: var(--green);
+      border-radius: 2px;
+      width: 100%;
+      transition: width 1s linear;
+    }
+    .last-update {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.65rem;
+      color: var(--text3);
+      margin-top: 5px;
+    }
+
+    /* ── MARKET STATUS ── */
+    .market-status {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 5px 12px;
+      border-radius: 6px;
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.68rem;
+      font-weight: 600;
+      margin-bottom: 20px;
+    }
+    .market-status.open  { background: var(--green-dim); color: var(--green); }
+    .market-status.closed { background: var(--surface2); color: var(--text3); }
+    .ms-dot { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; }
+    .market-status.open  .ms-dot { background: var(--green); animation: pulse 2s infinite; }
+    .market-status.closed .ms-dot { background: var(--text3); }
+
+    /* ── CARDS ── */
+    .cards-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+      margin-bottom: 24px;
+    }
+    @media (max-width: 520px) { .cards-grid { grid-template-columns: 1fr; } }
+
+    .dolar-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 20px 18px 16px;
+      position: relative;
+      overflow: hidden;
+      transition: border-color 0.2s, transform 0.15s;
+    }
+    .dolar-card:hover { border-color: var(--border2); transform: translateY(-1px); }
+    .dolar-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 3px;
+      border-radius: 14px 14px 0 0;
+    }
+    .dolar-card.oficial::before { background: var(--green); }
+    .dolar-card.blue::before    { background: var(--blue); }
+    .dolar-card.mep::before     { background: var(--orange); }
+    .dolar-card.ccl::before     { background: var(--purple); }
+
+    .card-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 14px;
+    }
+    .card-name {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.68rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+    .dolar-card.oficial .card-name { color: var(--green); }
+    .dolar-card.blue    .card-name { color: var(--blue); }
+    .dolar-card.mep     .card-name { color: var(--orange); }
+    .dolar-card.ccl     .card-name { color: var(--purple); }
+
+    .card-badge {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.63rem;
+      padding: 3px 7px;
+      border-radius: 4px;
+      font-weight: 600;
+    }
+    .badge-pos { background: var(--green-dim); color: var(--green); }
+    .badge-neg { background: var(--red-dim);   color: var(--red); }
+    .badge-neu { background: var(--surface3);  color: var(--text3); }
+
+    .card-prices { display: flex; gap: 18px; margin-bottom: 12px; align-items: flex-end; }
+    .price-label {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.6rem;
+      color: var(--text3);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-bottom: 2px;
+    }
+    .price-value {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: clamp(1.3rem, 3.5vw, 1.85rem);
+      font-weight: 700;
+      color: var(--text);
+      letter-spacing: -0.03em;
+      line-height: 1;
+    }
+    .price-value.secondary {
+      font-size: clamp(1rem, 2.5vw, 1.3rem);
+      color: var(--text2);
+      font-weight: 500;
+    }
+    .card-meta {
+      display: flex;
+      justify-content: space-between;
+      border-top: 1px solid var(--border);
+      padding-top: 9px;
+    }
+    .card-source, .card-time {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.62rem;
+      color: var(--text3);
+    }
+
+    /* shimmer */
+    .shimmer {
+      background: linear-gradient(90deg, var(--surface2) 25%, var(--surface3) 50%, var(--surface2) 75%);
+      background-size: 200% 100%;
+      animation: shimmer 1.4s infinite;
+      border-radius: 4px;
+      display: inline-block;
+    }
+    @keyframes shimmer { to { background-position: -200% 0; } }
+    .sv { width: 100px; height: 1.85rem; }
+    .ss { width: 60px;  height: 1.2rem; }
+
+    /* ── BRECHA ── */
+    .brecha-section {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 18px 20px;
+      margin-bottom: 24px;
+    }
+    .section-title {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.68rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--text3);
+      margin-bottom: 14px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .section-title::after { content:''; flex:1; height:1px; background:var(--border); }
+    .brecha-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+    }
+    .brecha-item {
+      background: var(--surface2);
+      border-radius: 10px;
+      padding: 11px 12px;
+      text-align: center;
+    }
+    .brecha-label {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.6rem;
+      color: var(--text3);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-bottom: 5px;
+    }
+    .brecha-value {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--yellow);
+    }
+    .brecha-value.ok { color: var(--green); }
+
+    /* ── TOOL NAV ── */
+    .tools-nav {
+      margin-top: 40px;
+      border-top: 1px solid var(--border);
+      padding-top: 24px;
+    }
+    .tools-nav-title {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.65rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--text3);
+      margin-bottom: 12px;
+    }
+    .tools-nav-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 8px;
+    }
+    @media (min-width: 600px) { .tools-nav-grid { grid-template-columns: repeat(4, 1fr); } }
+    .tool-link {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 11px 13px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      text-decoration: none;
+      color: var(--text2);
+      transition: all 0.15s;
+    }
+    .tool-link:hover { border-color: var(--border2); color: var(--text); background: var(--surface2); }
+    .tool-link.current { border-color: var(--green); color: var(--green); background: var(--green-dim); }
+    .tl-emoji { font-size: 1rem; flex-shrink: 0; }
+    .tl-name { font-family: 'IBM Plex Mono', monospace; font-size: 0.73rem; font-weight: 600; }
+    .tl-desc { font-family: 'IBM Plex Mono', monospace; font-size: 0.6rem; color: var(--text3); margin-top: 2px; }
+
+    /* ── INFO ── */
+    .info-box {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 14px 16px;
+      font-size: 0.76rem;
+      color: var(--text3);
+      line-height: 1.6;
+      font-family: 'IBM Plex Mono', monospace;
+    }
+    .info-box a { color: var(--text2); text-decoration: underline; text-underline-offset: 3px; }
+    .info-box strong { color: var(--text2); }
+
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 18px 20px;
+      text-align: center;
+      font-size: 0.7rem;
+      color: var(--text3);
+      font-family: 'IBM Plex Mono', monospace;
+    }
+    footer a { color: var(--text2); text-decoration: none; }
+  </style>
+</head>
+<body>
+
+<nav>
+  <a class="nav-logo" href="/index.html"><span>canuto</span>.ar</a>
+  <div class="nav-links">
+    <a href="/gastos.html">💳 Gastos</a>
+    <a href="/retiro.html">🏖️ Retiro</a>
+    <a href="/dolar-en-vivo.html" class="active">💵 Dólar en Vivo</a>
+    <a href="/dolar-historico.html">📈 Histórico</a>
+  </div>
+</nav>
+
+<!-- TICKER -->
+<div class="ticker-band" aria-hidden="true">
+  <div class="ticker-track" id="ticker-track">
+    <span class="ticker-item"><span class="t-name">OFICIAL</span><span class="t-val" id="tk-of-v">—</span><span class="t-var neu" id="tk-of-d">—</span></span>
+    <span class="ticker-item"><span class="t-name">BLUE</span><span class="t-val" id="tk-bl-v">—</span><span class="t-var neu" id="tk-bl-d">—</span></span>
+    <span class="ticker-item"><span class="t-name">MEP</span><span class="t-val" id="tk-me-v">—</span><span class="t-var neu" id="tk-me-d">—</span></span>
+    <span class="ticker-item"><span class="t-name">CCL</span><span class="t-val" id="tk-cc-v">—</span><span class="t-var neu" id="tk-cc-d">—</span></span>
+    <!-- duplicado para loop continuo -->
+    <span class="ticker-item"><span class="t-name">OFICIAL</span><span class="t-val" id="tk-of-v2">—</span><span class="t-var neu" id="tk-of-d2">—</span></span>
+    <span class="ticker-item"><span class="t-name">BLUE</span><span class="t-val" id="tk-bl-v2">—</span><span class="t-var neu" id="tk-bl-d2">—</span></span>
+    <span class="ticker-item"><span class="t-name">MEP</span><span class="t-val" id="tk-me-v2">—</span><span class="t-var neu" id="tk-me-d2">—</span></span>
+    <span class="ticker-item"><span class="t-name">CCL</span><span class="t-val" id="tk-cc-v2">—</span><span class="t-var neu" id="tk-cc-d2">—</span></span>
+  </div>
+</div>
+
+<main>
+
+  <div class="page-header">
+    <div>
+      <div class="eyebrow"><span class="live-dot"></span>COTIZACIONES EN VIVO</div>
+      <h1>Dólar<br><em>en Vivo</em></h1>
+    </div>
+    <div class="header-right">
+      <div class="refresh-status" id="refresh-status">Cargando…</div>
+      <div class="refresh-bar-wrap"><div class="refresh-bar" id="refresh-bar"></div></div>
+      <div class="last-update" id="last-update">—</div>
+    </div>
+  </div>
+
+  <div class="market-status closed" id="market-status">
+    <span class="ms-dot"></span>
+    <span id="market-text">Verificando…</span>
+  </div>
+
+  <!-- CARDS -->
+  <div class="cards-grid">
+
+    <div class="dolar-card oficial" id="card-oficial">
+      <div class="card-top">
+        <div class="card-name">Oficial BNA</div>
+        <div class="card-badge badge-neu" id="badge-oficial">—</div>
+      </div>
+      <div class="card-prices">
+        <div>
+          <div class="price-label">Venta</div>
+          <div class="price-value" id="v-oficial-venta"><span class="shimmer sv"></span></div>
+        </div>
+        <div>
+          <div class="price-label">Compra</div>
+          <div class="price-value secondary" id="v-oficial-compra"><span class="shimmer ss"></span></div>
+        </div>
+      </div>
+      <div class="card-meta">
+        <span class="card-source">Fuente: BNA</span>
+        <span class="card-time" id="t-oficial">—</span>
+      </div>
+    </div>
+
+    <div class="dolar-card blue" id="card-blue">
+      <div class="card-top">
+        <div class="card-name">Blue</div>
+        <div class="card-badge badge-neu" id="badge-blue">—</div>
+      </div>
+      <div class="card-prices">
+        <div>
+          <div class="price-label">Venta</div>
+          <div class="price-value" id="v-blue-venta"><span class="shimmer sv"></span></div>
+        </div>
+        <div>
+          <div class="price-label">Compra</div>
+          <div class="price-value secondary" id="v-blue-compra"><span class="shimmer ss"></span></div>
+        </div>
+      </div>
+      <div class="card-meta">
+        <span class="card-source">Mercado informal</span>
+        <span class="card-time" id="t-blue">—</span>
+      </div>
+    </div>
+
+    <div class="dolar-card mep" id="card-mep">
+      <div class="card-top">
+        <div class="card-name">MEP / Bolsa</div>
+        <div class="card-badge badge-neu" id="badge-mep">—</div>
+      </div>
+      <div class="card-prices">
+        <div>
+          <div class="price-label">Venta</div>
+          <div class="price-value" id="v-mep-venta"><span class="shimmer sv"></span></div>
+        </div>
+        <div>
+          <div class="price-label">Compra</div>
+          <div class="price-value secondary" id="v-mep-compra"><span class="shimmer ss"></span></div>
+        </div>
+      </div>
+      <div class="card-meta">
+        <span class="card-source">Mercado bursátil</span>
+        <span class="card-time" id="t-mep">—</span>
+      </div>
+    </div>
+
+    <div class="dolar-card ccl" id="card-ccl">
+      <div class="card-top">
+        <div class="card-name">CCL</div>
+        <div class="card-badge badge-neu" id="badge-ccl">—</div>
+      </div>
+      <div class="card-prices">
+        <div>
+          <div class="price-label">Venta</div>
+          <div class="price-value" id="v-ccl-venta"><span class="shimmer sv"></span></div>
+        </div>
+        <div>
+          <div class="price-label">Compra</div>
+          <div class="price-value secondary" id="v-ccl-compra"><span class="shimmer ss"></span></div>
+        </div>
+      </div>
+      <div class="card-meta">
+        <span class="card-source">Contado con liqui</span>
+        <span class="card-time" id="t-ccl">—</span>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- BRECHA -->
+  <div class="brecha-section">
+    <div class="section-title">Brecha vs Oficial</div>
+    <div class="brecha-grid">
+      <div class="brecha-item">
+        <div class="brecha-label">Blue</div>
+        <div class="brecha-value" id="brecha-blue">—</div>
+      </div>
+      <div class="brecha-item">
+        <div class="brecha-label">MEP</div>
+        <div class="brecha-value" id="brecha-mep">—</div>
+      </div>
+      <div class="brecha-item">
+        <div class="brecha-label">CCL</div>
+        <div class="brecha-value" id="brecha-ccl">—</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- INFO -->
+  <div class="info-box">
+    📡 Datos: <strong>DolarApi.com</strong> (MIT, sin API key). <strong>Oficial BNA</strong> se actualiza ~1 vez/día hábil.
+    Blue, MEP y CCL cada 15–30 min. Esta página refresca cada <strong>60 segundos</strong>.
+    Historial completo → <a href="/dolar-historico.html">Dólar Histórico</a>.
+  </div>
+
+  <!-- TOOLS NAV -->
+  <div class="tools-nav">
+    <div class="tools-nav-title">Otras herramientas en canuto.ar</div>
+    <div class="tools-nav-grid">
+      <a class="tool-link" href="/gastos.html">
+        <span class="tl-emoji">💳</span>
+        <div><div class="tl-name">Mis Gastos</div><div class="tl-desc">Gastos fijos del mes</div></div>
+      </a>
+      <a class="tool-link" href="/retiro.html">
+        <span class="tl-emoji">🏖️</span>
+        <div><div class="tl-name">Mi Retiro</div><div class="tl-desc">Calculá tu retiro</div></div>
+      </a>
+      <a class="tool-link current" href="/dolar-en-vivo.html">
+        <span class="tl-emoji">💵</span>
+        <div><div class="tl-name">Dólar en Vivo</div><div class="tl-desc">Estás acá</div></div>
+      </a>
+      <a class="tool-link" href="/dolar-historico.html">
+        <span class="tl-emoji">📈</span>
+        <div><div class="tl-name">Dólar Histórico</div><div class="tl-desc">Serie desde 2003</div></div>
+      </a>
+    </div>
+  </div>
+
+</main>
+
+<footer>
+  <a href="/index.html">canuto.ar</a> · Herramientas financieras para Argentina 🇦🇷 ·
+  Datos: <a href="https://dolarapi.com" target="_blank" rel="noopener">DolarApi.com</a>
+</footer>
+
+<script>
+const API = 'https://dolarapi.com/v1/dolares';
+const REFRESH = 60;
+
+function fmt(n) {
+  if (n == null || isNaN(n)) return '—';
+  return '$' + Number(n).toLocaleString('es-AR', { minimumFractionDigits: 0, maximumFractionDigits: 0 });
+}
+function fmtPct(n) {
+  if (n == null) return '—';
+  return (n >= 0 ? '+' : '') + n.toFixed(2) + '%';
+}
+function fmtTime(s) {
+  if (!s) return '—';
+  return new Date(s).toLocaleTimeString('es-AR', { hour: '2-digit', minute: '2-digit' });
+}
+
+// Baseline diario en sessionStorage para calcular variación del día
+function getBase(casa) {
+  const k = `cn_base_${casa}_${new Date().toDateString()}`;
+  const v = sessionStorage.getItem(k);
+  return v ? parseFloat(v) : null;
+}
+function setBase(casa, val) {
+  const k = `cn_base_${casa}_${new Date().toDateString()}`;
+  if (!sessionStorage.getItem(k) && val) sessionStorage.setItem(k, String(val));
+}
+function varPct(casa, cur) {
+  const b = getBase(casa);
+  return b && cur ? ((cur - b) / b) * 100 : null;
+}
+
+// Estado de mercado
+function updateMarket() {
+  const arg = new Date(new Date().toLocaleString('en-US', { timeZone: 'America/Argentina/Buenos_Aires' }));
+  const day = arg.getDay(), h = arg.getHours(), m = arg.getMinutes();
+  const t = h * 100 + m;
+  const el = document.getElementById('market-status');
+  const txt = document.getElementById('market-text');
+  let open = false, msg = '';
+  if (day === 0 || day === 6) msg = 'Fin de semana — mercado cerrado';
+  else if (t < 1100) msg = 'Abre a las 11:00 hs';
+  else if (t >= 1700) msg = 'Mercado cerrado — reabre el próximo día hábil';
+  else { open = true; msg = 'Mercado abierto · cierra 17:00 hs'; }
+  el.className = `market-status ${open ? 'open' : 'closed'}`;
+  txt.textContent = msg;
+}
+
+let prev = {};
+
+function renderCard(id, data, casa) {
+  const d = data.find(x => x.casa === casa);
+  if (!d) return;
+  setBase(id, d.venta);
+  const vp = varPct(id, d.venta);
+
+  document.getElementById(`v-${id}-venta`).textContent  = fmt(d.venta);
+  document.getElementById(`v-${id}-compra`).textContent = fmt(d.compra);
+  document.getElementById(`t-${id}`).textContent        = fmtTime(d.fechaActualizacion);
+
+  const badge = document.getElementById(`badge-${id}`);
+  if (vp !== null) {
+    badge.textContent  = fmtPct(vp);
+    badge.className    = `card-badge ${vp > 0 ? 'badge-pos' : vp < 0 ? 'badge-neg' : 'badge-neu'}`;
+  } else {
+    badge.textContent = 'sin cambios';
+    badge.className   = 'card-badge badge-neu';
+  }
+
+  if (prev[id] && prev[id] !== d.venta) {
+    const card = document.getElementById(`card-${id}`);
+    card.style.background = '#1a2e1a';
+    setTimeout(() => card.style.background = '', 600);
+  }
+  prev[id] = d.venta;
+}
+
+function renderTicker(data) {
+  const items = [
+    { id:'of', casa:'oficial' }, { id:'bl', casa:'blue' },
+    { id:'me', casa:'bolsa'  }, { id:'cc', casa:'contadoconliqui' }
+  ];
+  for (const it of items) {
+    const d = data.find(x => x.casa === it.casa);
+    if (!d) continue;
+    const vp  = varPct(it.id === 'of' ? 'oficial' : it.id === 'bl' ? 'blue' : it.id === 'me' ? 'mep' : 'ccl', d.venta);
+    const vs  = vp !== null ? fmtPct(vp) : '—';
+    const cls = vp === null ? 'neu' : vp > 0 ? 'pos' : vp < 0 ? 'neg' : 'neu';
+    for (const sfx of ['', '2']) {
+      const ve = document.getElementById(`tk-${it.id}-v${sfx}`);
+      const de = document.getElementById(`tk-${it.id}-d${sfx}`);
+      if (ve) ve.textContent = fmt(d.venta);
+      if (de) { de.textContent = vs; de.className = `t-var ${cls}`; }
+    }
+  }
+}
+
+function renderBrechas(data) {
+  const of = data.find(x => x.casa === 'oficial');
+  if (!of?.venta) return;
+  const pairs = [
+    { id:'blue', casa:'blue'           },
+    { id:'mep',  casa:'bolsa'          },
+    { id:'ccl',  casa:'contadoconliqui'},
+  ];
+  for (const p of pairs) {
+    const d  = data.find(x => x.casa === p.casa);
+    const el = document.getElementById(`brecha-${p.id}`);
+    if (d?.venta) {
+      const b = ((d.venta - of.venta) / of.venta) * 100;
+      el.textContent = fmtPct(b);
+      el.className   = `brecha-value ${Math.abs(b) < 5 ? 'ok' : ''}`;
+    }
+  }
+}
+
+async function fetchData() {
+  try {
+    const res  = await fetch(API, { cache: 'no-store' });
+    const data = await res.json();
+    renderCard('oficial', data, 'oficial');
+    renderCard('blue',    data, 'blue');
+    renderCard('mep',     data, 'bolsa');
+    renderCard('ccl',     data, 'contadoconliqui');
+    renderBrechas(data);
+    renderTicker(data);
+    document.getElementById('last-update').textContent =
+      'últ. actualización: ' + new Date().toLocaleTimeString('es-AR');
+  } catch(e) {
+    document.getElementById('refresh-status').textContent = 'Error — reintentando…';
+  }
+}
+
+// Countdown
+let cd = REFRESH;
+function startCountdown() {
+  cd = REFRESH;
+  const bar = document.getElementById('refresh-bar');
+  const txt = document.getElementById('refresh-status');
+  clearInterval(window._cdTimer);
+  window._cdTimer = setInterval(() => {
+    cd--;
+    bar.style.width = (cd / REFRESH * 100) + '%';
+    txt.textContent = `Próximo refresh en ${cd}s`;
+    if (cd <= 0) clearInterval(window._cdTimer);
+  }, 1000);
+}
+
+updateMarket();
+setInterval(updateMarket, 60_000);
+fetchData(); startCountdown();
+setInterval(() => { fetchData(); startCountdown(); }, REFRESH * 1000);
+</script>
+</body>
+</html>
