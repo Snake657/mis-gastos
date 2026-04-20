@@ -739,7 +739,7 @@ function startSync(uid){
   if(lsPagos){try{pagos=JSON.parse(lsPagos);}catch(e){}}
   if(lsIngresos){try{ingresos=JSON.parse(lsIngresos);cargarCamposIngreso();}catch(e){}}
   // 2. Leer __meta__ de la subcolección gastos (mismos permisos, fuente de verdad)
-  COL.doc("__meta__").get().then(doc=>{
+  COL.doc("zz_meta").get().then(doc=>{
     if(doc.exists){
       const d=doc.data();
       if(d.pagos){pagos=d.pagos;localStorage.setItem("pagos-"+uid,JSON.stringify(pagos));}
@@ -754,7 +754,7 @@ function startSync(uid){
     // Separar __meta__ del resto de gastos
     let metaDoc=null;
     gastos=snap.docs.filter(d=>{
-      if(d.id==="__meta__"){metaDoc=d;return false;}
+      if(d.id==="zz_meta"){metaDoc=d;return false;}
       return true;
     }).map(d=>({id:d.id,...d.data()}));
     // Actualizar ingresos y pagos si llegó __meta__
@@ -797,7 +797,7 @@ function saveLocal(immediate){
   const delay=immediate?0:800;
   _saveLocalTimer=setTimeout(()=>{
     // Guardar en gastos/__meta__ — misma subcolección con reglas ya correctas
-    window._COL.doc("__meta__").set({pagos,ingresos})
+    window._COL.doc("zz_meta").set({pagos,ingresos})
       .then(()=>setSyncStatus(true))
       .catch(e=>{console.warn("Firestore saveLocal error:",e);setSyncStatus(false);});
   },delay);
