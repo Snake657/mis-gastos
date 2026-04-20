@@ -256,40 +256,6 @@
     tr:hover td { background:var(--surface2); }
     td.fecha { color:var(--text3); }
 
-    /* COMPARE TOGGLE */
-    .chart-controls { display:flex; flex-wrap:wrap; gap:8px; align-items:center; margin-bottom:14px; }
-    .compare-toggle {
-      display:flex; align-items:center; gap:6px;
-      padding:6px 13px; border-radius:7px; border:1px solid var(--border2);
-      background:transparent; color:var(--text2);
-      font-family:'IBM Plex Mono',monospace; font-size:0.72rem; font-weight:500;
-      cursor:pointer; transition:all .15s; white-space:nowrap;
-    }
-    .compare-toggle:hover { border-color:var(--accent); color:var(--text); }
-    .compare-toggle.active { background:var(--accent-dim); border-color:var(--accent); color:var(--accent); }
-    .compare-toggle svg { width:13px; height:13px; flex-shrink:0; }
-
-    /* SERIES CHECKBOXES */
-    .series-picker {
-      display:none; flex-wrap:wrap; gap:6px; margin-bottom:12px;
-      padding:12px; background:var(--surface2); border-radius:9px; border:1px solid var(--border);
-    }
-    .series-picker.visible { display:flex; }
-    .series-cb {
-      display:flex; align-items:center; gap:6px; padding:5px 11px;
-      border-radius:6px; border:1px solid var(--border2); cursor:pointer;
-      font-family:'IBM Plex Mono',monospace; font-size:0.72rem; color:var(--text2);
-      transition:all .15s; user-select:none;
-    }
-    .series-cb input { display:none; }
-    .series-cb .cb-dot { width:8px; height:8px; border-radius:50%; flex-shrink:0; border:1.5px solid currentColor; transition:background .15s; }
-    .series-cb.checked .cb-dot { background:currentColor; }
-    .series-cb.checked { border-color:currentColor; }
-    .series-cb[data-tipo="oficial"] { color:var(--accent); }
-    .series-cb[data-tipo="blue"]    { color:var(--blue); }
-    .series-cb[data-tipo="mep"]     { color:var(--orange); }
-    .series-cb[data-tipo="ccl"]     { color:var(--purple); }
-
     /* CUSTOM DATE RANGE */
     .custom-range {
       display:none; align-items:flex-end; gap:8px; flex-wrap:wrap;
@@ -417,8 +383,8 @@
   <h1>Cotización histórica<br>del dólar</h1>
   <p class="subtitle">Oficial, Blue, MEP y CCL — datos diarios desde 2003.</p>
 
-  <!-- TIPO TABS (modo single) -->
-  <div class="tipo-tabs" id="tipo-tabs-single">
+  <!-- TIPO TABS -->
+  <div class="tipo-tabs">
     <button class="tipo-tab active" data-tipo="oficial"><span class="dot"></span>Oficial</button>
     <button class="tipo-tab" data-tipo="blue"><span class="dot"></span>Blue</button>
     <button class="tipo-tab" data-tipo="mep"><span class="dot"></span>MEP</button>
@@ -448,20 +414,14 @@
   <div class="chart-panel">
     <div class="chart-toolbar">
       <span class="chart-title" id="chart-title">DÓLAR OFICIAL — VENTA</span>
-      <div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap;">
-        <div class="range-tabs">
-          <button class="range-tab" data-range="1M">1M</button>
-          <button class="range-tab" data-range="3M">3M</button>
-          <button class="range-tab" data-range="6M">6M</button>
-          <button class="range-tab active" data-range="1A">1A</button>
-          <button class="range-tab" data-range="5A">5A</button>
-          <button class="range-tab" data-range="TODO">Todo</button>
-          <button class="range-tab" data-range="CUSTOM">📅 Custom</button>
-        </div>
-        <button class="compare-toggle" id="btn-compare">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
-          Comparar
-        </button>
+      <div class="range-tabs">
+        <button class="range-tab" data-range="1M">1M</button>
+        <button class="range-tab" data-range="3M">3M</button>
+        <button class="range-tab" data-range="6M">6M</button>
+        <button class="range-tab active" data-range="1A">1A</button>
+        <button class="range-tab" data-range="5A">5A</button>
+        <button class="range-tab" data-range="TODO">Todo</button>
+        <button class="range-tab" data-range="CUSTOM">📅 Custom</button>
       </div>
     </div>
 
@@ -470,14 +430,6 @@
       <div><label>Desde</label><input type="date" id="cr-from" /></div>
       <div><label>Hasta</label><input type="date" id="cr-to" /></div>
       <button class="apply-btn" id="btn-apply-custom">Aplicar</button>
-    </div>
-
-    <!-- Series picker (compare mode) -->
-    <div class="series-picker" id="series-picker">
-      <label class="series-cb checked" data-tipo="oficial"><input type="checkbox" checked /><span class="cb-dot"></span>Oficial</label>
-      <label class="series-cb" data-tipo="blue"><input type="checkbox" /><span class="cb-dot"></span>Blue</label>
-      <label class="series-cb" data-tipo="mep"><input type="checkbox" /><span class="cb-dot"></span>MEP</label>
-      <label class="series-cb" data-tipo="ccl"><input type="checkbox" /><span class="cb-dot"></span>CCL</label>
     </div>
 
     <div class="chart-wrap">
@@ -574,9 +526,26 @@ const API_BASE = 'https://api.argentinadatos.com/v1/cotizaciones/dolares/';
 
 let currentTipo = 'oficial', currentRange = '1A';
 let customFrom = null, customTo = null;
-let compareMode = false;
-let activeSeries = new Set(['oficial']);
 let allData = {}, chart = null, searchMode = 'exacta';
+
+// ── WATERMARK PLUGIN ─────────────────────────────────────
+const watermarkPlugin = {
+  id: 'watermark',
+  afterDraw(chart) {
+    const { ctx, chartArea: { left, right, top, bottom } } = chart;
+    const x = (left + right) / 2;
+    const y = (top + bottom) / 2;
+    ctx.save();
+    ctx.font = 'bold 13px "IBM Plex Mono", monospace';
+    ctx.fillStyle = 'rgba(255,255,255,0.045)';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.letterSpacing = '0.06em';
+    ctx.fillText('canuto.ar', x, y);
+    ctx.restore();
+  }
+};
+Chart.register(watermarkPlugin);
 
 // ── UTILS ────────────────────────────────────────────────
 function fmt(n) {
@@ -654,7 +623,7 @@ function downsample(arr, n) {
   return r;
 }
 
-function buildChartSingle(data, tipo) {
+function buildChart(data, tipo) {
   const cfg = TIPOS[tipo];
   const canvas = document.getElementById('mainChart');
   const ctx = canvas.getContext('2d');
@@ -678,123 +647,59 @@ function buildChartSingle(data, tipo) {
   }
   chart = new Chart(ctx, {
     type:'line', data:{labels, datasets},
-    options: chartOptions(tickCb, true)
-  });
-}
-
-function buildChartCompare(dataMap) {
-  // Merge all dates into one master label set
-  const allDates = [...new Set(
-    Object.values(dataMap).flatMap(arr => arr.map(d=>d.fecha.slice(0,10)))
-  )].sort();
-  const pts = allDates.length > 800 ? downsample(allDates.map(d=>({d})),800).map(x=>x.d) : allDates;
-
-  const canvas = document.getElementById('mainChart');
-  const ctx = canvas.getContext('2d');
-
-  const datasets = Object.entries(dataMap).map(([tipo, raw]) => {
-    const cfg = TIPOS[tipo];
-    // Map data to master date index
-    const byDate = Object.fromEntries(raw.map(d=>[d.fecha.slice(0,10), d.venta]));
-    const values = pts.map(d => byDate[d] ?? null);
-    const grad = ctx.createLinearGradient(0,0,0,260);
-    grad.addColorStop(0, cfg.color+'18');
-    grad.addColorStop(1, cfg.color+'00');
-    return {
-      label: cfg.label,
-      data: values,
-      borderColor: cfg.color,
-      backgroundColor: grad,
-      borderWidth: 1.5,
-      pointRadius: 0,
-      tension: 0.3,
-      fill: false,
-      spanGaps: true,
-    };
-  });
-
-  const tickCb = (_,i) => i % Math.max(1,Math.floor(pts.length/8))===0 ? fmtDS(pts[i]) : '';
-
-  if (chart) {
-    chart.data.labels = pts;
-    chart.data.datasets = datasets;
-    chart.options.scales.x.ticks.callback = tickCb;
-    chart.options.plugins.legend.display = true;
-    chart.update('none'); return;
-  }
-  const opts = chartOptions(tickCb, false);
-  opts.plugins.legend.display = true;
-  opts.plugins.legend.labels = {
-    color:'#8b90a4', font:{family:'IBM Plex Mono',size:10},
-    boxWidth:10, boxHeight:10, usePointStyle:true, pointStyle:'circle'
-  };
-  chart = new Chart(ctx, { type:'line', data:{labels:pts, datasets}, options:opts });
-}
-
-function chartOptions(tickCb, singleMode) {
-  return {
-    responsive:true, maintainAspectRatio:false,
-    interaction:{intersect:false, mode:'index'},
-    plugins:{
-      legend:{display:false},
-      tooltip:{
-        backgroundColor:'#1a1e28', borderColor:'#232736', borderWidth:1,
-        titleColor:'#8b90a4', bodyColor:'#e8eaf0',
-        titleFont:{family:'IBM Plex Mono',size:11},
-        bodyFont:{family:'IBM Plex Mono',size:12}, padding:10,
-        callbacks:{
-          title:items=>fmtD(items[0].label),
-          label:item=>` ${item.dataset.label}: ${fmt(item.raw)}`
+    options:{
+      responsive:true, maintainAspectRatio:false,
+      interaction:{intersect:false, mode:'index'},
+      plugins:{
+        legend:{display:false},
+        tooltip:{
+          backgroundColor:'#1a1e28', borderColor:'#232736', borderWidth:1,
+          titleColor:'#8b90a4', bodyColor:'#e8eaf0',
+          titleFont:{family:'IBM Plex Mono',size:11},
+          bodyFont:{family:'IBM Plex Mono',size:12}, padding:10,
+          callbacks:{
+            title:items=>fmtD(items[0].label),
+            label:item=>` ${item.dataset.label}: ${fmt(item.raw)}`
+          }
         }
-      }
-    },
-    scales:{
-      x:{grid:{color:'#232736',drawTicks:false}, border:{color:'#232736'},
-        ticks:{color:'#545870', font:{family:'IBM Plex Mono',size:10}, maxRotation:0, callback:tickCb}
       },
-      y:{position:'right', grid:{color:'#232736',drawTicks:false}, border:{color:'#232736',dash:[3,3]},
-        ticks:{color:'#545870', font:{family:'IBM Plex Mono',size:10},
-          callback:v=>'$'+Number(v).toLocaleString('es-AR',{maximumFractionDigits:0})
+      scales:{
+        x:{grid:{color:'#232736',drawTicks:false}, border:{color:'#232736'},
+          ticks:{color:'#545870', font:{family:'IBM Plex Mono',size:10}, maxRotation:0, callback:tickCb}
+        },
+        y:{position:'right', grid:{color:'#232736',drawTicks:false}, border:{color:'#232736',dash:[3,3]},
+          ticks:{color:'#545870', font:{family:'IBM Plex Mono',size:10},
+            callback:v=>'$'+Number(v).toLocaleString('es-AR',{maximumFractionDigits:0})
+          }
         }
-      }
-    },
-    animation:{duration:200}
-  };
+      },
+      animation:{duration:200}
+    }
+  });
 }
 
 // ── VARIATION PANEL ──────────────────────────────────────
-function updateVarPanel(dataMap, range, from, to) {
+function updateVarPanel(data) {
   const panel = document.getElementById('var-panel');
   const grid  = document.getElementById('var-grid');
   const label = document.getElementById('var-period-label');
-
-  const entries = Object.entries(dataMap);
-  if (!entries.length) { panel.classList.remove('visible'); return; }
-
-  // Period label
-  const allFiltered = Object.values(dataMap);
-  const minDate = allFiltered.flatMap(a=>a).map(d=>d.fecha.slice(0,10)).sort()[0];
-  const maxDate = allFiltered.flatMap(a=>a).map(d=>d.fecha.slice(0,10)).sort().pop();
-  if (!minDate) { panel.classList.remove('visible'); return; }
-  label.textContent = `${fmtD(minDate)} → ${fmtD(maxDate)}`;
-
-  grid.innerHTML = entries.map(([tipo, data]) => {
-    if (!data.length) return '';
-    const first = data.find(d=>d.venta>0);
-    const last  = [...data].reverse().find(d=>d.venta>0);
-    if (!first || !last) return '';
-    const pct = ((last.venta - first.venta) / first.venta) * 100;
-    const cls = pct > 0 ? 'pos' : pct < 0 ? 'neg' : 'neu';
-    const sign = pct >= 0 ? '+' : '';
-    return `<div class="var-card" data-tipo="${tipo}">
-      <div class="var-card-label">${TIPOS[tipo].label}</div>
-      <div class="var-pct ${cls}">${sign}${pct.toFixed(1)}%</div>
-      <div class="var-row"><span>Inicio</span><span>${fmt(first.venta)}</span></div>
-      <div class="var-row"><span>Fin</span><span>${fmt(last.venta)}</span></div>
-      <div class="var-row"><span>Variación</span><span style="color:${pct>0?'var(--accent)':pct<0?'var(--red)':'var(--text3)'}">
-        ${sign}${fmt(Math.abs(last.venta-first.venta))}</span></div>
-    </div>`;
-  }).join('');
+  if (!data?.length) { panel.classList.remove('visible'); return; }
+  const first = data.find(d=>d.venta>0);
+  const last  = [...data].reverse().find(d=>d.venta>0);
+  if (!first || !last || first === last) { panel.classList.remove('visible'); return; }
+  label.textContent = `${fmtD(first.fecha)} → ${fmtD(last.fecha)}`;
+  const pct = ((last.venta - first.venta) / first.venta) * 100;
+  const cls = pct > 0 ? 'pos' : pct < 0 ? 'neg' : 'neu';
+  const sign = pct >= 0 ? '+' : '';
+  const tipo = currentTipo;
+  grid.innerHTML = `<div class="var-card" data-tipo="${tipo}">
+    <div class="var-card-label">${TIPOS[tipo].label}</div>
+    <div class="var-pct ${cls}">${sign}${pct.toFixed(1)}%</div>
+    <div class="var-row"><span>Inicio</span><span>${fmt(first.venta)}</span></div>
+    <div class="var-row"><span>Fin</span><span>${fmt(last.venta)}</span></div>
+    <div class="var-row"><span>Variación</span><span style="color:${pct>0?'var(--accent)':pct<0?'var(--red)':'var(--text3)'}">
+      ${sign}${fmt(Math.abs(last.venta-first.venta))}</span></div>
+  </div>`;
   panel.classList.add('visible');
 }
 
@@ -828,38 +733,16 @@ function updateTable(data) {
 async function render() {
   document.getElementById('chart-loading').style.display='flex';
   document.getElementById('mainChart').style.display='none';
-  if (chart) { chart.destroy(); chart=null; }
-
   try {
-    if (compareMode) {
-      // Load all active series
-      const tiposArr = [...activeSeries];
-      await Promise.all(tiposArr.map(t=>loadData(t)));
-      const dataMap = {};
-      for (const t of tiposArr) {
-        dataMap[t] = filterRange(allData[t]||[], currentRange, customFrom, customTo);
-      }
-      document.getElementById('chart-loading').style.display='none';
-      document.getElementById('mainChart').style.display='block';
-      buildChartCompare(dataMap);
-      updateVarPanel(dataMap, currentRange, customFrom, customTo);
-      // Cards show first active series
-      if (tiposArr[0]) updateCards(dataMap[tiposArr[0]]);
-      const names = tiposArr.map(t=>TIPOS[t].label).join(' + ');
-      document.getElementById('chart-title').textContent = names.toUpperCase() + ' — VENTA';
-      // Table shows first active
-      if (tiposArr[0]) updateTable(dataMap[tiposArr[0]]);
-    } else {
-      const raw = await loadData(currentTipo);
-      const data = filterRange(raw, currentRange, customFrom, customTo);
-      document.getElementById('chart-loading').style.display='none';
-      document.getElementById('mainChart').style.display='block';
-      buildChartSingle(data, currentTipo);
-      updateCards(data);
-      updateTable(data);
-      updateVarPanel({[currentTipo]:data}, currentRange, customFrom, customTo);
-      document.getElementById('chart-title').textContent = TIPOS[currentTipo].label.toUpperCase()+' — VENTA';
-    }
+    const raw = await loadData(currentTipo);
+    const data = filterRange(raw, currentRange, customFrom, customTo);
+    document.getElementById('chart-loading').style.display='none';
+    document.getElementById('mainChart').style.display='block';
+    buildChart(data, currentTipo);
+    updateCards(data);
+    updateTable(data);
+    updateVarPanel(data);
+    document.getElementById('chart-title').textContent = TIPOS[currentTipo].label.toUpperCase()+' — VENTA';
   } catch(err) {
     document.getElementById('chart-loading').innerHTML = `<span style="color:#f87171">Error: ${err.message}</span>`;
   }
@@ -938,16 +821,14 @@ function renderRange(from, to) {
 }
 
 // ── EVENTS ───────────────────────────────────────────────
-
-// Tipo tabs (single mode)
 document.querySelectorAll('.tipo-tab').forEach(btn=>btn.addEventListener('click',()=>{
   document.querySelectorAll('.tipo-tab').forEach(b=>b.classList.remove('active'));
   btn.classList.add('active');
   currentTipo = btn.dataset.tipo;
+  if (chart) { chart.destroy(); chart=null; }
   render();
 }));
 
-// Range tabs
 document.querySelectorAll('.range-tab').forEach(btn=>btn.addEventListener('click',()=>{
   document.querySelectorAll('.range-tab').forEach(b=>b.classList.remove('active'));
   btn.classList.add('active');
@@ -962,7 +843,6 @@ document.querySelectorAll('.range-tab').forEach(btn=>btn.addEventListener('click
   }
 }));
 
-// Custom date range apply
 document.getElementById('btn-apply-custom').addEventListener('click', ()=>{
   const f = document.getElementById('cr-from').value;
   const t = document.getElementById('cr-to').value;
@@ -972,42 +852,6 @@ document.getElementById('btn-apply-custom').addEventListener('click', ()=>{
   render();
 });
 
-// Compare toggle
-document.getElementById('btn-compare').addEventListener('click', ()=>{
-  compareMode = !compareMode;
-  const btn = document.getElementById('btn-compare');
-  const singleTabs = document.getElementById('tipo-tabs-single');
-  const picker = document.getElementById('series-picker');
-  btn.classList.toggle('active', compareMode);
-  singleTabs.style.display = compareMode ? 'none' : 'flex';
-  picker.classList.toggle('visible', compareMode);
-  if (compareMode) {
-    // Start with current tipo selected
-    activeSeries = new Set([currentTipo]);
-    document.querySelectorAll('.series-cb').forEach(cb=>{
-      const t = cb.dataset.tipo;
-      cb.classList.toggle('checked', activeSeries.has(t));
-      cb.querySelector('input').checked = activeSeries.has(t);
-    });
-  }
-  render();
-});
-
-// Series checkboxes
-document.querySelectorAll('.series-cb').forEach(cb=>{
-  cb.addEventListener('click', ()=>{
-    const tipo = cb.dataset.tipo;
-    const checked = !cb.classList.contains('checked');
-    if (!checked && activeSeries.size === 1) return; // keep at least 1
-    cb.classList.toggle('checked', checked);
-    cb.querySelector('input').checked = checked;
-    if (checked) activeSeries.add(tipo);
-    else activeSeries.delete(tipo);
-    render();
-  });
-});
-
-// Search modes
 document.querySelectorAll('.smode-btn').forEach(btn=>btn.addEventListener('click',()=>{
   document.querySelectorAll('.smode-btn').forEach(b=>b.classList.remove('active'));
   btn.classList.add('active'); searchMode=btn.dataset.mode;
@@ -1039,5 +883,6 @@ document.getElementById('btn-clr-range').addEventListener('click',()=>{
 // ── INIT ─────────────────────────────────────────────────
 render();
 </script>
+
 </body>
 </html>
