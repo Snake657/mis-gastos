@@ -9,24 +9,28 @@
 <meta name="theme-color" content="#0d0d14"/>
 <title>Mis Gastos</title>
 <style>
-@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&family=IBM+Plex+Mono:wght@400;600;700&display=swap');
 :root{--bg:#0d0d14;--surface:#161620;--surface2:#1e1e2a;--border:rgba(255,255,255,0.09);--text:#f0f0f5;--muted:rgba(240,240,245,0.45);--muted2:rgba(240,240,245,0.25);--shadow:rgba(0,0,0,.4);--violet:#7c5cfc;--violet2:#6448e0;--green:#34d399;--red:#f87171;--orange:#fb923c;--radius:14px;--radius-sm:10px;}
 [data-theme="light"]{--bg:#f4f4f8;--surface:#ffffff;--surface2:#ebebf0;--border:rgba(0,0,0,0.09);--text:#111118;--muted:rgba(17,17,24,0.45);--muted2:rgba(17,17,24,0.3);--shadow:rgba(0,0,0,.12);}
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
 html,body{height:100%;background:var(--bg);color:var(--text);font-family:'DM Sans',system-ui,sans-serif;font-size:15px;line-height:1.5;transition:background .2s,color .2s;overflow-x:hidden;}
 ::-webkit-scrollbar{width:3px;} ::-webkit-scrollbar-thumb{background:#888;border-radius:4px;}
 
-/* Header */
-header{position:sticky;top:0;z-index:20;background:var(--bg);backdrop-filter:blur(14px);border-bottom:1px solid var(--border);padding:10px 14px;display:flex;align-items:center;justify-content:space-between;gap:6px;transition:background .2s;}
-.logo{display:flex;align-items:center;gap:8px;min-width:0;}
-.logo-icon{width:30px;height:30px;border-radius:9px;background:var(--violet);display:flex;align-items:center;justify-content:center;flex-shrink:0;}
-.logo-icon svg{width:14px;height:14px;}
-.logo-title{font-weight:600;font-size:14px;letter-spacing:-.02em;white-space:nowrap;}
+/* Nav */
+nav{display:flex;align-items:center;justify-content:space-between;padding:14px 20px;border-bottom:1px solid var(--border);position:sticky;top:0;background:rgba(8,10,18,0.95);backdrop-filter:blur(14px);z-index:100;gap:8px;}
+.nav-logo{font-family:'IBM Plex Mono',monospace;font-weight:700;font-size:0.95rem;color:var(--text);text-decoration:none;letter-spacing:-0.03em;flex-shrink:0;}
+.nav-logo span{color:var(--green);}
+.nav-links{display:flex;gap:3px;overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch;}
+.nav-links::-webkit-scrollbar{display:none;}
+.nav-links a{color:var(--muted);text-decoration:none;font-size:0.72rem;font-family:'IBM Plex Mono',monospace;padding:5px 9px;border-radius:6px;transition:all 0.12s;white-space:nowrap;flex-shrink:0;}
+.nav-links a:hover{color:var(--text);background:var(--surface2);}
+.nav-links a.active{color:var(--bg);background:var(--green);font-weight:700;}
+/* Header-only elements */
 .sync-dot{width:7px;height:7px;border-radius:50%;background:var(--orange);transition:background .5s;flex-shrink:0;}
 .dolar-chip{display:flex;align-items:center;gap:4px;background:rgba(52,211,153,.1);border:1px solid rgba(52,211,153,.25);border-radius:99px;padding:3px 8px;font-size:11px;font-weight:600;color:var(--green);white-space:nowrap;flex-shrink:0;}
 .dolar-chip.loading{color:var(--muted2);background:rgba(128,128,128,.08);border-color:var(--border);}
 .dolar-chip svg{width:10px;height:10px;opacity:.7;}
-.header-right{display:flex;align-items:center;gap:6px;flex-shrink:0;}
+.nav-right{display:flex;align-items:center;gap:6px;flex-shrink:0;}
 .btn-icon{width:30px;height:30px;background:transparent;border:1px solid var(--border);border-radius:8px;display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--muted);transition:all .15s;flex-shrink:0;}
 .btn-icon svg{width:14px;height:14px;}
 .btn-theme{width:30px;height:30px;background:transparent;border:1px solid var(--border);border-radius:8px;display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--muted);flex-shrink:0;}
@@ -350,6 +354,18 @@ header{position:sticky;top:0;z-index:20;background:var(--bg);backdrop-filter:blu
 .replicar-btns{display:flex;flex-direction:column;gap:8px;margin-top:18px;}
 .btn-replicar-si{padding:14px;border-radius:var(--radius-sm);background:var(--violet);border:none;color:#fff;font-size:14px;font-weight:700;font-family:inherit;cursor:pointer;}
 .btn-replicar-no{padding:12px;border-radius:var(--radius-sm);background:transparent;border:1.5px solid var(--border);color:var(--muted);font-size:13px;font-weight:600;font-family:inherit;cursor:pointer;}
+
+/* ── TOOLS NAV ── */
+.tools-nav{margin:28px 16px 0;border-top:1px solid var(--border);padding-top:20px;padding-bottom:40px;}
+.tools-nav-title{font-family:'IBM Plex Mono',monospace;font-size:.65rem;text-transform:uppercase;letter-spacing:.1em;color:var(--muted2,#545870);margin-bottom:11px;}
+.tools-nav-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:7px;}
+@media(min-width:600px){.tools-nav-grid{grid-template-columns:repeat(4,1fr);}}
+.tool-link{display:flex;align-items:center;gap:9px;padding:10px 12px;background:var(--card,#13161e);border:1px solid var(--border);border-radius:9px;text-decoration:none;color:var(--muted);transition:all .15s;}
+.tool-link:hover{border-color:var(--border2,#2d3245);color:var(--text,#e8eaf0);}
+.tool-link.current{border-color:var(--green,#4ade80);color:var(--green,#4ade80);background:rgba(74,222,128,0.1);}
+.tl-emoji{font-size:.95rem;flex-shrink:0;}
+.tl-name{font-family:'IBM Plex Mono',monospace;font-size:.72rem;font-weight:700;}
+.tl-desc{font-family:'IBM Plex Mono',monospace;font-size:.6rem;color:var(--muted2,#545870);margin-top:2px;}
 </style>
 </head>
 <body>
@@ -365,17 +381,19 @@ header{position:sticky;top:0;z-index:20;background:var(--bg);backdrop-filter:blu
   <div class="install-banner-actions"><button class="btn-install-dismiss" onclick="dismissInstall()">No</button><button class="btn-install" onclick="doInstall()">Instalar</button></div>
 </div>
 
-<header>
-  <div class="logo">
-    <div class="logo-icon"><svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></div>
-    <span class="logo-title">Mis Gastos</span>
-    <div class="sync-dot" id="sync-dot"></div>
+<nav>
+  <a class="nav-logo" href="/index.html"><span>canuto</span>.ar</a>
+  <div class="nav-links">
+    <a href="/gastos.html" class="active">💳 Gastos</a>
+    <a href="/retiro.html">🏖️ Retiro</a>
+    <a href="/dolar-en-vivo.html">💵 Dólar en Vivo</a>
+    <a href="/dolar-historico.html">📈 Histórico</a>
   </div>
-  <div class="dolar-chip loading" id="dolar-chip">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg>
-    <span id="dolar-val">cargando...</span>
-  </div>
-  <div class="header-right">
+  <div class="nav-right">
+    <div class="dolar-chip loading" id="dolar-chip">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg>
+      <span id="dolar-val">cargando...</span>
+    </div>
     <button class="btn-icon" onclick="openAnual()" title="Resumen anual">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/><line x1="8" y1="14" x2="16" y2="14"/><line x1="8" y1="18" x2="12" y2="18"/></svg>
     </button>
@@ -389,7 +407,7 @@ header{position:sticky;top:0;z-index:20;background:var(--bg);backdrop-filter:blu
       </div>
     </div>
   </div>
-</header>
+</nav>
 
 <!-- Banner guest prominente -->
 <div class="guest-banner show" id="guest-banner">
@@ -612,6 +630,29 @@ header{position:sticky;top:0;z-index:20;background:var(--bg);backdrop-filter:blu
 </div>
 
 </div><!-- /screen-app -->
+
+<!-- TOOLS NAV -->
+<div class="tools-nav">
+  <div class="tools-nav-title">Otras herramientas en canuto.ar</div>
+  <div class="tools-nav-grid">
+    <a class="tool-link current" href="/gastos.html">
+      <span class="tl-emoji">💳</span>
+      <div><div class="tl-name">Mis Gastos</div><div class="tl-desc">Estás acá</div></div>
+    </a>
+    <a class="tool-link" href="/retiro.html">
+      <span class="tl-emoji">🏖️</span>
+      <div><div class="tl-name">Mi Retiro</div><div class="tl-desc">Calculá tu retiro</div></div>
+    </a>
+    <a class="tool-link" href="/dolar-en-vivo.html">
+      <span class="tl-emoji">💵</span>
+      <div><div class="tl-name">Dólar en Vivo</div><div class="tl-desc">Cotización al instante</div></div>
+    </a>
+    <a class="tool-link" href="/dolar-historico.html">
+      <span class="tl-emoji">📈</span>
+      <div><div class="tl-name">Dólar Histórico</div><div class="tl-desc">Serie desde 2003</div></div>
+    </a>
+  </div>
+</div>
 
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
