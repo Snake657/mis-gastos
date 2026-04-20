@@ -475,12 +475,42 @@ function filterRange(data, range) {
   return data.filter(d => new Date(d.fecha) >= cut);
 }
 
+// ── LIVE PATCH (dolarapi.com) ────────────────────────────
+const LIVE_API = 'https://dolarapi.com/v1/dolares';
+const LIVE_CASA = { oficial:'oficial', blue:'blue', mep:'bolsa', ccl:'contadoconliqui' };
+let _liveCache = null;
+
+async function fetchLive() {
+  if (_liveCache) return _liveCache;
+  try {
+    const res = await fetch(LIVE_API, { cache: 'no-store' });
+    if (!res.ok) return null;
+    _liveCache = await res.json();
+    return _liveCache;
+  } catch { return null; }
+}
+
+async function injectToday(tipo, data) {
+  const live = await fetchLive();
+  if (!live) return data;
+  const match = live.find(d => d.casa === LIVE_CASA[tipo]);
+  if (!match?.venta) return data;
+  const today = new Date().toLocaleDateString('sv-SE', { timeZone: 'America/Argentina/Buenos_Aires' }); // YYYY-MM-DD
+  const lastFecha = data.length ? data[data.length - 1].fecha.slice(0, 10) : '';
+  if (today > lastFecha) {
+    data = [...data, { fecha: today, compra: match.compra, venta: match.venta, _live: true }];
+  }
+  return data;
+}
+
 // ── DATA ─────────────────────────────────────────────────
 async function loadData(tipo) {
   if (allData[tipo]) return allData[tipo];
   const res = await fetch(API_BASE + TIPOS[tipo].key);
   if (!res.ok) throw new Error(`HTTP ${res.status}`);
-  allData[tipo] = await res.json();
+  let data = await res.json();
+  data = await injectToday(tipo, data);
+  allData[tipo] = data;
   return allData[tipo];
 }
 
@@ -554,7 +584,9 @@ function updateCards(data) {
   const vs = data.map(d=>d.venta).filter(v=>v>0);
   const maxV = Math.max(...vs), minV = Math.min(...vs);
   document.getElementById('card-current').textContent = fmt(last.venta);
-  document.getElementById('card-current-date').textContent = fmtD(last.fecha);
+  document.getElementById('card-current-date').textContent = last._live
+    ? 'hoy · en vivo ⚡'
+    : fmtD(last.fecha);
   document.getElementById('card-max').textContent = fmt(maxV);
   document.getElementById('card-max-date').textContent = fmtD(data.find(d=>d.venta===maxV)?.fecha||'');
   document.getElementById('card-min').textContent = fmt(minV);
