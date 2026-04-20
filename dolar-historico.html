@@ -357,9 +357,9 @@
         <button class="range-tab" data-range="1M">1M</button>
         <button class="range-tab" data-range="3M">3M</button>
         <button class="range-tab" data-range="6M">6M</button>
-        <button class="range-tab" data-range="1A">1A</button>
+        <button class="range-tab active" data-range="1A">1A</button>
         <button class="range-tab" data-range="5A">5A</button>
-        <button class="range-tab active" data-range="TODO">Todo</button>
+        <button class="range-tab" data-range="TODO">Todo</button>
       </div>
     </div>
     <div class="chart-wrap">
@@ -447,7 +447,7 @@ const TIPOS = {
 };
 const API_BASE = 'https://api.argentinadatos.com/v1/cotizaciones/dolares/';
 
-let currentTipo = 'oficial', currentRange = 'TODO';
+let currentTipo = 'oficial', currentRange = '1A';
 let allData = {}, chart = null, searchMode = 'exacta';
 
 // ── UTILS ────────────────────────────────────────────────
@@ -525,7 +525,7 @@ function buildChart(data, tipo) {
           titleFont:{family:'IBM Plex Mono',size:11},
           bodyFont:{family:'IBM Plex Mono',size:12}, padding:10,
           callbacks:{
-            title:items=>fmtD(labels[items[0].dataIndex]),
+            title:items=>fmtD(items[0].label),
             label:item=>` ${item.dataset.label}: ${fmt(item.raw)}`
           }
         }
@@ -705,7 +705,7 @@ document.getElementById('btn-clr-range').addEventListener('click',()=>{
 });
 
 // ── INIT ─────────────────────────────────────────────────
-render('oficial','TODO');
+render('oficial','1A');
 </script>
 </body>
 </html>
