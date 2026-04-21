@@ -17,8 +17,8 @@
       --border:    #1e2230;
       --border2:   #2a2f42;
       --text:      #dde0ea;
-      --text2:     #7a7f96;
-      --text3:     #44485c;
+      --text2:     #9ba1bc;
+      --text3:     #6b7190;
       --green:     #22d65f;
       --green-dim: rgba(34,214,95,0.1);
       --red:       #f05050;
@@ -301,6 +301,87 @@
       font-size: 0.62rem;
       color: var(--text3);
     }
+    /* Precio del día hábil anterior */
+    .price-ayer {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.6rem;
+      color: var(--text3);
+      margin-top: 3px;
+      line-height: 1;
+    }
+    .price-ayer .ayer-up   { color: var(--green); }
+    .price-ayer .ayer-down { color: var(--red); }
+
+    /* Cards clickeables */
+    .dolar-card { cursor: pointer; }
+
+    /* Modal navegación al histórico */
+    .hist-modal-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.65);
+      backdrop-filter: blur(4px);
+      z-index: 200;
+      align-items: center;
+      justify-content: center;
+    }
+    .hist-modal-overlay.show { display: flex; }
+    .hist-modal {
+      background: var(--surface2);
+      border: 1px solid var(--border2);
+      border-radius: 16px;
+      padding: 28px 24px 22px;
+      max-width: 340px;
+      width: calc(100% - 40px);
+      text-align: center;
+      box-shadow: 0 24px 60px rgba(0,0,0,0.5);
+    }
+    .hist-modal-icon { font-size: 2rem; margin-bottom: 12px; }
+    .hist-modal-title {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 6px;
+    }
+    .hist-modal-sub {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.72rem;
+      color: var(--text2);
+      margin-bottom: 22px;
+      line-height: 1.5;
+    }
+    .hist-modal-btns { display: flex; gap: 10px; }
+    .hist-modal-btn-ok {
+      flex: 1;
+      background: var(--green);
+      color: #0a0c10;
+      border: none;
+      border-radius: 9px;
+      padding: 12px;
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.8rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: opacity 0.15s;
+    }
+    .hist-modal-btn-ok:hover { opacity: 0.88; }
+    .hist-modal-btn-cancel {
+      flex: 1;
+      background: transparent;
+      color: var(--text2);
+      border: 1px solid var(--border2);
+      border-radius: 9px;
+      padding: 12px;
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.8rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .hist-modal-btn-cancel:hover { background: var(--surface3); color: var(--text); }
+
     /* Marca de agua canuto.ar */
     .card-watermark {
       position: absolute;
@@ -486,7 +567,7 @@
   <!-- CARDS -->
   <div class="cards-grid">
 
-    <div class="dolar-card oficial" id="card-oficial">
+    <div class="dolar-card oficial" id="card-oficial" onclick="abrirModalHistorico('oficial','Oficial BNA')">
       <div class="card-top">
         <div class="card-name">Oficial BNA</div>
         <div class="card-badge badge-neu" id="badge-oficial">—</div>
@@ -495,6 +576,7 @@
         <div>
           <div class="price-label">Venta</div>
           <div class="price-value" id="v-oficial-venta"><span class="shimmer sv"></span></div>
+          <div class="price-ayer" id="ayer-oficial"></div>
         </div>
         <div>
           <div class="price-label">Compra</div>
@@ -508,7 +590,7 @@
       <div class="card-watermark">canuto.ar</div>
     </div>
 
-    <div class="dolar-card blue" id="card-blue">
+    <div class="dolar-card blue" id="card-blue" onclick="abrirModalHistorico('blue','Blue')">
       <div class="card-top">
         <div class="card-name">Blue</div>
         <div class="card-badge badge-neu" id="badge-blue">—</div>
@@ -517,6 +599,7 @@
         <div>
           <div class="price-label">Venta</div>
           <div class="price-value" id="v-blue-venta"><span class="shimmer sv"></span></div>
+          <div class="price-ayer" id="ayer-blue"></div>
         </div>
         <div>
           <div class="price-label">Compra</div>
@@ -530,7 +613,7 @@
       <div class="card-watermark">canuto.ar</div>
     </div>
 
-    <div class="dolar-card mep" id="card-mep">
+    <div class="dolar-card mep" id="card-mep" onclick="abrirModalHistorico('mep','MEP / Bolsa')">
       <div class="card-top">
         <div class="card-name">MEP / Bolsa</div>
         <div class="card-badge badge-neu" id="badge-mep">—</div>
@@ -539,6 +622,7 @@
         <div>
           <div class="price-label">Venta</div>
           <div class="price-value" id="v-mep-venta"><span class="shimmer sv"></span></div>
+          <div class="price-ayer" id="ayer-mep"></div>
         </div>
         <div>
           <div class="price-label">Compra</div>
@@ -552,7 +636,7 @@
       <div class="card-watermark">canuto.ar</div>
     </div>
 
-    <div class="dolar-card ccl" id="card-ccl">
+    <div class="dolar-card ccl" id="card-ccl" onclick="abrirModalHistorico('ccl','CCL')">
       <div class="card-top">
         <div class="card-name">CCL</div>
         <div class="card-badge badge-neu" id="badge-ccl">—</div>
@@ -561,6 +645,7 @@
         <div>
           <div class="price-label">Venta</div>
           <div class="price-value" id="v-ccl-venta"><span class="shimmer sv"></span></div>
+          <div class="price-ayer" id="ayer-ccl"></div>
         </div>
         <div>
           <div class="price-label">Compra</div>
@@ -620,6 +705,19 @@
 
 </main>
 
+<!-- MODAL HISTÓRICO -->
+<div class="hist-modal-overlay" id="hist-modal-overlay" onclick="if(event.target===this)cerrarModalHistorico()">
+  <div class="hist-modal">
+    <div class="hist-modal-icon">📈</div>
+    <div class="hist-modal-title" id="hist-modal-title">Ver serie histórica</div>
+    <div class="hist-modal-sub" id="hist-modal-sub">¿Querés ir al gráfico histórico de este dólar?</div>
+    <div class="hist-modal-btns">
+      <button class="hist-modal-btn-ok" onclick="confirmarIrHistorico()">Ver histórico</button>
+      <button class="hist-modal-btn-cancel" onclick="cerrarModalHistorico()">Cancelar</button>
+    </div>
+  </div>
+</div>
+
 <footer>
   <a href="/index.html">canuto.ar</a> · Herramientas financieras para Argentina 🇦🇷 ·
   Datos: <a href="https://dolarapi.com" target="_blank" rel="noopener">DolarApi.com</a>
@@ -639,7 +737,13 @@ function fmtPct(n) {
 }
 function fmtTime(s) {
   if (!s) return '—';
-  return new Date(s).toLocaleTimeString('es-AR', { hour: '2-digit', minute: '2-digit' });
+  const d = new Date(s);
+  const dd   = String(d.getDate()).padStart(2,'0');
+  const mm   = String(d.getMonth()+1).padStart(2,'0');
+  const yyyy = d.getFullYear();
+  const hh   = String(d.getHours()).padStart(2,'0');
+  const mi   = String(d.getMinutes()).padStart(2,'0');
+  return `${dd}/${mm}/${yyyy} ${hh}:${mi}`;
 }
 
 // Cierre del día anterior desde ArgentinaDatos — base real para la variación diaria
@@ -756,6 +860,20 @@ function renderCard(id, merged) {
   document.getElementById(`v-${id}-compra`).textContent = fmt(d.compra);
   document.getElementById(`t-${id}`).textContent        = fmtTime(d.fechaActualizacion);
 
+  // Valor del día hábil anterior
+  const ayerEl = document.getElementById(`ayer-${id}`);
+  const ayerVal = _ayer[id];
+  if (ayerEl) {
+    if (ayerVal && d.venta) {
+      const diff = d.venta - ayerVal;
+      const arrow = diff > 0 ? '↑' : diff < 0 ? '↓' : '→';
+      const cls   = diff > 0 ? 'ayer-up' : diff < 0 ? 'ayer-down' : '';
+      ayerEl.innerHTML = `ant: ${fmt(ayerVal)} <span class="${cls}">${arrow}</span>`;
+    } else {
+      ayerEl.textContent = '';
+    }
+  }
+
   const badge = document.getElementById(`badge-${id}`);
   if (vp !== null) {
     badge.textContent  = fmtPct(vp);
@@ -836,12 +954,39 @@ async function fetchData() {
     renderBrechas(merged);
     renderTicker(merged);
 
+    const _now = new Date();
+    const _dd = String(_now.getDate()).padStart(2,'0');
+    const _mm = String(_now.getMonth()+1).padStart(2,'0');
+    const _yyyy = _now.getFullYear();
+    const _hh = String(_now.getHours()).padStart(2,'0');
+    const _mi = String(_now.getMinutes()).padStart(2,'0');
     document.getElementById('last-update').textContent =
-      'últ. actualización: ' + new Date().toLocaleTimeString('es-AR');
+      `últ. actualización: ${_dd}/${_mm}/${_yyyy} ${_hh}:${_mi}`;
   } catch(e) {
     document.getElementById('refresh-status').textContent = 'Error — reintentando…';
   }
 }
+
+// ── Modal histórico ──────────────────────────────────────────────────────────
+let _modalTipo = null;
+
+function abrirModalHistorico(tipo, nombre) {
+  _modalTipo = tipo;
+  document.getElementById('hist-modal-title').textContent = `Ver ${nombre} — histórico`;
+  document.getElementById('hist-modal-sub').textContent =
+    `¿Querés ir al gráfico histórico del dólar ${nombre}?`;
+  document.getElementById('hist-modal-overlay').classList.add('show');
+}
+function cerrarModalHistorico() {
+  document.getElementById('hist-modal-overlay').classList.remove('show');
+  _modalTipo = null;
+}
+function confirmarIrHistorico() {
+  if (_modalTipo) window.location.href = `/dolar-historico.html?tipo=${_modalTipo}`;
+}
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') cerrarModalHistorico();
+});
 
 // Countdown
 let cd = REFRESH;
