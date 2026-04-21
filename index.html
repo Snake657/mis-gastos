@@ -67,11 +67,11 @@
       letter-spacing: 0.04em;
     }
 
-    /* ── HERO ── */
+    /* ── HERO — más compacto ── */
     .hero {
       max-width: 720px;
       margin: 0 auto;
-      padding: 56px 24px 48px;
+      padding: 36px 24px 28px;
       text-align: center;
     }
     .hero-badge {
@@ -88,7 +88,7 @@
       color: var(--accent);
       letter-spacing: 0.06em;
       text-transform: uppercase;
-      margin-bottom: 24px;
+      margin-bottom: 18px;
     }
     .hero-badge::before {
       content: '';
@@ -103,26 +103,19 @@
     }
     .hero h1 {
       font-family: 'IBM Plex Mono', monospace;
-      font-size: clamp(1.9rem, 5vw, 2.8rem);
+      font-size: clamp(1.7rem, 4.5vw, 2.5rem);
       font-weight: 700;
       letter-spacing: -0.04em;
-      line-height: 1.08;
-      margin-bottom: 16px;
+      line-height: 1.1;
+      margin-bottom: 0;
     }
     .hero h1 em { font-style: normal; color: var(--accent); }
-    .hero p {
-      font-size: 1rem;
-      color: var(--text2);
-      line-height: 1.65;
-      max-width: 480px;
-      margin: 0 auto;
-    }
 
     /* ── TOOLS GRID ── */
     .tools-section {
       max-width: 960px;
       margin: 0 auto;
-      padding: 0 24px 64px;
+      padding: 0 24px 56px;
     }
     .tools-grid {
       display: grid;
@@ -213,7 +206,7 @@
     .desc-divider {
       border: none;
       border-top: 1px solid var(--border);
-      margin-bottom: 56px;
+      margin-bottom: 48px;
     }
     .desc-eyebrow {
       font-family: 'IBM Plex Mono', monospace;
@@ -221,22 +214,29 @@
       letter-spacing: 0.12em;
       text-transform: uppercase;
       color: var(--text3);
-      margin-bottom: 48px;
+      margin-bottom: 40px;
     }
     .desc-list {
       display: flex;
       flex-direction: column;
-      gap: 48px;
+      gap: 56px;
     }
+
+    /* Cada desc-item ahora tiene 3 columnas: icono/meta | texto | preview */
     .desc-item {
       display: grid;
-      grid-template-columns: 200px 1fr;
+      grid-template-columns: 160px 1fr 320px;
       gap: 32px;
       align-items: start;
+    }
+    @media (max-width: 900px) {
+      .desc-item { grid-template-columns: 140px 1fr; }
+      .desc-preview { display: none; }
     }
     @media (max-width: 640px) {
       .desc-item { grid-template-columns: 1fr; gap: 14px; }
     }
+
     .desc-left {
       display: flex;
       flex-direction: column;
@@ -262,6 +262,7 @@
       transition: color 0.15s;
     }
     .desc-link:hover { color: var(--text2); }
+
     .desc-right h3 {
       font-size: 1rem;
       font-weight: 600;
@@ -293,6 +294,20 @@
       border: 1px solid var(--border);
     }
 
+    /* Preview mockup */
+    .desc-preview {
+      border-radius: 12px;
+      overflow: hidden;
+      border: 1px solid var(--border);
+      background: var(--surface2);
+      flex-shrink: 0;
+    }
+    .desc-preview svg {
+      display: block;
+      width: 100%;
+      height: auto;
+    }
+
     /* ── FOOTER ── */
     footer {
       border-top: 1px solid var(--border);
@@ -316,8 +331,7 @@
 <!-- HERO -->
 <div class="hero">
   <div class="hero-badge">Herramientas para Argentina</div>
-  <h1>Finanzas del día a día,<br><em>sin vueltas</em></h1>
-  <p>Dólar, gastos, retiro. Todo lo que necesitás para manejar tu plata en Argentina, gratis y sin registrarte.</p>
+  <h1>Información financiera<br><em>clara y sin ruido</em></h1>
 </div>
 
 <!-- HERRAMIENTAS -->
@@ -372,7 +386,7 @@
       <div class="desc-right">
         <h3>Todas las cotizaciones del dólar, actualizadas en tiempo real</h3>
         <p>Muestra el dólar Oficial BNA, Blue, MEP y CCL con precio de compra y venta. La página se refresca automáticamente cada 60 segundos — sin recargar manualmente.</p>
-        <p>Para cada cotización se calcula la variación porcentual respecto al cierre del día anterior, de modo que de un vistazo sabés si el dólar subió o bajó hoy y cuánto. También se muestra la brecha de cada tipo respecto al oficial, útil para entender la distancia entre el mercado formal y el paralelo.</p>
+        <p>Para cada cotización se calcula la variación porcentual respecto al cierre del día anterior, de modo que de un vistazo sabés si el dólar subió o bajó hoy y cuánto. También se muestra la brecha de cada tipo respecto al oficial.</p>
         <div class="desc-tags">
           <span class="desc-tag">Oficial BNA</span>
           <span class="desc-tag">Blue</span>
@@ -381,6 +395,79 @@
           <span class="desc-tag">Variación diaria %</span>
           <span class="desc-tag">Auto-refresh 60s</span>
         </div>
+      </div>
+      <!-- PREVIEW: Dólar en Vivo -->
+      <div class="desc-preview">
+        <svg viewBox="0 0 320 220" xmlns="http://www.w3.org/2000/svg" font-family="'IBM Plex Mono', monospace">
+          <!-- fondo -->
+          <rect width="320" height="220" fill="#13161e"/>
+          <!-- nav strip -->
+          <rect width="320" height="28" fill="#0d0f14"/>
+          <text x="12" y="18" font-size="8" font-weight="700" fill="#e8eaf0" letter-spacing="-0.5">canuto<tspan fill="#4ade80">.ar</tspan></text>
+          <text x="200" y="18" font-size="7" fill="#545870">💵 Dólar en Vivo</text>
+          <!-- ticker band -->
+          <rect y="28" width="320" height="14" fill="#13161e"/>
+          <text x="8" y="38" font-size="6" fill="#545870" letter-spacing="1">OFICIAL</text>
+          <text x="46" y="38" font-size="6" fill="#e8eaf0">$1.390</text>
+          <text x="86" y="38" font-size="6" fill="#4ade80">+0.4%</text>
+          <text x="118" y="38" font-size="6" fill="#545870" letter-spacing="1">BLUE</text>
+          <text x="140" y="38" font-size="6" fill="#e8eaf0">$1.415</text>
+          <text x="178" y="38" font-size="6" fill="#f87171">-0.2%</text>
+          <text x="210" y="38" font-size="6" fill="#545870">MEP</text>
+          <text x="228" y="38" font-size="6" fill="#e8eaf0">$1.412</text>
+          <text x="264" y="38" font-size="6" fill="#4ade80">+0.3%</text>
+          <!-- cards row 1 -->
+          <!-- card oficial -->
+          <rect x="8" y="52" width="144" height="70" rx="7" fill="#1a1e28" stroke="#232736" stroke-width="0.8"/>
+          <rect x="8" y="52" width="144" height="2.5" rx="7" fill="#4ade80"/>
+          <text x="16" y="65" font-size="6" fill="#4ade80" letter-spacing="1" font-weight="700">OFICIAL BNA</text>
+          <text x="16" y="80" font-size="16" font-weight="700" fill="#e8eaf0" letter-spacing="-1">$1.390</text>
+          <text x="16" y="91" font-size="7" fill="#6b7190">Compra  $1.340</text>
+          <text x="16" y="103" font-size="6" fill="#545870">Fuente: BNA</text>
+          <text x="100" y="103" font-size="6" fill="#545870">21/04  08:00</text>
+          <rect x="108" y="58" width="36" height="10" rx="3" fill="rgba(74,222,128,0.12)"/>
+          <text x="116" y="66" font-size="6" fill="#4ade80" font-weight="700">+0.36%</text>
+          <!-- card blue -->
+          <rect x="160" y="52" width="152" height="70" rx="7" fill="#1a1e28" stroke="#232736" stroke-width="0.8"/>
+          <rect x="160" y="52" width="152" height="2.5" rx="7" fill="#60a5fa"/>
+          <text x="168" y="65" font-size="6" fill="#60a5fa" letter-spacing="1" font-weight="700">BLUE</text>
+          <text x="168" y="80" font-size="16" font-weight="700" fill="#e8eaf0" letter-spacing="-1">$1.415</text>
+          <text x="168" y="91" font-size="7" fill="#6b7190">Compra  $1.390</text>
+          <text x="168" y="103" font-size="6" fill="#545870">Informal</text>
+          <text x="240" y="103" font-size="6" fill="#545870">21/04  09:15</text>
+          <rect x="248" y="58" width="36" height="10" rx="3" fill="rgba(248,113,113,0.12)"/>
+          <text x="252" y="66" font-size="6" fill="#f87171" font-weight="700">-0.21%</text>
+          <!-- cards row 2 -->
+          <!-- card mep -->
+          <rect x="8" y="130" width="144" height="70" rx="7" fill="#1a1e28" stroke="#232736" stroke-width="0.8"/>
+          <rect x="8" y="130" width="144" height="2.5" rx="7" fill="#fb923c"/>
+          <text x="16" y="143" font-size="6" fill="#fb923c" letter-spacing="1" font-weight="700">MEP / BOLSA</text>
+          <text x="16" y="158" font-size="16" font-weight="700" fill="#e8eaf0" letter-spacing="-1">$1.412</text>
+          <text x="16" y="169" font-size="7" fill="#6b7190">Compra  $1.408</text>
+          <text x="16" y="181" font-size="6" fill="#545870">Bursátil</text>
+          <text x="90" y="181" font-size="6" fill="#545870">21/04  10:30</text>
+          <rect x="108" y="136" width="36" height="10" rx="3" fill="rgba(74,222,128,0.12)"/>
+          <text x="116" y="144" font-size="6" fill="#4ade80" font-weight="700">+0.28%</text>
+          <!-- card ccl -->
+          <rect x="160" y="130" width="152" height="70" rx="7" fill="#1a1e28" stroke="#232736" stroke-width="0.8"/>
+          <rect x="160" y="130" width="152" height="2.5" rx="7" fill="#a78bfa"/>
+          <text x="168" y="143" font-size="6" fill="#a78bfa" letter-spacing="1" font-weight="700">CCL</text>
+          <text x="168" y="158" font-size="16" font-weight="700" fill="#e8eaf0" letter-spacing="-1">$1.459</text>
+          <text x="168" y="169" font-size="7" fill="#6b7190">Compra  $1.451</text>
+          <text x="168" y="181" font-size="6" fill="#545870">Con liqui</text>
+          <text x="240" y="181" font-size="6" fill="#545870">21/04  10:30</text>
+          <rect x="248" y="136" width="36" height="10" rx="3" fill="rgba(74,222,128,0.12)"/>
+          <text x="256" y="144" font-size="6" fill="#4ade80" font-weight="700">+0.51%</text>
+          <!-- brecha strip -->
+          <rect x="8" y="207" width="304" height="10" rx="3" fill="#1a1e28" stroke="#232736" stroke-width="0.5"/>
+          <text x="16" y="214" font-size="5.5" fill="#545870" letter-spacing="0.5">BRECHA</text>
+          <text x="58" y="214" font-size="5.5" fill="#545870">Blue</text>
+          <text x="75" y="214" font-size="5.5" fill="#f5d623" font-weight="700">+1.80%</text>
+          <text x="112" y="214" font-size="5.5" fill="#545870">MEP</text>
+          <text x="128" y="214" font-size="5.5" fill="#f5d623" font-weight="700">+1.58%</text>
+          <text x="163" y="214" font-size="5.5" fill="#545870">CCL</text>
+          <text x="178" y="214" font-size="5.5" fill="#f5d623" font-weight="700">+5.0%</text>
+        </svg>
       </div>
     </div>
 
@@ -394,7 +481,7 @@
       <div class="desc-right">
         <h3>La historia completa del dólar en Argentina desde 2003</h3>
         <p>Consultá la cotización de cualquier tipo de dólar (Oficial, Blue, MEP o CCL) en cualquier fecha desde 2003. El gráfico es interactivo y permite elegir rangos predefinidos — 1 mes, 3 meses, 1 año, 5 años, todo — o ingresar un rango de fechas personalizado.</p>
-        <p>Debajo del gráfico se muestra la variación porcentual del período seleccionado: cuánto subió o bajó el dólar entre el primer y el último dato, con los valores de inicio y fin para que el contexto quede claro. También incluye un buscador por fecha exacta y una tabla con el detalle de cada día.</p>
+        <p>Debajo del gráfico se muestra la variación porcentual del período seleccionado, con los valores de inicio y fin. También incluye un buscador por fecha exacta y una tabla con el detalle de cada día.</p>
         <div class="desc-tags">
           <span class="desc-tag">Desde 2003</span>
           <span class="desc-tag">Rango personalizado</span>
@@ -402,6 +489,79 @@
           <span class="desc-tag">Búsqueda por fecha</span>
           <span class="desc-tag">Tabla de datos</span>
         </div>
+      </div>
+      <!-- PREVIEW: Dólar Histórico -->
+      <div class="desc-preview">
+        <svg viewBox="0 0 320 220" xmlns="http://www.w3.org/2000/svg" font-family="'IBM Plex Mono', monospace">
+          <rect width="320" height="220" fill="#13161e"/>
+          <!-- nav -->
+          <rect width="320" height="28" fill="#0d0f14"/>
+          <text x="12" y="18" font-size="8" font-weight="700" fill="#e8eaf0" letter-spacing="-0.5">canuto<tspan fill="#4ade80">.ar</tspan></text>
+          <text x="180" y="18" font-size="7" fill="#545870">📈 Dólar Histórico</text>
+          <!-- tipo tabs -->
+          <rect x="8" y="34" width="52" height="14" rx="4" fill="#4ade80"/>
+          <text x="14" y="44" font-size="6.5" fill="#0d0f14" font-weight="700">● Oficial</text>
+          <rect x="64" y="34" width="40" height="14" rx="4" fill="#1a1e28" stroke="#232736" stroke-width="0.7"/>
+          <text x="70" y="44" font-size="6.5" fill="#8b90a4">● Blue</text>
+          <rect x="108" y="34" width="36" height="14" rx="4" fill="#1a1e28" stroke="#232736" stroke-width="0.7"/>
+          <text x="114" y="44" font-size="6.5" fill="#8b90a4">● MEP</text>
+          <rect x="148" y="34" width="34" height="14" rx="4" fill="#1a1e28" stroke="#232736" stroke-width="0.7"/>
+          <text x="154" y="44" font-size="6.5" fill="#8b90a4">● CCL</text>
+          <!-- summary cards -->
+          <rect x="8" y="54" width="90" height="34" rx="5" fill="#1a1e28" stroke="#232736" stroke-width="0.7"/>
+          <text x="14" y="65" font-size="5.5" fill="#545870" letter-spacing="0.5">ACTUAL</text>
+          <text x="14" y="78" font-size="11" font-weight="700" fill="#e8eaf0">$1.390</text>
+          <rect x="104" y="54" width="90" height="34" rx="5" fill="#1a1e28" stroke="#232736" stroke-width="0.7"/>
+          <text x="110" y="65" font-size="5.5" fill="#545870" letter-spacing="0.5">MÁXIMO</text>
+          <text x="110" y="78" font-size="11" font-weight="700" fill="#e8eaf0">$1.410</text>
+          <rect x="200" y="54" width="112" height="34" rx="5" fill="#1a1e28" stroke="#232736" stroke-width="0.7"/>
+          <text x="206" y="65" font-size="5.5" fill="#545870" letter-spacing="0.5">MÍNIMO</text>
+          <text x="206" y="78" font-size="11" font-weight="700" fill="#e8eaf0">$896</text>
+          <!-- chart area -->
+          <rect x="8" y="94" width="304" height="90" rx="5" fill="#1a1e28" stroke="#232736" stroke-width="0.7"/>
+          <!-- grid lines -->
+          <line x1="8" y1="114" x2="312" y2="114" stroke="#232736" stroke-width="0.5"/>
+          <line x1="8" y1="134" x2="312" y2="134" stroke="#232736" stroke-width="0.5"/>
+          <line x1="8" y1="154" x2="312" y2="154" stroke="#232736" stroke-width="0.5"/>
+          <line x1="8" y1="174" x2="312" y2="174" stroke="#232736" stroke-width="0.5"/>
+          <!-- y axis labels -->
+          <text x="270" y="113" font-size="5" fill="#545870">$1.400</text>
+          <text x="270" y="133" font-size="5" fill="#545870">$1.200</text>
+          <text x="270" y="153" font-size="5" fill="#545870">$1.000</text>
+          <text x="274" y="173" font-size="5" fill="#545870">$800</text>
+          <!-- x axis -->
+          <text x="14" y="185" font-size="5" fill="#545870">2003</text>
+          <text x="62" y="185" font-size="5" fill="#545870">2008</text>
+          <text x="110" y="185" font-size="5" fill="#545870">2013</text>
+          <text x="158" y="185" font-size="5" fill="#545870">2018</text>
+          <text x="206" y="185" font-size="5" fill="#545870">2022</text>
+          <text x="248" y="185" font-size="5" fill="#545870">2025</text>
+          <!-- chart line — curva tipo historia del dólar arg -->
+          <defs>
+            <linearGradient id="gOf" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stop-color="#4ade80" stop-opacity="0.25"/>
+              <stop offset="100%" stop-color="#4ade80" stop-opacity="0"/>
+            </linearGradient>
+          </defs>
+          <path d="M14,180 C30,179 50,178 70,177 C90,176 100,175 120,173 C130,172 145,168 160,158 C175,148 185,138 200,120 C210,108 220,104 235,100 C248,97 260,99 268,98" fill="none" stroke="#4ade80" stroke-width="1.5" stroke-linecap="round"/>
+          <path d="M14,180 C30,179 50,178 70,177 C90,176 100,175 120,173 C130,172 145,168 160,158 C175,148 185,138 200,120 C210,108 220,104 235,100 C248,97 260,99 268,98 L268,184 L14,184 Z" fill="url(#gOf)" opacity="0.7"/>
+          <!-- tooltip indicator -->
+          <line x1="235" y1="98" x2="235" y2="184" stroke="#4ade80" stroke-width="0.7" stroke-dasharray="2,2"/>
+          <circle cx="235" cy="100" r="3" fill="#4ade80"/>
+          <rect x="238" y="92" width="54" height="20" rx="3" fill="#1a1e28" stroke="#4ade80" stroke-width="0.6"/>
+          <text x="243" y="100" font-size="5" fill="#8b90a4">ene 2024</text>
+          <text x="243" y="109" font-size="5.5" fill="#e8eaf0" font-weight="700">$1.065</text>
+          <!-- range tabs -->
+          <rect x="8" y="191" width="304" height="22" rx="4" fill="#1a1e28" stroke="#232736" stroke-width="0.5"/>
+          <text x="14" y="205" font-size="5.5" fill="#545870">1M</text>
+          <text x="30" y="205" font-size="5.5" fill="#545870">3M</text>
+          <text x="46" y="205" font-size="5.5" fill="#545870">6M</text>
+          <text x="62" y="205" font-size="5.5" fill="#545870">1A</text>
+          <rect x="74" y="193" width="20" height="12" rx="3" fill="rgba(74,222,128,0.15)"/>
+          <text x="78" y="202" font-size="5.5" fill="#4ade80" font-weight="700">5A</text>
+          <text x="98" y="205" font-size="5.5" fill="#545870">TODO</text>
+          <text x="120" y="205" font-size="5.5" fill="#545870">RANGO</text>
+        </svg>
       </div>
     </div>
 
@@ -415,7 +575,7 @@
       <div class="desc-right">
         <h3>Un calendario de gastos fijos pensado para Argentina</h3>
         <p>Registrá todos tus gastos recurrentes — alquiler, servicios, suscripciones, seguros, cuotas — y la app los muestra organizados mes a mes. Cada gasto puede tener frecuencia mensual, bimestral, trimestral o anual; se genera automáticamente en los meses que corresponde.</p>
-        <p>Podés marcar cada gasto como pagado (efectivo o tarjeta), ver el balance contra tus ingresos y consultar el resumen anual de un vistazo. Los gastos en dólares se convierten automáticamente usando la cotización BNA del día. Con cuenta de Google, tus datos se sincronizan entre dispositivos; sin cuenta, todo funciona igual pero solo en ese navegador.</p>
+        <p>Podés marcar cada gasto como pagado (efectivo o tarjeta), ver el balance contra tus ingresos y consultar el resumen anual de un vistazo. Con cuenta de Google, tus datos se sincronizan entre dispositivos.</p>
         <div class="desc-tags">
           <span class="desc-tag">Gastos recurrentes</span>
           <span class="desc-tag">Control de pagos</span>
@@ -424,6 +584,66 @@
           <span class="desc-tag">Sincronización Google</span>
           <span class="desc-tag">Sin registro requerido</span>
         </div>
+      </div>
+      <!-- PREVIEW: Mis Gastos -->
+      <div class="desc-preview">
+        <svg viewBox="0 0 320 220" xmlns="http://www.w3.org/2000/svg" font-family="'IBM Plex Mono', monospace">
+          <rect width="320" height="220" fill="#13161e"/>
+          <!-- nav -->
+          <rect width="320" height="28" fill="#0d0f14"/>
+          <text x="12" y="18" font-size="8" font-weight="700" fill="#e8eaf0" letter-spacing="-0.5">canuto<tspan fill="#4ade80">.ar</tspan></text>
+          <text x="205" y="18" font-size="7" fill="#545870">💳 Mis Gastos</text>
+          <!-- mes nav -->
+          <rect x="8" y="32" width="304" height="20" rx="0" fill="#13161e"/>
+          <text x="130" y="45" font-size="9" font-weight="700" fill="#e8eaf0" text-anchor="middle">Abril 2026</text>
+          <text x="20" y="45" font-size="9" fill="#545870">‹</text>
+          <text x="295" y="45" font-size="9" fill="#545870">›</text>
+          <!-- totals -->
+          <rect x="8" y="54" width="146" height="28" rx="5" fill="#1a1e28" stroke="#232736" stroke-width="0.7"/>
+          <text x="16" y="64" font-size="5" fill="#545870" letter-spacing="0.5">TOTAL $</text>
+          <text x="16" y="76" font-size="11" font-weight="700" fill="#e8eaf0">$284.500</text>
+          <rect x="162" y="54" width="150" height="28" rx="5" fill="#1a1e28" stroke="#232736" stroke-width="0.7"/>
+          <text x="170" y="64" font-size="5" fill="#545870" letter-spacing="0.5">TOTAL USD</text>
+          <text x="170" y="76" font-size="11" font-weight="700" fill="#4ade80">USD 95</text>
+          <!-- gasto 1 — pagado efectivo -->
+          <rect x="8" y="88" width="304" height="28" rx="6" fill="rgba(74,222,128,0.09)" stroke="rgba(74,222,128,0.4)" stroke-width="0.7"/>
+          <circle cx="22" cy="102" r="6" fill="#4ade80"/>
+          <text x="20" y="105" font-size="6" fill="#0d0f14" font-weight="700" text-anchor="middle">✓</text>
+          <rect x="32" y="94" width="22" height="16" rx="4" fill="rgba(74,222,128,0.15)" stroke="none"/>
+          <text x="43" y="105" font-size="8" text-anchor="middle">🏘️</text>
+          <text x="60" y="100" font-size="7.5" font-weight="600" fill="#e8eaf0">Alquiler</text>
+          <text x="60" y="110" font-size="5.5" fill="#545870">vto 1 · mensual · 🏘️ alquiler</text>
+          <text x="248" y="100" font-size="8" font-weight="700" fill="#e8eaf0">$180.000</text>
+          <text x="260" y="110" font-size="5.5" fill="#4ade80" text-anchor="middle">✓ efectivo</text>
+          <!-- gasto 2 — tarjeta -->
+          <rect x="8" y="120" width="304" height="28" rx="6" fill="rgba(124,92,252,0.08)" stroke="rgba(124,92,252,0.4)" stroke-width="0.7"/>
+          <circle cx="22" cy="134" r="6" fill="#7c5cfc"/>
+          <text x="22" y="137" font-size="6" fill="#fff" font-weight="700" text-anchor="middle">💳</text>
+          <rect x="32" y="126" width="22" height="16" rx="4" fill="rgba(56,189,248,0.15)" stroke="none"/>
+          <text x="43" y="137" font-size="8" text-anchor="middle">🌐</text>
+          <text x="60" y="132" font-size="7.5" font-weight="600" fill="#e8eaf0">Internet + Cable</text>
+          <text x="60" y="142" font-size="5.5" fill="#545870">vto 15 · mensual · 🌐 conectividad</text>
+          <text x="252" y="132" font-size="8" font-weight="700" fill="#e8eaf0">$28.500</text>
+          <text x="260" y="142" font-size="5.5" fill="#a78bfa" text-anchor="middle">💳 tarjeta</text>
+          <!-- gasto 3 — pendiente near -->
+          <rect x="8" y="152" width="304" height="28" rx="6" fill="#1a1e28" stroke="#232736" stroke-width="0.7"/>
+          <circle cx="22" cy="166" r="6" fill="none" stroke="#545870" stroke-width="1.2"/>
+          <rect x="32" y="158" width="22" height="16" rx="4" fill="rgba(234,179,8,0.15)" stroke="none"/>
+          <text x="43" y="169" font-size="8" text-anchor="middle">🏦</text>
+          <text x="60" y="164" font-size="7.5" font-weight="600" fill="#e8eaf0">ARBA Inmobiliario</text>
+          <text x="60" y="174" font-size="5.5" fill="#545870">vto 25 · trimestral · 🏦 impuestos</text>
+          <text x="256" y="164" font-size="8" font-weight="700" fill="#e8eaf0">$18.200</text>
+          <rect x="234" y="170" width="20" height="8" rx="2" fill="rgba(251,146,60,0.2)"/>
+          <text x="244" y="176" font-size="5" fill="#fb923c" font-weight="700" text-anchor="middle">4d</text>
+          <!-- balance bar -->
+          <rect x="8" y="186" width="304" height="26" rx="5" fill="#1a1e28" stroke="#232736" stroke-width="0.7"/>
+          <text x="16" y="198" font-size="5.5" fill="#545870">INGRESO</text>
+          <text x="56" y="198" font-size="6.5" font-weight="700" fill="#e8eaf0">$320.000</text>
+          <text x="112" y="198" font-size="5.5" fill="#545870">BALANCE</text>
+          <text x="152" y="198" font-size="6.5" font-weight="700" fill="#4ade80">+$35.500</text>
+          <text x="208" y="198" font-size="5" fill="#545870">2/4 pagados</text>
+          <text x="16" y="208" font-size="4.5" fill="#4ade80">██████████░░░░░░░░░░░░</text>
+        </svg>
       </div>
     </div>
 
@@ -437,7 +657,7 @@
       <div class="desc-right">
         <h3>Calculá cuándo podés dejar de trabajar</h3>
         <p>Ingresás tu capital actual, cuánto ahorrás por mes, cuánto necesitás gastar mensualmente en el retiro y la tasa de rendimiento esperada (descontada la inflación). La calculadora te dice en cuántos años alcanzás tu número y a qué edad llegarías.</p>
-        <p>También muestra escenarios alternativos: qué pasa si ahorrás más, si gastás menos en el retiro o si el rendimiento cambia. Es una herramienta de planificación — no una asesoría financiera — útil para tener una referencia concreta de hacia dónde vas con tus finanzas personales.</p>
+        <p>También muestra escenarios alternativos: qué pasa si ahorrás más, si gastás menos en el retiro o si el rendimiento cambia. Es una herramienta de planificación, no una asesoría financiera.</p>
         <div class="desc-tags">
           <span class="desc-tag">Capital actual</span>
           <span class="desc-tag">Ahorro mensual</span>
@@ -445,6 +665,67 @@
           <span class="desc-tag">Escenarios alternativos</span>
           <span class="desc-tag">Edad de retiro estimada</span>
         </div>
+      </div>
+      <!-- PREVIEW: Mi Retiro -->
+      <div class="desc-preview">
+        <svg viewBox="0 0 320 220" xmlns="http://www.w3.org/2000/svg" font-family="'IBM Plex Mono', monospace">
+          <rect width="320" height="220" fill="#13161e"/>
+          <!-- nav -->
+          <rect width="320" height="28" fill="#0d0f14"/>
+          <text x="12" y="18" font-size="8" font-weight="700" fill="#e8eaf0" letter-spacing="-0.5">canuto<tspan fill="#4ade80">.ar</tspan></text>
+          <text x="207" y="18" font-size="7" fill="#545870">🏖️ Mi Retiro</text>
+          <!-- inputs panel -->
+          <rect x="8" y="32" width="140" height="138" rx="7" fill="#1a1e28" stroke="#232736" stroke-width="0.7"/>
+          <text x="16" y="45" font-size="5.5" fill="#545870" letter-spacing="0.5">TUS DATOS</text>
+          <!-- campos -->
+          <rect x="14" y="50" width="126" height="16" rx="3" fill="#232736"/>
+          <text x="18" y="58" font-size="5" fill="#545870">Capital actual (USD)</text>
+          <text x="18" y="63" font-size="7" font-weight="700" fill="#60a5fa">USD 50.000</text>
+          <rect x="14" y="70" width="126" height="16" rx="3" fill="#232736"/>
+          <text x="18" y="78" font-size="5" fill="#545870">Ahorro mensual (USD)</text>
+          <text x="18" y="83" font-size="7" font-weight="700" fill="#60a5fa">USD 800</text>
+          <rect x="14" y="90" width="126" height="16" rx="3" fill="#232736"/>
+          <text x="18" y="98" font-size="5" fill="#545870">Gasto mensual retiro (USD)</text>
+          <text x="18" y="103" font-size="7" font-weight="700" fill="#60a5fa">USD 2.000</text>
+          <rect x="14" y="110" width="126" height="16" rx="3" fill="#232736"/>
+          <text x="18" y="118" font-size="5" fill="#545870">Rendimiento real anual</text>
+          <text x="18" y="123" font-size="7" font-weight="700" fill="#60a5fa">5%</text>
+          <rect x="14" y="130" width="126" height="16" rx="3" fill="#232736"/>
+          <text x="18" y="138" font-size="5" fill="#545870">Edad actual</text>
+          <text x="18" y="143" font-size="7" font-weight="700" fill="#60a5fa">35 años</text>
+          <rect x="14" y="150" width="126" height="14" rx="4" fill="#60a5fa"/>
+          <text x="77" y="160" font-size="7" font-weight="700" fill="#0d0f14" text-anchor="middle">Calcular</text>
+          <!-- resultado -->
+          <rect x="156" y="32" width="156" height="90" rx="7" fill="#1a1e28" stroke="#60a5fa" stroke-width="1"/>
+          <text x="164" y="46" font-size="5.5" fill="#545870" letter-spacing="0.5">RESULTADO</text>
+          <text x="164" y="62" font-size="10" fill="#545870">Te retirás en</text>
+          <text x="164" y="80" font-size="22" font-weight="700" fill="#60a5fa" letter-spacing="-1">18 años</text>
+          <text x="164" y="96" font-size="7" fill="#8b90a4">a los <tspan font-weight="700" fill="#e8eaf0">53 años</tspan> de edad</text>
+          <text x="164" y="108" font-size="6" fill="#4ade80">Capital objetivo: USD 480.000</text>
+          <!-- escenarios -->
+          <rect x="156" y="128" width="156" height="42" rx="6" fill="#1a1e28" stroke="#232736" stroke-width="0.7"/>
+          <text x="164" y="139" font-size="5.5" fill="#545870" letter-spacing="0.5">ESCENARIOS</text>
+          <text x="164" y="150" font-size="5.5" fill="#8b90a4">+USD 200/mes ahorro →</text>
+          <text x="270" y="150" font-size="5.5" fill="#4ade80" font-weight="700">15 años</text>
+          <text x="164" y="160" font-size="5.5" fill="#8b90a4">-USD 300/mes retiro →</text>
+          <text x="270" y="160" font-size="5.5" fill="#4ade80" font-weight="700">14 años</text>
+          <text x="164" y="170" font-size="5.5" fill="#8b90a4">Rend. 7% →</text>
+          <text x="270" y="170" font-size="5.5" fill="#4ade80" font-weight="700">12 años</text>
+          <!-- mini chart crecimiento -->
+          <rect x="8" y="178" width="304" height="36" rx="6" fill="#1a1e28" stroke="#232736" stroke-width="0.7"/>
+          <text x="16" y="189" font-size="5" fill="#545870" letter-spacing="0.5">PROYECCIÓN DEL CAPITAL</text>
+          <defs>
+            <linearGradient id="gBl" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stop-color="#60a5fa" stop-opacity="0.3"/>
+              <stop offset="100%" stop-color="#60a5fa" stop-opacity="0"/>
+            </linearGradient>
+          </defs>
+          <path d="M16,208 C40,206 70,202 100,196 C130,190 155,182 175,175 C185,171 190,167 200,163 C205,161 207,159 210,159" fill="none" stroke="#60a5fa" stroke-width="1.4" stroke-linecap="round"/>
+          <path d="M16,208 C40,206 70,202 100,196 C130,190 155,182 175,175 C185,171 190,167 200,163 C205,161 207,159 210,159 L210,210 L16,210 Z" fill="url(#gBl)"/>
+          <line x1="210" y1="158" x2="210" y2="210" stroke="#60a5fa" stroke-width="0.6" stroke-dasharray="2,2"/>
+          <circle cx="210" cy="159" r="2.5" fill="#60a5fa"/>
+          <text x="213" y="162" font-size="4.5" fill="#60a5fa" font-weight="700">objetivo</text>
+        </svg>
       </div>
     </div>
 
