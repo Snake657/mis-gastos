@@ -1051,7 +1051,7 @@ function saveGasto(){
   const gOrig=editId?gastos.find(g=>g.id===editId):null;
   const esRecurrente=gOrig&&gOrig.frecuencia!=="unico";
   if(editId&&esRecurrente){
-    editPendingData={nombre,cat,frecuencia:freqSel,fechaOrigen:gOrig.fechaOrigen,ars,usd,nota,subitems};
+    editPendingData={nombre,cat,frecuencia:freqSel,fechaOrigen,ars,usd,nota,subitems};
     document.getElementById("edit-recur-mes").textContent=MESES[mesActual.m]+" "+mesActual.y;
     document.getElementById("overlay-edit-recur").classList.add("show");return;
   }
@@ -1113,9 +1113,9 @@ function confirmarEditRecurrente(){
   const gOrig=gastos.find(g=>g.id===editId);if(!gOrig){closeForm();return;}
   const gCerrado={...gOrig,fechaFin:fechaCierre()};
   const newId=String(Date.now());
-  const origDay=new Date(gOrig.fechaOrigen+"T00:00:00").getDate();
+  const newDay=new Date(editPendingData.fechaOrigen+"T00:00:00").getDate();
   const maxDay=new Date(mesActual.y,mesActual.m+1,0).getDate();
-  const newFO=mesActual.y+"-"+pad(mesActual.m+1)+"-"+pad(Math.min(origDay,maxDay));
+  const newFO=mesActual.y+"-"+pad(mesActual.m+1)+"-"+pad(Math.min(newDay,maxDay));
   const gNuevo={id:newId,...editPendingData,frecuencia:editPendingData.frecuencia,fechaOrigen:newFO,excluidos:{}};
   // Capturar editId antes de closeForm
   const editIdCopy=editId;
