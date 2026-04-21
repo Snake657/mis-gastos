@@ -1,0 +1,1206 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Reservas & Deuda — Canuto.ar</title>
+  <meta name="description" content="Reservas internacionales del BCRA en tiempo real y perfil de vencimientos de deuda externa argentina hasta 2032." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+
+  <style>
+    :root {
+      --bg:         #0a0c10;
+      --surface:    #111318;
+      --surface2:   #181b22;
+      --surface3:   #1e2230;
+      --border:     #1e2230;
+      --border2:    #2a2f42;
+      --text:       #dde0ea;
+      --text2:      #7a7f96;
+      --text3:      #44485c;
+      --green:      #22d65f;
+      --green-dim:  rgba(34,214,95,0.10);
+      --blue:       #4fa8f5;
+      --blue-dim:   rgba(79,168,245,0.10);
+      --orange:     #f5a623;
+      --orange-dim: rgba(245,166,35,0.10);
+      --purple:     #9b7ef5;
+      --purple-dim: rgba(155,126,245,0.10);
+      --red:        #f05050;
+      --red-dim:    rgba(240,80,80,0.10);
+      --yellow:     #f5d623;
+      --teal:       #2dd4bf;
+      --teal-dim:   rgba(45,212,191,0.10);
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { font-size: 16px; scroll-behavior: smooth; }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'IBM Plex Sans', sans-serif;
+      min-height: 100vh;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ── NAV ── */
+    nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 14px 20px;
+      border-bottom: 1px solid var(--border);
+      position: sticky;
+      top: 0;
+      background: rgba(10,12,16,0.95);
+      backdrop-filter: blur(14px);
+      z-index: 100;
+    }
+    .nav-logo {
+      font-family: 'IBM Plex Mono', monospace;
+      font-weight: 700;
+      font-size: 0.95rem;
+      color: var(--text);
+      text-decoration: none;
+      letter-spacing: -0.03em;
+      flex-shrink: 0;
+    }
+    .nav-logo span { color: var(--green); }
+    .nav-links {
+      display: flex;
+      gap: 3px;
+      overflow-x: auto;
+      scrollbar-width: none;
+      -webkit-overflow-scrolling: touch;
+    }
+    .nav-links::-webkit-scrollbar { display: none; }
+    .nav-links a {
+      color: var(--text2);
+      text-decoration: none;
+      font-size: 0.72rem;
+      font-family: 'IBM Plex Mono', monospace;
+      padding: 5px 9px;
+      border-radius: 6px;
+      transition: all 0.12s;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+    .nav-links a:hover { color: var(--text); background: var(--surface2); }
+    .nav-links a.active { color: var(--bg); background: var(--blue); font-weight: 700; }
+
+    /* ── TICKER ── */
+    .ticker-band {
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      overflow: hidden;
+      height: 34px;
+      display: flex;
+      align-items: center;
+    }
+    .ticker-track {
+      display: flex;
+      animation: ticker 30s linear infinite;
+      white-space: nowrap;
+    }
+    .ticker-band:hover .ticker-track { animation-play-state: paused; }
+    @keyframes ticker { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
+    .ticker-item {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 0 24px;
+      border-right: 1px solid var(--border);
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.7rem;
+    }
+    .t-name  { color: var(--text3); letter-spacing: 0.08em; font-weight: 600; }
+    .t-val   { color: var(--text);  font-weight: 600; }
+    .t-var.pos { color: var(--green); }
+    .t-var.neg { color: var(--red); }
+    .t-var.neu { color: var(--text3); }
+
+    /* ── MAIN ── */
+    main { max-width: 960px; margin: 0 auto; padding: 32px 20px 80px; }
+
+    /* ── PAGE HEADER ── */
+    .page-header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 32px;
+      flex-wrap: wrap;
+    }
+    .eyebrow {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.68rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--blue);
+      margin-bottom: 6px;
+      display: flex;
+      align-items: center;
+      gap: 7px;
+    }
+    .live-dot {
+      width: 7px; height: 7px;
+      border-radius: 50%;
+      background: var(--blue);
+      animation: pulse 2s ease-in-out infinite;
+      flex-shrink: 0;
+    }
+    @keyframes pulse {
+      0%,100% { opacity:1; transform:scale(1); }
+      50%      { opacity:0.3; transform:scale(0.6); }
+    }
+    h1 {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: clamp(1.7rem, 4.5vw, 2.4rem);
+      font-weight: 700;
+      letter-spacing: -0.04em;
+      line-height: 1;
+    }
+    h1 em { font-style: normal; color: var(--blue); }
+    .header-sub {
+      font-size: 0.85rem;
+      color: var(--text2);
+      margin-top: 10px;
+      line-height: 1.6;
+      max-width: 500px;
+    }
+    .header-right {
+      text-align: right;
+      flex-shrink: 0;
+    }
+    .refresh-status {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.7rem;
+      color: var(--text3);
+      margin-bottom: 5px;
+    }
+    .refresh-bar-wrap {
+      width: 100px;
+      height: 2px;
+      background: var(--surface3);
+      border-radius: 2px;
+      overflow: hidden;
+      margin-left: auto;
+    }
+    .refresh-bar {
+      height: 100%;
+      background: var(--blue);
+      border-radius: 2px;
+      width: 100%;
+      transition: width 1s linear;
+    }
+    .last-update {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.65rem;
+      color: var(--text3);
+      margin-top: 5px;
+    }
+
+    /* ── SECTION LABEL ── */
+    .section-label {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.63rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--text3);
+    }
+    .section-divider {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin: 40px 0 20px;
+    }
+    .section-divider::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--border);
+    }
+    .section-divider .section-label { margin: 0; }
+    .section-icon {
+      font-size: 1rem;
+      line-height: 1;
+    }
+
+    /* ── STAT CARDS ── */
+    .stat-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+    @media (max-width: 640px) { .stat-grid { grid-template-columns: repeat(2, 1fr); } }
+
+    .stat-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 16px 15px;
+      position: relative;
+      overflow: hidden;
+      transition: border-color 0.18s, transform 0.15s;
+    }
+    .stat-card:hover { border-color: var(--border2); transform: translateY(-1px); }
+    .stat-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 2px;
+      border-radius: 12px 12px 0 0;
+    }
+    .stat-card.c-blue::before   { background: var(--blue); }
+    .stat-card.c-green::before  { background: var(--green); }
+    .stat-card.c-orange::before { background: var(--orange); }
+    .stat-card.c-red::before    { background: var(--red); }
+
+    .sc-label {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.62rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--text3);
+      margin-bottom: 8px;
+    }
+    .sc-value {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: clamp(1.1rem, 3vw, 1.5rem);
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      line-height: 1;
+      margin-bottom: 5px;
+    }
+    .sc-value.c-blue   { color: var(--blue); }
+    .sc-value.c-green  { color: var(--green); }
+    .sc-value.c-orange { color: var(--orange); }
+    .sc-value.c-red    { color: var(--red); }
+    .sc-sub {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.68rem;
+      color: var(--text3);
+    }
+    .sc-var {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.72rem;
+      font-weight: 600;
+      margin-top: 6px;
+    }
+    .sc-var.pos { color: var(--green); }
+    .sc-var.neg { color: var(--red); }
+    .sc-var.neu { color: var(--text3); }
+
+    /* ── CHART CARD ── */
+    .chart-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 22px 22px 18px;
+      margin-bottom: 16px;
+    }
+    .chart-header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 18px;
+      flex-wrap: wrap;
+    }
+    .chart-title {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: var(--text2);
+    }
+    .chart-subtitle {
+      font-size: 0.75rem;
+      color: var(--text3);
+      margin-top: 3px;
+    }
+
+    /* ── RANGE TABS ── */
+    .range-tabs {
+      display: flex;
+      gap: 4px;
+      flex-wrap: wrap;
+    }
+    .range-tab {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.68rem;
+      font-weight: 600;
+      padding: 4px 10px;
+      border-radius: 6px;
+      border: 1px solid var(--border);
+      background: transparent;
+      color: var(--text3);
+      cursor: pointer;
+      transition: all 0.12s;
+      white-space: nowrap;
+    }
+    .range-tab:hover { border-color: var(--border2); color: var(--text2); }
+    .range-tab.active { background: var(--blue); border-color: var(--blue); color: var(--bg); }
+
+    /* Date inputs */
+    .date-range-wrap {
+      display: flex;
+      gap: 6px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+    .date-range-wrap input[type="date"] {
+      background: var(--surface2);
+      border: 1px solid var(--border2);
+      border-radius: 6px;
+      padding: 4px 10px;
+      color: var(--text);
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.68rem;
+      outline: none;
+      transition: border-color 0.12s;
+      height: 28px;
+    }
+    .date-range-wrap input[type="date"]:focus { border-color: var(--blue); }
+    .date-range-wrap input[type="date"]::-webkit-calendar-picker-indicator { filter: invert(0.4); cursor: pointer; }
+    .date-sep { color: var(--text3); font-size: 0.7rem; font-family: 'IBM Plex Mono', monospace; }
+
+    .chart-wrap { position: relative; height: 280px; }
+
+    /* ── TOGGLE CHIPS ── */
+    .toggle-chips {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+      margin-top: 12px;
+    }
+    .toggle-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 12px;
+      border-radius: 20px;
+      border: 1px solid var(--border);
+      background: var(--surface2);
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.68rem;
+      font-weight: 600;
+      color: var(--text3);
+      cursor: pointer;
+      transition: all 0.12s;
+      user-select: none;
+    }
+    .toggle-chip .chip-dot {
+      width: 7px; height: 7px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+    .toggle-chip.on { color: var(--text); border-color: var(--border2); }
+    .toggle-chip.off { opacity: 0.45; }
+
+    /* ── DEUDA GRID ── */
+    .deuda-stat-grid {
+      display: grid;
+      grid-template-columns: repeat(3,1fr);
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+    @media (max-width: 560px) { .deuda-stat-grid { grid-template-columns: repeat(2,1fr); } }
+
+    /* ── VENCIMIENTOS TABLE ── */
+    .table-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      overflow: hidden;
+      margin-bottom: 16px;
+    }
+    .table-header {
+      padding: 16px 20px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    .data-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.82rem;
+    }
+    .data-table th {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.62rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--text3);
+      padding: 10px 16px;
+      text-align: right;
+      border-bottom: 1px solid var(--border);
+      white-space: nowrap;
+    }
+    .data-table th:first-child { text-align: left; }
+    .data-table td {
+      padding: 11px 16px;
+      border-bottom: 1px solid var(--border);
+      text-align: right;
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.78rem;
+      vertical-align: middle;
+      white-space: nowrap;
+    }
+    .data-table td:first-child { text-align: left; color: var(--text2); font-size: 0.8rem; font-family: 'IBM Plex Sans', sans-serif; }
+    .data-table tr:last-child td { border-bottom: none; }
+    .data-table tr:hover td { background: var(--surface2); }
+    .data-table .td-total { font-weight: 700; color: var(--text); }
+    .data-table .highlight-row td { background: rgba(79,168,245,0.05); }
+    .data-table .highlight-row:hover td { background: rgba(79,168,245,0.10); }
+    .td-bar-wrap {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 8px;
+    }
+    .td-bar {
+      height: 4px;
+      border-radius: 2px;
+      flex-shrink: 0;
+    }
+
+    /* ── LEGEND ── */
+    .legend-row {
+      display: flex;
+      gap: 16px;
+      flex-wrap: wrap;
+      margin-top: 14px;
+    }
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.68rem;
+      color: var(--text3);
+    }
+    .legend-dot {
+      width: 10px; height: 10px;
+      border-radius: 2px;
+      flex-shrink: 0;
+    }
+
+    /* ── NOTA ── */
+    .nota {
+      font-size: 0.74rem;
+      color: var(--text3);
+      line-height: 1.65;
+      padding: 14px 18px;
+      background: var(--surface);
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      margin-bottom: 16px;
+    }
+    .nota a { color: var(--text2); text-decoration: underline; text-underline-offset: 2px; }
+    .nota a:hover { color: var(--text); }
+
+    /* ── LOADING ── */
+    .loading-msg {
+      text-align: center;
+      padding: 48px 20px;
+      color: var(--text3);
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.78rem;
+    }
+    .spinner {
+      display: inline-block;
+      width: 16px; height: 16px;
+      border: 2px solid var(--border2);
+      border-top-color: var(--blue);
+      border-radius: 50%;
+      animation: spin 0.7s linear infinite;
+      vertical-align: middle;
+      margin-right: 8px;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* ── FOOTER ── */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 24px;
+      text-align: center;
+      font-size: 0.78rem;
+      color: var(--text3);
+    }
+    footer a { color: var(--text2); text-decoration: none; }
+    footer a:hover { color: var(--text); }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(8px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .fadein { animation: fadeUp 0.3s ease both; }
+
+    @media (max-width: 480px) {
+      .chart-header { flex-direction: column; gap: 10px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a class="nav-logo" href="/index.html"><span>canuto</span>.ar</a>
+  <div class="nav-links">
+    <a href="/dolar-en-vivo.html">💵 Dólar en Vivo</a>
+    <a href="/dolar-historico.html">📈 Dólar Histórico</a>
+    <a href="/gastos.html">💳 Mis Gastos</a>
+    <a href="/retiro.html">🏖️ Mi Retiro</a>
+    <a href="/reservas-y-deuda.html" class="active">🏦 Reservas & Deuda</a>
+  </div>
+</nav>
+
+<!-- TICKER -->
+<div class="ticker-band">
+  <div class="ticker-track" id="tickerTrack">
+    <div class="ticker-item"><span class="t-name">Reservas Brutas</span><span class="t-val" id="tk-brutas">—</span><span class="t-var neu" id="tk-brutas-var">—</span></div>
+    <div class="ticker-item"><span class="t-name">Venc. 2026</span><span class="t-val">USD 19.505M</span></div>
+    <div class="ticker-item"><span class="t-name">FMI 2026</span><span class="t-val">USD 4.401M</span></div>
+    <div class="ticker-item"><span class="t-name">Bonos Sob. 2026</span><span class="t-val">USD 8.446M</span></div>
+    <div class="ticker-item"><span class="t-name">Próx. Venc.</span><span class="t-val" id="tk-prox">9 Jul 2026 · USD 4.200M</span></div>
+    <div class="ticker-item"><span class="t-name">Reservas Brutas</span><span class="t-val" id="tk-brutas2">—</span><span class="t-var neu" id="tk-brutas-var2">—</span></div>
+    <div class="ticker-item"><span class="t-name">Venc. 2026</span><span class="t-val">USD 19.505M</span></div>
+    <div class="ticker-item"><span class="t-name">FMI 2026</span><span class="t-val">USD 4.401M</span></div>
+    <div class="ticker-item"><span class="t-name">Bonos Sob. 2026</span><span class="t-val">USD 8.446M</span></div>
+    <div class="ticker-item"><span class="t-name">Próx. Venc.</span><span class="t-val">9 Jul 2026 · USD 4.200M</span></div>
+  </div>
+</div>
+
+<main>
+
+  <!-- PAGE HEADER -->
+  <div class="page-header">
+    <div>
+      <div class="eyebrow"><span class="live-dot"></span>Datos en tiempo real</div>
+      <h1>Reservas &<br><em>Deuda</em></h1>
+      <p class="header-sub">Reservas internacionales del BCRA con datos diarios del INDEC/BCRA y perfil de vencimientos de deuda externa hasta 2032.</p>
+    </div>
+    <div class="header-right">
+      <div class="refresh-status" id="refresh-status">Cargando...</div>
+      <div class="refresh-bar-wrap"><div class="refresh-bar" id="refresh-bar"></div></div>
+      <div class="last-update" id="last-update"></div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════ -->
+  <!-- SECCIÓN 1: RESERVAS                                -->
+  <!-- ═══════════════════════════════════════════════════ -->
+  <div class="section-divider">
+    <span class="section-icon">🏦</span>
+    <span class="section-label">Reservas Internacionales BCRA</span>
+  </div>
+
+  <!-- STAT CARDS -->
+  <div class="stat-grid" id="statGrid">
+    <div class="stat-card c-blue">
+      <div class="sc-label">Reservas Brutas</div>
+      <div class="sc-value c-blue" id="sc-brutas">—</div>
+      <div class="sc-sub">millones USD</div>
+      <div class="sc-var neu" id="sc-brutas-var">cargando...</div>
+    </div>
+    <div class="stat-card c-green">
+      <div class="sc-label">Variación Diaria</div>
+      <div class="sc-value" id="sc-var-dia" style="color:var(--text3)">—</div>
+      <div class="sc-sub">vs. día anterior</div>
+      <div class="sc-var neu" id="sc-var-dia-sub">—</div>
+    </div>
+    <div class="stat-card c-orange">
+      <div class="sc-label">Variación 30 días</div>
+      <div class="sc-value" id="sc-var-30" style="color:var(--text3)">—</div>
+      <div class="sc-sub">últ. 30 días hábiles</div>
+      <div class="sc-var neu" id="sc-var-30-sub">—</div>
+    </div>
+    <div class="stat-card c-red">
+      <div class="sc-label">Variación 1 año</div>
+      <div class="sc-value" id="sc-var-1y" style="color:var(--text3)">—</div>
+      <div class="sc-sub">vs. hace 12 meses</div>
+      <div class="sc-var neu" id="sc-var-1y-sub">—</div>
+    </div>
+  </div>
+
+  <!-- CHART RESERVAS -->
+  <div class="chart-card fadein">
+    <div class="chart-header">
+      <div>
+        <div class="chart-title">Reservas internacionales brutas (USD millones)</div>
+        <div class="chart-subtitle" id="res-periodo-label">Cargando datos...</div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:8px;align-items:flex-end">
+        <div class="range-tabs" id="res-range-tabs">
+          <button class="range-tab" onclick="setResRange(30)">1M</button>
+          <button class="range-tab" onclick="setResRange(90)">3M</button>
+          <button class="range-tab active" onclick="setResRange(365)">1A</button>
+          <button class="range-tab" onclick="setResRange(730)">2A</button>
+          <button class="range-tab" onclick="setResRange(0)">Todo</button>
+          <button class="range-tab" onclick="setResRange(-1)" id="res-custom-btn">Rango</button>
+        </div>
+        <div class="date-range-wrap" id="res-date-inputs" style="display:none">
+          <input type="date" id="res-desde" onchange="applyResCustom()" />
+          <span class="date-sep">→</span>
+          <input type="date" id="res-hasta" onchange="applyResCustom()" />
+        </div>
+      </div>
+    </div>
+    <div class="chart-wrap">
+      <div class="loading-msg" id="res-loading"><span class="spinner"></span>Conectando con BCRA...</div>
+      <canvas id="resChart" style="display:none"></canvas>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════ -->
+  <!-- SECCIÓN 2: VENCIMIENTOS DE DEUDA                   -->
+  <!-- ═══════════════════════════════════════════════════ -->
+  <div class="section-divider" style="margin-top:48px">
+    <span class="section-icon">📅</span>
+    <span class="section-label">Perfil de Vencimientos de Deuda Externa</span>
+  </div>
+
+  <!-- DEUDA STAT CARDS -->
+  <div class="deuda-stat-grid">
+    <div class="stat-card c-orange">
+      <div class="sc-label">Venc. 2026 (total)</div>
+      <div class="sc-value c-orange">USD 19.5B</div>
+      <div class="sc-sub">capital + intereses</div>
+    </div>
+    <div class="stat-card c-red">
+      <div class="sc-label">Venc. prom. 2026–28</div>
+      <div class="sc-value c-red">USD 22.6B</div>
+      <div class="sc-sub">por año (promedio)</div>
+    </div>
+    <div class="stat-card c-blue">
+      <div class="sc-label">Deuda c/ FMI (stock)</div>
+      <div class="sc-value c-blue">USD 41.4B</div>
+      <div class="sc-sub">al 31/12/2025</div>
+    </div>
+  </div>
+
+  <!-- CHART VENCIMIENTOS -->
+  <div class="chart-card fadein">
+    <div class="chart-header">
+      <div>
+        <div class="chart-title">Vencimientos anuales por acreedor (USD millones)</div>
+        <div class="chart-subtitle">Fuente: OPC · Secretaría de Finanzas · FMI · datos estimados para 2027–2032</div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:8px;align-items:flex-end">
+        <div class="range-tabs">
+          <button class="range-tab" onclick="setDeudaView('capital')">Capital</button>
+          <button class="range-tab active" onclick="setDeudaView('total')">Capital + Int.</button>
+          <button class="range-tab" onclick="setDeudaView('fmi')">Solo FMI</button>
+        </div>
+        <!-- Toggle acreedores -->
+        <div class="toggle-chips" id="acreedor-chips"></div>
+      </div>
+    </div>
+    <div class="chart-wrap">
+      <canvas id="deudaChart"></canvas>
+    </div>
+    <div class="legend-row" id="deuda-legend"></div>
+  </div>
+
+  <!-- TABLA DETALLE -->
+  <div class="table-card fadein">
+    <div class="table-header">
+      <div class="section-label">Detalle anual — USD millones</div>
+      <div style="font-family:'IBM Plex Mono',monospace;font-size:0.68rem;color:var(--text3)">capital + intereses · estimado</div>
+    </div>
+    <div style="overflow-x:auto">
+      <table class="data-table" id="deudaTable"></table>
+    </div>
+  </div>
+
+  <!-- NOTA METODOLÓGICA -->
+  <div class="nota">
+    <strong style="color:var(--text2)">Fuentes y metodología:</strong> Reservas brutas: <a href="https://api.estadisticasbcra.com" target="_blank">api.estadisticasbcra.com</a> (datos BCRA, actualizados con rezago de 1–2 días hábiles). Vencimientos: <a href="https://opc.gob.ar" target="_blank">OPC</a> · Secretaría de Finanzas · FMI MFSM. Los datos 2024–2026 son reportados; 2027–2032 son proyecciones basadas en informes de OPC y consultoras. Capital + intereses. Los vencimientos pueden variar por refinanciaciones, canjes y nuevos acuerdos. Esta herramienta es de carácter informativo y no constituye asesoría financiera.
+  </div>
+
+</main>
+
+<footer>
+  <a href="/index.html">canuto.ar</a> © 2026 · Hecho en Argentina 🇦🇷 · Datos: BCRA · OPC · FMI
+</footer>
+
+<script>
+// ═══════════════════════════════════════════════════════════════════
+// DATOS DE VENCIMIENTOS (curados manualmente, fuente OPC/Finanzas/FMI)
+// Capital + Intereses, en millones de USD
+// ═══════════════════════════════════════════════════════════════════
+const DEUDA_DATA = {
+  años: [2024, 2025, 2026, 2027, 2028, 2029, 2030, 2031, 2032],
+  acreedores: [
+    {
+      id: 'fmi',
+      nombre: 'FMI',
+      color: '#4fa8f5',
+      // Capital + intereses por año
+      total:   [3200,  2600,  4401,  6800,  8200,  9500,  8800,  7200,  5900],
+      capital: [0,     0,     3413,  5100,  6400,  7800,  7200,  5900,  4800],
+    },
+    {
+      id: 'bonos',
+      nombre: 'Bonos Soberanos',
+      color: '#f5a623',
+      total:   [9300,  9300,  8446,  8000,  7200,  6800,  7400,  8200,  7800],
+      capital: [4600,  4600,  6500,  6000,  5500,  5200,  5800,  6400,  6100],
+    },
+    {
+      id: 'bopreal',
+      nombre: 'BOPREAL',
+      color: '#9b7ef5',
+      total:   [0,     2800,  1200,  800,   400,   200,   0,     0,     0],
+      capital: [0,     2000,  900,   600,   300,   150,   0,     0,     0],
+    },
+    {
+      id: 'multilateral',
+      nombre: 'Multilaterales',
+      color: '#2dd4bf',
+      total:   [3200,  3200,  4716,  4200,  3900,  3600,  3400,  3200,  3000],
+      capital: [1800,  1800,  2800,  2500,  2300,  2100,  2000,  1900,  1800],
+    },
+    {
+      id: 'otros',
+      nombre: 'Otros',
+      color: '#44485c',
+      total:   [800,   985,   742,   700,   650,   600,   550,   500,   450],
+      capital: [400,   500,   400,   380,   350,   320,   300,   280,   260],
+    },
+  ]
+};
+
+// Próximo vencimiento relevante
+const PROX_VENC = { fecha: '9 Jul 2026', monto: 'USD 4.200M', tipo: 'Bonos Glob./Bonar' };
+
+// ═══════════════════════════════════════════════════════════════════
+// ESTADO
+// ═══════════════════════════════════════════════════════════════════
+let resData       = [];   // [{d, v}] de la API
+let resChart      = null;
+let deudaChart    = null;
+let resRangeDays  = 365;
+let deudaView     = 'total';
+let activeAcreedores = new Set(DEUDA_DATA.acreedores.map(a => a.id));
+
+// ═══════════════════════════════════════════════════════════════════
+// HELPERS
+// ═══════════════════════════════════════════════════════════════════
+function fmtB(n) {
+  // millones → formato
+  if (Math.abs(n) >= 1000) return (n/1000).toFixed(2).replace('.',',') + 'B';
+  return n.toLocaleString('es-AR') + 'M';
+}
+function fmtM(n) {
+  return n.toLocaleString('es-AR', {maximumFractionDigits: 0});
+}
+function sign(n) { return n > 0 ? '+' : ''; }
+function colorVar(n) { return n > 0 ? 'pos' : n < 0 ? 'neg' : 'neu'; }
+function parseDate(str) { return new Date(str + 'T12:00:00'); }
+
+// ═══════════════════════════════════════════════════════════════════
+// FETCH RESERVAS
+// ═══════════════════════════════════════════════════════════════════
+async function fetchReservas() {
+  try {
+    const res = await fetch('https://api.estadisticasbcra.com/reservas');
+    if (!res.ok) throw new Error('HTTP ' + res.status);
+    resData = await res.json(); // [{d:'YYYY-MM-DD', v: número}]
+    renderReservas();
+    document.getElementById('res-loading').style.display = 'none';
+    document.getElementById('resChart').style.display = 'block';
+    document.getElementById('refresh-status').textContent = 'Datos actualizados';
+    document.getElementById('last-update').textContent =
+      'últ. actualización: ' + new Date().toLocaleTimeString('es-AR');
+    startCountdown();
+  } catch(e) {
+    document.getElementById('res-loading').innerHTML =
+      '<span style="color:var(--red)">⚠ No se pudo conectar con la API del BCRA. Reintentando en 60s...</span>';
+    document.getElementById('refresh-status').textContent = 'Error de conexión';
+  }
+}
+
+function renderReservas() {
+  if (!resData.length) return;
+  const last    = resData[resData.length - 1];
+  const prev    = resData[resData.length - 2] || last;
+  const hace30  = resData[Math.max(0, resData.length - 31)];
+  const hace1y  = resData.find(d => d.d >= hace365(last.d)) || resData[0];
+
+  // Stat cards
+  setText('sc-brutas', 'USD ' + fmtB(last.v));
+  const dDay  = last.v - prev.v;
+  const dDay_ = dDay !== 0 ? (dDay > 0 ? '+' : '') + fmtB(dDay) + ' vs. ayer' : 'Sin cambio vs. ayer';
+  setStatVar('sc-var-dia', 'sc-var-dia-sub', dDay, 'USD ' + (dDay>0?'+':'') + fmtM(dDay) + 'M', dDay_);
+
+  const d30  = last.v - hace30.v;
+  const d30p = ((d30 / hace30.v) * 100);
+  setStatVar('sc-var-30', 'sc-var-30-sub', d30,
+    sign(d30p) + d30p.toFixed(1) + '%',
+    'USD ' + sign(d30) + fmtM(d30) + 'M vs. ' + hace30.d);
+
+  const d1y  = last.v - hace1y.v;
+  const d1yp = ((d1y / hace1y.v) * 100);
+  setStatVar('sc-var-1y', 'sc-var-1y-sub', d1y,
+    sign(d1yp) + d1yp.toFixed(1) + '%',
+    'USD ' + sign(d1y) + fmtM(d1y) + 'M vs. ' + hace1y.d);
+
+  // Ticker
+  ['tk-brutas','tk-brutas2'].forEach(id => setText(id, 'USD ' + fmtB(last.v)));
+  const varSign = dDay >= 0 ? 'pos' : 'neg';
+  ['tk-brutas-var','tk-brutas-var2'].forEach(id => {
+    const el = document.getElementById(id);
+    if (!el) return;
+    el.textContent = sign(dDay) + fmtM(dDay) + 'M';
+    el.className = 't-var ' + varSign;
+  });
+
+  drawResChart();
+}
+
+function setStatVar(valId, subId, delta, valText, subText) {
+  const ve = document.getElementById(valId);
+  const se = document.getElementById(subId);
+  if (!ve || !se) return;
+  ve.textContent = valText;
+  ve.style.color = delta > 0 ? 'var(--green)' : delta < 0 ? 'var(--red)' : 'var(--text3)';
+  se.textContent = subText;
+  se.className   = 'sc-var ' + colorVar(delta);
+}
+
+function setText(id, val) {
+  const el = document.getElementById(id);
+  if (el) el.textContent = val;
+}
+
+function hace365(dateStr) {
+  const d = new Date(dateStr + 'T12:00:00');
+  d.setFullYear(d.getFullYear() - 1);
+  return d.toISOString().slice(0,10);
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// RANGE SELECTOR — RESERVAS
+// ═══════════════════════════════════════════════════════════════════
+function setResRange(days) {
+  resRangeDays = days;
+  // Ocultar inputs custom
+  document.getElementById('res-date-inputs').style.display =
+    days === -1 ? 'flex' : 'none';
+  // Activar tab
+  document.querySelectorAll('#res-range-tabs .range-tab').forEach((btn, i) => {
+    btn.classList.toggle('active', btn.getAttribute('onclick')?.includes('setResRange(' + days + ')'));
+  });
+  if (days !== -1) drawResChart();
+}
+
+function applyResCustom() {
+  const desde = document.getElementById('res-desde').value;
+  const hasta = document.getElementById('res-hasta').value;
+  if (desde && hasta) drawResChart();
+}
+
+function getResSlice() {
+  if (!resData.length) return [];
+  if (resRangeDays === -1) {
+    // custom range
+    const desde = document.getElementById('res-desde').value;
+    const hasta = document.getElementById('res-hasta').value;
+    if (!desde || !hasta) return resData.slice(-365);
+    return resData.filter(d => d.d >= desde && d.d <= hasta);
+  }
+  if (resRangeDays === 0) return resData;
+  return resData.slice(-resRangeDays);
+}
+
+function drawResChart() {
+  const slice = getResSlice();
+  if (!slice.length) return;
+
+  // Label período
+  const first = slice[0], last = slice[slice.length-1];
+  const d1 = first.v, dN = last.v;
+  const pct = ((dN - d1) / d1 * 100);
+  document.getElementById('res-periodo-label').textContent =
+    first.d + ' → ' + last.d + ' · ' +
+    sign(pct) + pct.toFixed(1) + '% · USD ' + sign(dN-d1) + fmtM(dN-d1) + 'M';
+
+  const labels = slice.map(d => {
+    const parts = d.d.split('-');
+    return parts[2] + '/' + parts[1] + '/' + parts[0].slice(2);
+  });
+  const values = slice.map(d => d.v);
+  const color  = (dN - d1) >= 0 ? '#22d65f' : '#f05050';
+  const dimClr = (dN - d1) >= 0 ? 'rgba(34,214,95,0.08)' : 'rgba(240,80,80,0.08)';
+
+  if (resChart) resChart.destroy();
+  const ctx = document.getElementById('resChart').getContext('2d');
+  resChart = new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels,
+      datasets: [{
+        label: 'Reservas Brutas (MMUSD)',
+        data: values,
+        borderColor: color,
+        backgroundColor: dimClr,
+        borderWidth: 2,
+        pointRadius: slice.length > 200 ? 0 : (slice.length > 60 ? 0 : 2),
+        pointHoverRadius: 5,
+        pointBackgroundColor: color,
+        fill: true,
+        tension: 0.25,
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      interaction: { mode: 'index', intersect: false },
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          backgroundColor: '#181b22',
+          borderColor: '#2a2f42',
+          borderWidth: 1,
+          titleColor: '#7a7f96',
+          bodyColor: '#dde0ea',
+          bodyFont: { family: 'IBM Plex Mono', size: 12 },
+          titleFont: { family: 'IBM Plex Mono', size: 11 },
+          callbacks: {
+            label: ctx => 'USD ' + fmtM(ctx.parsed.y) + 'M'
+          }
+        }
+      },
+      scales: {
+        x: {
+          ticks: {
+            color: '#44485c',
+            font: { family: 'IBM Plex Mono', size: 10 },
+            maxTicksLimit: 10,
+            maxRotation: 0,
+          },
+          grid: { color: 'rgba(30,34,48,0.8)' }
+        },
+        y: {
+          ticks: {
+            color: '#44485c',
+            font: { family: 'IBM Plex Mono', size: 10 },
+            callback: v => 'USD ' + fmtB(v)
+          },
+          grid: { color: 'rgba(30,34,48,0.8)' }
+        }
+      }
+    }
+  });
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// DEUDA — CHIP TOGGLES
+// ═══════════════════════════════════════════════════════════════════
+function buildChips() {
+  const wrap = document.getElementById('acreedor-chips');
+  wrap.innerHTML = DEUDA_DATA.acreedores.map(a => `
+    <span class="toggle-chip on" data-id="${a.id}" onclick="toggleAcreedor('${a.id}')">
+      <span class="chip-dot" style="background:${a.color}"></span>${a.nombre}
+    </span>
+  `).join('');
+}
+
+function toggleAcreedor(id) {
+  if (activeAcreedores.has(id)) {
+    activeAcreedores.delete(id);
+  } else {
+    activeAcreedores.add(id);
+  }
+  document.querySelectorAll('.toggle-chip').forEach(chip => {
+    const cid = chip.dataset.id;
+    chip.classList.toggle('on',  activeAcreedores.has(cid));
+    chip.classList.toggle('off', !activeAcreedores.has(cid));
+  });
+  drawDeudaChart();
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// DEUDA — VISTA
+// ═══════════════════════════════════════════════════════════════════
+function setDeudaView(view) {
+  deudaView = view;
+  document.querySelectorAll('.chart-card:nth-of-type(2) .range-tab').forEach(btn => {
+    const btnView = btn.getAttribute('onclick')?.match(/'(\w+)'/)?.[1];
+    btn.classList.toggle('active', btnView === view);
+  });
+  drawDeudaChart();
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// DEUDA — CHART
+// ═══════════════════════════════════════════════════════════════════
+function drawDeudaChart() {
+  const años    = DEUDA_DATA.años;
+  const key     = deudaView === 'capital' ? 'capital' : 'total';
+
+  // filtrar solo FMI si corresponde
+  const acreedores = deudaView === 'fmi'
+    ? DEUDA_DATA.acreedores.filter(a => a.id === 'fmi')
+    : DEUDA_DATA.acreedores.filter(a => activeAcreedores.has(a.id));
+
+  const datasets = acreedores.map(a => ({
+    label: a.nombre,
+    data: a[key],
+    backgroundColor: a.color,
+    borderRadius: 4,
+    borderSkipped: false,
+    borderWidth: 0,
+  }));
+
+  if (deudaChart) deudaChart.destroy();
+  const ctx = document.getElementById('deudaChart').getContext('2d');
+  deudaChart = new Chart(ctx, {
+    type: 'bar',
+    data: { labels: años.map(String), datasets },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      interaction: { mode: 'index', intersect: false },
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          backgroundColor: '#181b22',
+          borderColor: '#2a2f42',
+          borderWidth: 1,
+          titleColor: '#7a7f96',
+          bodyColor: '#dde0ea',
+          bodyFont: { family: 'IBM Plex Mono', size: 12 },
+          titleFont: { family: 'IBM Plex Mono', size: 11 },
+          callbacks: {
+            label: ctx => `${ctx.dataset.label}: USD ${fmtM(ctx.parsed.y)}M`,
+            footer: items => {
+              const total = items.reduce((s,i) => s + i.parsed.y, 0);
+              return 'Total: USD ' + fmtM(total) + 'M';
+            }
+          },
+          footerColor: '#dde0ea',
+          footerFont: { family: 'IBM Plex Mono', size: 12, weight: 'bold' },
+        }
+      },
+      scales: {
+        x: {
+          stacked: true,
+          ticks: { color: '#44485c', font: { family: 'IBM Plex Mono', size: 11 } },
+          grid: { display: false }
+        },
+        y: {
+          stacked: true,
+          ticks: {
+            color: '#44485c',
+            font: { family: 'IBM Plex Mono', size: 10 },
+            callback: v => 'USD ' + fmtB(v)
+          },
+          grid: { color: 'rgba(30,34,48,0.8)' }
+        }
+      }
+    }
+  });
+
+  // Leyenda manual
+  const legend = document.getElementById('deuda-legend');
+  legend.innerHTML = acreedores.map(a =>
+    `<div class="legend-item">
+      <div class="legend-dot" style="background:${a.color}"></div>
+      ${a.nombre}
+    </div>`
+  ).join('');
+
+  // Tabla
+  renderDeudaTable(acreedores, key);
+}
+
+function renderDeudaTable(acreedores, key) {
+  const años = DEUDA_DATA.años;
+  const table = document.getElementById('deudaTable');
+
+  // Header
+  const th = '<thead><tr><th>Acreedor</th>' +
+    años.map(a => `<th>${a}</th>`).join('') +
+    '<th>Total</th></tr></thead>';
+
+  // Rows
+  const totalesPorAño = años.map((_, i) =>
+    acreedores.reduce((s, a) => s + (a[key][i] || 0), 0)
+  );
+  const rows = acreedores.map(a => {
+    const total = a[key].reduce((s,v) => s+v, 0);
+    const maxVal = Math.max(...a[key]);
+    return `<tr>
+      <td><span style="display:inline-block;width:8px;height:8px;border-radius:2px;background:${a.color};margin-right:8px;vertical-align:middle"></span>${a.nombre}</td>
+      ${años.map((_, i) => {
+        const v = a[key][i] || 0;
+        const pct = maxVal > 0 ? (v / maxVal * 60) : 0;
+        return `<td>
+          <div class="td-bar-wrap">
+            <span>${v > 0 ? fmtM(v) : '—'}</span>
+            ${v > 0 ? `<div class="td-bar" style="width:${pct}px;background:${a.color};opacity:0.6"></div>` : ''}
+          </div>
+        </td>`;
+      }).join('')}
+      <td class="td-total">${fmtM(total)}</td>
+    </tr>`;
+  }).join('');
+
+  // Fila total
+  const totalRow = `<tr class="highlight-row">
+    <td><strong>Total</strong></td>
+    ${totalesPorAño.map(t => `<td class="td-total">${fmtM(t)}</td>`).join('')}
+    <td class="td-total">${fmtM(totalesPorAño.reduce((s,v)=>s+v,0))}</td>
+  </tr>`;
+
+  table.innerHTML = th + '<tbody>' + rows + totalRow + '</tbody>';
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// COUNTDOWN
+// ═══════════════════════════════════════════════════════════════════
+const REFRESH_SEC = 300; // 5 min para reservas (no cambian tan seguido)
+let cd = REFRESH_SEC;
+
+function startCountdown() {
+  cd = REFRESH_SEC;
+  const bar = document.getElementById('refresh-bar');
+  const txt = document.getElementById('refresh-status');
+  clearInterval(window._cdTimer);
+  window._cdTimer = setInterval(() => {
+    cd--;
+    if (bar) bar.style.width = (cd / REFRESH_SEC * 100) + '%';
+    if (txt) txt.textContent = `Próx. actualización en ${cd}s`;
+    if (cd <= 0) clearInterval(window._cdTimer);
+  }, 1000);
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// INIT
+// ═══════════════════════════════════════════════════════════════════
+(function init() {
+  // Defaults custom date inputs
+  const hoy = new Date().toISOString().slice(0,10);
+  const hace1a = new Date();
+  hace1a.setFullYear(hace1a.getFullYear() - 1);
+  document.getElementById('res-desde').value = hace1a.toISOString().slice(0,10);
+  document.getElementById('res-hasta').value = hoy;
+
+  buildChips();
+  drawDeudaChart();
+
+  fetchReservas();
+  setInterval(fetchReservas, REFRESH_SEC * 1000);
+})();
+</script>
+
+</body>
+</html>
