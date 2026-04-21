@@ -881,6 +881,18 @@ document.getElementById('btn-clr-range').addEventListener('click',()=>{
 });
 
 // ── INIT ─────────────────────────────────────────────────
+// Leer parámetro ?tipo= de la URL para pre-seleccionar el tipo de dólar
+(function applyURLParam() {
+  const params = new URLSearchParams(window.location.search);
+  const tipoParam = params.get('tipo');
+  if (tipoParam && ['oficial','blue','mep','ccl'].includes(tipoParam)) {
+    currentTipo = tipoParam;
+    document.querySelectorAll('.tipo-tab').forEach(btn => {
+      btn.classList.toggle('active', btn.dataset.tipo === tipoParam);
+    });
+  }
+})();
+
 render();
 </script>
 
