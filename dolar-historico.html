@@ -13,7 +13,7 @@
       --bg: #0d0f14; --surface: #13161e; --surface2: #1a1e28; --border: #232736; --border2: #2d3245;
       --text: #e8eaf0; --text2: #8b90a4; --text3: #545870;
       --accent: #4ade80; --accent-dim: rgba(74,222,128,0.12);
-      --blue: #60a5fa; --orange: #fb923c; --purple: #a78bfa;
+      --blue: #60a5fa; --orange: #fb923c; --purple: #a78bfa; --teal: #2dd4bf;
       --red: #f87171; --green: #4ade80;
     }
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -83,6 +83,8 @@
     .tipo-tab[data-tipo="blue"].active    { background: var(--blue); }
     .tipo-tab[data-tipo="mep"].active     { background: var(--orange); }
     .tipo-tab[data-tipo="ccl"].active     { background: var(--purple); }
+    .tipo-tab[data-tipo="mayorista"] .dot { background: var(--teal); }
+    .tipo-tab[data-tipo="mayorista"].active { background: var(--teal); }
     .tipo-tab.active .dot { background: var(--bg); }
 
     /* SUMMARY CARDS */
@@ -199,6 +201,7 @@
     }
     .src-lbl.oficial{color:var(--accent)} .src-lbl.blue{color:var(--blue)}
     .src-lbl.mep{color:var(--orange)}     .src-lbl.ccl{color:var(--purple)}
+    .src-lbl.mayorista{color:var(--teal)}
     .src-row { display:flex; justify-content:space-between; align-items:center; margin-bottom:3px; }
     .src-row:last-child { margin-bottom:0; }
     .src-key { font-family:'IBM Plex Mono',monospace; font-size:.65rem; color:var(--text3); }
@@ -224,6 +227,7 @@
     .bb { background:rgba(96,165,250,.15); color:var(--blue); }
     .bm { background:rgba(251,146,60,.15); color:var(--orange); }
     .bc { background:rgba(167,139,250,.15); color:var(--purple); }
+    .bt { background:rgba(45,212,191,.15); color:var(--teal); }
     .no-results { padding:20px; text-align:center; font-family:'IBM Plex Mono',monospace; font-size:.8rem; color:var(--text3); }
 
     /* TABLE */
@@ -310,6 +314,7 @@
     .var-card[data-tipo="blue"]    .var-card-label { color:var(--blue); }
     .var-card[data-tipo="mep"]     .var-card-label { color:var(--orange); }
     .var-card[data-tipo="ccl"]     .var-card-label { color:var(--purple); }
+    .var-card[data-tipo="mayorista"] .var-card-label { color:var(--teal); }
     .var-pct { font-family:'IBM Plex Mono',monospace; font-size:1.3rem; font-weight:700; line-height:1; margin-bottom:5px; }
     .var-pct.pos { color:var(--accent); }
     .var-pct.neg { color:var(--red); }
@@ -389,6 +394,7 @@
     <button class="tipo-tab" data-tipo="blue"><span class="dot"></span>Blue</button>
     <button class="tipo-tab" data-tipo="mep"><span class="dot"></span>MEP</button>
     <button class="tipo-tab" data-tipo="ccl"><span class="dot"></span>CCL</button>
+    <button class="tipo-tab" data-tipo="mayorista"><span class="dot"></span>Mayorista</button>
   </div>
 
   <!-- SUMMARY -->
@@ -415,10 +421,13 @@
     <div class="chart-toolbar">
       <span class="chart-title" id="chart-title">DÓLAR OFICIAL — VENTA</span>
       <div class="range-tabs">
+        <button class="range-tab" data-range="1S">1S</button>
         <button class="range-tab" data-range="1M">1M</button>
         <button class="range-tab" data-range="3M">3M</button>
         <button class="range-tab" data-range="6M">6M</button>
         <button class="range-tab active" data-range="1A">1A</button>
+        <button class="range-tab" data-range="YTD">YTD</button>
+        <button class="range-tab" data-range="2A">2A</button>
         <button class="range-tab" data-range="5A">5A</button>
         <button class="range-tab" data-range="TODO">Todo</button>
         <button class="range-tab" data-range="CUSTOM">📅 Custom</button>
@@ -517,10 +526,11 @@
 <script>
 // ── CONFIG ──────────────────────────────────────────────
 const TIPOS = {
-  oficial: { label:'Dólar Oficial', color:'#4ade80', key:'oficial' },
-  blue:    { label:'Dólar Blue',    color:'#60a5fa', key:'blue' },
-  mep:     { label:'Dólar MEP',     color:'#fb923c', key:'bolsa' },
-  ccl:     { label:'Dólar CCL',     color:'#a78bfa', key:'contadoconliqui' },
+  oficial:   { label:'Dólar Oficial',   color:'#4ade80', key:'oficial' },
+  blue:      { label:'Dólar Blue',      color:'#60a5fa', key:'blue' },
+  mep:       { label:'Dólar MEP',       color:'#fb923c', key:'bolsa' },
+  ccl:       { label:'Dólar CCL',       color:'#a78bfa', key:'contadoconliqui' },
+  mayorista: { label:'Dólar Mayorista', color:'#2dd4bf', key:'mayorista' },
 };
 const API_BASE = 'https://api.argentinadatos.com/v1/cotizaciones/dolares/';
 
@@ -567,10 +577,13 @@ function filterRange(data, range, from, to) {
     return data.filter(d => d.fecha.slice(0,10) >= from && d.fecha.slice(0,10) <= to);
   }
   const now = new Date(), cut = new Date(now);
-  if (range==='1M') cut.setMonth(now.getMonth()-1);
+  if (range==='1S') cut.setDate(now.getDate()-7);
+  else if (range==='1M') cut.setMonth(now.getMonth()-1);
   else if (range==='3M') cut.setMonth(now.getMonth()-3);
   else if (range==='6M') cut.setMonth(now.getMonth()-6);
   else if (range==='1A') cut.setFullYear(now.getFullYear()-1);
+  else if (range==='YTD') { cut.setMonth(0); cut.setDate(1); }
+  else if (range==='2A') cut.setFullYear(now.getFullYear()-2);
   else if (range==='5A') cut.setFullYear(now.getFullYear()-5);
   else return data;
   return data.filter(d => new Date(d.fecha) >= cut);
@@ -578,7 +591,7 @@ function filterRange(data, range, from, to) {
 
 // ── LIVE PATCH ────────────────────────────────────────────
 const LIVE_API = 'https://dolarapi.com/v1/dolares';
-const LIVE_CASA = { oficial:'oficial', blue:'blue', mep:'bolsa', ccl:'contadoconliqui' };
+const LIVE_CASA = { oficial:'oficial', blue:'blue', mep:'bolsa', ccl:'contadoconliqui', mayorista:'mayorista' };
 let _liveCache = null;
 
 async function fetchLive() {
@@ -765,7 +778,7 @@ function findClosest(data, dateStr) {
 }
 function renderExact(dateStr) {
   const el = document.getElementById('sresults');
-  const tipos = [{id:'oficial',l:'Oficial'},{id:'blue',l:'Blue'},{id:'mep',l:'MEP'},{id:'ccl',l:'CCL'}];
+  const tipos = [{id:'oficial',l:'Oficial'},{id:'blue',l:'Blue'},{id:'mep',l:'MEP'},{id:'ccl',l:'CCL'},{id:'mayorista',l:'Mayorista'}];
   const results = tipos.map(t=>({...t, r:findClosest(allData[t.id]||[], dateStr)}));
   if (!results.some(r=>r.r)) {
     el.innerHTML='<div class="no-results">No hay datos para esa fecha.</div>';
@@ -790,7 +803,7 @@ function renderExact(dateStr) {
 }
 function renderRange(from, to) {
   const el = document.getElementById('sresults');
-  const tipos = [{id:'oficial',l:'Oficial',b:'bo'},{id:'blue',l:'Blue',b:'bb'},{id:'mep',l:'MEP',b:'bm'},{id:'ccl',l:'CCL',b:'bc'}];
+  const tipos = [{id:'oficial',l:'Oficial',b:'bo'},{id:'blue',l:'Blue',b:'bb'},{id:'mep',l:'MEP',b:'bm'},{id:'ccl',l:'CCL',b:'bc'},{id:'mayorista',l:'Mayorista',b:'bt'}];
   const dateMap = new Map();
   for (const t of tipos) {
     for (const d of (allData[t.id]||[])) {
