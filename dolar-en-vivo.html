@@ -18,13 +18,14 @@
       --border2:   #2a2f42;
       --text:      #dde0ea;
       --text2:     #7a7f96;
-      --text3:     #44485c;
+      --text3:     #6b7090;
       --green:     #22d65f;
       --green-dim: rgba(34,214,95,0.1);
       --red:       #f05050;
       --red-dim:   rgba(240,80,80,0.1);
       --blue:      #4fa8f5;
       --orange:    #f5a623;
+      --teal:    #2dd4bf;
       --purple:    #9b7ef5;
       --yellow:    #f5d623;
     }
@@ -215,6 +216,7 @@
       gap: 10px;
       margin-bottom: 24px;
     }
+    @media (min-width: 700px) { .cards-grid { grid-template-columns: repeat(3, 1fr); } }
     @media (max-width: 520px) { .cards-grid { grid-template-columns: 1fr; } }
 
     .dolar-card {
@@ -238,6 +240,7 @@
     .dolar-card.blue::before    { background: var(--blue); }
     .dolar-card.mep::before     { background: var(--orange); }
     .dolar-card.ccl::before     { background: var(--purple); }
+    .dolar-card.mayorista::before { background: var(--teal, #2dd4bf); }
 
     .card-top {
       display: flex;
@@ -256,6 +259,7 @@
     .dolar-card.blue    .card-name { color: var(--blue); }
     .dolar-card.mep     .card-name { color: var(--orange); }
     .dolar-card.ccl     .card-name { color: var(--purple); }
+    .dolar-card.mayorista .card-name { color: var(--teal, #2dd4bf); }
 
     .card-badge {
       font-family: 'IBM Plex Mono', monospace;
@@ -307,7 +311,7 @@
       font-size: 0.55rem;
       font-weight: 600;
       letter-spacing: 0.06em;
-      color: rgba(255,255,255,0.18);
+      color: rgba(255,255,255,0.28);
       pointer-events: none;
       user-select: none;
       position: absolute;
@@ -418,7 +422,7 @@
     .section-title::after { content:''; flex:1; height:1px; background:var(--border); }
     .brecha-grid {
       display: grid;
-      grid-template-columns: repeat(3, 1fr);
+      grid-template-columns: repeat(4, 1fr);
       gap: 8px;
     }
     .brecha-item {
@@ -609,9 +613,9 @@
   <!-- CARDS -->
   <div class="cards-grid">
 
-    <div class="dolar-card oficial" id="card-oficial" onclick="abrirModal('oficial','Oficial BNA')">
+    <div class="dolar-card oficial" id="card-oficial" onclick="abrirModal('oficial','Minorista BNA')">
       <div class="card-top">
-        <div class="card-name">Oficial BNA</div>
+        <div class="card-name">Minorista BNA</div>
         <div class="card-badge badge-neu" id="badge-oficial">—</div>
       </div>
       <div class="card-prices">
@@ -700,6 +704,28 @@
       </div>
       <div class="card-watermark">canuto.ar</div>
     </div>
+    <div class="dolar-card mayorista" id="card-mayorista" onclick="abrirModal('mayorista','Mayorista')">
+      <div class="card-top">
+        <div class="card-name">Mayorista</div>
+        <div class="card-badge badge-neu" id="badge-mayorista">—</div>
+      </div>
+      <div class="card-prices">
+        <div>
+          <div class="price-label">Venta</div>
+          <div class="price-value" id="v-mayorista-venta"><span class="shimmer sv"></span></div>
+          <div class="price-ayer" id="ayer-mayorista"></div>
+        </div>
+        <div>
+          <div class="price-label">Compra</div>
+          <div class="price-value secondary" id="v-mayorista-compra"><span class="shimmer ss"></span></div>
+        </div>
+      </div>
+      <div class="card-meta">
+        <span class="card-source">Mercado mayorista</span>
+        <span class="card-time" id="t-mayorista">—</span>
+      </div>
+      <div class="card-watermark">canuto.ar</div>
+    </div>
 
   </div>
 
@@ -718,6 +744,10 @@
       <div class="brecha-item">
         <div class="brecha-label">CCL</div>
         <div class="brecha-value" id="brecha-ccl">—</div>
+      </div>
+      <div class="brecha-item">
+        <div class="brecha-label">Mayorista</div>
+        <div class="brecha-value" id="brecha-mayorista">—</div>
       </div>
     </div>
   </div>
@@ -790,7 +820,7 @@ function fmtTime(s) {
 
 // Cierre del día anterior desde ArgentinaDatos — base real para la variación diaria
 const HIST_API = 'https://api.argentinadatos.com/v1/cotizaciones/dolares/';
-const HIST_KEY  = { oficial:'oficial', blue:'blue', mep:'bolsa', ccl:'contadoconliqui' };
+const HIST_KEY  = { oficial:'oficial', blue:'blue', mep:'bolsa', ccl:'contadoconliqui', mayorista:'mayorista' };
 let _ayer = {};   // { oficial: 1000, blue: 1100, mep: 1050, ccl: 1060 }
 
 async function fetchAyer() {
@@ -849,8 +879,9 @@ let prev = {};
 
 // ── Fuentes de datos ─────────────────────────────────────────────────────────
 // Para cada tipo de dólar consultamos dos fuentes en paralelo y usamos la más reciente.
-// - Fuente A: dolarapi.com/v1/dolares       (scraping BNA / Ámbito para oficial/blue)
+// - Fuente A: dolarapi.com/v1/dolares       (scraping BNA / Ámbito para oficial/blue/mayorista)
 // - Fuente B: dolarapi.com/v1/ambito/dolares (Ámbito Financiero, más frecuente para MEP/CCL)
+// - Fuente C: bluelytics.com.ar/json          (fallback para oficial y blue)
 //
 // El "ganador" se elige comparando fechaActualizacion.
 // Si una fuente falla, usamos la otra sin importar la fecha.
@@ -883,6 +914,7 @@ function mergeFuentes(dataPrincipal, dataAmbito) {
     { tipo:'blue',    casaPrin:'blue',            casaAmb:'blue'            },
     { tipo:'mep',     casaPrin:'bolsa',           casaAmb:'bolsa'           },
     { tipo:'ccl',     casaPrin:'contadoconliqui', casaAmb:'contadoconliqui' },
+    { tipo:'mayorista', casaPrin:'mayorista',         casaAmb:'mayorista'         },
   ];
   return tiposConfig.map(({ tipo, casaPrin, casaAmb }) => {
     const dPrin  = dataPrincipal?.find(x => x.casa === casaPrin) || null;
@@ -893,7 +925,7 @@ function mergeFuentes(dataPrincipal, dataAmbito) {
 }
 
 function renderCard(id, merged) {
-  const casaMap = { oficial:'oficial', blue:'blue', mep:'bolsa', ccl:'contadoconliqui' };
+  const casaMap = { oficial:'oficial', blue:'blue', mep:'bolsa', ccl:'contadoconliqui', mayorista:'mayorista' };
   const d = merged.find(x => x.casa === casaMap[id] || x._tipo === id);
   if (!d) return;
   const vp = varPct(id, d.venta);
@@ -962,6 +994,7 @@ function renderBrechas(merged) {
     { id:'blue', tipo:'blue' },
     { id:'mep',  tipo:'mep'  },
     { id:'ccl',  tipo:'ccl'  },
+    { id:'mayorista', tipo:'mayorista' },
   ];
   for (const p of pairs) {
     const d  = merged.find(x => x._tipo === p.tipo);
@@ -977,15 +1010,29 @@ function renderBrechas(merged) {
 async function fetchData() {
   try {
     // Consultamos ambas fuentes en paralelo; si alguna falla la ignoramos
-    const [resPrin, resAmb] = await Promise.allSettled([
+    const [resPrin, resAmb, resBly] = await Promise.allSettled([
       fetch(API,        { cache: 'no-store' }).then(r => r.ok ? r.json() : null),
       fetch(API_AMBITO, { cache: 'no-store' }).then(r => r.ok ? r.json() : null),
+      fetch('https://api.bluelytics.com.ar/v2/latest', { cache: 'no-store' }).then(r => r.ok ? r.json() : null),
     ]);
 
     const dataPrincipal = resPrin.status === 'fulfilled' ? resPrin.value : null;
     const dataAmbito    = resAmb.status  === 'fulfilled' ? resAmb.value  : null;
+    const dataBlue      = resBly.status  === 'fulfilled' ? resBly.value  : null;
 
     if (!dataPrincipal && !dataAmbito) throw new Error('Ambas fuentes fallaron');
+
+    // Si dolarapi falla para oficial, completar con bluelytics
+    if (dataBlue && (!dataPrincipal || !dataPrincipal.find(x => x.casa === 'oficial'))) {
+      const blyOficial = {
+        casa: 'oficial',
+        compra: dataBlue.oficial?.value_buy,
+        venta:  dataBlue.oficial?.value_sell,
+        fechaActualizacion: dataBlue.last_update,
+      };
+      if (!dataPrincipal) dataPrincipal = [blyOficial];
+      else dataPrincipal.push(blyOficial);
+    }
 
     const merged = mergeFuentes(dataPrincipal, dataAmbito);
 
@@ -993,6 +1040,7 @@ async function fetchData() {
     renderCard('blue',    merged);
     renderCard('mep',     merged);
     renderCard('ccl',     merged);
+    renderCard('mayorista', merged);
     renderBrechas(merged);
     renderTicker(merged);
 
