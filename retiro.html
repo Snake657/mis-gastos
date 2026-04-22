@@ -148,15 +148,7 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:14px 2
 
 <div class="toast" id="toast"><span id="toast-msg"></span></div>
 
-<nav>
-  <a class="nav-logo" href="/index.html"><span>canuto</span>.ar</a>
-  <div class="nav-links">
-    <a href="/gastos.html">💳 Gastos</a>
-    <a href="/retiro.html" class="active">🏖️ Retiro</a>
-    <a href="/dolar-en-vivo.html">💵 Dólar en Vivo</a>
-    <a href="/dolar-historico.html">📈 Histórico</a>
-  </div>
-</nav>
+<div id="canuto-nav"></div>
 
 <div class="main">
   <div class="page-eyebrow">Planificación financiera</div>
@@ -315,19 +307,19 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:14px 2
 <div class="tools-nav">
   <div class="tools-nav-title">Otras herramientas en canuto.ar</div>
   <div class="tools-nav-grid">
-    <a class="tool-link" href="/gastos.html">
+    <a class="tool-link" href="/gastos/">
       <span class="tl-emoji">💳</span>
       <div><div class="tl-name">Mis Gastos</div><div class="tl-desc">Gastos fijos del mes</div></div>
     </a>
-    <a class="tool-link current" href="/retiro.html">
+    <a class="tool-link current" href="/retiro/">
       <span class="tl-emoji">🏖️</span>
       <div><div class="tl-name">Mi Retiro</div><div class="tl-desc">Estás acá</div></div>
     </a>
-    <a class="tool-link" href="/dolar-en-vivo.html">
+    <a class="tool-link" href="/dolar-en-vivo/">
       <span class="tl-emoji">💵</span>
       <div><div class="tl-name">Dólar en Vivo</div><div class="tl-desc">Cotización al instante</div></div>
     </a>
-    <a class="tool-link" href="/dolar-historico.html">
+    <a class="tool-link" href="/dolar-historico/">
       <span class="tl-emoji">📈</span>
       <div><div class="tl-name">Dólar Histórico</div><div class="tl-desc">Serie desde 2003</div></div>
     </a>
@@ -594,5 +586,7 @@ function calcCuando(){
   setTimeout(()=>p.scrollIntoView({behavior:'smooth',block:'start'}),50);
 }
 </script>
+
+<script src="/canuto-nav.js"></script>
 </body>
 </html>

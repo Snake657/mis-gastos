@@ -6,10 +6,13 @@
  */
 (function() {
   const TOOLS = [
-    { id: 'gastos',          label: 'Mis Gastos',       emoji: '💳', href: '/gastos/',          desc: 'Calendario de gastos fijos' },
-    { id: 'retiro',          label: 'Mi Retiro',         emoji: '🏖️', href: '/retiro/',           desc: 'Calculá tu retiro' },
-    { id: 'dolar-en-vivo',   label: 'Dólar en Vivo',    emoji: '💵', href: '/dolar-en-vivo/',    desc: 'Cotizaciones al instante' },
-    { id: 'dolar-historico', label: 'Dólar Histórico',  emoji: '📈', href: '/dolar-historico/',  desc: 'Historial desde 2003' },
+    { id: 'gastos',            label: 'Mis Gastos',       emoji: '💳', href: '/gastos/',            desc: 'Calendario de gastos fijos' },
+    { id: 'retiro',            label: 'Mi Retiro',        emoji: '🏖️', href: '/retiro/',            desc: 'Calculá tu retiro' },
+    { id: 'dolar-en-vivo',     label: 'Dólar en Vivo',   emoji: '💵', href: '/dolar-en-vivo/',     desc: 'Cotizaciones al instante' },
+    { id: 'dolar-historico',   label: 'Dólar Histórico', emoji: '📈', href: '/dolar-historico/',   desc: 'Historial desde 2003' },
+    { id: 'indicadores-macro', label: 'Macro',            emoji: '🏛️', href: '/indicadores-macro/', desc: 'Indicadores macroeconómicos' },
+    { id: 'inflaciona',        label: 'Inflacioná',       emoji: '🔥', href: '/inflaciona/',        desc: 'Calculadora de inflación' },
+    { id: 'reservas-y-deuda',  label: 'Reservas',         emoji: '🏦', href: '/reservas-y-deuda/', desc: 'Reservas y deuda del BCRA' },
   ];
 
   // Detectar página activa por path

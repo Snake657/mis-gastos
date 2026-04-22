@@ -558,15 +558,7 @@
 </head>
 <body>
 
-<nav>
-  <a class="nav-logo" href="/index.html"><span>canuto</span>.ar</a>
-  <div class="nav-links">
-    <a href="/gastos.html">💳 Gastos</a>
-    <a href="/retiro.html">🏖️ Retiro</a>
-    <a href="/dolar-en-vivo.html" class="active">💵 Dólar en Vivo</a>
-    <a href="/dolar-historico.html">📈 Histórico</a>
-  </div>
-</nav>
+<div id="canuto-nav"></div>
 
 <!-- TICKER -->
 <div class="ticker-band" aria-hidden="true">
@@ -594,7 +586,7 @@
       <div class="refresh-status" id="refresh-status">Cargando…</div>
       <div class="refresh-bar-wrap"><div class="refresh-bar" id="refresh-bar"></div></div>
       <div class="last-update" id="last-update">—</div>
-      <a class="hist-banner" href="/dolar-historico.html">
+      <a class="hist-banner" href="/dolar-historico/">
         <span class="hist-banner-icon">📈</span>
         <div class="hist-banner-body">
           <div class="hist-banner-title">Dólar Histórico</div>
@@ -756,19 +748,19 @@
   <div class="tools-nav">
     <div class="tools-nav-title">Otras herramientas en canuto.ar</div>
     <div class="tools-nav-grid">
-      <a class="tool-link" href="/gastos.html">
+      <a class="tool-link" href="/gastos/">
         <span class="tl-emoji">💳</span>
         <div><div class="tl-name">Mis Gastos</div><div class="tl-desc">Gastos fijos del mes</div></div>
       </a>
-      <a class="tool-link" href="/retiro.html">
+      <a class="tool-link" href="/retiro/">
         <span class="tl-emoji">🏖️</span>
         <div><div class="tl-name">Mi Retiro</div><div class="tl-desc">Calculá tu retiro</div></div>
       </a>
-      <a class="tool-link current" href="/dolar-en-vivo.html">
+      <a class="tool-link current" href="/dolar-en-vivo/">
         <span class="tl-emoji">💵</span>
         <div><div class="tl-name">Dólar en Vivo</div><div class="tl-desc">Estás acá</div></div>
       </a>
-      <a class="tool-link" href="/dolar-historico.html">
+      <a class="tool-link" href="/dolar-historico/">
         <span class="tl-emoji">📈</span>
         <div><div class="tl-name">Dólar Histórico</div><div class="tl-desc">Serie desde 2003</div></div>
       </a>
@@ -791,7 +783,7 @@
 </div>
 
 <footer>
-  <a href="/index.html">canuto.ar</a> · Herramientas financieras para Argentina 🇦🇷 ·
+  <a href="/">canuto.ar</a> · Herramientas financieras para Argentina 🇦🇷 ·
   Datos: <a href="https://dolarapi.com" target="_blank" rel="noopener">DolarApi.com</a>
 </footer>
 
@@ -1065,7 +1057,7 @@ function cerrarModal() {
   _modalTipo = null;
 }
 function irHistorico() {
-  if (_modalTipo) window.location.href = `/dolar-historico.html?tipo=${_modalTipo}`;
+  if (_modalTipo) window.location.href = `/dolar-historico/?tipo=${_modalTipo}`;
 }
 document.addEventListener('keydown', e => { if (e.key === 'Escape') cerrarModal(); });
 
@@ -1093,5 +1085,7 @@ fetchAyer().finally(() => {
   setInterval(() => { fetchData(); startCountdown(); }, REFRESH * 1000);
 });
 </script>
+
+<script src="/canuto-nav.js"></script>
 </body>
 </html>
