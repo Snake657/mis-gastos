@@ -712,7 +712,7 @@
 
   <!-- NOTA METODOLÓGICA -->
   <div class="nota">
-    <strong style="color:var(--text2)">Fuentes y metodología:</strong> Reservas brutas: <a href="https://api.estadisticasbcra.com" target="_blank">api.estadisticasbcra.com</a> (datos BCRA, actualizados con rezago de 1–2 días hábiles). Vencimientos: <a href="https://opc.gob.ar" target="_blank">OPC</a> · Secretaría de Finanzas · FMI MFSM. Los datos 2024–2026 son reportados; 2027–2032 son proyecciones basadas en informes de OPC y consultoras. Capital + intereses. Los vencimientos pueden variar por refinanciaciones, canjes y nuevos acuerdos. Esta herramienta es de carácter informativo y no constituye asesoría financiera.
+    <strong style="color:var(--text2)">Fuentes y metodología:</strong> Reservas brutas: <a href="https://datos.gob.ar/series/api" target="_blank">datos.gob.ar / BCRA</a> · Serie 92.2 — datos diarios en millones de USD, actualizados con rezago de 1–2 días hábiles. Vencimientos: <a href="https://opc.gob.ar" target="_blank">OPC</a> · Secretaría de Finanzas · FMI MFSM. Los datos 2024–2026 son reportados; 2027–2032 son proyecciones basadas en informes de OPC y consultoras. Capital + intereses. Los vencimientos pueden variar por refinanciaciones, canjes y nuevos acuerdos. Esta herramienta es de carácter informativo y no constituye asesoría financiera.
   </div>
 
 </main>
@@ -801,9 +801,16 @@ function parseDate(str) { return new Date(str + 'T12:00:00'); }
 // ═══════════════════════════════════════════════════════════════════
 async function fetchReservas() {
   try {
-    const res = await fetch('https://api.estadisticasbcra.com/reservas');
+    // Fuente: datos.gob.ar / BCRA — serie diaria de reservas internacionales
+    // Gratuita, sin API key. Último dato con rezago de 1-2 días hábiles.
+    const url = 'https://apis.datos.gob.ar/series/api/series/?ids=92.2_RESERVAS_IRES_0_0_32_40&limit=9000&format=json';
+    const res = await fetch(url, { cache: 'no-store' });
     if (!res.ok) throw new Error('HTTP ' + res.status);
-    resData = await res.json(); // [{d:'YYYY-MM-DD', v: número}]
+    const json = await res.json();
+    // La API devuelve [[fecha, valor], ...] — convertimos a [{d, v}]
+    resData = (json.data || [])
+      .filter(([, v]) => v !== null)
+      .map(([d, v]) => ({ d, v }));
     renderReservas();
     document.getElementById('res-loading').style.display = 'none';
     document.getElementById('resChart').style.display = 'block';
