@@ -1,26 +1,31 @@
 name: Actualizar datos reservas BCRA
-   on:
-     schedule:
-       - cron: '0 12 * * 1-5'
-     workflow_dispatch:
-   jobs:
-     update:
-       runs-on: ubuntu-latest
-       permissions:
-         contents: write
-       steps:
-         - uses: actions/checkout@v4
-         - uses: actions/setup-node@v4
-           with:
-             node-version: '20'
-         - name: Descargar datos de reservas
-           run: node fetch-reservas.js
-           env:
-             ESTADISTICASBCRA_TOKEN: ${{ secrets.ESTADISTICASBCRA_TOKEN }}
-         - name: Commit si hay cambios
-           run: |
-             git config user.name "github-actions[bot]"
-             git config user.email "github-actions[bot]@users.noreply.github.com"
-             git add reservas-y-deuda/data/reservas.json
-             git diff --staged --quiet || git commit -m "data: actualizar reservas BCRA $(date +%Y-%m-%d)"
-             git push
+
+on:
+  schedule:
+    - cron: '0 12 * * 1-5'
+  workflow_dispatch:
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Descargar datos de reservas
+        run: node fetch-reservas.js
+        env:
+          ESTADISTICASBCRA_TOKEN: ${{ secrets.ESTADISTICASBCRA_TOKEN }}
+
+      - name: Commit si hay cambios
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add reservas-y-deuda/data/reservas.json
+          git diff --staged --quiet || git commit -m "data: actualizar reservas BCRA $(date +%Y-%m-%d)"
+          git push
