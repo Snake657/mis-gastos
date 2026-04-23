@@ -1,0 +1,32 @@
+name: Migrar estructura de carpetas
+on:
+  workflow_dispatch:
+jobs:
+  migrate:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - name: Crear carpetas y mover archivos
+        run: |
+          for tool in gastos retiro dolar-en-vivo dolar-historico indicadores-macro inflaciona reservas-y-deuda; do
+            if [ -f "${tool}.html" ]; then
+              mkdir -p "${tool}"
+              mv "${tool}.html" "${tool}/index.html"
+            fi
+          done
+      - name: Limpiar obsoletos
+        run: rm -f landing.html migrate-folders.sh
+      - name: Commit
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -m "refactor: estructura de carpetas para URLs limpias"
+          git push
+      - name: Auto-eliminar workflow
+        run: |
+          git rm .github/workflows/migrate-structure.yml
+          git commit -m "chore: limpiar workflow"
+          git push
