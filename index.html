@@ -26,6 +26,12 @@
       --orange-dim:rgba(251,146,60,0.10);
       --purple:    #a78bfa;
       --purple-dim:rgba(167,139,250,0.10);
+      --fire:      #f97316;
+      --fire-dim:  rgba(249,115,22,0.10);
+      --teal:      #2dd4bf;
+      --teal-dim:  rgba(45,212,191,0.10);
+      --pink:      #ec4899;
+      --pink-dim:  rgba(236,72,153,0.10);
     }
 
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -157,11 +163,17 @@
     .tool-card.retiro::before    { background: var(--blue); }
     .tool-card.dolar-vivo::before { background: var(--orange); }
     .tool-card.dolar-hist::before { background: var(--purple); }
+    .tool-card.inflaciona::before { background: var(--fire); }
+    .tool-card.reservas::before   { background: var(--teal); }
+    .tool-card.macro::before      { background: var(--pink); }
 
     .tool-card:hover.gastos    { background: rgba(74,222,128,0.04); }
     .tool-card:hover.retiro    { background: rgba(96,165,250,0.04); }
     .tool-card:hover.dolar-vivo { background: rgba(251,146,60,0.04); }
     .tool-card:hover.dolar-hist { background: rgba(167,139,250,0.04); }
+    .tool-card:hover.inflaciona { background: rgba(249,115,22,0.04); }
+    .tool-card:hover.reservas   { background: rgba(45,212,191,0.04); }
+    .tool-card:hover.macro      { background: rgba(236,72,153,0.04); }
 
     .tool-emoji {
       font-size: 1.9rem;
@@ -196,6 +208,9 @@
     .tool-card:hover.retiro    .tool-cta { color: var(--blue); }
     .tool-card:hover.dolar-vivo .tool-cta { color: var(--orange); }
     .tool-card:hover.dolar-hist .tool-cta { color: var(--purple); }
+    .tool-card:hover.inflaciona .tool-cta { color: var(--fire); }
+    .tool-card:hover.reservas   .tool-cta { color: var(--teal); }
+    .tool-card:hover.macro      .tool-cta { color: var(--pink); }
 
     /* ── DESCRIPCIONES ── */
     .desc-section {
@@ -253,6 +268,9 @@
     .desc-name.retiro    { color: var(--blue); }
     .desc-name.dolar-vivo { color: var(--orange); }
     .desc-name.dolar-hist { color: var(--purple); }
+    .desc-name.inflaciona { color: var(--fire); }
+    .desc-name.reservas   { color: var(--teal); }
+    .desc-name.macro      { color: var(--pink); }
     .desc-link {
       font-family: 'IBM Plex Mono', monospace;
       font-size: 0.72rem;
@@ -324,7 +342,7 @@
 
 <!-- NAV -->
 <nav>
-  <a class="nav-logo" href="/"><span>canuto</span>.ar</a>
+  <a class="nav-logo" href="/index.html"><span>canuto</span>.ar</a>
   <span class="nav-tag">herramientas financieras · Argentina</span>
 </nav>
 
@@ -338,32 +356,53 @@
 <div class="tools-section">
   <div class="tools-grid">
 
-    <a class="tool-card dolar-vivo" href="/dolar-en-vivo/">
+    <a class="tool-card dolar-vivo" href="/dolar-en-vivo.html">
       <div class="tool-emoji">💵</div>
       <div class="tool-name">Dólar en Vivo</div>
       <p class="tool-desc">Oficial, Blue, MEP y CCL en tiempo real. Variación diaria y brecha vs oficial. Se actualiza cada 60 segundos automáticamente.</p>
       <span class="tool-cta">Ver cotizaciones</span>
     </a>
 
-    <a class="tool-card dolar-hist" href="/dolar-historico/">
+    <a class="tool-card dolar-hist" href="/dolar-historico.html">
       <div class="tool-emoji">📈</div>
       <div class="tool-name">Dólar Histórico</div>
       <p class="tool-desc">Cotización de cualquier fecha desde 2003. Gráfico interactivo con rango personalizable y variación del período.</p>
       <span class="tool-cta">Ver historial</span>
     </a>
 
-    <a class="tool-card gastos" href="/gastos/">
+    <a class="tool-card inflaciona" href="/inflaciona.html">
+      <div class="tool-emoji">🔥</div>
+      <div class="tool-name">Inflacioná</div>
+      <p class="tool-desc">¿Cuánto valía antes? Ingresá un monto y una fecha pasada y te decimos a cuánto equivale hoy, ajustado por IPC oficial del INDEC.</p>
+      <span class="tool-cta">Calcular inflación</span>
+    </a>
+
+    <a class="tool-card gastos" href="/gastos.html">
       <div class="tool-emoji">💳</div>
       <div class="tool-name">Mis Gastos</div>
       <p class="tool-desc">Calendario de gastos fijos del mes. Vencimientos, recurrencias, pagos en efectivo y tarjeta, balance contra tus ingresos.</p>
       <span class="tool-cta">Ir a Mis Gastos</span>
     </a>
 
-    <a class="tool-card retiro" href="/retiro/">
+    <a class="tool-card retiro" href="/retiro.html">
       <div class="tool-emoji">🏖️</div>
       <div class="tool-name">Mi Retiro</div>
       <p class="tool-desc">Calculá cuándo podés retirarte. Ingresá tus ahorros, gastos proyectados y rendimiento esperado — el resultado en segundos.</p>
       <span class="tool-cta">Calcular mi retiro</span>
+    </a>
+
+    <a class="tool-card reservas" href="/reservas-y-deuda.html">
+      <div class="tool-emoji">🏦</div>
+      <div class="tool-name">Reservas &amp; Deuda</div>
+      <p class="tool-desc">Reservas internacionales del BCRA actualizadas y perfil de vencimientos de deuda externa argentina hasta 2032.</p>
+      <span class="tool-cta">Ver reservas y deuda</span>
+    </a>
+
+    <a class="tool-card macro" href="/indicadores-macro.html">
+      <div class="tool-emoji">🏛️</div>
+      <div class="tool-name">Indicadores Macro</div>
+      <p class="tool-desc">Inflación, reservas, riesgo país, desocupación, pobreza y tasa de política monetaria — todos los números de la macro en un tablero.</p>
+      <span class="tool-cta">Ver indicadores</span>
     </a>
 
   </div>
@@ -381,7 +420,7 @@
       <div class="desc-left">
         <div class="desc-icon">💵</div>
         <div class="desc-name dolar-vivo">Dólar en Vivo</div>
-        <a class="desc-link" href="/dolar-en-vivo/">Ver cotizaciones →</a>
+        <a class="desc-link" href="/dolar-en-vivo.html">Ver cotizaciones →</a>
       </div>
       <div class="desc-right">
         <h3>Todas las cotizaciones del dólar, actualizadas en tiempo real</h3>
@@ -476,7 +515,7 @@
       <div class="desc-left">
         <div class="desc-icon">📈</div>
         <div class="desc-name dolar-hist">Dólar Histórico</div>
-        <a class="desc-link" href="/dolar-historico/">Ver historial →</a>
+        <a class="desc-link" href="/dolar-historico.html">Ver historial →</a>
       </div>
       <div class="desc-right">
         <h3>La historia completa del dólar en Argentina desde 2003</h3>
@@ -570,7 +609,7 @@
       <div class="desc-left">
         <div class="desc-icon">💳</div>
         <div class="desc-name gastos">Mis Gastos</div>
-        <a class="desc-link" href="/gastos/">Ir a Mis Gastos →</a>
+        <a class="desc-link" href="/gastos.html">Ir a Mis Gastos →</a>
       </div>
       <div class="desc-right">
         <h3>Un calendario de gastos fijos pensado para Argentina</h3>
@@ -652,7 +691,7 @@
       <div class="desc-left">
         <div class="desc-icon">🏖️</div>
         <div class="desc-name retiro">Mi Retiro</div>
-        <a class="desc-link" href="/retiro/">Calcular mi retiro →</a>
+        <a class="desc-link" href="/retiro.html">Calcular mi retiro →</a>
       </div>
       <div class="desc-right">
         <h3>Calculá cuándo podés dejar de trabajar</h3>
@@ -729,11 +768,275 @@
       </div>
     </div>
 
+    <!-- INFLACIONÁ -->
+    <div class="desc-item">
+      <div class="desc-left">
+        <div class="desc-icon">🔥</div>
+        <div class="desc-name inflaciona">Inflacioná</div>
+        <a class="desc-link" href="/inflaciona.html">Calcular inflación →</a>
+      </div>
+      <div class="desc-right">
+        <h3>Traducí precios del pasado al valor de hoy, con IPC INDEC</h3>
+        <p>Ingresás un monto, el mes y año en el que costaba eso, y hasta qué mes querés actualizarlo. Calculamos el factor de ajuste con el IPC Nivel General del INDEC y te mostramos el precio equivalente de hoy, la inflación acumulada del período y cuántas veces se multiplicó el valor original.</p>
+        <p>Debajo ves un gráfico con la evolución mes a mes y una tabla con la variación anual, para que se vea cómo se fue comiendo el poder adquisitivo. Los datos vienen directamente de datos.gob.ar.</p>
+        <div class="desc-tags">
+          <span class="desc-tag">IPC oficial INDEC</span>
+          <span class="desc-tag">Mes origen y destino</span>
+          <span class="desc-tag">Inflación acumulada</span>
+          <span class="desc-tag">Gráfico mensual</span>
+          <span class="desc-tag">Evolución anual</span>
+        </div>
+      </div>
+      <!-- PREVIEW: Inflacioná -->
+      <div class="desc-preview">
+        <svg viewBox="0 0 320 220" xmlns="http://www.w3.org/2000/svg" font-family="'IBM Plex Mono', monospace">
+          <rect width="320" height="220" fill="#13161e"/>
+          <!-- nav -->
+          <rect width="320" height="28" fill="#0d0f14"/>
+          <text x="12" y="18" font-size="8" font-weight="700" fill="#e8eaf0" letter-spacing="-0.5">canuto<tspan fill="#4ade80">.ar</tspan></text>
+          <text x="210" y="18" font-size="7" fill="#545870">🔥 Inflacioná</text>
+          <!-- calc inputs -->
+          <rect x="8" y="34" width="304" height="36" rx="7" fill="#1a1e28" stroke="#232736" stroke-width="0.7"/>
+          <text x="14" y="44" font-size="5" fill="#545870" letter-spacing="0.5">MONTO ORIGINAL</text>
+          <rect x="14" y="46" width="84" height="18" rx="4" fill="#232736"/>
+          <text x="18" y="58" font-size="7" fill="#545870">$</text>
+          <text x="26" y="58" font-size="8" font-weight="700" fill="#e8eaf0">1.200</text>
+          <text x="106" y="44" font-size="5" fill="#545870" letter-spacing="0.5">DESDE</text>
+          <rect x="106" y="46" width="72" height="18" rx="4" fill="#232736"/>
+          <text x="112" y="58" font-size="7" font-weight="700" fill="#e8eaf0">ene 2022</text>
+          <text x="186" y="44" font-size="5" fill="#545870" letter-spacing="0.5">HASTA</text>
+          <rect x="186" y="46" width="68" height="18" rx="4" fill="#232736"/>
+          <text x="192" y="58" font-size="7" font-weight="700" fill="#e8eaf0">mar 2026</text>
+          <rect x="262" y="46" width="44" height="18" rx="4" fill="#f97316"/>
+          <text x="284" y="58" font-size="7" font-weight="700" fill="#0d0f14" text-anchor="middle">Calcular</text>
+          <!-- resultado stats -->
+          <rect x="8" y="76" width="304" height="46" rx="7" fill="#1a1e28" stroke="#f97316" stroke-width="1"/>
+          <rect x="8" y="76" width="304" height="2" rx="7" fill="#f97316"/>
+          <text x="16" y="88" font-size="5" fill="#545870" letter-spacing="0.5">ORIGINAL</text>
+          <text x="16" y="102" font-size="10" font-weight="700" fill="#e8eaf0">$ 1.200</text>
+          <text x="16" y="112" font-size="5" fill="#545870">ene 2022</text>
+          <text x="106" y="88" font-size="5" fill="#545870" letter-spacing="0.5">EQUIVALE A</text>
+          <text x="106" y="102" font-size="10" font-weight="700" fill="#f97316">$ 15.800</text>
+          <text x="106" y="112" font-size="5" fill="#545870">mar 2026</text>
+          <text x="206" y="88" font-size="5" fill="#545870" letter-spacing="0.5">INFLACIÓN ACUM.</text>
+          <text x="206" y="102" font-size="10" font-weight="700" fill="#f97316">+1.217%</text>
+          <text x="206" y="112" font-size="5" fill="#545870">50 meses · 13x</text>
+          <!-- chart -->
+          <rect x="8" y="128" width="304" height="84" rx="7" fill="#1a1e28" stroke="#232736" stroke-width="0.7"/>
+          <text x="14" y="139" font-size="5" fill="#545870" letter-spacing="0.5">EVOLUCIÓN MENSUAL</text>
+          <!-- grid -->
+          <line x1="14" y1="154" x2="306" y2="154" stroke="#232736" stroke-width="0.4"/>
+          <line x1="14" y1="174" x2="306" y2="174" stroke="#232736" stroke-width="0.4"/>
+          <line x1="14" y1="194" x2="306" y2="194" stroke="#232736" stroke-width="0.4"/>
+          <!-- x labels -->
+          <text x="18"  y="206" font-size="4.5" fill="#545870">2022</text>
+          <text x="92"  y="206" font-size="4.5" fill="#545870">2023</text>
+          <text x="166" y="206" font-size="4.5" fill="#545870">2024</text>
+          <text x="240" y="206" font-size="4.5" fill="#545870">2025</text>
+          <!-- curva inflación (exponencial acelerada) -->
+          <defs>
+            <linearGradient id="gFire" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stop-color="#f97316" stop-opacity="0.3"/>
+              <stop offset="100%" stop-color="#f97316" stop-opacity="0"/>
+            </linearGradient>
+          </defs>
+          <path d="M14,195 C40,193 70,190 100,185 C130,178 150,170 170,155 C185,145 195,138 205,130 C215,124 225,120 240,117 C255,114 275,112 300,110" fill="none" stroke="#f97316" stroke-width="1.6" stroke-linecap="round"/>
+          <path d="M14,195 C40,193 70,190 100,185 C130,178 150,170 170,155 C185,145 195,138 205,130 C215,124 225,120 240,117 C255,114 275,112 300,110 L300,200 L14,200 Z" fill="url(#gFire)"/>
+          <circle cx="300" cy="110" r="2.5" fill="#f97316"/>
+        </svg>
+      </div>
+    </div>
+
+    <!-- RESERVAS Y DEUDA -->
+    <div class="desc-item">
+      <div class="desc-left">
+        <div class="desc-icon">🏦</div>
+        <div class="desc-name reservas">Reservas &amp; Deuda</div>
+        <a class="desc-link" href="/reservas-y-deuda.html">Ver reservas y deuda →</a>
+      </div>
+      <div class="desc-right">
+        <h3>Las finanzas soberanas argentinas, de un vistazo</h3>
+        <p>Arriba se muestra el stock de reservas internacionales del BCRA actualizado diariamente, con su evolución reciente. Abajo, el perfil de vencimientos de la deuda externa pública: cuánto hay que pagar cada año hasta 2032, separado por tipo de acreedor (FMI, bonistas privados, organismos multilaterales).</p>
+        <p>Las fuentes son BCRA, Secretaría de Finanzas, OPC y FMI. Los vencimientos de 2027 en adelante son estimaciones basadas en los perfiles de amortización vigentes.</p>
+        <div class="desc-tags">
+          <span class="desc-tag">Reservas BCRA</span>
+          <span class="desc-tag">Vencimientos 2025-2032</span>
+          <span class="desc-tag">FMI y bonistas</span>
+          <span class="desc-tag">Actualización diaria</span>
+          <span class="desc-tag">Fuentes oficiales</span>
+        </div>
+      </div>
+      <!-- PREVIEW: Reservas & Deuda -->
+      <div class="desc-preview">
+        <svg viewBox="0 0 320 220" xmlns="http://www.w3.org/2000/svg" font-family="'IBM Plex Mono', monospace">
+          <rect width="320" height="220" fill="#13161e"/>
+          <!-- nav -->
+          <rect width="320" height="28" fill="#0d0f14"/>
+          <text x="12" y="18" font-size="8" font-weight="700" fill="#e8eaf0" letter-spacing="-0.5">canuto<tspan fill="#4ade80">.ar</tspan></text>
+          <text x="190" y="18" font-size="7" fill="#545870">🏦 Reservas &amp; Deuda</text>
+          <!-- reservas card -->
+          <rect x="8" y="34" width="304" height="60" rx="7" fill="#1a1e28" stroke="#2dd4bf" stroke-width="1"/>
+          <rect x="8" y="34" width="304" height="2" rx="7" fill="#2dd4bf"/>
+          <text x="16" y="46" font-size="5" fill="#2dd4bf" letter-spacing="0.5" font-weight="700">RESERVAS BRUTAS BCRA</text>
+          <text x="16" y="66" font-size="17" font-weight="700" fill="#e8eaf0" letter-spacing="-1">USD 41.285M</text>
+          <text x="16" y="78" font-size="6" fill="#8b90a4">+USD 1.240M vs hace 30 días</text>
+          <text x="16" y="88" font-size="5" fill="#545870">Fuente: BCRA · act. 21/04</text>
+          <!-- mini chart reservas -->
+          <defs>
+            <linearGradient id="gTeal" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stop-color="#2dd4bf" stop-opacity="0.35"/>
+              <stop offset="100%" stop-color="#2dd4bf" stop-opacity="0"/>
+            </linearGradient>
+          </defs>
+          <path d="M200,80 L210,78 L220,76 L230,74 L240,70 L250,68 L260,65 L270,62 L280,58 L290,54 L300,50" fill="none" stroke="#2dd4bf" stroke-width="1.5" stroke-linecap="round"/>
+          <path d="M200,80 L210,78 L220,76 L230,74 L240,70 L250,68 L260,65 L270,62 L280,58 L290,54 L300,50 L300,88 L200,88 Z" fill="url(#gTeal)"/>
+          <circle cx="300" cy="50" r="2.5" fill="#2dd4bf"/>
+          <!-- vencimientos title -->
+          <text x="8" y="108" font-size="5.5" fill="#545870" letter-spacing="0.5">PERFIL DE VENCIMIENTOS · USD MM</text>
+          <!-- vencimientos chart (bars stacked) -->
+          <rect x="8" y="114" width="304" height="90" rx="7" fill="#1a1e28" stroke="#232736" stroke-width="0.7"/>
+          <!-- y axis labels -->
+          <text x="12" y="124" font-size="4.5" fill="#545870">25k</text>
+          <text x="12" y="148" font-size="4.5" fill="#545870">15k</text>
+          <text x="12" y="172" font-size="4.5" fill="#545870">5k</text>
+          <!-- bars: 2025-2032 -->
+          <!-- 2025 -->
+          <rect x="32"  y="158" width="26" height="34" fill="#4fa8f5"/>
+          <rect x="32"  y="146" width="26" height="12" fill="#f5a623"/>
+          <rect x="32"  y="138" width="26" height="8"  fill="#9b7ef5"/>
+          <!-- 2026 -->
+          <rect x="66"  y="152" width="26" height="40" fill="#4fa8f5"/>
+          <rect x="66"  y="132" width="26" height="20" fill="#f5a623"/>
+          <rect x="66"  y="126" width="26" height="6"  fill="#9b7ef5"/>
+          <!-- 2027 -->
+          <rect x="100" y="160" width="26" height="32" fill="#4fa8f5"/>
+          <rect x="100" y="142" width="26" height="18" fill="#f5a623"/>
+          <rect x="100" y="134" width="26" height="8"  fill="#9b7ef5"/>
+          <!-- 2028 -->
+          <rect x="134" y="164" width="26" height="28" fill="#4fa8f5"/>
+          <rect x="134" y="150" width="26" height="14" fill="#f5a623"/>
+          <rect x="134" y="144" width="26" height="6"  fill="#9b7ef5"/>
+          <!-- 2029 -->
+          <rect x="168" y="168" width="26" height="24" fill="#4fa8f5"/>
+          <rect x="168" y="156" width="26" height="12" fill="#f5a623"/>
+          <!-- 2030 -->
+          <rect x="202" y="172" width="26" height="20" fill="#4fa8f5"/>
+          <rect x="202" y="162" width="26" height="10" fill="#f5a623"/>
+          <!-- 2031 -->
+          <rect x="236" y="176" width="26" height="16" fill="#4fa8f5"/>
+          <rect x="236" y="168" width="26" height="8"  fill="#f5a623"/>
+          <!-- 2032 -->
+          <rect x="270" y="180" width="26" height="12" fill="#4fa8f5"/>
+          <!-- x labels -->
+          <text x="45"  y="200" font-size="4.5" fill="#545870" text-anchor="middle">'25</text>
+          <text x="79"  y="200" font-size="4.5" fill="#545870" text-anchor="middle">'26</text>
+          <text x="113" y="200" font-size="4.5" fill="#545870" text-anchor="middle">'27</text>
+          <text x="147" y="200" font-size="4.5" fill="#545870" text-anchor="middle">'28</text>
+          <text x="181" y="200" font-size="4.5" fill="#545870" text-anchor="middle">'29</text>
+          <text x="215" y="200" font-size="4.5" fill="#545870" text-anchor="middle">'30</text>
+          <text x="249" y="200" font-size="4.5" fill="#545870" text-anchor="middle">'31</text>
+          <text x="283" y="200" font-size="4.5" fill="#545870" text-anchor="middle">'32</text>
+          <!-- legend -->
+          <rect x="208" y="117" width="6" height="4" fill="#4fa8f5"/>
+          <text x="217" y="121" font-size="4" fill="#8b90a4">Bonistas</text>
+          <rect x="240" y="117" width="6" height="4" fill="#f5a623"/>
+          <text x="249" y="121" font-size="4" fill="#8b90a4">FMI</text>
+          <rect x="265" y="117" width="6" height="4" fill="#9b7ef5"/>
+          <text x="274" y="121" font-size="4" fill="#8b90a4">Multi.</text>
+        </svg>
+      </div>
+    </div>
+
+    <!-- INDICADORES MACRO -->
+    <div class="desc-item">
+      <div class="desc-left">
+        <div class="desc-icon">🏛️</div>
+        <div class="desc-name macro">Indicadores Macro</div>
+        <a class="desc-link" href="/indicadores-macro.html">Ver indicadores →</a>
+      </div>
+      <div class="desc-right">
+        <h3>Los principales números de la macro argentina en un solo lugar</h3>
+        <p>Tablero con los indicadores que más se miran en Argentina: inflación mensual e interanual (INDEC), reservas brutas del BCRA, riesgo país (EMBI+), tasa de política monetaria, desocupación, pobreza y tipo de cambio real multilateral.</p>
+        <p>Todos los datos vienen de fuentes oficiales — INDEC, BCRA, Secretaría de Finanzas — y se actualizan automáticamente en cada carga de la página. Ideal para un chequeo rápido sin tener que abrir cinco pestañas.</p>
+        <div class="desc-tags">
+          <span class="desc-tag">Inflación mensual e i.a.</span>
+          <span class="desc-tag">Riesgo país</span>
+          <span class="desc-tag">Reservas BCRA</span>
+          <span class="desc-tag">Tasa monetaria</span>
+          <span class="desc-tag">Desocupación</span>
+          <span class="desc-tag">Pobreza</span>
+          <span class="desc-tag">TCRM</span>
+        </div>
+      </div>
+      <!-- PREVIEW: Indicadores Macro -->
+      <div class="desc-preview">
+        <svg viewBox="0 0 320 220" xmlns="http://www.w3.org/2000/svg" font-family="'IBM Plex Mono', monospace">
+          <rect width="320" height="220" fill="#13161e"/>
+          <!-- nav -->
+          <rect width="320" height="28" fill="#0d0f14"/>
+          <text x="12" y="18" font-size="8" font-weight="700" fill="#e8eaf0" letter-spacing="-0.5">canuto<tspan fill="#4ade80">.ar</tspan></text>
+          <text x="192" y="18" font-size="7" fill="#545870">🏛️ Indicadores Macro</text>
+          <!-- eyebrow -->
+          <text x="8" y="42" font-size="5" fill="#ec4899" letter-spacing="1" font-weight="700">ARGENTINA</text>
+          <!-- indicadores grid 2x3 -->
+          <!-- inflación mensual -->
+          <rect x="8" y="48" width="100" height="50" rx="6" fill="#1a1e28" stroke="#232736" stroke-width="0.7"/>
+          <rect x="8" y="48" width="3" height="50" fill="#f97316"/>
+          <text x="16" y="59" font-size="5" fill="#f97316" font-weight="700">INFLACIÓN MENSUAL</text>
+          <text x="16" y="77" font-size="14" font-weight="700" fill="#e8eaf0">2.1%</text>
+          <text x="16" y="90" font-size="4.5" fill="#545870">INDEC · mar 2026</text>
+          <!-- riesgo país -->
+          <rect x="112" y="48" width="100" height="50" rx="6" fill="#1a1e28" stroke="#232736" stroke-width="0.7"/>
+          <rect x="112" y="48" width="3" height="50" fill="#f05050"/>
+          <text x="120" y="59" font-size="5" fill="#f05050" font-weight="700">RIESGO PAÍS</text>
+          <text x="120" y="77" font-size="14" font-weight="700" fill="#e8eaf0">648</text>
+          <text x="158" y="77" font-size="7" fill="#8b90a4">pbs</text>
+          <text x="120" y="90" font-size="4.5" fill="#545870">EMBI+ · JP Morgan</text>
+          <!-- reservas -->
+          <rect x="216" y="48" width="96" height="50" rx="6" fill="#1a1e28" stroke="#232736" stroke-width="0.7"/>
+          <rect x="216" y="48" width="3" height="50" fill="#2dd4bf"/>
+          <text x="224" y="59" font-size="5" fill="#2dd4bf" font-weight="700">RESERVAS BCRA</text>
+          <text x="224" y="77" font-size="13" font-weight="700" fill="#e8eaf0">USD 41.3K</text>
+          <text x="224" y="90" font-size="4.5" fill="#545870">millones · brutas</text>
+          <!-- tasa -->
+          <rect x="8" y="104" width="100" height="50" rx="6" fill="#1a1e28" stroke="#232736" stroke-width="0.7"/>
+          <rect x="8" y="104" width="3" height="50" fill="#4fa8f5"/>
+          <text x="16" y="115" font-size="5" fill="#4fa8f5" font-weight="700">TASA POL. MONETARIA</text>
+          <text x="16" y="133" font-size="14" font-weight="700" fill="#e8eaf0">29%</text>
+          <text x="45" y="133" font-size="7" fill="#8b90a4">TNA</text>
+          <text x="16" y="146" font-size="4.5" fill="#545870">BCRA · desde 18/04</text>
+          <!-- desocupación -->
+          <rect x="112" y="104" width="100" height="50" rx="6" fill="#1a1e28" stroke="#232736" stroke-width="0.7"/>
+          <rect x="112" y="104" width="3" height="50" fill="#9b7ef5"/>
+          <text x="120" y="115" font-size="5" fill="#9b7ef5" font-weight="700">DESOCUPACIÓN</text>
+          <text x="120" y="133" font-size="14" font-weight="700" fill="#e8eaf0">6.4%</text>
+          <text x="120" y="146" font-size="4.5" fill="#545870">EPH · 4T 2025</text>
+          <!-- pobreza -->
+          <rect x="216" y="104" width="96" height="50" rx="6" fill="#1a1e28" stroke="#232736" stroke-width="0.7"/>
+          <rect x="216" y="104" width="3" height="50" fill="#f5a623"/>
+          <text x="224" y="115" font-size="5" fill="#f5a623" font-weight="700">POBREZA</text>
+          <text x="224" y="133" font-size="14" font-weight="700" fill="#e8eaf0">38.1%</text>
+          <text x="224" y="146" font-size="4.5" fill="#545870">EPH · 2S 2025</text>
+          <!-- inflación interanual row -->
+          <rect x="8" y="160" width="304" height="50" rx="6" fill="#1a1e28" stroke="#232736" stroke-width="0.7"/>
+          <rect x="8" y="160" width="3" height="50" fill="#fbbf24"/>
+          <text x="16" y="171" font-size="5" fill="#fbbf24" font-weight="700">INFLACIÓN INTERANUAL</text>
+          <text x="16" y="193" font-size="17" font-weight="700" fill="#e8eaf0">116.5%</text>
+          <text x="16" y="204" font-size="4.5" fill="#545870">IPC INDEC · últimos 12 meses</text>
+          <!-- mini chart -->
+          <polyline points="150,195 165,188 180,180 195,175 210,168 225,160 240,152 255,148 270,146 285,144 300,143"
+                    fill="none" stroke="#fbbf24" stroke-width="1.4" stroke-linecap="round"/>
+          <circle cx="300" cy="143" r="2.2" fill="#fbbf24"/>
+          <text x="268" y="178" font-size="4" fill="#8b90a4">desaceleración</text>
+        </svg>
+      </div>
+    </div>
+
   </div>
 </div>
 
 <footer>
-  <a href="/">canuto.ar</a> © 2026 · Hecho en Argentina 🇦🇷
+  <a href="/index.html">canuto.ar</a> © 2026 · Hecho en Argentina 🇦🇷
 </footer>
 
 </body>
