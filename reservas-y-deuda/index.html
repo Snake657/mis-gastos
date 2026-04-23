@@ -943,8 +943,30 @@ function drawResChart() {
   const color  = (dN - d1) >= 0 ? '#22d65f' : '#f05050';
   const dimClr = (dN - d1) >= 0 ? 'rgba(34,214,95,0.08)' : 'rgba(240,80,80,0.08)';
 
+  const canvasEl = document.getElementById('resChart');
+  canvasEl.style.display = 'block';
   if (resChart) resChart.destroy();
-  const ctx = document.getElementById('resChart').getContext('2d');
+  const ctx = canvasEl.getContext('2d');
+
+  // Plugin: marca de agua canuto.ar en el centro del gráfico
+  const watermarkPlugin = {
+    id: 'watermark',
+    beforeDraw(chart) {
+      const { ctx: c, chartArea } = chart;
+      if (!chartArea) return;
+      c.save();
+      c.globalAlpha = 0.12;
+      c.fillStyle = '#dde0ea';
+      c.font = 'bold 22px IBM Plex Mono, monospace';
+      c.textAlign = 'center';
+      c.textBaseline = 'middle';
+      const cx = (chartArea.left + chartArea.right) / 2;
+      const cy = (chartArea.top + chartArea.bottom) / 2;
+      c.fillText('canuto.ar', cx, cy);
+      c.restore();
+    }
+  };
+
   resChart = new Chart(ctx, {
     type: 'line',
     data: {
@@ -1000,7 +1022,8 @@ function drawResChart() {
           grid: { color: 'rgba(30,34,48,0.8)' }
         }
       }
-    }
+    },
+    plugins: [watermarkPlugin]
   });
 }
 
