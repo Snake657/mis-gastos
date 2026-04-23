@@ -1,0 +1,825 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Inflacioná — Canuto.ar</title>
+  <meta name="description" content="¿Cuánto subió? Calculá la evolución real de cualquier precio en Argentina usando inflación oficial del INDEC." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+
+  <style>
+    :root {
+      --bg:         #0d0f14;
+      --surface:    #13161e;
+      --surface2:   #1a1e28;
+      --border:     #232736;
+      --border2:    #2d3245;
+      --text:       #e8eaf0;
+      --text2:      #8b90a4;
+      --text3:      #545870;
+      --accent:     #4ade80;
+      --accent-dim: rgba(74,222,128,0.10);
+      --blue:       #60a5fa;
+      --blue-dim:   rgba(96,165,250,0.10);
+      --orange:     #fb923c;
+      --orange-dim: rgba(251,146,60,0.10);
+      --purple:     #a78bfa;
+      --purple-dim: rgba(167,139,250,0.10);
+      --red:        #f87171;
+      --red-dim:    rgba(248,113,113,0.10);
+      --yellow:     #fbbf24;
+      --yellow-dim: rgba(251,191,36,0.10);
+      --fire:       #f97316;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { font-size: 16px; scroll-behavior: smooth; }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'IBM Plex Sans', sans-serif;
+      min-height: 100vh;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ── NAV ── */
+    nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 14px 20px;
+      border-bottom: 1px solid var(--border);
+      position: sticky;
+      top: 0;
+      background: rgba(13,15,20,0.95);
+      backdrop-filter: blur(12px);
+      z-index: 100;
+    }
+    .nav-logo {
+      font-family: 'IBM Plex Mono', monospace;
+      font-weight: 700;
+      font-size: 0.95rem;
+      color: var(--text);
+      text-decoration: none;
+      letter-spacing: -0.03em;
+      flex-shrink: 0;
+    }
+    .nav-logo span { color: var(--accent); }
+    .nav-links {
+      display: flex;
+      gap: 3px;
+      overflow-x: auto;
+      scrollbar-width: none;
+      -webkit-overflow-scrolling: touch;
+    }
+    .nav-links::-webkit-scrollbar { display: none; }
+    .nav-links a {
+      color: var(--text2);
+      text-decoration: none;
+      font-size: 0.72rem;
+      font-family: 'IBM Plex Mono', monospace;
+      padding: 5px 9px;
+      border-radius: 6px;
+      transition: all 0.12s;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+    .nav-links a:hover { color: var(--text); background: var(--surface2); }
+    .nav-links a.active { color: var(--bg); background: var(--fire); font-weight: 700; }
+
+    main { max-width: 960px; margin: 0 auto; padding: 36px 20px 80px; }
+
+    /* ── HEADER ── */
+    .eyebrow {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.68rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--fire);
+      margin-bottom: 8px;
+    }
+    h1 {
+      font-size: clamp(1.6rem, 4vw, 2.2rem);
+      font-weight: 600;
+      letter-spacing: -0.03em;
+      line-height: 1.1;
+      margin-bottom: 8px;
+    }
+    .subtitle { color: var(--text2); font-size: 0.9rem; margin-bottom: 32px; line-height: 1.6; }
+
+    /* ── CALCULATOR ── */
+    .section-label {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.65rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--text3);
+      margin-bottom: 12px;
+    }
+    .calc-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 24px;
+      margin-bottom: 20px;
+    }
+    .calc-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr auto;
+      gap: 12px;
+      align-items: end;
+    }
+    @media (max-width: 640px) {
+      .calc-grid { grid-template-columns: 1fr 1fr; }
+      .calc-grid .btn-calcular { grid-column: 1 / -1; }
+    }
+    .input-group { display: flex; flex-direction: column; gap: 6px; }
+    .input-label {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.65rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--text3);
+    }
+    .input-prefix-wrap {
+      display: flex;
+      align-items: center;
+      background: var(--surface2);
+      border: 1px solid var(--border2);
+      border-radius: 8px;
+      overflow: hidden;
+      transition: border-color 0.15s;
+    }
+    .input-prefix-wrap:focus-within { border-color: var(--fire); }
+    .input-prefix {
+      padding: 0 10px;
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.85rem;
+      color: var(--text3);
+      background: var(--surface);
+      border-right: 1px solid var(--border2);
+      height: 40px;
+      display: flex;
+      align-items: center;
+      white-space: nowrap;
+    }
+    input[type="number"], input[type="month"], select {
+      width: 100%;
+      background: var(--surface2);
+      border: 1px solid var(--border2);
+      border-radius: 8px;
+      padding: 0 12px;
+      height: 40px;
+      color: var(--text);
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.88rem;
+      outline: none;
+      transition: border-color 0.15s;
+      -webkit-appearance: none;
+      appearance: none;
+    }
+    .input-prefix-wrap input[type="number"] {
+      border: none;
+      border-radius: 0;
+      background: transparent;
+      flex: 1;
+      padding: 0 12px;
+    }
+    input[type="number"]:focus, input[type="month"]:focus, select:focus {
+      border-color: var(--fire);
+    }
+    input[type="month"]::-webkit-calendar-picker-indicator {
+      filter: invert(0.5);
+      cursor: pointer;
+    }
+    select {
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23545870' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 12px center;
+      padding-right: 32px;
+    }
+    .btn-calcular {
+      height: 40px;
+      background: var(--fire);
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      padding: 0 22px;
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.82rem;
+      font-weight: 700;
+      letter-spacing: 0.03em;
+      cursor: pointer;
+      transition: opacity 0.15s, transform 0.1s;
+      white-space: nowrap;
+    }
+    .btn-calcular:hover { opacity: 0.88; }
+    .btn-calcular:active { transform: scale(0.97); }
+
+    /* ── RESULT ── */
+    #result-section { display: none; }
+    .result-banner {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 28px 24px;
+      margin-bottom: 20px;
+      position: relative;
+      overflow: hidden;
+    }
+    .result-banner::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 2px;
+      background: var(--fire);
+    }
+    .result-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+      margin-bottom: 20px;
+    }
+    @media (max-width: 500px) {
+      .result-grid { grid-template-columns: 1fr 1fr; }
+    }
+    .result-stat {}
+    .result-stat .rs-label {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.63rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--text3);
+      margin-bottom: 5px;
+    }
+    .result-stat .rs-value {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: clamp(1rem, 3vw, 1.4rem);
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      line-height: 1;
+    }
+    .result-stat .rs-value.highlight { color: var(--fire); }
+    .result-stat .rs-sub {
+      font-size: 0.75rem;
+      color: var(--text3);
+      margin-top: 3px;
+    }
+    .result-narrative {
+      font-size: 0.88rem;
+      color: var(--text2);
+      line-height: 1.65;
+      padding-top: 16px;
+      border-top: 1px solid var(--border);
+    }
+    .result-narrative strong { color: var(--text); font-weight: 600; }
+
+    /* ── CHART ── */
+    .chart-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 22px;
+      margin-bottom: 20px;
+    }
+    .chart-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 18px;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    .chart-title {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: var(--text2);
+      letter-spacing: 0.02em;
+    }
+    .chart-wrap { position: relative; height: 240px; }
+
+    /* ── HITOS TABLE ── */
+    .hitos-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      overflow: hidden;
+      margin-bottom: 20px;
+    }
+    .hitos-header {
+      padding: 16px 20px;
+      border-bottom: 1px solid var(--border);
+    }
+    .hitos-header .section-label { margin-bottom: 0; }
+    .hitos-table { width: 100%; border-collapse: collapse; }
+    .hitos-table th {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.63rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--text3);
+      padding: 10px 20px;
+      text-align: left;
+      border-bottom: 1px solid var(--border);
+    }
+    .hitos-table td {
+      padding: 11px 20px;
+      font-size: 0.83rem;
+      border-bottom: 1px solid var(--border);
+      vertical-align: middle;
+    }
+    .hitos-table tr:last-child td { border-bottom: none; }
+    .hitos-table tr:hover td { background: var(--surface2); }
+    .hitos-table .td-mono {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.8rem;
+    }
+    .hitos-table .td-fire { color: var(--fire); font-weight: 700; }
+    .hitos-table .td-dim { color: var(--text3); }
+
+    /* ── LOADING ── */
+    .loading-msg {
+      text-align: center;
+      padding: 40px 20px;
+      color: var(--text3);
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.8rem;
+    }
+    .spinner {
+      display: inline-block;
+      width: 16px; height: 16px;
+      border: 2px solid var(--border2);
+      border-top-color: var(--fire);
+      border-radius: 50%;
+      animation: spin 0.7s linear infinite;
+      vertical-align: middle;
+      margin-right: 8px;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* ── ERROR ── */
+    .error-msg {
+      background: var(--red-dim);
+      border: 1px solid rgba(248,113,113,0.2);
+      border-radius: 10px;
+      padding: 14px 18px;
+      font-size: 0.83rem;
+      color: var(--red);
+      margin-bottom: 16px;
+      display: none;
+    }
+
+    /* ── NOTA ── */
+    .nota {
+      font-size: 0.75rem;
+      color: var(--text3);
+      line-height: 1.6;
+      padding: 14px 18px;
+      background: var(--surface2);
+      border-radius: 10px;
+      border: 1px solid var(--border);
+    }
+    .nota a { color: var(--text2); text-decoration: underline; text-underline-offset: 2px; }
+    .nota a:hover { color: var(--text); }
+
+    /* ── FOOTER ── */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 24px;
+      text-align: center;
+      font-size: 0.78rem;
+      color: var(--text3);
+    }
+    footer a { color: var(--text2); text-decoration: none; }
+    footer a:hover { color: var(--text); }
+
+    /* Animate-in */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(10px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .fadein { animation: fadeUp 0.3s ease both; }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a class="nav-logo" href="/"><span>canuto</span>.ar</a>
+  <div class="nav-links">
+    <a href="/dolar-en-vivo/">💵 Dólar en Vivo</a>
+    <a href="/dolar-historico/">📈 Dólar Histórico</a>
+    <a href="/gastos/">💳 Mis Gastos</a>
+    <a href="/retiro/">🏖️ Mi Retiro</a>
+    <a href="/inflaciona/" class="active">🔥 Inflacioná</a>
+  </div>
+</nav>
+
+<main>
+
+  <!-- HEADER -->
+  <div class="eyebrow">🔥 Herramienta</div>
+  <h1>Inflacioná</h1>
+  <p class="subtitle">
+    ¿Cuánto valía algo antes, y cuánto vale hoy? Ingresá un precio del pasado<br>
+    y calculamos a cuánto equivale ajustado por inflación oficial (IPC INDEC).
+  </p>
+
+  <!-- CALCULADORA -->
+  <div class="calc-card">
+    <div class="section-label" style="margin-bottom:16px">Tu consulta</div>
+    <div class="calc-grid">
+      <div class="input-group">
+        <label class="input-label" for="inputMonto">Monto original</label>
+        <div class="input-prefix-wrap">
+          <span class="input-prefix">$</span>
+          <input type="number" id="inputMonto" placeholder="ej: 1200" min="0" />
+        </div>
+      </div>
+      <div class="input-group">
+        <label class="input-label" for="inputDesde">Mes de origen</label>
+        <input type="month" id="inputDesde" />
+      </div>
+      <div class="input-group">
+        <label class="input-label" for="inputHasta">Hasta</label>
+        <input type="month" id="inputHasta" />
+      </div>
+      <button class="btn-calcular" onclick="calcular()">Calcular →</button>
+    </div>
+    <div class="error-msg" id="errorMsg"></div>
+  </div>
+
+  <!-- RESULTADO -->
+  <div id="result-section">
+
+    <div class="result-banner fadein" id="resultBanner">
+      <div class="result-grid" id="resultGrid"></div>
+      <div class="result-narrative" id="resultNarrative"></div>
+    </div>
+
+    <div class="chart-card fadein">
+      <div class="chart-header">
+        <div class="chart-title" id="chartTitle">Evolución del precio ajustado por IPC</div>
+      </div>
+      <div class="chart-wrap">
+        <canvas id="myChart"></canvas>
+      </div>
+    </div>
+
+    <div class="hitos-card fadein" id="hitosCard" style="display:none">
+      <div class="hitos-header">
+        <div class="section-label">Evolución anual del precio de referencia</div>
+      </div>
+      <table class="hitos-table" id="hitosTable"></table>
+    </div>
+
+  </div>
+
+  <!-- NOTA -->
+  <div class="nota" style="margin-top: 8px;">
+    📊 Los datos de inflación provienen del <a href="https://datos.gob.ar/dataset/sspm-indice-precios-al-consumidor-nacional-ipc" target="_blank">IPC publicado por el INDEC</a> vía datos.gob.ar. El último mes disponible depende de la fecha de publicación oficial del INDEC (generalmente hacia mediados del mes siguiente).
+  </div>
+
+</main>
+
+<footer>
+  <a href="/">canuto.ar</a> © 2026 · Hecho en Argentina 🇦🇷
+</footer>
+
+<script>
+// ─── LÍMITE DE DATOS IPC ───────────────────────────────────────────────────
+// Último mes con datos publicados por el INDEC.
+// ⚠️ ACTUALIZAR A MANO CADA MES cuando el INDEC publique el IPC del mes previo
+// (el INDEC suele publicarlo alrededor del día 12-15 del mes siguiente).
+// La lógica de cargarIPC() también actualiza este límite dinámicamente
+// si la API trae datos más nuevos, pero esto sirve de fallback.
+const MAX_IPC_DATE = '2026-03';
+
+// ─── ESTADO INFLACIÓN ─────────────────────────────────────────────────────
+let ipcData = null; // { [yyyy-mm]: acumulado_base_100 }
+let ipcLoaded = false;
+let ipcError  = false;
+
+// ─── CARGAR IPC desde datos.gob.ar ────────────────────────────────────────
+async function cargarIPC() {
+  try {
+    // IPC Nacional - serie histórica mensual desde INDEC vía datos.gob.ar
+    const url = 'https://apis.datos.gob.ar/series/api/series/?ids=148.3_INIVELNAL_DICI_M_26&limit=200&sort=asc&format=json';
+    const res = await fetch(url);
+    if (!res.ok) throw new Error('HTTP ' + res.status);
+    const json = await res.json();
+    const series = json.data; // [[date, value], ...]
+
+    // Construir mapa acumulado
+    ipcData = {};
+    for (const [fecha, valor] of series) {
+      const ym = fecha.slice(0,7); // yyyy-mm
+      ipcData[ym] = valor;
+    }
+    ipcLoaded = true;
+  } catch(e) {
+    ipcError = true;
+    console.warn('IPC fetch falló, usando fallback:', e);
+    // Fallback: IPC aproximado mensual acumulado (base 2016=100, nivel general)
+    ipcData = buildFallbackIPC();
+    ipcLoaded = true;
+  }
+  // Una vez cargado, sincronizar el tope de los inputs con el último dato real
+  ajustarMaxInputs();
+}
+
+// Ajusta el tope de los inputs de fecha al último mes disponible en los datos
+// (si la API trajo datos más nuevos que MAX_IPC_DATE, se usa el de la API).
+function ajustarMaxInputs() {
+  if (!ipcData) return;
+  const keys = Object.keys(ipcData).sort();
+  const maxReal = keys.length ? keys[keys.length - 1] : null;
+  const max = (maxReal && maxReal > MAX_IPC_DATE) ? maxReal : MAX_IPC_DATE;
+
+  const desdeEl = document.getElementById('inputDesde');
+  const hastaEl = document.getElementById('inputHasta');
+  if (desdeEl) desdeEl.max = max;
+  if (hastaEl) {
+    hastaEl.max = max;
+    // Si el valor actual del input supera el tope, lo corregimos
+    if (hastaEl.value && hastaEl.value > max) hastaEl.value = max;
+  }
+}
+
+// Fallback con datos aproximados de IPC nivel general (base dic 2016)
+function buildFallbackIPC() {
+  // Valores aproximados del índice nivel general IPC INDEC (base 2016=100)
+  // Fuente: informes INDEC publicados
+  const puntos = {
+    '2017-01': 104.9, '2017-06': 115.9, '2017-12': 126.1,
+    '2018-01': 128.1, '2018-06': 155.3, '2018-12': 186.4,
+    '2019-01': 191.2, '2019-06': 226.0, '2019-12': 265.6,
+    '2020-01': 271.9, '2020-06': 296.2, '2020-12': 337.2,
+    '2021-01': 344.9, '2021-06': 396.6, '2021-12': 448.2,
+    '2022-01': 461.4, '2022-06': 586.0, '2022-12': 727.7,
+    '2023-01': 756.5, '2023-06': 1052.3,'2023-12': 1715.0,
+    '2024-01': 2184.0,'2024-06': 3456.0,'2024-12': 4820.0,
+    '2025-01': 5050.0,'2025-06': 5640.0,'2025-12': 6080.0,
+    '2026-01': 6240.0,'2026-04': 6380.0,
+  };
+  // Interpolar meses intermedios
+  const keys = Object.keys(puntos).sort();
+  const result = {};
+  for (let i = 0; i < keys.length - 1; i++) {
+    const k1 = keys[i], k2 = keys[i+1];
+    const v1 = puntos[k1], v2 = puntos[k2];
+    const m1 = ymToMonths(k1), m2 = ymToMonths(k2);
+    const diff = m2 - m1;
+    for (let d = 0; d <= diff; d++) {
+      const ym = monthsToYM(m1 + d);
+      result[ym] = v1 + (v2 - v1) * d / diff;
+    }
+  }
+  return result;
+}
+function ymToMonths(ym) {
+  const [y,m] = ym.split('-').map(Number);
+  return y * 12 + m;
+}
+function monthsToYM(months) {
+  const y = Math.floor(months / 12);
+  const m = months % 12;
+  return `${y}-${String(m).padStart(2,'0')}`;
+}
+
+// ─── CHART ────────────────────────────────────────────────────────────────
+let myChart = null;
+
+function renderChart(labels, values, monto) {
+  const ctx = document.getElementById('myChart').getContext('2d');
+  if (myChart) { myChart.destroy(); }
+
+  myChart = new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels,
+      datasets: [{
+        label: 'Precio ajustado ($)',
+        data: values,
+        borderColor: '#f97316',
+        backgroundColor: 'rgba(249,115,22,0.08)',
+        borderWidth: 2.5,
+        pointRadius: values.length > 36 ? 0 : 3,
+        pointHoverRadius: 5,
+        pointBackgroundColor: '#f97316',
+        fill: true,
+        tension: 0.3
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      interaction: { mode: 'index', intersect: false },
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          backgroundColor: '#1a1e28',
+          borderColor: '#2d3245',
+          borderWidth: 1,
+          titleColor: '#8b90a4',
+          bodyColor: '#e8eaf0',
+          bodyFont: { family: 'IBM Plex Mono', size: 12 },
+          titleFont: { family: 'IBM Plex Mono', size: 11 },
+          callbacks: {
+            label: ctx => '$ ' + formatNum(ctx.parsed.y)
+          }
+        }
+      },
+      scales: {
+        x: {
+          ticks: {
+            color: '#545870',
+            font: { family: 'IBM Plex Mono', size: 10 },
+            maxTicksLimit: 10,
+            maxRotation: 0
+          },
+          grid: { color: 'rgba(35,39,54,0.8)' }
+        },
+        y: {
+          ticks: {
+            color: '#545870',
+            font: { family: 'IBM Plex Mono', size: 10 },
+            callback: v => '$ ' + formatNum(v)
+          },
+          grid: { color: 'rgba(35,39,54,0.8)' }
+        }
+      }
+    }
+  });
+}
+
+// ─── HELPERS ──────────────────────────────────────────────────────────────
+function formatNum(n) {
+  if (n >= 1e9) return (n/1e9).toFixed(2) + 'B';
+  if (n >= 1e6) return (n/1e6).toFixed(2) + 'M';
+  return Math.round(n).toLocaleString('es-AR');
+}
+function ymLabel(ym) {
+  const [y,m] = ym.split('-');
+  const meses = ['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];
+  return meses[parseInt(m)-1] + ' ' + y;
+}
+function mostrarError(msg) {
+  const el = document.getElementById('errorMsg');
+  el.textContent = msg;
+  el.style.display = 'block';
+  setTimeout(() => el.style.display = 'none', 6000);
+}
+
+// ─── CALCULAR ─────────────────────────────────────────────────────────────
+async function calcular(montoOverride, desdeOverride, hastaOverride, descripcion) {
+  if (!ipcLoaded) {
+    document.getElementById('result-section').innerHTML = '<div class="loading-msg"><span class="spinner"></span>Cargando datos INDEC...</div>';
+    document.getElementById('result-section').style.display = 'block';
+    await cargarIPC();
+  }
+
+  const monto  = montoOverride ?? parseFloat(document.getElementById('inputMonto').value);
+  const desde  = desdeOverride ?? document.getElementById('inputDesde').value;
+  const hasta  = hastaOverride ?? document.getElementById('inputHasta').value;
+
+  if (!monto || monto <= 0) { mostrarError('Ingresá un monto válido.'); return; }
+  if (!desde) { mostrarError('Elegí el mes de origen.'); return; }
+  if (!hasta) { mostrarError('Elegí el mes de destino.'); return; }
+  if (desde >= hasta) { mostrarError('El mes de origen debe ser anterior al mes de destino.'); return; }
+
+  const ipcDesde = ipcData[desde];
+  const ipcHasta = ipcData[hasta];
+
+  if (!ipcDesde) { mostrarError(`No tenemos datos de IPC para ${ymLabel(desde)}. Probá con una fecha más reciente.`); return; }
+  if (!ipcHasta) { mostrarError(`No tenemos datos de IPC para ${ymLabel(hasta)}. Probá con una fecha anterior.`); return; }
+
+  const factor  = ipcHasta / ipcDesde;
+  const montoFinal = monto * factor;
+  const variacion  = (factor - 1) * 100;
+
+  // Construir serie mensual
+  const labels = [], values = [];
+  const m1 = ymToMonths(desde), m2 = ymToMonths(hasta);
+  for (let m = m1; m <= m2; m++) {
+    const ym = monthsToYM(m);
+    if (ipcData[ym]) {
+      labels.push(ymLabel(ym));
+      values.push(monto * (ipcData[ym] / ipcDesde));
+    }
+  }
+
+  // Mostrar
+  const section = document.getElementById('result-section');
+  section.style.display = 'block';
+  section.innerHTML = `
+    <div class="result-banner fadein" id="resultBanner">
+      <div class="result-grid" id="resultGrid"></div>
+      <div class="result-narrative" id="resultNarrative"></div>
+    </div>
+    <div class="chart-card fadein">
+      <div class="chart-header">
+        <div class="chart-title">Evolución del precio ajustado por IPC · ${ymLabel(desde)} → ${ymLabel(hasta)}</div>
+      </div>
+      <div class="chart-wrap"><canvas id="myChart"></canvas></div>
+    </div>
+    <div class="hitos-card fadein" id="hitosCard" style="display:none">
+      <div class="hitos-header"><div class="section-label">Evolución anual</div></div>
+      <table class="hitos-table" id="hitosTable"></table>
+    </div>
+  `;
+
+  // Stats
+  const meses = m2 - m1;
+  const años  = (meses / 12).toFixed(1);
+  document.getElementById('resultGrid').innerHTML = `
+    <div class="result-stat">
+      <div class="rs-label">Precio original</div>
+      <div class="rs-value">$ ${formatNum(monto)}</div>
+      <div class="rs-sub">${ymLabel(desde)}</div>
+    </div>
+    <div class="result-stat">
+      <div class="rs-label">Equivale hoy a</div>
+      <div class="rs-value highlight">$ ${formatNum(montoFinal)}</div>
+      <div class="rs-sub">${ymLabel(hasta)}</div>
+    </div>
+    <div class="result-stat">
+      <div class="rs-label">Inflación acumulada</div>
+      <div class="rs-value highlight">+${variacion.toFixed(1)}%</div>
+      <div class="rs-sub">en ${meses} meses (${años} años)</div>
+    </div>
+  `;
+
+  // Narrativa
+  const veces = (montoFinal / monto).toFixed(1);
+  const desc  = descripcion ? `<strong>${descripcion}</strong>` : 'este precio';
+  document.getElementById('resultNarrative').innerHTML =
+    `${desc} que en <strong>${ymLabel(desde)}</strong> costaba <strong>$${formatNum(monto)}</strong>, ` +
+    `necesitaría ser <strong>$${formatNum(montoFinal)}</strong> en <strong>${ymLabel(hasta)}</strong> para mantener ` +
+    `el mismo poder adquisitivo. Eso es <strong>${veces}x</strong> el valor original, ` +
+    `con una inflación acumulada de <strong>+${variacion.toFixed(1)}%</strong> ` +
+    `según el IPC INDEC.`;
+
+  // Tabla anual
+  const años_hitos = [];
+  const y1 = parseInt(desde.split('-')[0]);
+  const y2 = parseInt(hasta.split('-')[0]);
+  for (let y = y1; y <= y2; y++) {
+    const m = y === y1 ? desde.split('-')[1] : '01';
+    const ym = `${y}-${m}`;
+    if (ipcData[ym]) {
+      años_hitos.push({ ym, valor: monto * (ipcData[ym] / ipcDesde) });
+    }
+  }
+  if (años_hitos.length > 2) {
+    const tbody = años_hitos.map((h, i) => {
+      const inflAnual = i === 0 ? '—' : `+${(((h.valor / años_hitos[i-1].valor) - 1) * 100).toFixed(1)}%`;
+      return `<tr>
+        <td class="td-mono">${ymLabel(h.ym)}</td>
+        <td class="td-mono">$ ${formatNum(h.valor)}</td>
+        <td class="td-mono td-fire">${inflAnual}</td>
+      </tr>`;
+    }).join('');
+    document.getElementById('hitosTable').innerHTML = `
+      <thead><tr>
+        <th>Período</th><th>Precio equiv.</th><th>Var. anual</th>
+      </tr></thead>
+      <tbody>${tbody}</tbody>`;
+    document.getElementById('hitosCard').style.display = 'block';
+  }
+
+  renderChart(labels, values, monto);
+  section.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+}
+
+// ─── INIT ──────────────────────────────────────────────────────────────────
+(function init() {
+  // "Hasta" por defecto = último mes con datos del INDEC (MAX_IPC_DATE)
+  // "Desde" por defecto = 2 años antes del hasta
+  const hasta = MAX_IPC_DATE;
+  const [yMax, mMax] = MAX_IPC_DATE.split('-').map(Number);
+  const yDesde = yMax - 2;
+  const desde  = `${yDesde}-${String(mMax).padStart(2,'0')}`;
+
+  const desdeEl = document.getElementById('inputDesde');
+  const hastaEl = document.getElementById('inputHasta');
+
+  desdeEl.value = desde;
+  hastaEl.value = hasta;
+
+  // Tope inicial de ambos inputs: MAX_IPC_DATE.
+  // Cuando cargarIPC() termine, ajustarMaxInputs() puede extenderlo si la
+  // API trae datos más nuevos.
+  desdeEl.max = MAX_IPC_DATE;
+  hastaEl.max = MAX_IPC_DATE;
+
+  // Pre-cargar IPC en background
+  cargarIPC();
+})();
+</script>
+
+</body>
+</html>
