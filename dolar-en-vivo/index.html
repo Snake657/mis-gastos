@@ -555,6 +555,7 @@
     }
     footer a { color: var(--text2); text-decoration: none; }
   </style>
+<script>/* canuto-dolar worker: BNA directo desde bna.com.ar/Personas. Si falla, cae al fetch original. */(()=>{const WURL='https://canuto-dolar.lenzimartin.workers.dev/api/dolar';const F=window.fetch.bind(window);window.fetch=function(u,o){if(typeof u==='string'&&u==='https://dolarapi.com/v1/dolares'){return F(WURL,o).then(async r=>{if(!r.ok)throw new Error('w');const d=await r.json();const a=Array.isArray(d&&d.cotizaciones)?d.cotizaciones:[];if(!a.length)throw new Error('e');return new Response(JSON.stringify(a),{status:200,headers:{'content-type':'application/json'}});}).catch(()=>F(u,o));}return F(u,o);};})();</script>
 </head>
 <body>
 
