@@ -109,7 +109,7 @@
     }
     .subtitle { color: var(--text2); font-size: 0.9rem; margin-bottom: 32px; line-height: 1.6; }
 
-    /* ── CANASTAS ── */
+    /* ── CALCULATOR ── */
     .section-label {
       font-family: 'IBM Plex Mono', monospace;
       font-size: 0.65rem;
@@ -118,46 +118,6 @@
       color: var(--text3);
       margin-bottom: 12px;
     }
-    .canastas-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(155px, 1fr));
-      gap: 8px;
-      margin-bottom: 32px;
-    }
-    .canasta-btn {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 10px;
-      padding: 13px 14px;
-      cursor: pointer;
-      text-align: left;
-      transition: all 0.15s;
-      color: var(--text2);
-    }
-    .canasta-btn:hover {
-      border-color: var(--border2);
-      color: var(--text);
-      background: var(--surface2);
-    }
-    .canasta-btn.active {
-      border-color: var(--fire);
-      background: rgba(249,115,22,0.08);
-      color: var(--text);
-    }
-    .canasta-icon { font-size: 1.3rem; margin-bottom: 7px; line-height: 1; }
-    .canasta-name {
-      font-size: 0.8rem;
-      font-weight: 600;
-      margin-bottom: 3px;
-      letter-spacing: -0.01em;
-    }
-    .canasta-ref {
-      font-family: 'IBM Plex Mono', monospace;
-      font-size: 0.65rem;
-      color: var(--text3);
-    }
-
-    /* ── CALCULATOR ── */
     .calc-card {
       background: var(--surface);
       border: 1px solid var(--border);
@@ -447,21 +407,26 @@
 <body>
 
 <!-- NAV -->
-<div id="canuto-nav"></div>
+<nav>
+  <a class="nav-logo" href="/"><span>canuto</span>.ar</a>
+  <div class="nav-links">
+    <a href="/dolar-en-vivo/">💵 Dólar en Vivo</a>
+    <a href="/dolar-historico/">📈 Dólar Histórico</a>
+    <a href="/gastos/">💳 Mis Gastos</a>
+    <a href="/retiro/">🏖️ Mi Retiro</a>
+    <a href="/inflaciona/" class="active">🔥 Inflacioná</a>
+  </div>
+</nav>
 
 <main>
 
   <!-- HEADER -->
-  <div class="eyebrow">🔥 Nueva herramienta</div>
+  <div class="eyebrow">🔥 Herramienta</div>
   <h1>Inflacioná</h1>
   <p class="subtitle">
     ¿Cuánto valía algo antes, y cuánto vale hoy? Ingresá un precio del pasado<br>
     y calculamos a cuánto equivale ajustado por inflación oficial (IPC INDEC).
   </p>
-
-  <!-- CANASTAS -->
-  <div class="section-label">Referencias populares — hacé clic para cargar</div>
-  <div class="canastas-grid" id="canastasGrid"></div>
 
   <!-- CALCULADORA -->
   <div class="calc-card">
@@ -515,7 +480,7 @@
 
   <!-- NOTA -->
   <div class="nota" style="margin-top: 8px;">
-    📊 Los datos de inflación provienen del <a href="https://datos.gob.ar/dataset/sspm-indice-precios-al-consumidor-nacional-ipc" target="_blank">IPC publicado por el INDEC</a> vía datos.gob.ar. Los precios de referencia de las canastas son aproximados y de carácter ilustrativo.
+    📊 Los datos de inflación provienen del <a href="https://datos.gob.ar/dataset/sspm-indice-precios-al-consumidor-nacional-ipc" target="_blank">IPC publicado por el INDEC</a> vía datos.gob.ar. El último mes disponible depende de la fecha de publicación oficial del INDEC (generalmente hacia mediados del mes siguiente).
   </div>
 
 </main>
@@ -525,81 +490,13 @@
 </footer>
 
 <script>
-// ─── CANASTAS DE REFERENCIA ───────────────────────────────────────────────
-const CANASTAS = [
-  {
-    id: 'colectivo',
-    icon: '🚌',
-    name: 'Colectivo SUBE',
-    ref: 'AMBA, enero 2020',
-    monto: 18,
-    desde: '2020-01',
-    descripcion: 'Pasaje mínimo de colectivo en AMBA'
-  },
-  {
-    id: 'alquiler2a',
-    icon: '🏠',
-    name: 'Alquiler 2 amb.',
-    ref: 'CABA, ene 2021',
-    monto: 22000,
-    desde: '2021-01',
-    descripcion: 'Alquiler 2 ambientes en CABA (promedio)'
-  },
-  {
-    id: 'smvm',
-    icon: '💼',
-    name: 'Salario mínimo',
-    ref: 'enero 2022',
-    monto: 33000,
-    desde: '2022-01',
-    descripcion: 'Salario Mínimo Vital y Móvil (SMVM)'
-  },
-  {
-    id: 'nafta',
-    icon: '⛽',
-    name: 'Nafta súper',
-    ref: 'litro, ene 2023',
-    monto: 260,
-    desde: '2023-01',
-    descripcion: 'Precio por litro de nafta súper (promedio nacional)'
-  },
-  {
-    id: 'cafe',
-    icon: '☕',
-    name: 'Café con leche',
-    ref: 'Capital, ene 2022',
-    monto: 270,
-    desde: '2022-01',
-    descripcion: 'Café con leche en bar de CABA'
-  },
-  {
-    id: 'celular',
-    icon: '📱',
-    name: 'Internet móvil',
-    ref: 'plan 10GB, ene 2022',
-    monto: 1200,
-    desde: '2022-01',
-    descripcion: 'Plan de telefonía celular con 10GB de datos'
-  },
-  {
-    id: 'combo',
-    icon: '🍔',
-    name: 'Combo hamburguesa',
-    ref: 'Capital, ene 2022',
-    monto: 750,
-    desde: '2022-01',
-    descripcion: 'Combo hamburguesa + papas + gaseosa en cadena de comida rápida'
-  },
-  {
-    id: 'medicamentos',
-    icon: '💊',
-    name: 'Medicamento básico',
-    ref: 'referencia ene 2023',
-    monto: 1200,
-    desde: '2023-01',
-    descripcion: 'Precio de referencia de medicamento de venta libre básico'
-  }
-];
+// ─── LÍMITE DE DATOS IPC ───────────────────────────────────────────────────
+// Último mes con datos publicados por el INDEC.
+// ⚠️ ACTUALIZAR A MANO CADA MES cuando el INDEC publique el IPC del mes previo
+// (el INDEC suele publicarlo alrededor del día 12-15 del mes siguiente).
+// La lógica de cargarIPC() también actualiza este límite dinámicamente
+// si la API trae datos más nuevos, pero esto sirve de fallback.
+const MAX_IPC_DATE = '2026-03';
 
 // ─── ESTADO INFLACIÓN ─────────────────────────────────────────────────────
 let ipcData = null; // { [yyyy-mm]: acumulado_base_100 }
@@ -629,6 +526,26 @@ async function cargarIPC() {
     // Fallback: IPC aproximado mensual acumulado (base 2016=100, nivel general)
     ipcData = buildFallbackIPC();
     ipcLoaded = true;
+  }
+  // Una vez cargado, sincronizar el tope de los inputs con el último dato real
+  ajustarMaxInputs();
+}
+
+// Ajusta el tope de los inputs de fecha al último mes disponible en los datos
+// (si la API trajo datos más nuevos que MAX_IPC_DATE, se usa el de la API).
+function ajustarMaxInputs() {
+  if (!ipcData) return;
+  const keys = Object.keys(ipcData).sort();
+  const maxReal = keys.length ? keys[keys.length - 1] : null;
+  const max = (maxReal && maxReal > MAX_IPC_DATE) ? maxReal : MAX_IPC_DATE;
+
+  const desdeEl = document.getElementById('inputDesde');
+  const hastaEl = document.getElementById('inputHasta');
+  if (desdeEl) desdeEl.max = max;
+  if (hastaEl) {
+    hastaEl.max = max;
+    // Si el valor actual del input supera el tope, lo corregimos
+    if (hastaEl.value && hastaEl.value > max) hastaEl.value = max;
   }
 }
 
@@ -878,58 +795,31 @@ async function calcular(montoOverride, desdeOverride, hastaOverride, descripcion
   section.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
 }
 
-// ─── CANASTAS ─────────────────────────────────────────────────────────────
-function renderCanastas() {
-  const grid = document.getElementById('canastasGrid');
-  grid.innerHTML = CANASTAS.map(c => `
-    <button class="canasta-btn" data-id="${c.id}" onclick="loadCanasta('${c.id}')">
-      <div class="canasta-icon">${c.icon}</div>
-      <div class="canasta-name">${c.name}</div>
-      <div class="canasta-ref">${c.ref}</div>
-    </button>
-  `).join('');
-}
-
-function loadCanasta(id) {
-  const c = CANASTAS.find(x => x.id === id);
-  if (!c) return;
-
-  // Marcar activa
-  document.querySelectorAll('.canasta-btn').forEach(b =>
-    b.classList.toggle('active', b.dataset.id === id));
-
-  // Llenar inputs
-  document.getElementById('inputMonto').value = c.monto;
-  document.getElementById('inputDesde').value  = c.desde;
-  // hasta = hoy
-  const hoy = new Date();
-  const hasta = `${hoy.getFullYear()}-${String(hoy.getMonth()+1).padStart(2,'0')}`;
-  document.getElementById('inputHasta').value = hasta;
-
-  calcular(c.monto, c.desde, hasta, c.descripcion);
-}
-
 // ─── INIT ──────────────────────────────────────────────────────────────────
 (function init() {
-  renderCanastas();
+  // "Hasta" por defecto = último mes con datos del INDEC (MAX_IPC_DATE)
+  // "Desde" por defecto = 2 años antes del hasta
+  const hasta = MAX_IPC_DATE;
+  const [yMax, mMax] = MAX_IPC_DATE.split('-').map(Number);
+  const yDesde = yMax - 2;
+  const desde  = `${yDesde}-${String(mMax).padStart(2,'0')}`;
 
-  // Defaults de fechas
-  const hoy  = new Date();
-  const hasta = `${hoy.getFullYear()}-${String(hoy.getMonth()+1).padStart(2,'0')}`;
-  const hace2 = new Date(hoy);
-  hace2.setFullYear(hace2.getFullYear() - 2);
-  const desde = `${hace2.getFullYear()}-${String(hace2.getMonth()+1).padStart(2,'0')}`;
+  const desdeEl = document.getElementById('inputDesde');
+  const hastaEl = document.getElementById('inputHasta');
 
-  document.getElementById('inputDesde').value = desde;
-  document.getElementById('inputHasta').value = hasta;
-  document.getElementById('inputHasta').max   = hasta;
+  desdeEl.value = desde;
+  hastaEl.value = hasta;
+
+  // Tope inicial de ambos inputs: MAX_IPC_DATE.
+  // Cuando cargarIPC() termine, ajustarMaxInputs() puede extenderlo si la
+  // API trae datos más nuevos.
+  desdeEl.max = MAX_IPC_DATE;
+  hastaEl.max = MAX_IPC_DATE;
 
   // Pre-cargar IPC en background
   cargarIPC();
 })();
 </script>
 
-
-<script src="/canuto-nav.js"></script>
 </body>
 </html>
