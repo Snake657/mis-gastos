@@ -1077,9 +1077,9 @@
     Tasa: BCRA Monetarias v4.0 idVariable 44 (TAMAR bancos privados, reemplazo moderno de la TPM).
     Vencimientos: <a href="https://opc.gob.ar" target="_blank" rel="noopener">OPC</a> · Secretaría de Finanzas · FMI MFSM. 2024–2026 reportados; 2027–2032 estimados (pueden variar por refinanciaciones, canjes y nuevos acuerdos).
     Inflación, riesgo país y UVA: <a href="https://argentinadatos.com" target="_blank" rel="noopener">ArgentinaDatos</a> (open source, sin API key).
-    <strong style="color:var(--text2)">EMAE:</strong> serie mensual del INDEC vía <a href="https://apis.datos.gob.ar/series/api/" target="_blank" rel="noopener">API de datos.gob.ar</a> (variación interanual %).
+    <strong style="color:var(--text2)">EMAE:</strong> serie mensual del INDEC (índice base 2004=100, desestacionalizado) vía <a href="https://apis.datos.gob.ar/series/api/" target="_blank" rel="noopener">API de datos.gob.ar</a>, serie 302.3. La variación interanual se calcula en cliente.
     <strong style="color:var(--text2)">PBI per cápita USD:</strong> serie anual desde 1960 vía <a href="https://api.worldbank.org/v2/" target="_blank" rel="noopener">API del World Bank</a> (indicador NY.GDP.PCAP.CD, USD corrientes).
-    <strong style="color:var(--text2)">Merval USD CCL:</strong> Merval en pesos vía estadisticasbcra.com / argentinadatos.com, dividido por la cotización CCL (también de argentinadatos.com). Cálculo en cliente.
+    <strong style="color:var(--text2)">Merval USD CCL:</strong> Yahoo Finance ^MERV proxeado por el worker propio en <code>canuto-dolar.lenzimartin.workers.dev/api/merval</code>. Si el worker devuelve datos en ARS, se divide por la cotización CCL en cliente.
     <strong style="color:var(--text2)">Desocupación:</strong> serie larga del <a href="https://www.indec.gob.ar" target="_blank" rel="noopener">INDEC</a> — EPH puntual GBA 1974-2003 (semestral) + EPH continua nacional 31 aglomerados desde 2003 (trimestral). Las dos series tienen metodología distinta y no son directamente comparables, pero se grafican juntas. Datos hardcodeados con upgrade en vivo desde la <a href="https://apis.datos.gob.ar/series/api/" target="_blank" rel="noopener">API de datos.gob.ar</a> cuando está disponible.
     <br><br>
     <strong style="color:var(--text2)">Pobreza:</strong> dos series superpuestas. La línea roja es la oficial del <a href="https://www.indec.gob.ar" target="_blank" rel="noopener">INDEC</a> (EPH semestral). La línea naranja punteada es la del <a href="https://uca.edu.ar/es/observatorio-de-la-deuda-social-argentina" target="_blank" rel="noopener">Observatorio de la Deuda Social Argentina (UCA)</a>, serie anual independiente de hogares en aglomerados urbanos de más de 80 mil habitantes.
@@ -1124,7 +1124,7 @@
         <button class="range-tab" data-r="TODO">Todo</button>
         <button class="range-tab" data-r="CUSTOM">Rango</button>
       </div>
-      <div class="nota-fuente">INDEC · variación interanual % · mensual</div>
+      <div class="nota-fuente">INDEC · índice 2004=100 desestacionalizado · mensual</div>
     </div>
     <div class="date-range-wrap" id="emae-date-inputs" style="display:none">
       <input type="date" id="emae-desde" />
@@ -2744,7 +2744,9 @@ function updateTicker() {
 // ═══════════════════════════════════════════════════════════════════════════
 // 10. EMAE — Variación interanual mensual desde INDEC vía datos.gob.ar
 // ═══════════════════════════════════════════════════════════════════════════
-const EMAE_API = 'https://apis.datos.gob.ar/series/api/series/?ids=143.3_NO_PR_2004_A_21&format=json&limit=500&representation_mode=value';
+// Serie EMAE desestacionalizada nivel general, mensual base 2004=100, INDEC vía datos.gob.ar.
+// Mostramos el índice en el gráfico y calculamos la variación interanual (% vs hace 12 meses) en cliente.
+const EMAE_API = 'https://apis.datos.gob.ar/series/api/series/?ids=302.3_S_DESEST_NRAL_0_S_19&format=json&limit=500';
 let emaeRaw = [];
 async function loadEmae() {
   try {
@@ -2756,7 +2758,7 @@ async function loadEmae() {
       .filter(([d, v]) => typeof v === 'number')
       .map(([d, v]) => ({
         fecha: d.length === 10 ? d : (d.slice(0,7) + '-15'),
-        valor: +(v * 100).toFixed(2)
+        valor: +v.toFixed(2)
       }))
       .sort((a, b) => a.fecha.localeCompare(b.fecha));
   } catch (e) { emaeRaw = []; throw e; }
@@ -2769,20 +2771,33 @@ function renderEmae(range) {
   const s = calcStats(data, d => d.valor);
   const last = data[data.length - 1];
 
-  setText('val-emae', `${last.valor >= 0 ? '+' : ''}${fmtNum(last.valor)}%`);
-  setText('meta-emae', `Último dato: ${fmtDate(last.fecha)} · variación interanual`);
-  const badge = $('badge-emae');
-  badge.textContent = last.valor >= 0 ? '↑ creciendo' : '↓ contracción';
-  badge.className = `ind-badge ${last.valor >= 0 ? 'badge-pos' : 'badge-neg'}`;
+  // Variación interanual: comparar con el valor de 12 meses atrás en TODA la serie
+  let yoy = null;
+  const lastIdx = emaeRaw.findIndex(d => d.fecha === last.fecha);
+  if (lastIdx >= 12) {
+    const prev = emaeRaw[lastIdx - 12];
+    if (prev && prev.valor) yoy = ((last.valor / prev.valor) - 1) * 100;
+  }
 
-  setText('stat-emae-max', `${s.max >= 0 ? '+' : ''}${fmtNum(s.max)}%`);
+  setText('val-emae', fmtNum(last.valor));
+  setText('meta-emae', `Último dato: ${fmtDate(last.fecha)} · índice base 2004=100, desestacionalizado`);
+  const badge = $('badge-emae');
+  if (yoy !== null) {
+    badge.textContent = `${yoy >= 0 ? '+' : ''}${fmtNum(yoy)}% i.a.`;
+    badge.className = `ind-badge ${badgeCls(yoy, true)}`;
+  } else {
+    badge.textContent = '—';
+    badge.className = 'ind-badge badge-neu';
+  }
+
+  setText('stat-emae-max', fmtNum(s.max));
   setText('stat-emae-max-fecha', fmtDateShort(s.maxItem?.fecha));
-  setText('stat-emae-min', `${s.min >= 0 ? '+' : ''}${fmtNum(s.min)}%`);
+  setText('stat-emae-min', fmtNum(s.min));
   setText('stat-emae-min-fecha', fmtDateShort(s.minItem?.fecha));
 
   $('load-emae').style.display = 'none';
   $('chart-emae').style.display = 'block';
-  makeLineChart('chart-emae', labels, values, '#4ade80', true, '%');
+  makeLineChart('chart-emae', labels, values, '#4ade80', true, '');
 }
 async function initEmae() {
   try {
@@ -2851,10 +2866,10 @@ async function initPbiPc() {
 //     Combina Merval ARS (estadisticasbcra.com) + CCL ARS (argentinadatos.com)
 //     y calcula Merval/CCL en cliente. Si alguna fuente falla, no disponible.
 // ═══════════════════════════════════════════════════════════════════════════
-const MERVAL_ARS_APIS = [
-  'https://api.estadisticasbcra.com/merval',
-  'https://api.argentinadatos.com/v1/finanzas/indices/merval',
-];
+// Merval USD: el worker del user (canuto-dolar.lenzimartin.workers.dev) sirve el ^MERV de
+// Yahoo Finance ya en USD (Yahoo lo expone en "USD spot" del peso). Si el worker no expone
+// el endpoint /api/merval o falla, mostramos "no disponible".
+const MERVAL_API = 'https://canuto-dolar.lenzimartin.workers.dev/api/merval';
 const CCL_API = 'https://api.argentinadatos.com/v1/cotizaciones/dolares/contadoconliqui';
 let mervalRaw = [];
 function _normalizeSerie(j) {
@@ -2884,30 +2899,44 @@ async function _fetchFirstOk(urls) {
 }
 async function loadMerval() {
   try {
-    const [merval, ccl] = await Promise.all([
-      _fetchFirstOk(MERVAL_ARS_APIS),
-      _fetchFirstOk([CCL_API]),
+    // Pedimos las dos series en paralelo: Merval ARS desde el worker + CCL desde argentinadatos
+    const [mervalRes, cclRes] = await Promise.all([
+      fetch(MERVAL_API + '?range=10y', { cache: 'no-store' }),
+      fetch(CCL_API, { cache: 'no-store' }),
     ]);
-    if (!merval.length || !ccl.length) throw new Error('merval/ccl source failed');
+    if (!mervalRes.ok) throw new Error('merval worker http ' + mervalRes.status);
+    if (!cclRes.ok) throw new Error('ccl http ' + cclRes.status);
 
-    // Map CCL por fecha para lookup rápido
-    const cclMap = new Map(ccl.map(c => [c.fecha, c.valor]));
-    const cclSorted = ccl.slice().sort((a,b) => a.fecha.localeCompare(b.fecha));
+    const mervalJson = await mervalRes.json();
+    const cclJson = await cclRes.json();
 
-    // Para cada punto Merval, dividir por CCL del mismo día (o el más cercano anterior)
-    mervalRaw = merval
-      .sort((a,b) => a.fecha.localeCompare(b.fecha))
-      .map(m => {
-        let cclVal = cclMap.get(m.fecha);
-        if (!cclVal) {
-          // buscar CCL con fecha <= m.fecha (más cercano anterior)
-          for (let i = cclSorted.length - 1; i >= 0; i--) {
-            if (cclSorted[i].fecha <= m.fecha) { cclVal = cclSorted[i].valor; break; }
+    const merval = _normalizeSerie(mervalJson);
+    const ccl = _normalizeSerie(cclJson);
+    if (!merval.length || !ccl.length) throw new Error('merval/ccl empty');
+
+    // Si el worker ya devuelve Merval EN USD (campo "moneda":"USD" o si los valores son chicos < 5000),
+    // lo usamos directo. Si está en ARS, dividimos por CCL.
+    const sample = merval[merval.length - 1].valor;
+    const looksLikeUsd = sample < 10000; // Merval USD ronda 1000-3000, ARS ronda 1M-3M
+
+    if (looksLikeUsd) {
+      mervalRaw = merval.sort((a,b) => a.fecha.localeCompare(b.fecha));
+    } else {
+      const cclMap = new Map(ccl.map(c => [c.fecha, c.valor]));
+      const cclSorted = ccl.slice().sort((a,b) => a.fecha.localeCompare(b.fecha));
+      mervalRaw = merval
+        .sort((a,b) => a.fecha.localeCompare(b.fecha))
+        .map(m => {
+          let cclVal = cclMap.get(m.fecha);
+          if (!cclVal) {
+            for (let i = cclSorted.length - 1; i >= 0; i--) {
+              if (cclSorted[i].fecha <= m.fecha) { cclVal = cclSorted[i].valor; break; }
+            }
           }
-        }
-        return cclVal ? { fecha: m.fecha, valor: m.valor / cclVal } : null;
-      })
-      .filter(x => x !== null && isFinite(x.valor));
+          return cclVal ? { fecha: m.fecha, valor: m.valor / cclVal } : null;
+        })
+        .filter(x => x !== null && isFinite(x.valor));
+    }
   } catch (e) { mervalRaw = []; throw e; }
 }
 function renderMerval(range) {
