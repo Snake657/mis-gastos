@@ -226,6 +226,8 @@ const US_ANNUAL = {
   2010:218.056, 2011:224.939, 2012:229.594, 2013:232.957, 2014:236.736, 2015:237.017,
   2016:240.007, 2017:245.120, 2018:251.107, 2019:255.657, 2020:258.811, 2021:270.970,
   2022:292.655, 2023:304.702, 2024:313.689,
+  // 2025: estimación preliminar — se reemplaza automáticamente cuando el live BLS responde
+  2025:321.5,
 };
 
 // Interpola anual → mensual (lineal). Mes 7 = mid-año = valor anual exacto.
@@ -269,11 +271,34 @@ function interpolateMonthly(annualMap) {
       out[`${yA}-${String(m).padStart(2,'0')}`] = v;
     }
   }
-  // Último año: rellenar con vA (no podemos interpolar hacia adelante)
+  // Último año: proyectar usando el slope del año anterior (en vez de aplastar)
   const yLast = years[years.length-1];
   const vLast = annualMap[yLast];
+  const yPrev = years[years.length-2];
+  const vPrev = annualMap[yPrev];
+  const slopeLast = vLast - vPrev; // ritmo anual estimado
   for (let m = 1; m <= 12; m++) {
-    out[`${yLast}-${String(m).padStart(2,'0')}`] = vLast;
+    const monthPos = m - 0.5;
+    const refMonth = 6.5;
+    let v;
+    if (monthPos === refMonth) v = vLast;
+    else if (monthPos < refMonth) {
+      const t = (monthPos + 12 - refMonth) / 12;
+      v = vPrev + t * (vLast - vPrev);
+    } else {
+      const t = (monthPos - refMonth) / 12;
+      v = vLast + t * slopeLast;
+    }
+    out[`${yLast}-${String(m).padStart(2,'0')}`] = v;
+  }
+  // Proyección suave hacia el año actual (si es posterior al último año bakeado)
+  const currYear = new Date().getFullYear();
+  for (let y = yLast + 1; y <= currYear; y++) {
+    for (let m = 1; m <= 12; m++) {
+      const monthsAhead = (y - yLast) * 12 + (m - 7);
+      const v = vLast + (slopeLast / 12) * monthsAhead;
+      out[`${y}-${String(m).padStart(2,'0')}`] = v;
+    }
   }
   return out;
 }
@@ -283,7 +308,7 @@ function interpolateMonthly(annualMap) {
 // ═══════════════════════════════════════════════════════════════════════════
 const COUNTRIES = {
   ar: { name:'Argentina', flag:'🇦🇷', currency:'ARS', sourceShort:'IPC INDEC', sourceLong:'IPC INDEC (Argentina) · serie BCRA', minYear:1943, fallbackMaxYM:'2026-03' },
-  us: { name:'Estados Unidos', flag:'🇺🇸', currency:'USD', sourceShort:'CPI BLS', sourceLong:'CPI-U BLS (USA)', minYear:1913, fallbackMaxYM:'2024-12' },
+  us: { name:'Estados Unidos', flag:'🇺🇸', currency:'USD', sourceShort:'CPI BLS', sourceLong:'CPI-U BLS (USA)', minYear:1913, fallbackMaxYM:(new Date().getFullYear() + '-' + String(new Date().getMonth()+1).padStart(2,'0')) },
 };
 let currentCountry = 'ar';
 const ipcStore = { ar: null, us: null };
