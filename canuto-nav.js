@@ -6,13 +6,14 @@
  */
 (function() {
   const TOOLS = [
-    { id: 'gastos',          label: 'Mis Gastos',       emoji: '💳', href: '/gastos/',          desc: 'Calendario de gastos fijos' },
-    { id: 'retiro',          label: 'Mi Retiro',         emoji: '🏖️', href: '/retiro/',           desc: 'Calculá tu retiro' },
-    { id: 'dolar-en-vivo',   label: 'Dólar en Vivo',    emoji: '💵', href: '/dolar-en-vivo/',    desc: 'Cotizaciones al instante' },
-    { id: 'dolar-historico', label: 'Dólar Histórico',  emoji: '📈', href: '/dolar-historico/',  desc: 'Historial desde 2003' },
-    { id: 'inflaciona',      label: 'Inflacioná',        emoji: '🔥', href: '/inflaciona/',       desc: 'Calculá inflación AR/USA desde 1943' },
-    { id: 'datos-macro',     label: 'Datos Macro',      emoji: '🏛️', href: '/datos-macro/',      desc: 'Reservas, deuda, inflación, riesgo país y más' },
+    { id: 'retiro',          label: 'Mi Retiro',       emoji: '🏖️', href: '/retiro/',          desc: 'Tu número para no trabajar más' },
+    { id: 'gastos',          label: 'Mis Gastos',      emoji: '💳', href: '/gastos/',          desc: 'Calendario de gastos fijos del mes' },
+    { id: 'dolar-en-vivo',   label: 'Dólar en Vivo',   emoji: '💵', href: '/dolar-en-vivo/',   desc: 'Cotizaciones del dólar al instante' },
+    { id: 'dolar-historico', label: 'Dólar Histórico', emoji: '📈', href: '/dolar-historico/', desc: 'Serie histórica del dólar desde 2003' },
+    { id: 'inflaciona',      label: 'Inflacioná',      emoji: '🔥', href: '/inflaciona/',      desc: 'Cuánto subió un precio (AR/USA)' },
+    { id: 'datos-macro',     label: 'Datos Macro',     emoji: '🏛️', href: '/datos-macro/',     desc: 'Indicadores macro de Argentina' },
   ];
+  const CONTACT_EMAIL = 'admin.canuto.ar@gmail.com';
 
   // Detectar página activa por path
   const currentPath = window.location.pathname.replace(/\/$/, '') || '/';
@@ -25,13 +26,14 @@
         z-index: 200;
         background: rgba(13,15,20,0.95);
         backdrop-filter: blur(16px);
+        -webkit-backdrop-filter: blur(16px);
         border-bottom: 1px solid #232736;
         font-family: 'IBM Plex Mono', 'Courier New', monospace;
       }
       .cnav-inner {
         max-width: 1100px;
         margin: 0 auto;
-        padding: 0 20px;
+        padding: 0 16px;
         display: flex;
         align-items: center;
         gap: 0;
@@ -43,7 +45,7 @@
         color: #e8eaf0;
         text-decoration: none;
         letter-spacing: -0.03em;
-        margin-right: 28px;
+        margin-right: 22px;
         white-space: nowrap;
         flex-shrink: 0;
       }
@@ -56,6 +58,7 @@
         scrollbar-width: none;
         -webkit-overflow-scrolling: touch;
         flex: 1;
+        min-width: 0;
       }
       .cnav-tools::-webkit-scrollbar { display: none; }
       .cnav-tool {
@@ -88,11 +91,37 @@
         font-size: 0.85rem;
         line-height: 1;
       }
+      .cnav-contact {
+        flex-shrink: 0;
+        margin-left: 10px;
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        padding: 6px 11px;
+        border-radius: 7px;
+        background: rgba(45,212,191,0.10);
+        border: 1px solid rgba(45,212,191,0.25);
+        color: #2dd4bf;
+        text-decoration: none;
+        font-size: 0.74rem;
+        font-weight: 600;
+        white-space: nowrap;
+        transition: all 0.15s;
+      }
+      .cnav-contact:hover {
+        background: rgba(45,212,191,0.18);
+        border-color: rgba(45,212,191,0.45);
+        color: #5eead4;
+      }
+      .cnav-contact .cnav-emoji { font-size: 0.85rem; line-height: 1; }
       /* Mobile: solo mostrar emoji en pantallas chicas */
-      @media (max-width: 500px) {
+      @media (max-width: 540px) {
         .cnav-tool .cnav-label { display: none; }
-        .cnav-tool { padding: 6px 10px; }
-        .cnav-logo { margin-right: 12px; font-size: 0.85rem; }
+        .cnav-tool { padding: 6px 9px; }
+        .cnav-contact .cnav-label { display: none; }
+        .cnav-contact { padding: 6px 9px; margin-left: 6px; }
+        .cnav-logo { margin-right: 10px; font-size: 0.85rem; }
+        .cnav-inner { padding: 0 12px; }
       }
     </style>
   `;
@@ -119,6 +148,10 @@
           </a>
         `).join('')}
       </div>
+      <a class="cnav-contact" href="mailto:${CONTACT_EMAIL}" title="Escribinos">
+        <span class="cnav-emoji" aria-hidden="true">✉️</span>
+        <span class="cnav-label">Contacto</span>
+      </a>
     </nav>
   `;
 
