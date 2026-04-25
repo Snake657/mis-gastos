@@ -20,485 +20,121 @@
     --text2:      #8b90a4;
     --text3:      #545870;
     --accent:     #4ade80;
-    --accent-dim: rgba(74,222,128,0.10);
-    --blue:       #60a5fa;
-    --blue-dim:   rgba(96,165,250,0.10);
-    --orange:     #fb923c;
-    --orange-dim: rgba(251,146,60,0.10);
-    --purple:     #a78bfa;
     --red:        #f87171;
     --red-dim:    rgba(248,113,113,0.10);
-    --yellow:     #fbbf24;
     --fire:       #f97316;
-    /* Acentos por país */
-    --ar-color:   #6cb3f3;  /* celeste argentino */
-    --us-color:   #4a8ed8;  /* azul USA */
+    --ar-color:   #6cb3f3;
+    --us-color:   #4a8ed8;
   }
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
   html { font-size: 16px; scroll-behavior: smooth; }
-  body {
-    background: var(--bg);
-    color: var(--text);
-    font-family: 'IBM Plex Sans', sans-serif;
-    min-height: 100vh;
-    -webkit-font-smoothing: antialiased;
-  }
-  /* ── NAV ── */
-  nav {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 14px 20px;
-    border-bottom: 1px solid var(--border);
-    position: sticky;
-    top: 0;
-    background: rgba(13,15,20,0.95);
-    backdrop-filter: blur(12px);
-    z-index: 100;
-  }
-  .nav-logo {
-    font-family: 'IBM Plex Mono', monospace;
-    font-weight: 700;
-    font-size: 0.95rem;
-    color: var(--text);
-    text-decoration: none;
-    letter-spacing: -0.03em;
-    flex-shrink: 0;
-  }
-  .nav-logo span { color: var(--accent); }
-  .nav-links {
-    display: flex;
-    gap: 3px;
-    overflow-x: auto;
-    scrollbar-width: none;
-    -webkit-overflow-scrolling: touch;
-  }
-  .nav-links::-webkit-scrollbar { display: none; }
-  .nav-links a {
-    color: var(--text2);
-    text-decoration: none;
-    font-size: 0.72rem;
-    font-family: 'IBM Plex Mono', monospace;
-    padding: 5px 9px;
-    border-radius: 6px;
-    transition: all 0.12s;
-    white-space: nowrap;
-    flex-shrink: 0;
-  }
-  .nav-links a:hover { color: var(--text); background: var(--surface2); }
-  .nav-links a.active { color: var(--bg); background: var(--fire); font-weight: 700; }
+  body { background: var(--bg); color: var(--text); font-family: 'IBM Plex Sans', sans-serif; min-height: 100vh; -webkit-font-smoothing: antialiased; }
   main { max-width: 960px; margin: 0 auto; padding: 36px 20px 80px; }
   /* ── HEADER ── */
-  .eyebrow {
-    font-family: 'IBM Plex Mono', monospace;
-    font-size: 0.68rem;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    color: var(--fire);
-    margin-bottom: 8px;
-  }
-  h1 {
-    font-size: clamp(1.6rem, 4vw, 2.2rem);
-    font-weight: 600;
-    letter-spacing: -0.03em;
-    line-height: 1.1;
-    margin-bottom: 8px;
-  }
+  .eyebrow { font-family: 'IBM Plex Mono', monospace; font-size: 0.68rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--fire); margin-bottom: 8px; }
+  h1 { font-size: clamp(1.6rem, 4vw, 2.2rem); font-weight: 600; letter-spacing: -0.03em; line-height: 1.1; margin-bottom: 8px; }
   .subtitle { color: var(--text2); font-size: 0.9rem; margin-bottom: 24px; line-height: 1.6; }
-
   /* ── COUNTRY TOGGLE ── */
-  .country-toggle {
-    display: flex;
-    gap: 10px;
-    margin-bottom: 16px;
-    flex-wrap: wrap;
-  }
-  .country-btn {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    padding: 10px 16px;
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    color: var(--text2);
-    font-family: 'IBM Plex Sans', sans-serif;
-    font-size: 0.85rem;
-    font-weight: 500;
-    cursor: pointer;
-    transition: all 0.15s;
-    text-align: left;
-    flex: 1;
-    min-width: 200px;
-  }
-  .country-btn:hover {
-    border-color: var(--border2);
-    background: var(--surface2);
-  }
-  .country-btn.active[data-country="ar"] {
-    border-color: var(--ar-color);
-    background: rgba(108,179,243,0.08);
-    color: var(--text);
-  }
-  .country-btn.active[data-country="us"] {
-    border-color: var(--us-color);
-    background: rgba(74,142,216,0.08);
-    color: var(--text);
-  }
-  .country-btn .flag {
-    font-size: 1.6rem;
-    line-height: 1;
-    flex-shrink: 0;
-  }
-  .country-btn .cb-name {
-    display: block;
-    font-weight: 600;
-    font-size: 0.92rem;
-  }
-  .country-btn .cb-src {
-    display: block;
-    font-family: 'IBM Plex Mono', monospace;
-    font-size: 0.65rem;
-    color: var(--text3);
-    margin-top: 2px;
-    letter-spacing: 0.04em;
-  }
+  .country-toggle { display: flex; gap: 10px; margin-bottom: 16px; flex-wrap: wrap; }
+  .country-btn { display: flex; align-items: center; gap: 10px; padding: 10px 16px; background: var(--surface); border: 1px solid var(--border); border-radius: 12px; color: var(--text2); font-family: 'IBM Plex Sans', sans-serif; font-size: 0.85rem; font-weight: 500; cursor: pointer; transition: all 0.15s; text-align: left; flex: 1; min-width: 200px; }
+  .country-btn:hover { border-color: var(--border2); background: var(--surface2); }
+  .country-btn.active[data-country="ar"] { border-color: var(--ar-color); background: rgba(108,179,243,0.08); color: var(--text); }
+  .country-btn.active[data-country="us"] { border-color: var(--us-color); background: rgba(74,142,216,0.08); color: var(--text); }
+  .country-btn .flag { font-size: 1.6rem; line-height: 1; flex-shrink: 0; }
+  .country-btn .cb-name { display: block; font-weight: 600; font-size: 0.92rem; }
+  .country-btn .cb-src { display: block; font-family: 'IBM Plex Mono', monospace; font-size: 0.65rem; color: var(--text3); margin-top: 2px; letter-spacing: 0.04em; }
   .country-btn.active .cb-src { color: var(--text2); }
-
   /* ── CALCULATOR ── */
-  .section-label {
-    font-family: 'IBM Plex Mono', monospace;
-    font-size: 0.65rem;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    color: var(--text3);
-    margin-bottom: 12px;
-  }
-  .calc-card {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 14px;
-    padding: 24px;
-    margin-bottom: 20px;
-  }
-  .calc-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr 1fr auto;
-    gap: 12px;
-    align-items: end;
-  }
-  @media (max-width: 640px) {
+  .section-label { font-family: 'IBM Plex Mono', monospace; font-size: 0.65rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text3); margin-bottom: 12px; }
+  .calc-card { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 24px; margin-bottom: 20px; }
+  .calc-grid { display: grid; grid-template-columns: 1fr 1.3fr 1.3fr auto; gap: 12px; align-items: end; }
+  @media (max-width: 720px) {
     .calc-grid { grid-template-columns: 1fr 1fr; }
     .calc-grid .btn-calcular { grid-column: 1 / -1; }
   }
   .input-group { display: flex; flex-direction: column; gap: 6px; }
-  .input-label {
-    font-family: 'IBM Plex Mono', monospace;
-    font-size: 0.65rem;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    color: var(--text3);
-  }
-  .input-prefix-wrap {
-    display: flex;
-    align-items: center;
-    background: var(--surface2);
-    border: 1px solid var(--border2);
-    border-radius: 8px;
-    overflow: hidden;
-    transition: border-color 0.15s;
-  }
+  .input-label { font-family: 'IBM Plex Mono', monospace; font-size: 0.65rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text3); }
+  .input-prefix-wrap { display: flex; align-items: center; background: var(--surface2); border: 1px solid var(--border2); border-radius: 8px; overflow: hidden; transition: border-color 0.15s; }
   .input-prefix-wrap:focus-within { border-color: var(--fire); }
-  .input-prefix {
-    padding: 0 10px;
-    font-family: 'IBM Plex Mono', monospace;
-    font-size: 0.78rem;
-    color: var(--text3);
-    background: var(--surface);
-    border-right: 1px solid var(--border2);
-    height: 40px;
-    display: flex;
-    align-items: center;
-    white-space: nowrap;
-    font-weight: 600;
-    letter-spacing: 0.04em;
-  }
-  input[type="number"], input[type="month"], select {
-    width: 100%;
-    background: var(--surface2);
-    border: 1px solid var(--border2);
-    border-radius: 8px;
-    padding: 0 12px;
-    height: 40px;
-    color: var(--text);
-    font-family: 'IBM Plex Mono', monospace;
-    font-size: 0.88rem;
-    outline: none;
-    transition: border-color 0.15s;
-    -webkit-appearance: none;
-    appearance: none;
-  }
-  .input-prefix-wrap input[type="number"] {
-    border: none;
-    border-radius: 0;
-    background: transparent;
-    flex: 1;
-    padding: 0 12px;
-  }
-  input[type="number"]:focus, input[type="month"]:focus, select:focus {
-    border-color: var(--fire);
-  }
-  input[type="month"]::-webkit-calendar-picker-indicator {
-    filter: invert(0.5);
-    cursor: pointer;
-  }
-  .btn-calcular {
-    height: 40px;
-    background: var(--fire);
-    color: #fff;
-    border: none;
-    border-radius: 8px;
-    padding: 0 22px;
-    font-family: 'IBM Plex Mono', monospace;
-    font-size: 0.82rem;
-    font-weight: 700;
-    letter-spacing: 0.03em;
-    cursor: pointer;
-    transition: opacity 0.15s, transform 0.1s;
-    white-space: nowrap;
-  }
+  .input-prefix { padding: 0 10px; font-family: 'IBM Plex Mono', monospace; font-size: 0.78rem; color: var(--text3); background: var(--surface); border-right: 1px solid var(--border2); height: 40px; display: flex; align-items: center; white-space: nowrap; font-weight: 600; letter-spacing: 0.04em; }
+  input[type="number"], select { width: 100%; background: var(--surface2); border: 1px solid var(--border2); border-radius: 8px; padding: 0 12px; height: 40px; color: var(--text); font-family: 'IBM Plex Mono', monospace; font-size: 0.88rem; outline: none; transition: border-color 0.15s; -webkit-appearance: none; appearance: none; }
+  .input-prefix-wrap input[type="number"] { border: none; border-radius: 0; background: transparent; flex: 1; padding: 0 12px; }
+  input[type="number"]:focus, select:focus { border-color: var(--fire); }
+  select { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23545870' d='M6 8L1 3h10z'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 10px center; padding-right: 28px; }
+  /* ── PAIR año + mes ── */
+  .ym-pair { display: grid; grid-template-columns: 1fr 1.4fr; gap: 6px; }
+  .ym-pair select { padding-right: 24px; font-size: 0.83rem; }
+  .btn-calcular { height: 40px; background: var(--fire); color: #fff; border: none; border-radius: 8px; padding: 0 22px; font-family: 'IBM Plex Mono', monospace; font-size: 0.82rem; font-weight: 700; letter-spacing: 0.03em; cursor: pointer; transition: opacity 0.15s, transform 0.1s; white-space: nowrap; }
   .btn-calcular:hover { opacity: 0.88; }
   .btn-calcular:active { transform: scale(0.97); }
   .btn-calcular:disabled { opacity: 0.5; cursor: wait; }
   /* ── RESULT ── */
   #result-section { display: none; }
-  .result-banner {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 14px;
-    padding: 28px 24px;
-    margin-bottom: 20px;
-    position: relative;
-    overflow: hidden;
-  }
-  .result-banner::before {
-    content: '';
-    position: absolute;
-    top: 0; left: 0; right: 0;
-    height: 2px;
-    background: var(--fire);
-  }
-  .result-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 16px;
-    margin-bottom: 20px;
-  }
-  @media (max-width: 500px) {
-    .result-grid { grid-template-columns: 1fr 1fr; }
-  }
-  .result-stat .rs-label {
-    font-family: 'IBM Plex Mono', monospace;
-    font-size: 0.63rem;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    color: var(--text3);
-    margin-bottom: 5px;
-  }
-  .result-stat .rs-value {
-    font-family: 'IBM Plex Mono', monospace;
-    font-size: clamp(1rem, 3vw, 1.4rem);
-    font-weight: 700;
-    letter-spacing: -0.02em;
-    line-height: 1;
-  }
+  .result-banner { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 28px 24px; margin-bottom: 20px; position: relative; overflow: hidden; }
+  .result-banner::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px; background: var(--fire); }
+  .result-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-bottom: 20px; }
+  @media (max-width: 500px) { .result-grid { grid-template-columns: 1fr 1fr; } }
+  .result-stat .rs-label { font-family: 'IBM Plex Mono', monospace; font-size: 0.63rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text3); margin-bottom: 5px; }
+  .result-stat .rs-value { font-family: 'IBM Plex Mono', monospace; font-size: clamp(1rem, 3vw, 1.4rem); font-weight: 700; letter-spacing: -0.02em; line-height: 1; }
   .result-stat .rs-value.highlight { color: var(--fire); }
-  .result-stat .rs-sub {
-    font-size: 0.75rem;
-    color: var(--text3);
-    margin-top: 3px;
-  }
-  .result-narrative {
-    font-size: 0.88rem;
-    color: var(--text2);
-    line-height: 1.65;
-    padding-top: 16px;
-    border-top: 1px solid var(--border);
-  }
+  .result-stat .rs-sub { font-size: 0.75rem; color: var(--text3); margin-top: 3px; }
+  .result-narrative { font-size: 0.88rem; color: var(--text2); line-height: 1.65; padding-top: 16px; border-top: 1px solid var(--border); }
   .result-narrative strong { color: var(--text); font-weight: 600; }
   /* ── CHART ── */
-  .chart-card {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 14px;
-    padding: 22px;
-    margin-bottom: 20px;
-  }
-  .chart-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 18px;
-    gap: 12px;
-    flex-wrap: wrap;
-  }
-  .chart-title {
-    font-family: 'IBM Plex Mono', monospace;
-    font-size: 0.75rem;
-    font-weight: 600;
-    color: var(--text2);
-    letter-spacing: 0.02em;
-  }
+  .chart-card { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 22px; margin-bottom: 20px; }
+  .chart-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 18px; gap: 12px; flex-wrap: wrap; }
+  .chart-title { font-family: 'IBM Plex Mono', monospace; font-size: 0.75rem; font-weight: 600; color: var(--text2); letter-spacing: 0.02em; }
   .chart-wrap { position: relative; height: 240px; }
-  /* ── HITOS TABLE ── */
-  .hitos-card {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 14px;
-    overflow: hidden;
-    margin-bottom: 20px;
-  }
-  .hitos-header {
-    padding: 16px 20px;
-    border-bottom: 1px solid var(--border);
-  }
+  /* ── HITOS ── */
+  .hitos-card { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; overflow: hidden; margin-bottom: 20px; }
+  .hitos-header { padding: 16px 20px; border-bottom: 1px solid var(--border); }
   .hitos-header .section-label { margin-bottom: 0; }
   .hitos-table { width: 100%; border-collapse: collapse; }
-  .hitos-table th {
-    font-family: 'IBM Plex Mono', monospace;
-    font-size: 0.63rem;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    color: var(--text3);
-    padding: 10px 20px;
-    text-align: left;
-    border-bottom: 1px solid var(--border);
-  }
-  .hitos-table td {
-    padding: 11px 20px;
-    font-size: 0.83rem;
-    border-bottom: 1px solid var(--border);
-    vertical-align: middle;
-  }
+  .hitos-table th { font-family: 'IBM Plex Mono', monospace; font-size: 0.63rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text3); padding: 10px 20px; text-align: left; border-bottom: 1px solid var(--border); }
+  .hitos-table td { padding: 11px 20px; font-size: 0.83rem; border-bottom: 1px solid var(--border); vertical-align: middle; }
   .hitos-table tr:last-child td { border-bottom: none; }
   .hitos-table tr:hover td { background: var(--surface2); }
-  .hitos-table .td-mono {
-    font-family: 'IBM Plex Mono', monospace;
-    font-size: 0.8rem;
-  }
+  .hitos-table .td-mono { font-family: 'IBM Plex Mono', monospace; font-size: 0.8rem; }
   .hitos-table .td-fire { color: var(--fire); font-weight: 700; }
-  /* ── LOADING ── */
-  .loading-msg {
-    text-align: center;
-    padding: 40px 20px;
-    color: var(--text3);
-    font-family: 'IBM Plex Mono', monospace;
-    font-size: 0.8rem;
-  }
-  .spinner {
-    display: inline-block;
-    width: 16px; height: 16px;
-    border: 2px solid var(--border2);
-    border-top-color: var(--fire);
-    border-radius: 50%;
-    animation: spin 0.7s linear infinite;
-    vertical-align: middle;
-    margin-right: 8px;
-  }
-  @keyframes spin { to { transform: rotate(360deg); } }
-  /* ── ERROR ── */
-  .error-msg {
-    background: var(--red-dim);
-    border: 1px solid rgba(248,113,113,0.2);
-    border-radius: 10px;
-    padding: 14px 18px;
-    font-size: 0.83rem;
-    color: var(--red);
-    margin-bottom: 16px;
-    display: none;
-  }
-  /* ── NOTA ── */
-  .nota {
-    font-size: 0.75rem;
-    color: var(--text3);
-    line-height: 1.6;
-    padding: 14px 18px;
-    background: var(--surface2);
-    border-radius: 10px;
-    border: 1px solid var(--border);
-  }
+  /* ── ERROR / NOTA ── */
+  .error-msg { background: var(--red-dim); border: 1px solid rgba(248,113,113,0.2); border-radius: 10px; padding: 14px 18px; font-size: 0.83rem; color: var(--red); margin-bottom: 16px; display: none; }
+  .nota { font-size: 0.75rem; color: var(--text3); line-height: 1.6; padding: 14px 18px; background: var(--surface2); border-radius: 10px; border: 1px solid var(--border); }
   .nota a { color: var(--text2); text-decoration: underline; text-underline-offset: 2px; }
   .nota a:hover { color: var(--text); }
   /* ── FOOTER ── */
-  footer {
-    border-top: 1px solid var(--border);
-    padding: 28px 20px 24px;
-    text-align: center;
-    font-size: 0.78rem;
-    color: var(--text3);
-    background: var(--surface);
-  }
+  footer { border-top: 1px solid var(--border); padding: 28px 20px 24px; text-align: center; font-size: 0.78rem; color: var(--text3); background: var(--surface); }
   footer a { color: var(--text2); text-decoration: none; }
   footer a:hover { color: var(--text); }
-  .footer-tools {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 4px 18px;
-    margin-bottom: 14px;
-    font-family: 'IBM Plex Mono', monospace;
-    font-size: 0.72rem;
-  }
+  .footer-tools { display: flex; flex-wrap: wrap; justify-content: center; gap: 4px 18px; margin-bottom: 14px; font-family: 'IBM Plex Mono', monospace; font-size: 0.72rem; }
   .footer-tools a { color: var(--text2); }
   .footer-tools a:hover { color: var(--text); text-decoration: underline; text-underline-offset: 2px; }
-  .footer-meta {
-    color: var(--text3);
-    font-family: 'IBM Plex Mono', monospace;
-    font-size: 0.7rem;
-  }
+  .footer-meta { color: var(--text3); font-family: 'IBM Plex Mono', monospace; font-size: 0.7rem; }
   .footer-meta a { color: var(--text3); }
   .footer-meta a:hover { color: var(--text2); }
-  /* Animate-in */
-  @keyframes fadeUp {
-    from { opacity: 0; transform: translateY(10px); }
-    to   { opacity: 1; transform: translateY(0); }
-  }
+  @keyframes fadeUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
   .fadein { animation: fadeUp 0.3s ease both; }
 </style>
 </head>
 <body>
 
-<!-- NAV (compartida — se inyecta desde /canuto-nav.js) -->
 <div id="canuto-nav"></div>
 
 <main>
-  <!-- HEADER -->
   <div class="eyebrow">🔥 Herramienta</div>
   <h1>Inflacioná</h1>
-  <p class="subtitle">
-    ¿Cuánto valía algo antes, y cuánto vale hoy? Ingresá un precio del pasado y calculamos a cuánto equivale ajustado por inflación oficial.
-    <strong style="color:var(--text)">Elegí país</strong> abajo y arrancá.
-  </p>
+  <p class="subtitle">¿Cuánto valía algo antes, y cuánto vale hoy? Ingresá un precio del pasado y calculamos a cuánto equivale ajustado por inflación oficial. <strong style="color:var(--text)">Elegí país</strong> abajo y arrancá.</p>
 
-  <!-- COUNTRY TOGGLE -->
   <div class="country-toggle" role="tablist" aria-label="Seleccionar país">
     <button class="country-btn active" data-country="ar" role="tab" aria-selected="true">
       <span class="flag" aria-hidden="true">🇦🇷</span>
-      <span>
-        <span class="cb-name">Argentina</span>
-        <span class="cb-src">IPC INDEC · desde 1943</span>
-      </span>
+      <span><span class="cb-name">Argentina</span><span class="cb-src">IPC INDEC · desde 1943</span></span>
     </button>
     <button class="country-btn" data-country="us" role="tab" aria-selected="false">
       <span class="flag" aria-hidden="true">🇺🇸</span>
-      <span>
-        <span class="cb-name">Estados Unidos</span>
-        <span class="cb-src">CPI-U BLS · desde 1913</span>
-      </span>
+      <span><span class="cb-name">Estados Unidos</span><span class="cb-src">CPI-U BLS · desde 1913</span></span>
     </button>
   </div>
 
-  <!-- CALCULADORA -->
   <div class="calc-card">
     <div class="section-label" style="margin-bottom:16px">Tu consulta</div>
     <div class="calc-grid">
@@ -510,28 +146,31 @@
         </div>
       </div>
       <div class="input-group">
-        <label class="input-label" for="inputDesde">Mes de origen</label>
-        <input type="month" id="inputDesde" />
+        <label class="input-label">Mes de origen</label>
+        <div class="ym-pair">
+          <select id="desdeYear" aria-label="Año de origen"></select>
+          <select id="desdeMonth" aria-label="Mes de origen"></select>
+        </div>
       </div>
       <div class="input-group">
-        <label class="input-label" for="inputHasta">Hasta</label>
-        <input type="month" id="inputHasta" />
+        <label class="input-label">Hasta</label>
+        <div class="ym-pair">
+          <select id="hastaYear" aria-label="Año de destino"></select>
+          <select id="hastaMonth" aria-label="Mes de destino"></select>
+        </div>
       </div>
       <button class="btn-calcular" id="btnCalcular" onclick="calcular()">Calcular →</button>
     </div>
     <div class="error-msg" id="errorMsg"></div>
   </div>
 
-  <!-- RESULTADO -->
   <div id="result-section">
     <div class="result-banner fadein" id="resultBanner">
       <div class="result-grid" id="resultGrid"></div>
       <div class="result-narrative" id="resultNarrative"></div>
     </div>
     <div class="chart-card fadein">
-      <div class="chart-header">
-        <div class="chart-title" id="chartTitle">Evolución del precio ajustado por IPC</div>
-      </div>
+      <div class="chart-header"><div class="chart-title" id="chartTitle">Evolución del precio ajustado</div></div>
       <div class="chart-wrap"><canvas id="myChart"></canvas></div>
     </div>
     <div class="hitos-card fadein" id="hitosCard" style="display:none">
@@ -540,17 +179,16 @@
     </div>
   </div>
 
-  <!-- NOTA -->
-  <div class="nota" id="notaFuente" style="margin-top: 8px;">
-    📊 <strong style="color:var(--text2)">Argentina:</strong> serie histórica de variación mensual del IPC publicada por el <a href="https://www.bcra.gob.ar/" target="_blank" rel="noopener">BCRA</a> (Monetarias var. 27, datos del INDEC desde marzo 1943). Fallback: <a href="https://datos.gob.ar/dataset/sspm-indice-precios-al-consumidor-nacional-ipc" target="_blank" rel="noopener">datos.gob.ar</a> (índice nivel general desde 2017).
-    <strong style="color:var(--text2)">EE.UU.:</strong> CPI-U (Consumer Price Index for All Urban Consumers) del <a href="https://www.bls.gov/cpi/" target="_blank" rel="noopener">Bureau of Labor Statistics</a>, serie CUUR0000SA0 desde enero 1913.
+  <div class="nota" style="margin-top: 8px;">
+    📊 <strong style="color:var(--text2)">Argentina:</strong> serie histórica de variación mensual del IPC publicada por el <a href="https://www.bcra.gob.ar/" target="_blank" rel="noopener">BCRA</a> (Monetarias var. 27, datos del INDEC desde marzo 1943). Fallback: <a href="https://datos.gob.ar/dataset/sspm-indice-precios-al-consumidor-nacional-ipc" target="_blank" rel="noopener">datos.gob.ar</a>.
+    <strong style="color:var(--text2)">EE.UU.:</strong> CPI-U Annual Average del <a href="https://www.bls.gov/cpi/" target="_blank" rel="noopener">BLS</a> (serie CUUR0000SA0) desde 1913, embebido en la página + interpolación lineal a meses. El último año intenta refrescarse en vivo del BLS si está disponible (con cache de 24h para no saturar la API pública sin auth).
     <br><br>
-    ⚠️ <strong style="color:var(--text2)">Importante sobre Argentina 2007–2015:</strong> durante este período el INDEC fue intervenido políticamente y los datos publicados subreportaban la inflación real (la "inflación oficial" rondaba el 9% anual mientras que mediciones privadas e IPC Congreso reportaban 22-28%). La serie usada acá refleja esos valores oficiales tal como fueron publicados. Para cálculos que crucen ese período, considerá que el resultado puede subestimar la inflación real.
+    ⚠️ <strong style="color:var(--text2)">Argentina 2007–2015:</strong> el INDEC fue intervenido políticamente y los datos publicados subreportaban la inflación real (~9% anual oficial vs 22-28% mediciones privadas). La serie acá refleja los valores oficiales tal como fueron publicados; cálculos que crucen ese período pueden subestimar la inflación real.
   </div>
 </main>
 
 <footer>
-  <div class="footer-tools" aria-label="Herramientas">
+  <div class="footer-tools">
     <a href="/gastos/">💳 Mis Gastos</a>
     <a href="/retiro/">🏖️ Mi Retiro</a>
     <a href="/dolar-en-vivo/">💵 Dólar en Vivo</a>
@@ -558,47 +196,101 @@
     <a href="/inflaciona/">🔥 Inflacioná</a>
     <a href="/datos-macro/">🏛️ Datos Macro</a>
   </div>
-  <div class="footer-meta">
-    <a href="/">canuto.ar</a> © 2026 · Hecho en Argentina 🇦🇷
-  </div>
+  <div class="footer-meta"><a href="/">canuto.ar</a> © 2026 · Hecho en Argentina 🇦🇷</div>
 </footer>
 
 <script>
 'use strict';
 
 // ═══════════════════════════════════════════════════════════════════════════
+// CPI USA ANUAL (BLS CUUR0000SA0, "All Urban Consumers, US City Average",
+// promedios anuales, base 1982–84 = 100). Datos públicos del BLS.
+// Embebido para no depender del rate limit de la API pública (25 req/día sin auth).
+// El último año intenta refrescarse en vivo del BLS con cache de 24h.
+// ═══════════════════════════════════════════════════════════════════════════
+const US_ANNUAL = {
+  1913:9.9,   1914:10.0,  1915:10.1,  1916:10.9,  1917:12.8,  1918:15.1,  1919:17.3,
+  1920:20.0,  1921:17.9,  1922:16.8,  1923:17.1,  1924:17.1,  1925:17.5,  1926:17.7,
+  1927:17.4,  1928:17.1,  1929:17.1,  1930:16.7,  1931:15.2,  1932:13.7,  1933:13.0,
+  1934:13.4,  1935:13.7,  1936:13.9,  1937:14.4,  1938:14.1,  1939:13.9,  1940:14.0,
+  1941:14.7,  1942:16.3,  1943:17.3,  1944:17.6,  1945:18.0,  1946:19.5,  1947:22.3,
+  1948:24.1,  1949:23.8,  1950:24.1,  1951:26.0,  1952:26.5,  1953:26.7,  1954:26.9,
+  1955:26.8,  1956:27.2,  1957:28.1,  1958:28.9,  1959:29.1,  1960:29.6,  1961:29.9,
+  1962:30.2,  1963:30.6,  1964:31.0,  1965:31.5,  1966:32.4,  1967:33.4,  1968:34.8,
+  1969:36.7,  1970:38.8,  1971:40.5,  1972:41.8,  1973:44.4,  1974:49.3,  1975:53.8,
+  1976:56.9,  1977:60.6,  1978:65.2,  1979:72.6,  1980:82.4,  1981:90.9,  1982:96.5,
+  1983:99.6,  1984:103.9, 1985:107.6, 1986:109.6, 1987:113.6, 1988:118.3, 1989:124.0,
+  1990:130.7, 1991:136.2, 1992:140.3, 1993:144.5, 1994:148.2, 1995:152.4, 1996:156.9,
+  1997:160.5, 1998:163.0, 1999:166.6, 2000:172.2, 2001:177.1, 2002:179.9, 2003:184.0,
+  2004:188.9, 2005:195.3, 2006:201.6, 2007:207.342, 2008:215.303, 2009:214.537,
+  2010:218.056, 2011:224.939, 2012:229.594, 2013:232.957, 2014:236.736, 2015:237.017,
+  2016:240.007, 2017:245.120, 2018:251.107, 2019:255.657, 2020:258.811, 2021:270.970,
+  2022:292.655, 2023:304.702, 2024:313.689,
+};
+
+// Interpola anual → mensual (lineal). Mes 7 = mid-año = valor anual exacto.
+// Genera índices para todos los meses entre el primer y el último año.
+function interpolateMonthly(annualMap) {
+  const years = Object.keys(annualMap).map(Number).sort((a,b)=>a-b);
+  const out = {};
+  for (let i = 0; i < years.length - 1; i++) {
+    const yA = years[i], yB = years[i+1];
+    const vA = annualMap[yA], vB = annualMap[yB];
+    // Asumimos que el promedio anual = valor del mes 6.5 (entre junio y julio)
+    // Valor en mes m del año Y se interpola entre (Y, jul) y (Y+1, jul)
+    for (let m = 1; m <= 12; m++) {
+      // Mes 7 del año Y → vA. Mes 7 del año Y+1 → vB.
+      // Para mes m del año Y: posición = (m - 7) / 12 entre vA y vB, capada
+      let frac;
+      let yKey;
+      if (m >= 7) { frac = (m - 7) / 12; yKey = yA; }
+      else { frac = (m + 5) / 12; yKey = yA; }  // m=1: (1-7)/12 = -0.5 → no, mejor (m+5)/12
+      // Actually: m=1 está 6 meses ANTES del mes 7 → frac negativo desde vA, o frac positivo desde el año previo
+      // Simplifico: usamos puntos (Y, 6.5) con valor vA; entre (Y,6.5) y (Y+1,6.5) interpolamos.
+      const monthPos = m - 0.5;             // posición dentro del año (0.5 a 11.5)
+      const refMonth = 6.5;                 // mes "centro" donde anual = mensual
+      let v;
+      if (monthPos === refMonth) v = vA;
+      else if (monthPos > refMonth) {
+        const t = (monthPos - refMonth) / 12;
+        v = vA + t * (vB - vA);
+      } else {
+        // anterior al mes 6.5: interpolamos hacia el año previo
+        if (i === 0) {
+          // primer año, no hay anterior — extrapolamos con la pendiente vA→vB
+          const t = (monthPos - refMonth) / 12;
+          v = vA + t * (vB - vA);
+        } else {
+          const yPrev = years[i-1], vPrev = annualMap[yPrev];
+          const t = (monthPos + 12 - refMonth) / 12;
+          v = vPrev + t * (vA - vPrev);
+        }
+      }
+      out[`${yA}-${String(m).padStart(2,'0')}`] = v;
+    }
+  }
+  // Último año: rellenar con vA (no podemos interpolar hacia adelante)
+  const yLast = years[years.length-1];
+  const vLast = annualMap[yLast];
+  for (let m = 1; m <= 12; m++) {
+    out[`${yLast}-${String(m).padStart(2,'0')}`] = vLast;
+  }
+  return out;
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
 // CONFIG POR PAÍS
 // ═══════════════════════════════════════════════════════════════════════════
 const COUNTRIES = {
-  ar: {
-    name: 'Argentina',
-    flag: '🇦🇷',
-    currency: 'ARS',
-    sourceShort: 'IPC INDEC',
-    sourceLong: 'IPC INDEC (Argentina) · serie BCRA',
-    minDate: '1943-04',  // BCRA var 27 arranca en 1943-03 con índice base
-    fallbackMaxDate: '2026-03',
-  },
-  us: {
-    name: 'Estados Unidos',
-    flag: '🇺🇸',
-    currency: 'USD',
-    sourceShort: 'CPI BLS',
-    sourceLong: 'CPI-U BLS (USA)',
-    minDate: '1913-01',
-    fallbackMaxDate: '2026-03',
-  },
+  ar: { name:'Argentina', flag:'🇦🇷', currency:'ARS', sourceShort:'IPC INDEC', sourceLong:'IPC INDEC (Argentina) · serie BCRA', minYear:1943, fallbackMaxYM:'2026-03' },
+  us: { name:'Estados Unidos', flag:'🇺🇸', currency:'USD', sourceShort:'CPI BLS', sourceLong:'CPI-U BLS (USA)', minYear:1913, fallbackMaxYM:'2024-12' },
 };
-
 let currentCountry = 'ar';
-const ipcStore = { ar: null, us: null };  // { [yyyy-mm]: índice }
+const ipcStore = { ar: null, us: null };
 const ipcLoading = { ar: false, us: false };
 
 // ═══════════════════════════════════════════════════════════════════════════
 // LOAD AR — IPC INDEC vía BCRA Monetarias var 27 (% mensual desde 1943)
-// Construimos un índice acumulado base 100. Al dividir IPC[hasta]/IPC[desde]
-// el factor es independiente de la base, así que no importa el valor inicial.
-// Fallback: datos.gob.ar (índice ya construido, desde 2017) si BCRA no responde.
 // ═══════════════════════════════════════════════════════════════════════════
 async function loadAR() {
   if (ipcStore.ar || ipcLoading.ar) return ipcStore.ar;
@@ -611,7 +303,6 @@ async function loadAR() {
     const arr = json?.results?.[0]?.detalle || [];
     if (!arr.length) throw new Error('respuesta vacía');
     arr.sort((a,b) => a.fecha < b.fecha ? -1 : 1);
-    // Construir índice acumulado: idx[mes] = idx[mes-1] * (1 + var%/100)
     let idx = 100;
     const out = {};
     for (const d of arr) {
@@ -621,93 +312,89 @@ async function loadAR() {
     ipcStore.ar = out;
     return out;
   } catch (e) {
-    console.warn('AR BCRA fetch falló, intentando fallback datos.gob.ar:', e);
+    console.warn('AR BCRA fetch falló, intentando datos.gob.ar:', e);
     try {
       const url2 = 'https://apis.datos.gob.ar/series/api/series/?ids=148.3_INIVELNAL_DICI_M_26&limit=500&sort=asc&format=json';
       const res2 = await fetch(url2, { cache: 'no-store' });
-      if (!res2.ok) throw new Error('HTTP ' + res2.status);
       const json2 = await res2.json();
       const out = {};
-      for (const [fecha, valor] of json2.data) {
+      for (const [fecha, valor] of (json2.data || [])) {
         if (valor !== null) out[fecha.slice(0,7)] = valor;
       }
       ipcStore.ar = out;
       return out;
-    } catch (e2) {
-      console.warn('AR fallback datos.gob.ar también falló:', e2);
-      throw e2;
-    }
+    } catch (e2) { throw e2; }
   } finally {
     ipcLoading.ar = false;
   }
 }
 
 // ═══════════════════════════════════════════════════════════════════════════
-// LOAD US — BLS chunked + localStorage cache (TTL 30 días)
+// LOAD US — datos anuales bakeados + interpolación + live BLS para año actual
+// El BLS público sin auth limita a 25 req/día → solo 1 request por visita
+// (cache 24h) y solo del año actual. El histórico viene del bake.
 // ═══════════════════════════════════════════════════════════════════════════
-const US_CACHE_KEY = 'canuto_ipc_us_v1';
-const US_CACHE_TTL_MS = 30 * 24 * 3600 * 1000; // 30 días
+const US_LIVE_CACHE_KEY = 'canuto_ipc_us_live_v2';
+const US_LIVE_CACHE_TTL_MS = 24 * 3600 * 1000; // 24h
 
-function getUSCache() {
+function getUSLiveCache() {
   try {
-    const raw = localStorage.getItem(US_CACHE_KEY);
+    const raw = localStorage.getItem(US_LIVE_CACHE_KEY);
     if (!raw) return null;
     const obj = JSON.parse(raw);
     if (!obj.t || !obj.d) return null;
-    if (Date.now() - obj.t > US_CACHE_TTL_MS) return null;
+    if (Date.now() - obj.t > US_LIVE_CACHE_TTL_MS) return null;
     return obj.d;
   } catch { return null; }
 }
-function setUSCache(data) {
-  try {
-    localStorage.setItem(US_CACHE_KEY, JSON.stringify({ t: Date.now(), d: data }));
-  } catch {}
+function setUSLiveCache(data) {
+  try { localStorage.setItem(US_LIVE_CACHE_KEY, JSON.stringify({ t: Date.now(), d: data })); } catch {}
 }
 
-async function loadUS(forceRefresh = false) {
-  if (ipcStore.us && !forceRefresh) return ipcStore.us;
+async function loadUS() {
+  if (ipcStore.us) return ipcStore.us;
   if (ipcLoading.us) {
-    // Ya hay un fetch en curso — espero
-    while (ipcLoading.us) { await new Promise(r => setTimeout(r, 100)); }
+    while (ipcLoading.us) await new Promise(r => setTimeout(r, 100));
     return ipcStore.us;
   }
-
-  // 1) cache
-  if (!forceRefresh) {
-    const cached = getUSCache();
-    if (cached) { ipcStore.us = cached; return cached; }
-  }
-
   ipcLoading.us = true;
   try {
+    // 1) Base interpolada del histórico bakeado
+    const base = interpolateMonthly(US_ANNUAL);
+
+    // 2) Intentar live update del año actual (con cache 24h)
     const yearNow = new Date().getFullYear();
-    // Chunks de 10 años desde 1913 hasta el año actual (BLS limit)
-    const chunks = [];
-    for (let y = 1913; y <= yearNow; y += 10) {
-      chunks.push({ start: y, end: Math.min(y + 9, yearNow) });
-    }
-    // Fetch en paralelo
-    const results = await Promise.allSettled(chunks.map(c =>
-      fetch(`https://api.bls.gov/publicAPI/v2/timeseries/data/CUUR0000SA0?startyear=${c.start}&endyear=${c.end}`)
-        .then(r => r.json())
-    ));
-    const out = {};
-    for (const r of results) {
-      if (r.status !== 'fulfilled') continue;
-      const data = r.value?.Results?.series?.[0]?.data || [];
-      for (const d of data) {
-        const m = d.period.replace('M','');
-        if (m === '13') continue; // anual, ignorar
-        out[`${d.year}-${m}`] = parseFloat(d.value);
+    let liveData = getUSLiveCache();
+    if (!liveData) {
+      try {
+        const r = await fetch(`https://api.bls.gov/publicAPI/v2/timeseries/data/CUUR0000SA0?startyear=${yearNow}&endyear=${yearNow}`);
+        const j = await r.json();
+        if (j?.status === 'REQUEST_SUCCEEDED') {
+          const arr = j?.Results?.series?.[0]?.data || [];
+          const live = {};
+          for (const d of arr) {
+            const m = d.period.replace('M','');
+            if (m === '13') continue;
+            live[`${d.year}-${m}`] = parseFloat(d.value);
+          }
+          if (Object.keys(live).length) {
+            liveData = live;
+            setUSLiveCache(live);
+          }
+        } else {
+          console.info('BLS rate limited o error:', j?.message);
+        }
+      } catch (e) {
+        console.warn('BLS fetch falló (uso solo bakeado):', e);
       }
     }
-    if (!Object.keys(out).length) throw new Error('BLS no devolvió datos');
-    ipcStore.us = out;
-    setUSCache(out);
-    return out;
-  } catch (e) {
-    console.warn('US fetch falló:', e);
-    throw e;
+
+    // 3) Merge: live data REEMPLAZA al interpolado donde haya valores
+    const merged = { ...base };
+    if (liveData) for (const k in liveData) merged[k] = liveData[k];
+
+    ipcStore.us = merged;
+    return merged;
   } finally {
     ipcLoading.us = false;
   }
@@ -720,7 +407,7 @@ async function ensureLoaded(country) {
   const btn = document.getElementById('btnCalcular');
   const oldText = btn.textContent;
   btn.disabled = true;
-  btn.textContent = country === 'us' ? 'Cargando BLS…' : 'Cargando INDEC…';
+  btn.textContent = country === 'us' ? 'Cargando datos USA…' : 'Cargando INDEC…';
   try {
     if (country === 'ar') await loadAR();
     else await loadUS();
@@ -732,61 +419,11 @@ async function ensureLoaded(country) {
 }
 
 // ═══════════════════════════════════════════════════════════════════════════
-// CHART
-// ═══════════════════════════════════════════════════════════════════════════
-let myChart = null;
-function renderChart(labels, values) {
-  const ctx = document.getElementById('myChart').getContext('2d');
-  if (myChart) myChart.destroy();
-  myChart = new Chart(ctx, {
-    type: 'line',
-    data: {
-      labels,
-      datasets: [{
-        label: 'Precio ajustado',
-        data: values,
-        borderColor: '#f97316',
-        backgroundColor: 'rgba(249,115,22,0.08)',
-        borderWidth: 2.5,
-        pointRadius: values.length > 36 ? 0 : 3,
-        pointHoverRadius: 5,
-        pointBackgroundColor: '#f97316',
-        fill: true,
-        tension: 0.3,
-      }]
-    },
-    options: {
-      responsive: true, maintainAspectRatio: false,
-      interaction: { mode: 'index', intersect: false },
-      plugins: {
-        legend: { display: false },
-        tooltip: {
-          backgroundColor: '#1a1e28', borderColor: '#2d3245', borderWidth: 1,
-          titleColor: '#8b90a4', bodyColor: '#e8eaf0',
-          bodyFont: { family: 'IBM Plex Mono', size: 12 },
-          titleFont: { family: 'IBM Plex Mono', size: 11 },
-          callbacks: {
-            label: ctx => COUNTRIES[currentCountry].currency + ' ' + formatNum(ctx.parsed.y),
-          },
-        },
-      },
-      scales: {
-        x: {
-          ticks: { color: '#545870', font: { family: 'IBM Plex Mono', size: 10 }, maxTicksLimit: 10, maxRotation: 0 },
-          grid: { color: 'rgba(35,39,54,0.8)' },
-        },
-        y: {
-          ticks: { color: '#545870', font: { family: 'IBM Plex Mono', size: 10 }, callback: v => formatNum(v) },
-          grid: { color: 'rgba(35,39,54,0.8)' },
-        },
-      },
-    },
-  });
-}
-
-// ═══════════════════════════════════════════════════════════════════════════
 // HELPERS
 // ═══════════════════════════════════════════════════════════════════════════
+const MESES = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
+const MESES_SHORT = ['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];
+
 function formatNum(n) {
   if (n >= 1e9) return (n/1e9).toFixed(2) + 'B';
   if (n >= 1e6) return (n/1e6).toFixed(2) + 'M';
@@ -794,8 +431,7 @@ function formatNum(n) {
 }
 function ymLabel(ym) {
   const [y, m] = ym.split('-');
-  const meses = ['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];
-  return meses[parseInt(m,10) - 1] + ' ' + y;
+  return MESES_SHORT[parseInt(m,10) - 1] + ' ' + y;
 }
 function ymToMonths(ym) {
   const [y, m] = ym.split('-').map(Number);
@@ -814,53 +450,135 @@ function mostrarError(msg) {
   window.__errTimer = setTimeout(() => el.style.display = 'none', 6000);
 }
 
+// ─── Dropdown helpers ────────────────────────────────────────────────────
+function getYM(prefix) {
+  // prefix = 'desde' | 'hasta'
+  const y = document.getElementById(prefix + 'Year').value;
+  const m = document.getElementById(prefix + 'Month').value;
+  if (!y || !m) return '';
+  return `${y}-${m}`;
+}
+function setYM(prefix, ym) {
+  if (!ym) return;
+  const [y, m] = ym.split('-');
+  const ySel = document.getElementById(prefix + 'Year');
+  const mSel = document.getElementById(prefix + 'Month');
+  // Si el year no está disponible en las options, lo agregamos
+  if (![...ySel.options].some(o => o.value === y)) {
+    const opt = document.createElement('option');
+    opt.value = y; opt.textContent = y;
+    ySel.appendChild(opt);
+  }
+  ySel.value = y;
+  mSel.value = m;
+}
+function populateYearDropdowns(country) {
+  const cfg = COUNTRIES[country];
+  const data = ipcStore[country];
+  // Determinar yearMax basado en datos si los hay, sino fallback
+  let yearMax;
+  if (data) {
+    const keys = Object.keys(data).sort();
+    yearMax = parseInt(keys[keys.length-1].split('-')[0], 10);
+  } else {
+    yearMax = parseInt(cfg.fallbackMaxYM.split('-')[0], 10);
+  }
+  const yearMin = cfg.minYear;
+  for (const prefix of ['desde', 'hasta']) {
+    const sel = document.getElementById(prefix + 'Year');
+    const prevValue = sel.value;
+    sel.innerHTML = '';
+    for (let y = yearMax; y >= yearMin; y--) {
+      const opt = document.createElement('option');
+      opt.value = String(y);
+      opt.textContent = String(y);
+      sel.appendChild(opt);
+    }
+    // Restaurar el valor previo si está en el rango
+    if (prevValue && parseInt(prevValue,10) >= yearMin && parseInt(prevValue,10) <= yearMax) {
+      sel.value = prevValue;
+    }
+  }
+}
+function populateMonthDropdowns() {
+  for (const prefix of ['desde', 'hasta']) {
+    const sel = document.getElementById(prefix + 'Month');
+    if (sel.options.length) continue;
+    for (let m = 1; m <= 12; m++) {
+      const opt = document.createElement('option');
+      opt.value = String(m).padStart(2,'0');
+      opt.textContent = MESES[m-1];
+      sel.appendChild(opt);
+    }
+  }
+}
+
 // ═══════════════════════════════════════════════════════════════════════════
 // COUNTRY SWITCH
 // ═══════════════════════════════════════════════════════════════════════════
 function switchCountry(country) {
   if (!COUNTRIES[country] || country === currentCountry) return;
+  // Guardar el YM actual antes de switchear
+  const desdeYM = getYM('desde');
+  const hastaYM = getYM('hasta');
   currentCountry = country;
   document.querySelectorAll('.country-btn').forEach(b => {
     const isActive = b.dataset.country === country;
     b.classList.toggle('active', isActive);
     b.setAttribute('aria-selected', isActive ? 'true' : 'false');
   });
-  // Currency prefix
   document.getElementById('currencyPrefix').textContent = COUNTRIES[country].currency;
-  // Min de los inputs
-  const desdeEl = document.getElementById('inputDesde');
-  const hastaEl = document.getElementById('inputHasta');
-  desdeEl.min = COUNTRIES[country].minDate;
-  hastaEl.min = COUNTRIES[country].minDate;
-  // Si el desde actual es anterior al min nuevo, ajusto
-  if (desdeEl.value && desdeEl.value < COUNTRIES[country].minDate) {
-    desdeEl.value = COUNTRIES[country].minDate;
+  populateYearDropdowns(country);
+  // Restaurar fechas si están dentro del rango del nuevo país
+  const cfg = COUNTRIES[country];
+  if (desdeYM) {
+    const y = parseInt(desdeYM.split('-')[0],10);
+    if (y >= cfg.minYear) setYM('desde', desdeYM);
   }
-  // Ajustar max según el último dato disponible (si hay datos cargados)
-  ajustarMaxInputs();
-  // Limpiar resultado previo
-  const section = document.getElementById('result-section');
-  section.style.display = 'none';
-  // Pre-cargar el nuevo país en background
-  ensureLoaded(country).catch(() => {});
+  if (hastaYM) {
+    const y = parseInt(hastaYM.split('-')[0],10);
+    if (y >= cfg.minYear) setYM('hasta', hastaYM);
+  }
+  document.getElementById('result-section').style.display = 'none';
+  ensureLoaded(country).then(() => populateYearDropdowns(country)).catch(() => {});
 }
 
-// Ajusta el tope de los inputs al último mes disponible para el país actual
-function ajustarMaxInputs() {
-  const data = ipcStore[currentCountry];
-  const fallback = COUNTRIES[currentCountry].fallbackMaxDate;
-  let max = fallback;
-  if (data) {
-    const keys = Object.keys(data).sort();
-    if (keys.length) max = keys[keys.length - 1];
-  }
-  const desdeEl = document.getElementById('inputDesde');
-  const hastaEl = document.getElementById('inputHasta');
-  if (desdeEl) desdeEl.max = max;
-  if (hastaEl) {
-    hastaEl.max = max;
-    if (hastaEl.value && hastaEl.value > max) hastaEl.value = max;
-  }
+// ═══════════════════════════════════════════════════════════════════════════
+// CHART
+// ═══════════════════════════════════════════════════════════════════════════
+let myChart = null;
+function renderChart(labels, values) {
+  const ctx = document.getElementById('myChart').getContext('2d');
+  if (myChart) myChart.destroy();
+  myChart = new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels,
+      datasets: [{
+        label: 'Precio ajustado', data: values,
+        borderColor: '#f97316', backgroundColor: 'rgba(249,115,22,0.08)',
+        borderWidth: 2.5, pointRadius: values.length > 36 ? 0 : 3,
+        pointHoverRadius: 5, pointBackgroundColor: '#f97316', fill: true, tension: 0.3,
+      }]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      interaction: { mode: 'index', intersect: false },
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          backgroundColor: '#1a1e28', borderColor: '#2d3245', borderWidth: 1,
+          titleColor: '#8b90a4', bodyColor: '#e8eaf0',
+          bodyFont: { family: 'IBM Plex Mono', size: 12 }, titleFont: { family: 'IBM Plex Mono', size: 11 },
+          callbacks: { label: ctx => COUNTRIES[currentCountry].currency + ' ' + formatNum(ctx.parsed.y) },
+        },
+      },
+      scales: {
+        x: { ticks: { color: '#545870', font: { family: 'IBM Plex Mono', size: 10 }, maxTicksLimit: 10, maxRotation: 0 }, grid: { color: 'rgba(35,39,54,0.8)' } },
+        y: { ticks: { color: '#545870', font: { family: 'IBM Plex Mono', size: 10 }, callback: v => formatNum(v) }, grid: { color: 'rgba(35,39,54,0.8)' } },
+      },
+    },
+  });
 }
 
 // ═══════════════════════════════════════════════════════════════════════════
@@ -868,22 +586,20 @@ function ajustarMaxInputs() {
 // ═══════════════════════════════════════════════════════════════════════════
 async function calcular() {
   const monto = parseFloat(document.getElementById('inputMonto').value);
-  const desde = document.getElementById('inputDesde').value;
-  const hasta = document.getElementById('inputHasta').value;
+  const desde = getYM('desde');
+  const hasta = getYM('hasta');
   if (!monto || monto <= 0) { mostrarError('Ingresá un monto válido.'); return; }
-  if (!desde) { mostrarError('Elegí el mes de origen.'); return; }
-  if (!hasta) { mostrarError('Elegí el mes de destino.'); return; }
+  if (!desde) { mostrarError('Elegí año y mes de origen.'); return; }
+  if (!hasta) { mostrarError('Elegí año y mes de destino.'); return; }
   if (desde >= hasta) { mostrarError('El mes de origen debe ser anterior al mes de destino.'); return; }
 
-  // Asegurar que los datos del país actual estén cargados
   let ipcData;
-  try {
-    ipcData = await ensureLoaded(currentCountry);
-  } catch (e) {
+  try { ipcData = await ensureLoaded(currentCountry); }
+  catch (e) {
     mostrarError(`No se pudieron cargar los datos de ${COUNTRIES[currentCountry].sourceLong}. Probá de nuevo en un rato.`);
     return;
   }
-  ajustarMaxInputs();
+  populateYearDropdowns(currentCountry);
 
   if (!ipcData) { mostrarError('No hay datos disponibles.'); return; }
 
@@ -896,64 +612,38 @@ async function calcular() {
   const montoFinal = monto * factor;
   const variacion = (factor - 1) * 100;
 
-  // Serie mensual (capada a max ~600 puntos para no congelar Chart.js si pidió mucho histórico)
   const labels = [], values = [];
   const m1 = ymToMonths(desde), m2 = ymToMonths(hasta);
   const totalMonths = m2 - m1 + 1;
   const stride = totalMonths > 600 ? Math.ceil(totalMonths / 600) : 1;
   for (let m = m1; m <= m2; m += stride) {
     const ym = monthsToYM(m);
-    if (ipcData[ym]) {
-      labels.push(ymLabel(ym));
-      values.push(monto * (ipcData[ym] / ipcDesde));
-    }
+    if (ipcData[ym]) { labels.push(ymLabel(ym)); values.push(monto * (ipcData[ym] / ipcDesde)); }
   }
-  // Asegurar que el último punto esté
   if (labels[labels.length-1] !== ymLabel(hasta) && ipcData[hasta]) {
-    labels.push(ymLabel(hasta));
-    values.push(monto * (ipcData[hasta] / ipcDesde));
+    labels.push(ymLabel(hasta)); values.push(monto * (ipcData[hasta] / ipcDesde));
   }
 
-  // Render
   const cur = COUNTRIES[currentCountry].currency;
   const section = document.getElementById('result-section');
   section.style.display = 'block';
   section.innerHTML = `
-    <div class="result-banner fadein" id="resultBanner">
-      <div class="result-grid" id="resultGrid"></div>
-      <div class="result-narrative" id="resultNarrative"></div>
-    </div>
+    <div class="result-banner fadein"><div class="result-grid" id="resultGrid"></div><div class="result-narrative" id="resultNarrative"></div></div>
     <div class="chart-card fadein">
-      <div class="chart-header">
-        <div class="chart-title">Evolución del precio ajustado por ${COUNTRIES[currentCountry].sourceShort} · ${ymLabel(desde)} → ${ymLabel(hasta)} ${COUNTRIES[currentCountry].flag}</div>
-      </div>
+      <div class="chart-header"><div class="chart-title">Evolución del precio ajustado por ${COUNTRIES[currentCountry].sourceShort} · ${ymLabel(desde)} → ${ymLabel(hasta)} ${COUNTRIES[currentCountry].flag}</div></div>
       <div class="chart-wrap"><canvas id="myChart"></canvas></div>
     </div>
     <div class="hitos-card fadein" id="hitosCard" style="display:none">
       <div class="hitos-header"><div class="section-label">Evolución anual</div></div>
       <table class="hitos-table" id="hitosTable"></table>
-    </div>
-  `;
+    </div>`;
 
   const meses = m2 - m1;
   const años = (meses / 12).toFixed(1);
   document.getElementById('resultGrid').innerHTML = `
-    <div class="result-stat">
-      <div class="rs-label">Precio original</div>
-      <div class="rs-value">${cur} ${formatNum(monto)}</div>
-      <div class="rs-sub">${ymLabel(desde)}</div>
-    </div>
-    <div class="result-stat">
-      <div class="rs-label">Equivale a</div>
-      <div class="rs-value highlight">${cur} ${formatNum(montoFinal)}</div>
-      <div class="rs-sub">${ymLabel(hasta)}</div>
-    </div>
-    <div class="result-stat">
-      <div class="rs-label">Inflación acumulada</div>
-      <div class="rs-value highlight">+${variacion.toFixed(1)}%</div>
-      <div class="rs-sub">en ${meses} meses (${años} años)</div>
-    </div>
-  `;
+    <div class="result-stat"><div class="rs-label">Precio original</div><div class="rs-value">${cur} ${formatNum(monto)}</div><div class="rs-sub">${ymLabel(desde)}</div></div>
+    <div class="result-stat"><div class="rs-label">Equivale a</div><div class="rs-value highlight">${cur} ${formatNum(montoFinal)}</div><div class="rs-sub">${ymLabel(hasta)}</div></div>
+    <div class="result-stat"><div class="rs-label">Inflación acumulada</div><div class="rs-value highlight">+${variacion.toFixed(1)}%</div><div class="rs-sub">en ${meses} meses (${años} años)</div></div>`;
 
   const veces = (montoFinal / monto).toFixed(1);
   document.getElementById('resultNarrative').innerHTML =
@@ -961,32 +651,23 @@ async function calcular() {
     `algo que en <strong>${ymLabel(desde)}</strong> costaba <strong>${cur} ${formatNum(monto)}</strong>, ` +
     `necesitaría costar <strong>${cur} ${formatNum(montoFinal)}</strong> en <strong>${ymLabel(hasta)}</strong> para mantener ` +
     `el mismo poder adquisitivo. Eso es <strong>${veces}x</strong> el valor original, ` +
-    `con una inflación acumulada de <strong>+${variacion.toFixed(1)}%</strong> ` +
-    `según el ${COUNTRIES[currentCountry].sourceLong}.`;
+    `con una inflación acumulada de <strong>+${variacion.toFixed(1)}%</strong> según el ${COUNTRIES[currentCountry].sourceLong}.`;
 
-  // Tabla anual (cada 1 enero entre desde y hasta)
+  // Tabla anual
   const años_hitos = [];
   const y1 = parseInt(desde.split('-')[0], 10);
   const y2 = parseInt(hasta.split('-')[0], 10);
   for (let y = y1; y <= y2; y++) {
     const m = y === y1 ? desde.split('-')[1] : '01';
     const ym = `${y}-${m}`;
-    if (ipcData[ym]) {
-      años_hitos.push({ ym, valor: monto * (ipcData[ym] / ipcDesde) });
-    }
+    if (ipcData[ym]) años_hitos.push({ ym, valor: monto * (ipcData[ym] / ipcDesde) });
   }
   if (años_hitos.length > 2) {
     const tbody = años_hitos.map((h, i) => {
       const inflAnual = i === 0 ? '—' : `+${(((h.valor / años_hitos[i-1].valor) - 1) * 100).toFixed(1)}%`;
-      return `<tr>
-        <td class="td-mono">${ymLabel(h.ym)}</td>
-        <td class="td-mono">${cur} ${formatNum(h.valor)}</td>
-        <td class="td-mono td-fire">${inflAnual}</td>
-      </tr>`;
+      return `<tr><td class="td-mono">${ymLabel(h.ym)}</td><td class="td-mono">${cur} ${formatNum(h.valor)}</td><td class="td-mono td-fire">${inflAnual}</td></tr>`;
     }).join('');
-    document.getElementById('hitosTable').innerHTML = `
-      <thead><tr><th>Período</th><th>Precio equiv.</th><th>Var. anual</th></tr></thead>
-      <tbody>${tbody}</tbody>`;
+    document.getElementById('hitosTable').innerHTML = `<thead><tr><th>Período</th><th>Precio equiv.</th><th>Var. anual</th></tr></thead><tbody>${tbody}</tbody>`;
     document.getElementById('hitosCard').style.display = 'block';
   }
 
@@ -998,24 +679,17 @@ async function calcular() {
 // INIT
 // ═══════════════════════════════════════════════════════════════════════════
 (function init() {
-  // Wire toggle
   document.querySelectorAll('.country-btn').forEach(btn => {
     btn.addEventListener('click', () => switchCountry(btn.dataset.country));
   });
-  // Defaults: hasta = último mes "razonable", desde = -2 años
-  const hasta = COUNTRIES.ar.fallbackMaxDate;
-  const [yMax, mMax] = hasta.split('-').map(Number);
-  const desde = `${yMax - 2}-${String(mMax).padStart(2,'0')}`;
-  const desdeEl = document.getElementById('inputDesde');
-  const hastaEl = document.getElementById('inputHasta');
-  desdeEl.value = desde;
-  hastaEl.value = hasta;
-  desdeEl.min = COUNTRIES.ar.minDate;
-  hastaEl.min = COUNTRIES.ar.minDate;
-  desdeEl.max = hasta;
-  hastaEl.max = hasta;
-  // Pre-cargar AR en background (no bloquea)
-  loadAR().then(() => ajustarMaxInputs()).catch(() => {});
+  // Poblar dropdowns iniciales
+  populateMonthDropdowns();
+  populateYearDropdowns('ar');
+  // Defaults: hasta = mar 2026, desde = mar 2024
+  setYM('hasta', COUNTRIES.ar.fallbackMaxYM);
+  setYM('desde', '2024-03');
+  // Pre-cargar AR en background y refrescar dropdowns con yearMax real
+  loadAR().then(() => populateYearDropdowns('ar')).catch(() => {});
 })();
 </script>
 </body>
