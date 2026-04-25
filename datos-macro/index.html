@@ -1074,7 +1074,11 @@
     Tasa: BCRA Monetarias v4.0 idVariable 44 (TAMAR bancos privados, reemplazo moderno de la TPM).
     Vencimientos: <a href="https://opc.gob.ar" target="_blank" rel="noopener">OPC</a> · Secretaría de Finanzas · FMI MFSM. 2024–2026 reportados; 2027–2032 estimados (pueden variar por refinanciaciones, canjes y nuevos acuerdos).
     Inflación, riesgo país y UVA: <a href="https://argentinadatos.com" target="_blank" rel="noopener">ArgentinaDatos</a> (open source, sin API key).
-    Desocupación y pobreza: datos oficiales de <a href="https://www.indec.gob.ar" target="_blank" rel="noopener">INDEC</a> (EPH), curados manualmente en el código (la API de datos.gob.ar para estas series fue inestable). Para actualizarlos: editar las constantes <code>DESOC_DATA</code> y <code>POBREZA_DATA</code> en el HTML.
+    <strong style="color:var(--text2)">Desocupación:</strong> serie larga del <a href="https://www.indec.gob.ar" target="_blank" rel="noopener">INDEC</a> — EPH puntual GBA 1974-2003 (semestral) + EPH continua nacional 31 aglomerados desde 2003 (trimestral). Las dos series tienen metodología distinta y no son directamente comparables, pero se grafican juntas. Datos hardcodeados con upgrade en vivo desde la <a href="https://apis.datos.gob.ar/series/api/" target="_blank" rel="noopener">API de datos.gob.ar</a> cuando está disponible.
+    <br><br>
+    <strong style="color:var(--text2)">Pobreza:</strong> dos series superpuestas. La línea roja es la oficial del <a href="https://www.indec.gob.ar" target="_blank" rel="noopener">INDEC</a> (EPH semestral). La línea naranja punteada es la del <a href="https://uca.edu.ar/es/observatorio-de-la-deuda-social-argentina" target="_blank" rel="noopener">Observatorio de la Deuda Social Argentina (UCA)</a>, serie anual independiente de hogares en aglomerados urbanos de más de 80 mil habitantes.
+    <br><br>
+    ⚠️ <strong style="color:var(--text2)">2007–2015:</strong> el INDEC fue intervenido políticamente. Los datos oficiales de pobreza de ese período (que se muestran en gris punteado) subreportaban la realidad — mediciones privadas y la propia UCA daban valores entre 2 y 3 veces mayores. En 2013 el INDEC dejó de publicar oficialmente y reanudó en 2016 con una metodología nueva. Para actualizar manualmente: editar las constantes <code>DESOC_DATA_PUNTUAL</code>, <code>DESOC_DATA_CONTINUA</code>, <code>POBREZA_INDEC_DATA</code> y <code>POBREZA_UCA_DATA</code> en el HTML.
     Esta herramienta es informativa y no constituye asesoría financiera.
   </div>
 
@@ -2044,31 +2048,92 @@ async function initUVA() {
 //    Para actualizar: agregar el último trimestre cuando INDEC publica
 //    Fuente: https://www.indec.gob.ar/indec/web/Nivel4-Tema-4-31-58
 // ═══════════════════════════════════════════════════════════════════════════
-const DESOC_DATA = [
-  { fecha: '2021-03-31', valor: 10.2 },
-  { fecha: '2021-06-30', valor: 9.6  },
-  { fecha: '2021-09-30', valor: 8.2  },
-  { fecha: '2021-12-31', valor: 7.0  },
-  { fecha: '2022-03-31', valor: 7.0  },
-  { fecha: '2022-06-30', valor: 6.9  },
-  { fecha: '2022-09-30', valor: 7.1  },
-  { fecha: '2022-12-31', valor: 6.3  },
-  { fecha: '2023-03-31', valor: 6.9  },
-  { fecha: '2023-06-30', valor: 6.2  },
-  { fecha: '2023-09-30', valor: 5.7  },
-  { fecha: '2023-12-31', valor: 5.7  },
-  { fecha: '2024-03-31', valor: 7.7  },
-  { fecha: '2024-06-30', valor: 7.6  },
-  { fecha: '2024-09-30', valor: 6.9  },
-  { fecha: '2024-12-31', valor: 6.4  },
-  { fecha: '2025-03-31', valor: 7.9  },
-  { fecha: '2025-06-30', valor: 7.6  },
-  { fecha: '2025-09-30', valor: 6.3  },
-  { fecha: '2025-12-31', valor: 7.5  },
+// ─────────── EPH PUNTUAL · Gran Buenos Aires · ondas mayo/octubre 1974-2003 ───────────
+// En 2003 se reformuló la EPH a "continua" trimestral con cobertura nacional (31 aglomerados).
+// Las dos series no son directamente comparables pero las graficamos juntas.
+const DESOC_DATA_PUNTUAL = [
+  {fecha:'1974-05-15',valor:4.5},{fecha:'1974-10-15',valor:3.4},
+  {fecha:'1975-05-15',valor:3.1},{fecha:'1975-10-15',valor:2.4},
+  {fecha:'1976-05-15',valor:4.4},{fecha:'1976-10-15',valor:4.5},
+  {fecha:'1977-05-15',valor:3.0},{fecha:'1977-10-15',valor:2.0},
+  {fecha:'1978-05-15',valor:3.4},{fecha:'1978-10-15',valor:2.8},
+  {fecha:'1979-05-15',valor:2.5},{fecha:'1979-10-15',valor:2.0},
+  {fecha:'1980-05-15',valor:2.6},{fecha:'1980-10-15',valor:2.5},
+  {fecha:'1981-05-15',valor:4.2},{fecha:'1981-10-15',valor:5.3},
+  {fecha:'1982-05-15',valor:5.7},{fecha:'1982-10-15',valor:5.3},
+  {fecha:'1983-05-15',valor:5.0},{fecha:'1983-10-15',valor:4.7},
+  {fecha:'1984-05-15',valor:4.4},{fecha:'1984-10-15',valor:4.4},
+  {fecha:'1985-05-15',valor:6.3},{fecha:'1985-10-15',valor:5.9},
+  {fecha:'1986-05-15',valor:5.6},{fecha:'1986-10-15',valor:5.2},
+  {fecha:'1987-05-15',valor:5.7},{fecha:'1987-10-15',valor:5.9},
+  {fecha:'1988-05-15',valor:6.5},{fecha:'1988-10-15',valor:6.3},
+  {fecha:'1989-05-15',valor:8.1},{fecha:'1989-10-15',valor:7.6},
+  {fecha:'1990-05-15',valor:8.6},{fecha:'1990-10-15',valor:6.0},
+  {fecha:'1991-05-15',valor:6.9},{fecha:'1991-10-15',valor:6.0},
+  {fecha:'1992-05-15',valor:6.9},{fecha:'1992-10-15',valor:7.0},
+  {fecha:'1993-05-15',valor:9.9},{fecha:'1993-10-15',valor:9.6},
+  {fecha:'1994-05-15',valor:10.7},{fecha:'1994-10-15',valor:12.1},
+  {fecha:'1995-05-15',valor:18.4},{fecha:'1995-10-15',valor:16.6},
+  {fecha:'1996-05-15',valor:17.1},{fecha:'1996-10-15',valor:17.3},
+  {fecha:'1997-05-15',valor:16.1},{fecha:'1997-10-15',valor:13.7},
+  {fecha:'1998-05-15',valor:13.2},{fecha:'1998-10-15',valor:12.4},
+  {fecha:'1999-05-15',valor:14.5},{fecha:'1999-10-15',valor:13.8},
+  {fecha:'2000-05-15',valor:15.4},{fecha:'2000-10-15',valor:14.7},
+  {fecha:'2001-05-15',valor:16.4},{fecha:'2001-10-15',valor:18.3},
+  {fecha:'2002-05-15',valor:21.5},{fecha:'2002-10-15',valor:17.8},
+  {fecha:'2003-05-15',valor:15.6},
 ];
+// ─────────── EPH CONTINUA · 31 aglomerados nacionales · trimestral 2003-presente ───────────
+const DESOC_DATA_CONTINUA = [
+  {fecha:'2003-09-30',valor:16.3},{fecha:'2003-12-31',valor:14.5},
+  {fecha:'2004-03-31',valor:14.4},{fecha:'2004-06-30',valor:14.8},{fecha:'2004-09-30',valor:13.2},{fecha:'2004-12-31',valor:12.1},
+  {fecha:'2005-03-31',valor:13.0},{fecha:'2005-06-30',valor:12.1},{fecha:'2005-09-30',valor:11.1},{fecha:'2005-12-31',valor:10.1},
+  {fecha:'2006-03-31',valor:11.4},{fecha:'2006-06-30',valor:10.4},{fecha:'2006-09-30',valor:10.2},{fecha:'2006-12-31',valor:8.7},
+  {fecha:'2007-03-31',valor:9.8},{fecha:'2007-06-30',valor:8.5},{fecha:'2007-09-30',valor:8.1},{fecha:'2007-12-31',valor:7.5},
+  {fecha:'2008-03-31',valor:8.4},{fecha:'2008-06-30',valor:8.0},{fecha:'2008-09-30',valor:7.8},{fecha:'2008-12-31',valor:7.3},
+  {fecha:'2009-03-31',valor:8.4},{fecha:'2009-06-30',valor:8.8},{fecha:'2009-09-30',valor:9.1},{fecha:'2009-12-31',valor:8.4},
+  {fecha:'2010-03-31',valor:8.3},{fecha:'2010-06-30',valor:7.9},{fecha:'2010-09-30',valor:7.5},{fecha:'2010-12-31',valor:7.3},
+  {fecha:'2011-03-31',valor:7.4},{fecha:'2011-06-30',valor:7.3},{fecha:'2011-09-30',valor:7.2},{fecha:'2011-12-31',valor:6.7},
+  {fecha:'2012-03-31',valor:7.1},{fecha:'2012-06-30',valor:7.2},{fecha:'2012-09-30',valor:7.6},{fecha:'2012-12-31',valor:6.9},
+  {fecha:'2013-03-31',valor:7.9},{fecha:'2013-06-30',valor:7.2},{fecha:'2013-09-30',valor:6.8},{fecha:'2013-12-31',valor:6.4},
+  {fecha:'2014-03-31',valor:7.1},{fecha:'2014-06-30',valor:7.5},{fecha:'2014-09-30',valor:7.5},{fecha:'2014-12-31',valor:6.9},
+  {fecha:'2015-03-31',valor:7.1},{fecha:'2015-06-30',valor:6.6},{fecha:'2015-09-30',valor:5.9},
+  {fecha:'2016-06-30',valor:9.3},{fecha:'2016-09-30',valor:8.5},{fecha:'2016-12-31',valor:7.6},
+  {fecha:'2017-03-31',valor:9.2},{fecha:'2017-06-30',valor:8.7},{fecha:'2017-09-30',valor:8.3},{fecha:'2017-12-31',valor:7.2},
+  {fecha:'2018-03-31',valor:9.1},{fecha:'2018-06-30',valor:9.6},{fecha:'2018-09-30',valor:9.0},{fecha:'2018-12-31',valor:9.1},
+  {fecha:'2019-03-31',valor:10.1},{fecha:'2019-06-30',valor:10.6},{fecha:'2019-09-30',valor:9.7},{fecha:'2019-12-31',valor:8.9},
+  {fecha:'2020-03-31',valor:10.4},{fecha:'2020-06-30',valor:13.1},{fecha:'2020-09-30',valor:11.7},{fecha:'2020-12-31',valor:11.0},
+  {fecha:'2021-03-31',valor:10.2},{fecha:'2021-06-30',valor:9.6},{fecha:'2021-09-30',valor:8.2},{fecha:'2021-12-31',valor:7.0},
+  {fecha:'2022-03-31',valor:7.0},{fecha:'2022-06-30',valor:6.9},{fecha:'2022-09-30',valor:7.1},{fecha:'2022-12-31',valor:6.3},
+  {fecha:'2023-03-31',valor:6.9},{fecha:'2023-06-30',valor:6.2},{fecha:'2023-09-30',valor:5.7},{fecha:'2023-12-31',valor:5.7},
+  {fecha:'2024-03-31',valor:7.7},{fecha:'2024-06-30',valor:7.6},{fecha:'2024-09-30',valor:6.9},{fecha:'2024-12-31',valor:6.4},
+  {fecha:'2025-03-31',valor:7.9},{fecha:'2025-06-30',valor:7.6},{fecha:'2025-09-30',valor:6.3},{fecha:'2025-12-31',valor:7.5},
+];
+const DESOC_DATA = DESOC_DATA_PUNTUAL.concat(DESOC_DATA_CONTINUA);
+
 let desocRaw = [];
+// API datos.gob.ar — desempleo trimestral EPH continua. Si funciona, mergeamos
+// los puntos posteriores al último valor hardcoded. Si falla, fallback silencioso.
+const DESOC_API = 'https://apis.datos.gob.ar/series/api/series/?ids=42.3_TPE_0_T_27&format=json&limit=200&representation_mode=value';
 async function loadDesocupacion() {
   desocRaw = DESOC_DATA.slice();
+  try {
+    const ctrl = new AbortController();
+    const t = setTimeout(()=>ctrl.abort(), 4000);
+    const r = await fetch(DESOC_API, {signal: ctrl.signal});
+    clearTimeout(t);
+    if (!r.ok) return;
+    const j = await r.json();
+    const rows = (j && j.data) || [];
+    if (!rows.length) return;
+    const lastHC = desocRaw[desocRaw.length-1].fecha;
+    rows.forEach(([d, v]) => {
+      if (typeof v === 'number' && d > lastHC) {
+        desocRaw.push({ fecha: d.length === 10 ? d : d.slice(0,10), valor: +(v*1).toFixed(1) });
+      }
+    });
+    desocRaw.sort((a,b)=>a.fecha.localeCompare(b.fecha));
+  } catch(_) { /* fallback silencioso */ }
 }
 function renderDesocupacion(range) {
   const data = sliceByRange('desocupacion', desocRaw, 'fecha', range);
@@ -2081,7 +2146,7 @@ function renderDesocupacion(range) {
   const diff = prev ? (last.valor - prev.valor) : null;
 
   setText('val-desocupacion', `${fmtNum(last.valor)}%`);
-  setText('meta-desocupacion', `Último dato: ${fmtDate(last.fecha)} — EPH trimestral`);
+  setText('meta-desocupacion', `Último dato: ${fmtDate(last.fecha)} — EPH (puntual GBA hasta 2003, continua 31 aglom desde 2003)`);
   const badge = $('badge-desocupacion');
   badge.textContent = diff !== null ? `${diff >= 0 ? '+' : ''}${fmtNum(diff)} pp` : '—';
   badge.className = `ind-badge ${badgeCls(diff, true)}`;
@@ -2110,22 +2175,105 @@ async function initDesocupacion() {
 //    Para actualizar: agregar el último semestre cuando INDEC publica
 //    Fuente: https://www.indec.gob.ar/indec/web/Nivel3-Tema-4-46
 // ═══════════════════════════════════════════════════════════════════════════
-const POBREZA_DATA = [
-  { fecha: '2020-06-30', valor: 40.9 },
-  { fecha: '2020-12-31', valor: 42.0 },
-  { fecha: '2021-06-30', valor: 40.6 },
-  { fecha: '2021-12-31', valor: 37.3 },
-  { fecha: '2022-06-30', valor: 36.5 },
-  { fecha: '2022-12-31', valor: 39.2 },
-  { fecha: '2023-06-30', valor: 40.1 },
-  { fecha: '2023-12-31', valor: 41.7 },
-  { fecha: '2024-12-31', valor: 38.1 },
-  { fecha: '2025-06-30', valor: 31.6 },
-  { fecha: '2025-12-31', valor: 28.2 },
+// ─────────── POBREZA INDEC · % personas bajo línea de pobreza · semestral ───────────
+// 1988-2003: EPH puntual, Gran Buenos Aires (mayo y octubre)
+// 2003-2006: EPH continua, 31 aglomerados — primer y segundo semestre
+// 2007-2012: período de intervención política del INDEC. Los datos oficiales subreportaban
+//            la realidad. Marcados con cuestionado:true para mostrarlos atenuados/punteados.
+// 2013-2015: INDEC dejó de publicar (hueco en la serie).
+// 2016-presente: serie nueva con metodología actualizada y cobertura nacional 31 aglom.
+const POBREZA_INDEC_DATA = [
+  {fecha:'1988-05-15',valor:29.8},{fecha:'1988-10-15',valor:32.3},
+  {fecha:'1989-05-15',valor:25.9},{fecha:'1989-10-15',valor:47.3},
+  {fecha:'1990-05-15',valor:42.5},{fecha:'1990-10-15',valor:33.7},
+  {fecha:'1991-05-15',valor:28.9},{fecha:'1991-10-15',valor:21.5},
+  {fecha:'1992-05-15',valor:19.3},{fecha:'1992-10-15',valor:17.8},
+  {fecha:'1993-05-15',valor:17.7},{fecha:'1993-10-15',valor:16.8},
+  {fecha:'1994-05-15',valor:16.1},{fecha:'1994-10-15',valor:16.1},
+  {fecha:'1995-05-15',valor:18.2},{fecha:'1995-10-15',valor:22.2},
+  {fecha:'1996-05-15',valor:26.7},{fecha:'1996-10-15',valor:27.9},
+  {fecha:'1997-05-15',valor:26.3},{fecha:'1997-10-15',valor:26.0},
+  {fecha:'1998-05-15',valor:24.3},{fecha:'1998-10-15',valor:25.9},
+  {fecha:'1999-05-15',valor:27.1},{fecha:'1999-10-15',valor:26.7},
+  {fecha:'2000-05-15',valor:29.7},{fecha:'2000-10-15',valor:28.9},
+  {fecha:'2001-05-15',valor:32.7},{fecha:'2001-10-15',valor:35.4},
+  {fecha:'2002-05-15',valor:49.7},{fecha:'2002-10-15',valor:57.5},
+  {fecha:'2003-05-15',valor:54.0},{fecha:'2003-10-15',valor:47.8},
+  {fecha:'2004-06-30',valor:44.3},{fecha:'2004-12-31',valor:40.2},
+  {fecha:'2005-06-30',valor:38.5},{fecha:'2005-12-31',valor:33.8},
+  {fecha:'2006-06-30',valor:31.4},{fecha:'2006-12-31',valor:26.9},
+  {fecha:'2007-06-30',valor:23.4,cuestionado:true},{fecha:'2007-12-31',valor:20.6,cuestionado:true},
+  {fecha:'2008-06-30',valor:17.8,cuestionado:true},{fecha:'2008-12-31',valor:15.3,cuestionado:true},
+  {fecha:'2009-06-30',valor:13.9,cuestionado:true},{fecha:'2009-12-31',valor:13.2,cuestionado:true},
+  {fecha:'2010-06-30',valor:12.0,cuestionado:true},{fecha:'2010-12-31',valor:9.9,cuestionado:true},
+  {fecha:'2011-06-30',valor:8.3,cuestionado:true},{fecha:'2011-12-31',valor:6.5,cuestionado:true},
+  {fecha:'2012-06-30',valor:6.5,cuestionado:true},{fecha:'2012-12-31',valor:5.4,cuestionado:true},
+  // 2013-2015: INDEC dejó de publicar oficialmente
+  {fecha:'2016-06-30',valor:32.2},{fecha:'2016-12-31',valor:30.3},
+  {fecha:'2017-06-30',valor:28.6},{fecha:'2017-12-31',valor:25.7},
+  {fecha:'2018-06-30',valor:27.3},{fecha:'2018-12-31',valor:32.0},
+  {fecha:'2019-06-30',valor:35.4},{fecha:'2019-12-31',valor:35.5},
+  {fecha:'2020-06-30',valor:40.9},{fecha:'2020-12-31',valor:42.0},
+  {fecha:'2021-06-30',valor:40.6},{fecha:'2021-12-31',valor:37.3},
+  {fecha:'2022-06-30',valor:36.5},{fecha:'2022-12-31',valor:39.2},
+  {fecha:'2023-06-30',valor:40.1},{fecha:'2023-12-31',valor:41.7},
+  {fecha:'2024-06-30',valor:52.9},{fecha:'2024-12-31',valor:38.1},
+  {fecha:'2025-06-30',valor:31.6},{fecha:'2025-12-31',valor:28.2},
 ];
+
+// ─────────── POBREZA UCA · Observatorio Deuda Social · anual · % personas ───────────
+// Encuesta EDSA: cubre aglomerados urbanos de más de 80 mil habitantes.
+// Serie alternativa que durante 2007-2015 sirvió como contraste a los datos
+// oficiales del INDEC intervenido.
+const POBREZA_UCA_DATA = [
+  {fecha:'2004-12-31',valor:38.9},
+  {fecha:'2005-12-31',valor:34.0},
+  {fecha:'2006-12-31',valor:31.4},
+  {fecha:'2007-12-31',valor:30.0},
+  {fecha:'2008-12-31',valor:28.6},
+  {fecha:'2009-12-31',valor:30.8},
+  {fecha:'2010-12-31',valor:31.8},
+  {fecha:'2011-12-31',valor:31.1},
+  {fecha:'2012-12-31',valor:28.4},
+  {fecha:'2013-12-31',valor:27.5},
+  {fecha:'2014-12-31',valor:28.7},
+  {fecha:'2015-12-31',valor:29.0},
+  {fecha:'2016-12-31',valor:32.9},
+  {fecha:'2017-12-31',valor:31.4},
+  {fecha:'2018-12-31',valor:33.6},
+  {fecha:'2019-12-31',valor:40.8},
+  {fecha:'2020-12-31',valor:44.7},
+  {fecha:'2021-12-31',valor:43.8},
+  {fecha:'2022-12-31',valor:43.6},
+  {fecha:'2023-12-31',valor:49.5},
+  {fecha:'2024-12-31',valor:38.9},
+];
+const POBREZA_DATA = POBREZA_INDEC_DATA;  // alias retrocompat
+
 let pobrezaRaw = [];
+let pobrezaUCA = [];
+// API datos.gob.ar — pobreza personas semestral. Si funciona, mergeamos posteriores.
+const POBREZA_API = 'https://apis.datos.gob.ar/series/api/series/?ids=64.1_T_0_0_5&format=json&limit=200&representation_mode=value';
 async function loadPobreza() {
-  pobrezaRaw = POBREZA_DATA.slice();
+  pobrezaRaw = POBREZA_INDEC_DATA.slice();
+  pobrezaUCA = POBREZA_UCA_DATA.slice();
+  try {
+    const ctrl = new AbortController();
+    const t = setTimeout(()=>ctrl.abort(), 4000);
+    const r = await fetch(POBREZA_API, {signal: ctrl.signal});
+    clearTimeout(t);
+    if (!r.ok) return;
+    const j = await r.json();
+    const rows = (j && j.data) || [];
+    if (!rows.length) return;
+    const lastHC = pobrezaRaw[pobrezaRaw.length-1].fecha;
+    rows.forEach(([d, v]) => {
+      if (typeof v === 'number' && d > lastHC) {
+        pobrezaRaw.push({ fecha: d.length === 10 ? d : d.slice(0,10), valor: +(v*1).toFixed(1) });
+      }
+    });
+    pobrezaRaw.sort((a,b)=>a.fecha.localeCompare(b.fecha));
+  } catch(_) { /* fallback silencioso */ }
 }
 function renderPobreza(range) {
   const data = sliceByRange('pobreza', pobrezaRaw, 'fecha', range);
@@ -2138,7 +2286,7 @@ function renderPobreza(range) {
   const diff = prev ? (last.valor - prev.valor) : null;
 
   setText('val-pobreza', `${fmtNum(last.valor)}%`);
-  setText('meta-pobreza', `Último dato: ${fmtDate(last.fecha)} — EPH semestral`);
+  setText('meta-pobreza', `Último dato: ${fmtDate(last.fecha)} — EPH semestral · línea naranja: UCA (anual)`);
   const badge = $('badge-pobreza');
   badge.textContent = diff !== null ? `${diff >= 0 ? '+' : ''}${fmtNum(diff)} pp` : '—';
   badge.className = `ind-badge ${badgeCls(diff, true)}`;
@@ -2150,9 +2298,96 @@ function renderPobreza(range) {
   const varTotal = s.last - s.first;
   setText('stat-pob-var', `${varTotal >= 0 ? '+' : ''}${fmtNum(varTotal)} pp`);
 
+  // UCA en mismo rango
+  const fIni = data[0].fecha, fFin = data[data.length-1].fecha;
+  const ucaInRange = pobrezaUCA.filter(u => u.fecha >= fIni && u.fecha <= fFin);
+
   $('load-pobreza').style.display = 'none';
   $('chart-pobreza').style.display = 'block';
-  makeLineChart('chart-pobreza', labels, values, '#f87171', true, '%');
+  renderPobrezaChart('chart-pobreza', data, ucaInRange);
+}
+
+// Render multi-línea: INDEC con segmento "cuestionado" en gris/punteado + UCA paralela
+function renderPobrezaChart(canvasId, indecData, ucaData) {
+  const ctx = $(canvasId).getContext('2d');
+  const existing = Chart.getChart(canvasId);
+  if (existing) existing.destroy();
+
+  const labels = indecData.map(d => fmtDateShort(d.fecha));
+  const indecVals = indecData.map(d => d.valor);
+  const cuestArr = indecData.map(d => !!d.cuestionado);
+
+  // Alinear UCA por año con los labels INDEC
+  const ucaVals = labels.map((_, i) => {
+    const fIndec = indecData[i].fecha;
+    const found = ucaData.find(u => u.fecha.slice(0,4) === fIndec.slice(0,4));
+    return found ? found.valor : null;
+  });
+
+  const gradient = ctx.createLinearGradient(0, 0, 0, 230);
+  gradient.addColorStop(0, '#f8717133');
+  gradient.addColorStop(1, '#f8717100');
+
+  new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels,
+      datasets: [
+        {
+          label: 'INDEC (oficial)',
+          data: indecVals,
+          borderColor: '#f87171',
+          borderWidth: 2.2,
+          backgroundColor: gradient,
+          fill: true,
+          tension: 0.3,
+          pointRadius: indecVals.length > 60 ? 0 : 2.5,
+          pointHoverRadius: 5,
+          pointBackgroundColor: indecData.map(d => d.cuestionado ? '#9ca3af' : '#f87171'),
+          segment: {
+            borderColor: ctx => (cuestArr[ctx.p0DataIndex] || cuestArr[ctx.p1DataIndex])
+              ? 'rgba(156,163,175,0.65)' : '#f87171',
+            borderDash: ctx => (cuestArr[ctx.p0DataIndex] || cuestArr[ctx.p1DataIndex])
+              ? [5,4] : [],
+          }
+        },
+        {
+          label: 'UCA (Observatorio Deuda Social)',
+          data: ucaVals,
+          borderColor: '#fb923c',
+          borderWidth: 2,
+          borderDash: [2,3],
+          backgroundColor: 'transparent',
+          fill: false,
+          tension: 0.25,
+          pointRadius: 3,
+          pointHoverRadius: 5,
+          pointBackgroundColor: '#fb923c',
+          spanGaps: true,
+        },
+      ],
+    },
+    options: {
+      ...CHART_OPTS_BASE,
+      plugins: {
+        ...CHART_OPTS_BASE.plugins,
+        legend: { display: true, position: 'top', align: 'end',
+          labels: { color: 'rgba(232,234,240,0.7)', font:{size:11,family:'IBM Plex Mono'},
+            boxWidth: 14, boxHeight: 2, padding: 12 } },
+        tooltip: {
+          ...CHART_OPTS_BASE.plugins.tooltip,
+          callbacks: {
+            label: ctx => {
+              const item = indecData[ctx.dataIndex];
+              const isInd = ctx.datasetIndex === 0;
+              const tag = isInd && item && item.cuestionado ? ' (INDEC intervenido — dato cuestionado)' : '';
+              return ` ${ctx.dataset.label}: ${fmtNum(ctx.parsed.y)}%${tag}`;
+            },
+          },
+        },
+      },
+    },
+  });
 }
 async function initPobreza() {
   try {
