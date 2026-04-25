@@ -2736,9 +2736,6 @@ function updateTicker() {
   initUVA();
   initDesocupacion();
   initPobreza();
-  initEmae();
-  initPbiPc();
-  initMerval();
 })();
 
 // ═══════════════════════════════════════════════════════════════════════════
@@ -2973,6 +2970,14 @@ async function initMerval() {
     setText('load-merval', 'Temporalmente no disponible.');
   }
 }
+
+// ─── Inicializar los 3 indicadores nuevos ──────────────────────
+// Se llama al final del script (NO desde el IIFE inicial) para que
+// las constantes EMAE_API, PBIPC_API, MERVAL_API y los let *Raw
+// ya estén definidos cuando se ejecuten loadEmae/loadPbiPc/loadMerval.
+initEmae();
+initPbiPc();
+initMerval();
 </script>
 
 </body>
