@@ -448,6 +448,10 @@
     .brecha-value.ok { color: var(--green); }
 
     /* ── TOOL NAV ── */
+    .footer-contact-block { margin-top:18px; padding-top:14px; border-top:1px solid var(--border); text-align:center; }
+    .fcb-line { font-family:'IBM Plex Mono',monospace; font-size:.7rem; color:var(--text2); }
+    .fcb-line a { color:var(--accent,#4ade80); text-decoration:none; font-weight:700; }
+    .fcb-line a:hover { text-decoration:underline; }
     .tools-nav {
       margin-top: 40px;
       border-top: 1px solid var(--border);
@@ -749,13 +753,13 @@
   <div class="tools-nav">
     <div class="tools-nav-title">Otras herramientas en canuto.ar</div>
     <div class="tools-nav-grid">
-      <a class="tool-link" href="/gastos/">
-        <span class="tl-emoji">💳</span>
-        <div><div class="tl-name">Mis Gastos</div><div class="tl-desc">Gastos fijos del mes</div></div>
-      </a>
       <a class="tool-link" href="/retiro/">
         <span class="tl-emoji">🏖️</span>
-        <div><div class="tl-name">Mi Retiro</div><div class="tl-desc">Calculá tu retiro</div></div>
+        <div><div class="tl-name">Mi Retiro</div><div class="tl-desc">Tu número para no trabajar más</div></div>
+      </a>
+      <a class="tool-link" href="/gastos/">
+        <span class="tl-emoji">💳</span>
+        <div><div class="tl-name">Mis Gastos</div><div class="tl-desc">Calendario de gastos del mes</div></div>
       </a>
       <a class="tool-link current" href="/dolar-en-vivo/">
         <span class="tl-emoji">💵</span>
@@ -765,6 +769,17 @@
         <span class="tl-emoji">📈</span>
         <div><div class="tl-name">Dólar Histórico</div><div class="tl-desc">Serie desde 2003</div></div>
       </a>
+      <a class="tool-link" href="/inflaciona/">
+        <span class="tl-emoji">🔥</span>
+        <div><div class="tl-name">Inflacioná</div><div class="tl-desc">Cuánto subió un precio</div></div>
+      </a>
+      <a class="tool-link" href="/datos-macro/">
+        <span class="tl-emoji">🏛️</span>
+        <div><div class="tl-name">Datos Macro</div><div class="tl-desc">Indicadores de Argentina</div></div>
+      </a>
+    </div>
+    <div class="footer-contact-block">
+      <span class="fcb-line">¿Comentarios o ideas? Escribinos a <a href="mailto:admin.canuto.ar@gmail.com">admin.canuto.ar@gmail.com</a></span>
     </div>
   </div>
 
@@ -785,6 +800,7 @@
 
 <footer>
   <a href="/">canuto.ar</a> · Herramientas financieras para Argentina 🇦🇷 ·
+  <a href="mailto:admin.canuto.ar@gmail.com">admin.canuto.ar@gmail.com</a> ·
   Datos: <a href="https://dolarapi.com" target="_blank" rel="noopener">DolarApi.com</a>
 </footer>
 
