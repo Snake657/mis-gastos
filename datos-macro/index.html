@@ -1,0 +1,2011 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Datos Macro — Canuto.ar</title>
+  <meta name="description" content="Reservas del BCRA, vencimientos de deuda externa, inflación, riesgo país, tasa, desocupación, pobreza y UVA — Argentina, datos oficiales en tiempo real." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <script defer src="/canuto-nav.js"></script>
+
+  <style>
+    :root {
+      --bg:        #0d0f14;
+      --surface:   #13161e;
+      --surface2:  #1a1e28;
+      --surface3:  #232736;
+      --border:    #232736;
+      --border2:   #2d3245;
+      --text:      #e8eaf0;
+      --text2:     #8b90a4;
+      --text3:     #6b7090;
+      --text4:     #44485c;
+
+      --green:     #4ade80;
+      --green-dim: rgba(74,222,128,0.12);
+      --blue:      #60a5fa;
+      --blue-dim:  rgba(96,165,250,0.12);
+      --orange:    #fb923c;
+      --orange-dim:rgba(251,146,60,0.12);
+      --purple:    #a78bfa;
+      --purple-dim:rgba(167,139,250,0.12);
+      --teal:      #2dd4bf;
+      --teal-dim:  rgba(45,212,191,0.12);
+      --pink:      #f472b6;
+      --pink-dim:  rgba(244,114,182,0.12);
+      --yellow:    #fbbf24;
+      --yellow-dim:rgba(251,191,36,0.12);
+      --red:       #f87171;
+      --red-dim:   rgba(248,113,113,0.12);
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'IBM Plex Sans', sans-serif;
+      min-height: 100vh;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ── TICKER ─────────────────────────────────────────────────── */
+    .ticker-band {
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      overflow: hidden;
+      height: 34px;
+      display: flex;
+      align-items: center;
+    }
+    .ticker-track {
+      display: flex;
+      animation: ticker 45s linear infinite;
+      white-space: nowrap;
+    }
+    .ticker-band:hover .ticker-track { animation-play-state: paused; }
+    @keyframes ticker { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
+    .ticker-item {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 0 24px;
+      border-right: 1px solid var(--border);
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.7rem;
+    }
+    .t-name { color: var(--text4); letter-spacing: 0.08em; font-weight: 600; }
+    .t-val  { color: var(--text);  font-weight: 600; }
+    .t-var.pos { color: var(--green); }
+    .t-var.neg { color: var(--red); }
+    .t-var.neu { color: var(--text4); }
+
+    /* ── MAIN ───────────────────────────────────────────────────── */
+    main { max-width: 980px; margin: 0 auto; padding: 36px 20px 80px; }
+
+    /* ── PAGE HEADER ────────────────────────────────────────────── */
+    .page-head {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 36px;
+      flex-wrap: wrap;
+    }
+    .eyebrow {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.68rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--green);
+      margin-bottom: 8px;
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+    }
+    .live-dot {
+      width: 7px; height: 7px;
+      border-radius: 50%;
+      background: var(--green);
+      animation: pulse 2s ease-in-out infinite;
+      flex-shrink: 0;
+    }
+    @keyframes pulse {
+      0%,100% { opacity:1; transform:scale(1); }
+      50%      { opacity:0.3; transform:scale(0.6); }
+    }
+    h1 {
+      font-size: clamp(1.7rem, 4.5vw, 2.4rem);
+      font-weight: 600;
+      letter-spacing: -0.04em;
+      line-height: 1.05;
+    }
+    .subtitle {
+      color: var(--text2);
+      font-size: 0.9rem;
+      line-height: 1.55;
+      margin-top: 10px;
+      max-width: 580px;
+    }
+    .head-right {
+      flex-shrink: 0;
+      text-align: right;
+    }
+    .refresh-status {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.7rem;
+      color: var(--text4);
+      margin-bottom: 5px;
+    }
+    .refresh-bar-wrap {
+      width: 110px;
+      height: 2px;
+      background: var(--surface3);
+      border-radius: 2px;
+      overflow: hidden;
+      margin-left: auto;
+    }
+    .refresh-bar {
+      height: 100%;
+      background: var(--blue);
+      border-radius: 2px;
+      width: 100%;
+      transition: width 1s linear;
+    }
+    .last-update {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.65rem;
+      color: var(--text4);
+      margin-top: 5px;
+    }
+
+    /* ── NAV INTERNA (anchors a cada sección) ───────────────────── */
+    .toc {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-bottom: 24px;
+      padding-bottom: 18px;
+      border-bottom: 1px dashed var(--border);
+    }
+    .toc a {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.65rem;
+      font-weight: 600;
+      letter-spacing: 0.05em;
+      padding: 5px 10px;
+      border-radius: 6px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      color: var(--text2);
+      text-decoration: none;
+      transition: all 0.12s;
+    }
+    .toc a:hover {
+      color: var(--text);
+      border-color: var(--border2);
+      background: var(--surface2);
+    }
+
+    /* ── INDICADOR SECTION (card) ───────────────────────────────── */
+    .ind-section {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 22px 20px 18px;
+      margin-bottom: 20px;
+      position: relative;
+      overflow: hidden;
+      scroll-margin-top: 80px;
+    }
+    .ind-section::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 3px;
+      border-radius: 16px 16px 0 0;
+    }
+    .ind-section[data-color="green"]::before  { background: var(--green); }
+    .ind-section[data-color="blue"]::before   { background: var(--blue); }
+    .ind-section[data-color="orange"]::before { background: var(--orange); }
+    .ind-section[data-color="purple"]::before { background: var(--purple); }
+    .ind-section[data-color="teal"]::before   { background: var(--teal); }
+    .ind-section[data-color="pink"]::before   { background: var(--pink); }
+    .ind-section[data-color="yellow"]::before { background: var(--yellow); }
+    .ind-section[data-color="red"]::before    { background: var(--red); }
+
+    .ind-header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 14px;
+      margin-bottom: 16px;
+    }
+    .ind-name {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.68rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-bottom: 6px;
+    }
+    .ind-section[data-color="green"]  .ind-name { color: var(--green); }
+    .ind-section[data-color="blue"]   .ind-name { color: var(--blue); }
+    .ind-section[data-color="orange"] .ind-name { color: var(--orange); }
+    .ind-section[data-color="purple"] .ind-name { color: var(--purple); }
+    .ind-section[data-color="teal"]   .ind-name { color: var(--teal); }
+    .ind-section[data-color="pink"]   .ind-name { color: var(--pink); }
+    .ind-section[data-color="yellow"] .ind-name { color: var(--yellow); }
+    .ind-section[data-color="red"]    .ind-name { color: var(--red); }
+
+    .ind-value-row { display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; }
+    .ind-value {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: clamp(1.5rem, 4vw, 2rem);
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      color: var(--text);
+    }
+    .ind-badge {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.7rem;
+      font-weight: 600;
+      padding: 3px 8px;
+      border-radius: 5px;
+    }
+    .badge-pos { background: rgba(74,222,128,0.15);  color: var(--green); }
+    .badge-neg { background: rgba(248,113,113,0.15); color: var(--red); }
+    .badge-neu { background: var(--surface2);        color: var(--text3); }
+    .ind-meta {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.62rem;
+      color: var(--text4);
+      margin-top: 4px;
+    }
+
+    /* ── STAT CARDS (mini) ───────────────────────────────────────── */
+    .ind-stats {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    .stat-card {
+      background: var(--surface2);
+      border-radius: 10px;
+      padding: 10px 14px;
+      min-width: 95px;
+    }
+    .stat-label {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.58rem;
+      color: var(--text4);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-bottom: 4px;
+    }
+    .stat-val {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: var(--text);
+    }
+    .stat-val.pos { color: var(--green); }
+    .stat-val.neg { color: var(--red); }
+    .stat-sub {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.58rem;
+      color: var(--text4);
+      margin-top: 2px;
+    }
+
+    /* ── DIVIDER + TOOLBAR ──────────────────────────────────────── */
+    .ind-divider {
+      border: none;
+      border-top: 1px solid var(--border);
+      margin: 16px 0 14px;
+    }
+    .ind-toolbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    /* ── RANGE TABS ─────────────────────────────────────────────── */
+    .range-tabs {
+      display: flex;
+      gap: 4px;
+      flex-wrap: wrap;
+    }
+    .range-tab {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.68rem;
+      font-weight: 600;
+      padding: 5px 10px;
+      border-radius: 6px;
+      border: 1px solid var(--border);
+      background: transparent;
+      color: var(--text3);
+      cursor: pointer;
+      transition: all 0.12s;
+      white-space: nowrap;
+    }
+    .range-tab:hover { color: var(--text); border-color: var(--border2); }
+    .range-tab.active { border-color: transparent; color: var(--bg); }
+    .ind-section[data-color="green"]  .range-tab.active { background: var(--green); }
+    .ind-section[data-color="blue"]   .range-tab.active { background: var(--blue); }
+    .ind-section[data-color="orange"] .range-tab.active { background: var(--orange); }
+    .ind-section[data-color="purple"] .range-tab.active { background: var(--purple); }
+    .ind-section[data-color="teal"]   .range-tab.active { background: var(--teal); }
+    .ind-section[data-color="pink"]   .range-tab.active { background: var(--pink); }
+    .ind-section[data-color="yellow"] .range-tab.active { background: var(--yellow); }
+    .ind-section[data-color="red"]    .range-tab.active { background: var(--red); }
+
+    /* ── DATE RANGE INPUTS (custom) ──────────────────────────────── */
+    .date-range-wrap {
+      display: flex;
+      gap: 6px;
+      align-items: center;
+      flex-wrap: wrap;
+      margin-top: 10px;
+    }
+    .date-range-wrap input[type="date"] {
+      background: var(--surface2);
+      border: 1px solid var(--border2);
+      border-radius: 6px;
+      padding: 4px 10px;
+      color: var(--text);
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.68rem;
+      outline: none;
+      transition: border-color 0.12s;
+      height: 28px;
+    }
+    .date-range-wrap input[type="date"]:focus { border-color: var(--blue); }
+    .date-range-wrap input[type="date"]::-webkit-calendar-picker-indicator { filter: invert(0.4); cursor: pointer; }
+    .date-sep { color: var(--text4); font-size: 0.7rem; font-family: 'IBM Plex Mono', monospace; }
+
+    /* ── CHART ──────────────────────────────────────────────────── */
+    .chart-wrap {
+      position: relative;
+      height: 230px;
+      margin-top: 14px;
+    }
+    .chart-wrap.tall { height: 280px; }
+    .chart-loading {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100%;
+      color: var(--text3);
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.75rem;
+    }
+    .spinner {
+      display: inline-block;
+      width: 14px; height: 14px;
+      border: 2px solid var(--border2);
+      border-top-color: var(--blue);
+      border-radius: 50%;
+      animation: spin 0.7s linear infinite;
+      vertical-align: middle;
+      margin-right: 8px;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    .nota-fuente {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.62rem;
+      color: var(--text4);
+      font-style: italic;
+    }
+
+    /* ── DEUDA: TOGGLE CHIPS ────────────────────────────────────── */
+    .toggle-chips {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+      margin-top: 12px;
+    }
+    .toggle-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 12px;
+      border-radius: 20px;
+      border: 1px solid var(--border);
+      background: var(--surface2);
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.68rem;
+      font-weight: 600;
+      color: var(--text3);
+      cursor: pointer;
+      transition: all 0.12s;
+      user-select: none;
+    }
+    .toggle-chip .chip-dot {
+      width: 7px; height: 7px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+    .toggle-chip.on  { color: var(--text); border-color: var(--border2); }
+    .toggle-chip.off { opacity: 0.45; }
+
+    /* ── DEUDA: TABLA ────────────────────────────────────────────── */
+    .table-wrap {
+      margin-top: 16px;
+      background: var(--surface2);
+      border-radius: 10px;
+      overflow: hidden;
+    }
+    .table-wrap-header {
+      padding: 12px 16px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    .table-scroll { overflow-x: auto; }
+    .data-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.82rem;
+    }
+    .data-table th {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.58rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--text4);
+      padding: 9px 14px;
+      text-align: right;
+      border-bottom: 1px solid var(--border);
+      white-space: nowrap;
+    }
+    .data-table th:first-child { text-align: left; }
+    .data-table td {
+      padding: 10px 14px;
+      border-bottom: 1px solid var(--border);
+      text-align: right;
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.74rem;
+      vertical-align: middle;
+      white-space: nowrap;
+    }
+    .data-table td:first-child {
+      text-align: left;
+      color: var(--text2);
+      font-size: 0.78rem;
+      font-family: 'IBM Plex Sans', sans-serif;
+    }
+    .data-table tr:last-child td { border-bottom: none; }
+    .data-table tr:hover td { background: rgba(35,39,54,0.5); }
+    .data-table .td-total { font-weight: 700; color: var(--text); }
+    .data-table .highlight-row td { background: rgba(96,165,250,0.05); }
+    .data-table .highlight-row:hover td { background: rgba(96,165,250,0.10); }
+    .td-bar-wrap {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 8px;
+    }
+    .td-bar {
+      height: 4px;
+      border-radius: 2px;
+      flex-shrink: 0;
+    }
+
+    /* ── DEUDA: LEGEND ───────────────────────────────────────────── */
+    .legend-row {
+      display: flex;
+      gap: 14px;
+      flex-wrap: wrap;
+      margin-top: 14px;
+    }
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.66rem;
+      color: var(--text4);
+    }
+    .legend-dot {
+      width: 10px; height: 10px;
+      border-radius: 2px;
+      flex-shrink: 0;
+    }
+
+    /* ── NOTA FOOTER ─────────────────────────────────────────────── */
+    .nota-final {
+      font-size: 0.74rem;
+      color: var(--text3);
+      line-height: 1.65;
+      padding: 14px 18px;
+      background: var(--surface);
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      margin-top: 24px;
+    }
+    .nota-final a { color: var(--text2); text-decoration: underline; text-underline-offset: 2px; }
+    .nota-final a:hover { color: var(--text); }
+
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 24px 20px;
+      text-align: center;
+      color: var(--text4);
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.65rem;
+    }
+    footer a { color: var(--text2); text-decoration: none; }
+    footer a:hover { color: var(--text); }
+
+    /* ── FADE IN ────────────────────────────────────────────────── */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(8px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .ind-section { animation: fadeUp 0.3s ease both; }
+
+    @media (max-width: 560px) {
+      .ind-header { flex-direction: column; align-items: stretch; }
+      .ind-stats { gap: 8px; }
+      .stat-card { flex: 1; min-width: 0; }
+      main { padding: 24px 16px 60px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAV (compartida) -->
+<div id="canuto-nav"></div>
+
+<!-- TICKER -->
+<div class="ticker-band">
+  <div class="ticker-track" id="tickerTrack">
+    <!-- Se rellena por JS para asegurar duplicación correcta -->
+  </div>
+</div>
+
+<main>
+
+  <!-- HEADER -->
+  <div class="page-head">
+    <div>
+      <div class="eyebrow"><span class="live-dot"></span>Argentina · datos en vivo</div>
+      <h1>Datos Macro</h1>
+      <p class="subtitle">Reservas del BCRA, vencimientos de deuda externa, inflación, riesgo país, tasa, desocupación, pobreza y UVA — todo en una sola página, con datos oficiales y APIs públicas.</p>
+    </div>
+    <div class="head-right">
+      <div class="refresh-status" id="refresh-status">Cargando…</div>
+      <div class="refresh-bar-wrap"><div class="refresh-bar" id="refresh-bar"></div></div>
+      <div class="last-update" id="last-update"></div>
+    </div>
+  </div>
+
+  <!-- TOC -->
+  <nav class="toc" aria-label="Ir a sección">
+    <a href="#sec-reservas">🏦 Reservas</a>
+    <a href="#sec-deuda">📅 Deuda</a>
+    <a href="#sec-riesgo">⚠️ Riesgo País</a>
+    <a href="#sec-inflacion">📊 Inflación</a>
+    <a href="#sec-inflacion-ia">📈 Infl. interanual</a>
+    <a href="#sec-tasa">💹 Tasa</a>
+    <a href="#sec-uva">🏠 UVA</a>
+    <a href="#sec-desocupacion">👷 Desocupación</a>
+    <a href="#sec-pobreza">📉 Pobreza</a>
+  </nav>
+
+  <!-- ═══════════════════════════════════════════════════════════════ -->
+  <!-- 1. RESERVAS INTERNACIONALES BCRA                                -->
+  <!-- ═══════════════════════════════════════════════════════════════ -->
+  <section class="ind-section" data-color="blue" id="sec-reservas">
+    <div class="ind-header">
+      <div>
+        <div class="ind-name">Reservas Internacionales BCRA</div>
+        <div class="ind-value-row">
+          <div class="ind-value" id="val-reservas">—</div>
+          <div class="ind-badge badge-neu" id="badge-reservas">—</div>
+        </div>
+        <div class="ind-meta" id="meta-reservas">Cargando…</div>
+      </div>
+      <div class="ind-stats">
+        <div class="stat-card">
+          <div class="stat-label">Var. diaria</div>
+          <div class="stat-val" id="stat-res-day">—</div>
+          <div class="stat-sub" id="stat-res-day-sub">vs. día ant.</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Var. 30 días</div>
+          <div class="stat-val" id="stat-res-30">—</div>
+          <div class="stat-sub" id="stat-res-30-sub">últ. mes</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Var. 1 año</div>
+          <div class="stat-val" id="stat-res-1y">—</div>
+          <div class="stat-sub" id="stat-res-1y-sub">vs. hace 12m</div>
+        </div>
+      </div>
+    </div>
+    <hr class="ind-divider">
+    <div class="ind-toolbar">
+      <div class="range-tabs" id="rt-reservas">
+        <button class="range-tab" data-r="1M">1M</button>
+        <button class="range-tab" data-r="3M">3M</button>
+        <button class="range-tab active" data-r="1A">1A</button>
+        <button class="range-tab" data-r="2A">2A</button>
+        <button class="range-tab" data-r="TODO">Todo</button>
+        <button class="range-tab" data-r="CUSTOM">Rango</button>
+      </div>
+      <div class="nota-fuente">BCRA · USD millones · diario</div>
+    </div>
+    <div class="date-range-wrap" id="res-date-inputs" style="display:none">
+      <input type="date" id="res-desde" />
+      <span class="date-sep">→</span>
+      <input type="date" id="res-hasta" />
+    </div>
+    <div class="chart-wrap tall">
+      <div class="chart-loading" id="load-reservas"><span class="spinner"></span>Conectando con BCRA…</div>
+      <canvas id="chart-reservas" style="display:none"></canvas>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════════════════ -->
+  <!-- 2. VENCIMIENTOS DE DEUDA EXTERNA                                -->
+  <!-- ═══════════════════════════════════════════════════════════════ -->
+  <section class="ind-section" data-color="orange" id="sec-deuda">
+    <div class="ind-header">
+      <div>
+        <div class="ind-name">Vencimientos de Deuda Externa</div>
+        <div class="ind-value-row">
+          <div class="ind-value">USD 19,5B</div>
+          <div class="ind-badge badge-neu">2026</div>
+        </div>
+        <div class="ind-meta">Capital + intereses · próx. 12 meses</div>
+      </div>
+      <div class="ind-stats">
+        <div class="stat-card">
+          <div class="stat-label">Próx. venc.</div>
+          <div class="stat-val">USD 4,2B</div>
+          <div class="stat-sub">9 jul 2026 · Bonar/Glob.</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Prom. 26–28</div>
+          <div class="stat-val">USD 22,6B</div>
+          <div class="stat-sub">por año</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Stock FMI</div>
+          <div class="stat-val">USD 41,4B</div>
+          <div class="stat-sub">al 31/12/2025</div>
+        </div>
+      </div>
+    </div>
+    <hr class="ind-divider">
+    <div class="ind-toolbar">
+      <div class="range-tabs" id="rt-deuda">
+        <button class="range-tab" data-r="capital">Capital</button>
+        <button class="range-tab active" data-r="total">Capital + Int.</button>
+        <button class="range-tab" data-r="fmi">Solo FMI</button>
+      </div>
+      <div class="nota-fuente">OPC · Finanzas · FMI · 2027–2032 estim.</div>
+    </div>
+    <div class="toggle-chips" id="acreedor-chips"></div>
+    <div class="chart-wrap tall">
+      <canvas id="chart-deuda"></canvas>
+    </div>
+    <div class="legend-row" id="deuda-legend"></div>
+    <div class="table-wrap">
+      <div class="table-wrap-header">
+        <div style="font-family:'IBM Plex Mono',monospace;font-size:0.62rem;letter-spacing:0.08em;text-transform:uppercase;color:var(--text4)">Detalle anual — USD millones</div>
+        <div class="nota-fuente">capital + intereses · estimado</div>
+      </div>
+      <div class="table-scroll">
+        <table class="data-table" id="deuda-table"></table>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════════════════ -->
+  <!-- 3. RIESGO PAÍS                                                  -->
+  <!-- ═══════════════════════════════════════════════════════════════ -->
+  <section class="ind-section" data-color="red" id="sec-riesgo">
+    <div class="ind-header">
+      <div>
+        <div class="ind-name">Riesgo País (EMBI+)</div>
+        <div class="ind-value-row">
+          <div class="ind-value" id="val-riesgo">—</div>
+          <div class="ind-badge badge-neu" id="badge-riesgo">—</div>
+        </div>
+        <div class="ind-meta" id="meta-riesgo">Cargando…</div>
+      </div>
+      <div class="ind-stats">
+        <div class="stat-card">
+          <div class="stat-label">Máx. período</div>
+          <div class="stat-val" id="stat-riesgo-max">—</div>
+          <div class="stat-sub" id="stat-riesgo-max-fecha">—</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Mín. período</div>
+          <div class="stat-val" id="stat-riesgo-min">—</div>
+          <div class="stat-sub" id="stat-riesgo-min-fecha">—</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Variación</div>
+          <div class="stat-val" id="stat-riesgo-var">—</div>
+          <div class="stat-sub">vs. inicio</div>
+        </div>
+      </div>
+    </div>
+    <hr class="ind-divider">
+    <div class="ind-toolbar">
+      <div class="range-tabs" id="rt-riesgo">
+        <button class="range-tab" data-r="1S">1S</button>
+        <button class="range-tab" data-r="1M">1M</button>
+        <button class="range-tab" data-r="3M">3M</button>
+        <button class="range-tab" data-r="6M">6M</button>
+        <button class="range-tab active" data-r="1A">1A</button>
+        <button class="range-tab" data-r="YTD">YTD</button>
+        <button class="range-tab" data-r="2A">2A</button>
+        <button class="range-tab" data-r="5A">5A</button>
+        <button class="range-tab" data-r="TODO">Todo</button>
+      </div>
+      <div class="nota-fuente">J.P. Morgan · puntos básicos</div>
+    </div>
+    <div class="chart-wrap">
+      <div class="chart-loading" id="load-riesgo">Cargando datos…</div>
+      <canvas id="chart-riesgo" style="display:none"></canvas>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════════════════ -->
+  <!-- 4. INFLACIÓN MENSUAL                                            -->
+  <!-- ═══════════════════════════════════════════════════════════════ -->
+  <section class="ind-section" data-color="green" id="sec-inflacion">
+    <div class="ind-header">
+      <div>
+        <div class="ind-name">Inflación Mensual</div>
+        <div class="ind-value-row">
+          <div class="ind-value" id="val-inflacion">—</div>
+          <div class="ind-badge badge-neu" id="badge-inflacion">—</div>
+        </div>
+        <div class="ind-meta" id="meta-inflacion">Cargando…</div>
+      </div>
+      <div class="ind-stats">
+        <div class="stat-card">
+          <div class="stat-label">Acum. año</div>
+          <div class="stat-val" id="stat-infl-anual">—</div>
+          <div class="stat-sub" id="stat-infl-anual-sub">—</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Máx. período</div>
+          <div class="stat-val" id="stat-infl-max">—</div>
+          <div class="stat-sub" id="stat-infl-max-fecha">—</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Mín. período</div>
+          <div class="stat-val" id="stat-infl-min">—</div>
+          <div class="stat-sub" id="stat-infl-min-fecha">—</div>
+        </div>
+      </div>
+    </div>
+    <hr class="ind-divider">
+    <div class="ind-toolbar">
+      <div class="range-tabs" id="rt-inflacion">
+        <button class="range-tab" data-r="6M">6M</button>
+        <button class="range-tab active" data-r="1A">1A</button>
+        <button class="range-tab" data-r="YTD">YTD</button>
+        <button class="range-tab" data-r="2A">2A</button>
+        <button class="range-tab" data-r="5A">5A</button>
+        <button class="range-tab" data-r="TODO">Todo</button>
+      </div>
+      <div class="nota-fuente">IPC — INDEC · mensual</div>
+    </div>
+    <div class="chart-wrap">
+      <div class="chart-loading" id="load-inflacion">Cargando datos…</div>
+      <canvas id="chart-inflacion" style="display:none"></canvas>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════════════════ -->
+  <!-- 5. INFLACIÓN INTERANUAL                                         -->
+  <!-- ═══════════════════════════════════════════════════════════════ -->
+  <section class="ind-section" data-color="teal" id="sec-inflacion-ia">
+    <div class="ind-header">
+      <div>
+        <div class="ind-name">Inflación Interanual</div>
+        <div class="ind-value-row">
+          <div class="ind-value" id="val-inflacion-ia">—</div>
+          <div class="ind-badge badge-neu" id="badge-inflacion-ia">—</div>
+        </div>
+        <div class="ind-meta" id="meta-inflacion-ia">Cargando…</div>
+      </div>
+      <div class="ind-stats">
+        <div class="stat-card">
+          <div class="stat-label">Máx. período</div>
+          <div class="stat-val" id="stat-ia-max">—</div>
+          <div class="stat-sub" id="stat-ia-max-fecha">—</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Mín. período</div>
+          <div class="stat-val" id="stat-ia-min">—</div>
+          <div class="stat-sub" id="stat-ia-min-fecha">—</div>
+        </div>
+      </div>
+    </div>
+    <hr class="ind-divider">
+    <div class="ind-toolbar">
+      <div class="range-tabs" id="rt-inflacion-ia">
+        <button class="range-tab" data-r="1A">1A</button>
+        <button class="range-tab active" data-r="2A">2A</button>
+        <button class="range-tab" data-r="5A">5A</button>
+        <button class="range-tab" data-r="TODO">Todo</button>
+      </div>
+      <div class="nota-fuente">IPC — INDEC · variación i.a.</div>
+    </div>
+    <div class="chart-wrap">
+      <div class="chart-loading" id="load-inflacion-ia">Cargando datos…</div>
+      <canvas id="chart-inflacion-ia" style="display:none"></canvas>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════════════════ -->
+  <!-- 6. TASA DE POLÍTICA MONETARIA                                   -->
+  <!-- ═══════════════════════════════════════════════════════════════ -->
+  <section class="ind-section" data-color="purple" id="sec-tasa">
+    <div class="ind-header">
+      <div>
+        <div class="ind-name">Tasa de Política Monetaria</div>
+        <div class="ind-value-row">
+          <div class="ind-value" id="val-tasa">—</div>
+          <div class="ind-badge badge-neu" id="badge-tasa">—</div>
+        </div>
+        <div class="ind-meta" id="meta-tasa">Cargando…</div>
+      </div>
+      <div class="ind-stats">
+        <div class="stat-card">
+          <div class="stat-label">Máx. período</div>
+          <div class="stat-val" id="stat-tasa-max">—</div>
+          <div class="stat-sub" id="stat-tasa-max-fecha">—</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Mín. período</div>
+          <div class="stat-val" id="stat-tasa-min">—</div>
+          <div class="stat-sub" id="stat-tasa-min-fecha">—</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Var. período</div>
+          <div class="stat-val" id="stat-tasa-var">—</div>
+          <div class="stat-sub">pp</div>
+        </div>
+      </div>
+    </div>
+    <hr class="ind-divider">
+    <div class="ind-toolbar">
+      <div class="range-tabs" id="rt-tasa">
+        <button class="range-tab" data-r="3M">3M</button>
+        <button class="range-tab" data-r="6M">6M</button>
+        <button class="range-tab active" data-r="1A">1A</button>
+        <button class="range-tab" data-r="YTD">YTD</button>
+        <button class="range-tab" data-r="2A">2A</button>
+        <button class="range-tab" data-r="5A">5A</button>
+        <button class="range-tab" data-r="TODO">Todo</button>
+      </div>
+      <div class="nota-fuente">BCRA · % TNA</div>
+    </div>
+    <div class="chart-wrap">
+      <div class="chart-loading" id="load-tasa">Cargando datos…</div>
+      <canvas id="chart-tasa" style="display:none"></canvas>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════════════════ -->
+  <!-- 7. ÍNDICE UVA                                                   -->
+  <!-- ═══════════════════════════════════════════════════════════════ -->
+  <section class="ind-section" data-color="pink" id="sec-uva">
+    <div class="ind-header">
+      <div>
+        <div class="ind-name">Índice UVA</div>
+        <div class="ind-value-row">
+          <div class="ind-value" id="val-uva">—</div>
+          <div class="ind-badge badge-neu" id="badge-uva">—</div>
+        </div>
+        <div class="ind-meta" id="meta-uva">Cargando…</div>
+      </div>
+      <div class="ind-stats">
+        <div class="stat-card">
+          <div class="stat-label">Var. período</div>
+          <div class="stat-val" id="stat-uva-var">—</div>
+          <div class="stat-sub">vs. inicio</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Máx. período</div>
+          <div class="stat-val" id="stat-uva-max">—</div>
+          <div class="stat-sub" id="stat-uva-max-fecha">—</div>
+        </div>
+      </div>
+    </div>
+    <hr class="ind-divider">
+    <div class="ind-toolbar">
+      <div class="range-tabs" id="rt-uva">
+        <button class="range-tab" data-r="1M">1M</button>
+        <button class="range-tab" data-r="3M">3M</button>
+        <button class="range-tab" data-r="6M">6M</button>
+        <button class="range-tab active" data-r="1A">1A</button>
+        <button class="range-tab" data-r="YTD">YTD</button>
+        <button class="range-tab" data-r="2A">2A</button>
+        <button class="range-tab" data-r="TODO">Todo</button>
+      </div>
+      <div class="nota-fuente">BCRA · base 31/3/2016 = $14,05</div>
+    </div>
+    <div class="chart-wrap">
+      <div class="chart-loading" id="load-uva">Cargando datos…</div>
+      <canvas id="chart-uva" style="display:none"></canvas>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════════════════ -->
+  <!-- 8. DESOCUPACIÓN                                                 -->
+  <!-- ═══════════════════════════════════════════════════════════════ -->
+  <section class="ind-section" data-color="yellow" id="sec-desocupacion">
+    <div class="ind-header">
+      <div>
+        <div class="ind-name">Desocupación</div>
+        <div class="ind-value-row">
+          <div class="ind-value" id="val-desocupacion">—</div>
+          <div class="ind-badge badge-neu" id="badge-desocupacion">—</div>
+        </div>
+        <div class="ind-meta" id="meta-desocupacion">Cargando…</div>
+      </div>
+      <div class="ind-stats">
+        <div class="stat-card">
+          <div class="stat-label">Máx. período</div>
+          <div class="stat-val" id="stat-desoc-max">—</div>
+          <div class="stat-sub" id="stat-desoc-max-fecha">—</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Mín. período</div>
+          <div class="stat-val" id="stat-desoc-min">—</div>
+          <div class="stat-sub" id="stat-desoc-min-fecha">—</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Var. período</div>
+          <div class="stat-val" id="stat-desoc-var">—</div>
+          <div class="stat-sub">pp</div>
+        </div>
+      </div>
+    </div>
+    <hr class="ind-divider">
+    <div class="ind-toolbar">
+      <div class="range-tabs" id="rt-desocupacion">
+        <button class="range-tab" data-r="2A">2A</button>
+        <button class="range-tab active" data-r="5A">5A</button>
+        <button class="range-tab" data-r="TODO">Todo</button>
+      </div>
+      <div class="nota-fuente">EPH — INDEC · trimestral</div>
+    </div>
+    <div class="chart-wrap">
+      <div class="chart-loading" id="load-desocupacion">Cargando datos…</div>
+      <canvas id="chart-desocupacion" style="display:none"></canvas>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════════════════ -->
+  <!-- 9. POBREZA                                                      -->
+  <!-- ═══════════════════════════════════════════════════════════════ -->
+  <section class="ind-section" data-color="red" id="sec-pobreza">
+    <div class="ind-header">
+      <div>
+        <div class="ind-name">Pobreza</div>
+        <div class="ind-value-row">
+          <div class="ind-value" id="val-pobreza">—</div>
+          <div class="ind-badge badge-neu" id="badge-pobreza">—</div>
+        </div>
+        <div class="ind-meta" id="meta-pobreza">Cargando…</div>
+      </div>
+      <div class="ind-stats">
+        <div class="stat-card">
+          <div class="stat-label">Máx. período</div>
+          <div class="stat-val" id="stat-pob-max">—</div>
+          <div class="stat-sub" id="stat-pob-max-fecha">—</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Mín. período</div>
+          <div class="stat-val" id="stat-pob-min">—</div>
+          <div class="stat-sub" id="stat-pob-min-fecha">—</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Var. período</div>
+          <div class="stat-val" id="stat-pob-var">—</div>
+          <div class="stat-sub">pp</div>
+        </div>
+      </div>
+    </div>
+    <hr class="ind-divider">
+    <div class="ind-toolbar">
+      <div class="range-tabs" id="rt-pobreza">
+        <button class="range-tab" data-r="2A">2A</button>
+        <button class="range-tab active" data-r="5A">5A</button>
+        <button class="range-tab" data-r="TODO">Todo</button>
+      </div>
+      <div class="nota-fuente">EPH — INDEC · semestral</div>
+    </div>
+    <div class="chart-wrap">
+      <div class="chart-loading" id="load-pobreza">Cargando datos…</div>
+      <canvas id="chart-pobreza" style="display:none"></canvas>
+    </div>
+  </section>
+
+  <!-- NOTA FINAL -->
+  <div class="nota-final">
+    <strong style="color:var(--text2)">Fuentes y metodología:</strong>
+    Reservas brutas: <a href="https://api.estadisticasbcra.com" target="_blank" rel="noopener">api.estadisticasbcra.com</a> (BCRA, rezago 1–2 días hábiles).
+    Vencimientos: <a href="https://opc.gob.ar" target="_blank" rel="noopener">OPC</a> · Secretaría de Finanzas · FMI MFSM. 2024–2026 reportados; 2027–2032 estimados (capital + intereses; pueden variar por refinanciaciones, canjes y nuevos acuerdos).
+    Inflación, riesgo país, tasa y UVA: <a href="https://argentinadatos.com" target="_blank" rel="noopener">ArgentinaDatos</a> (open source, sin API key).
+    Desocupación y pobreza: <a href="https://www.indec.gob.ar" target="_blank" rel="noopener">INDEC EPH</a> vía <a href="https://datos.gob.ar" target="_blank" rel="noopener">datos.gob.ar</a>.
+    Esta herramienta es informativa y no constituye asesoría financiera.
+  </div>
+
+</main>
+
+<footer>
+  <a href="/">canuto.ar</a> © 2026 · Hecho en Argentina 🇦🇷 · Datos: BCRA · INDEC · OPC · FMI · J.P. Morgan
+</footer>
+
+<script>
+'use strict';
+
+// ═══════════════════════════════════════════════════════════════════════════
+// CONFIG GLOBAL
+// ═══════════════════════════════════════════════════════════════════════════
+const AD = 'https://api.argentinadatos.com/v1';
+const REFRESH_SEC = 300; // 5 min para reservas BCRA
+
+Chart.defaults.color = '#6b7090';
+Chart.defaults.font.family = "'IBM Plex Mono', monospace";
+Chart.defaults.font.size = 11;
+
+const CHART_OPTS_BASE = {
+  responsive: true,
+  maintainAspectRatio: false,
+  interaction: { mode: 'index', intersect: false },
+  plugins: {
+    legend: { display: false },
+    tooltip: {
+      backgroundColor: '#1a1e28',
+      borderColor: '#2d3245',
+      borderWidth: 1,
+      titleColor: '#8b90a4',
+      bodyColor: '#e8eaf0',
+      padding: 10,
+      callbacks: {},
+    },
+  },
+  scales: {
+    x: {
+      grid: { color: 'rgba(35,39,54,0.6)' },
+      ticks: { maxTicksLimit: 8 },
+    },
+    y: {
+      grid: { color: 'rgba(35,39,54,0.6)' },
+      ticks: { maxTicksLimit: 6 },
+      position: 'right',
+    },
+  },
+};
+
+// ═══════════════════════════════════════════════════════════════════════════
+// HELPERS COMPARTIDOS
+// ═══════════════════════════════════════════════════════════════════════════
+function $(id) { return document.getElementById(id); }
+function setText(id, val) { const el = $(id); if (el) el.textContent = val; }
+function setHTML(id, val) { const el = $(id); if (el) el.innerHTML = val; }
+function sign(n) { return n > 0 ? '+' : (n < 0 ? '' : ''); }
+function fmtNum(v, dec=1) {
+  if (v === null || v === undefined || isNaN(v)) return '—';
+  return v.toLocaleString('es-AR', { minimumFractionDigits: dec, maximumFractionDigits: dec });
+}
+function fmtInt(v) {
+  if (v === null || v === undefined || isNaN(v)) return '—';
+  return Math.round(v).toLocaleString('es-AR');
+}
+function fmtPct(v, dec=1) {
+  if (v === null || v === undefined || isNaN(v)) return '—';
+  return `${v >= 0 ? '+' : ''}${v.toFixed(dec)}%`;
+}
+function fmtUSD_M(v) { // millones a B/M legible
+  if (v === null || v === undefined || isNaN(v)) return '—';
+  if (Math.abs(v) >= 1000) return `USD ${(v/1000).toFixed(2).replace('.',',')}B`;
+  return `USD ${fmtInt(v)}M`;
+}
+function fmtDate(str) {
+  if (!str) return '—';
+  const d = new Date(str);
+  return d.toLocaleDateString('es-AR', { day:'2-digit', month:'short', year:'numeric' });
+}
+function fmtDateShort(str) {
+  if (!str) return '—';
+  const d = new Date(str);
+  return d.toLocaleDateString('es-AR', { month:'short', year:'2-digit' });
+}
+function badgeCls(v, invertir=false) {
+  if (v === null || v === undefined || isNaN(v)) return 'badge-neu';
+  const pos = invertir ? v < 0 : v > 0;
+  const neg = invertir ? v > 0 : v < 0;
+  return pos ? 'badge-pos' : neg ? 'badge-neg' : 'badge-neu';
+}
+
+// Cache para fetchAD
+const _cache = {};
+async function fetchAD(path) {
+  if (_cache[path]) return _cache[path];
+  const res = await fetch(AD + path, { cache: 'no-store' });
+  if (!res.ok) throw new Error(`HTTP ${res.status} — ${path}`);
+  _cache[path] = await res.json();
+  return _cache[path];
+}
+
+// Filtro por rango (acepta '1S','1M','3M','6M','1A','YTD','2A','5A','TODO')
+function filterRange(data, dateKey, range) {
+  if (!data || !data.length) return [];
+  if (range === 'TODO' || range === 'CUSTOM') return data;
+  const now = new Date(), cut = new Date(now);
+  if      (range === '1S')  cut.setDate(now.getDate()-7);
+  else if (range === '1M')  cut.setMonth(now.getMonth()-1);
+  else if (range === '3M')  cut.setMonth(now.getMonth()-3);
+  else if (range === '6M')  cut.setMonth(now.getMonth()-6);
+  else if (range === '1A')  cut.setFullYear(now.getFullYear()-1);
+  else if (range === 'YTD') { cut.setMonth(0); cut.setDate(1); }
+  else if (range === '2A')  cut.setFullYear(now.getFullYear()-2);
+  else if (range === '5A')  cut.setFullYear(now.getFullYear()-5);
+  else return data;
+  return data.filter(d => new Date(d[dateKey]) >= cut);
+}
+
+// Setup de range tabs (genérico, basado en data-r)
+function setupRangeTabs(containerId, callback) {
+  const container = $(containerId);
+  if (!container) return;
+  container.querySelectorAll('.range-tab').forEach(btn => {
+    btn.addEventListener('click', () => {
+      container.querySelectorAll('.range-tab').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      callback(btn.dataset.r);
+    });
+  });
+}
+function activeRange(containerId) {
+  const el = $(containerId)?.querySelector('.range-tab.active');
+  return el?.dataset.r || '1A';
+}
+
+// Stats helper
+function calcStats(arr, valFn) {
+  if (!arr.length) return {};
+  const vals = arr.map(valFn).filter(v => v !== null && v !== undefined && !isNaN(v));
+  if (!vals.length) return {};
+  const max = Math.max(...vals), min = Math.min(...vals);
+  const maxItem = arr.find(d => valFn(d) === max);
+  const minItem = arr.find(d => valFn(d) === min);
+  const first = vals[0], last = vals[vals.length-1];
+  return { max, min, maxItem, minItem, first, last, vals };
+}
+
+// Charts genéricos
+function makeLineChart(canvasId, labels, values, color, fill=true, tooltipSuffix='', stepped=false) {
+  const ctx = $(canvasId).getContext('2d');
+  const existing = Chart.getChart(canvasId);
+  if (existing) existing.destroy();
+
+  const gradient = ctx.createLinearGradient(0, 0, 0, 230);
+  gradient.addColorStop(0, color + '33');
+  gradient.addColorStop(1, color + '00');
+
+  return new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels,
+      datasets: [{
+        data: values,
+        borderColor: color,
+        borderWidth: 2,
+        backgroundColor: fill ? gradient : 'transparent',
+        fill: fill,
+        tension: stepped ? 0 : 0.3,
+        pointRadius: values.length > 60 ? 0 : 2,
+        pointHoverRadius: 4,
+        pointBackgroundColor: color,
+        stepped: stepped || false,
+      }],
+    },
+    options: {
+      ...CHART_OPTS_BASE,
+      plugins: {
+        ...CHART_OPTS_BASE.plugins,
+        tooltip: {
+          ...CHART_OPTS_BASE.plugins.tooltip,
+          callbacks: { label: ctx => ` ${fmtNum(ctx.parsed.y)}${tooltipSuffix}` },
+        },
+      },
+    },
+  });
+}
+
+function makeBarChart(canvasId, labels, values, color, tooltipSuffix='') {
+  const existing = Chart.getChart(canvasId);
+  if (existing) existing.destroy();
+
+  return new Chart($(canvasId), {
+    type: 'bar',
+    data: {
+      labels,
+      datasets: [{
+        data: values,
+        backgroundColor: values.map(v => v >= 0 ? color + 'cc' : '#f87171cc'),
+        borderColor: values.map(v => v >= 0 ? color : '#f87171'),
+        borderWidth: 1,
+        borderRadius: 3,
+      }],
+    },
+    options: {
+      ...CHART_OPTS_BASE,
+      plugins: {
+        ...CHART_OPTS_BASE.plugins,
+        tooltip: {
+          ...CHART_OPTS_BASE.plugins.tooltip,
+          callbacks: { label: ctx => ` ${fmtNum(ctx.parsed.y)}${tooltipSuffix}` },
+        },
+      },
+    },
+  });
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+// 1. RESERVAS BCRA — fetch desde api.estadisticasbcra.com
+// ═══════════════════════════════════════════════════════════════════════════
+let resData = []; // [{d:'YYYY-MM-DD', v: número (millones USD)}]
+
+async function fetchReservas() {
+  try {
+    const res = await fetch('https://api.estadisticasbcra.com/reservas');
+    if (!res.ok) throw new Error('HTTP ' + res.status);
+    resData = await res.json();
+    // Normalizamos al formato {fecha, valor} interno también
+    resData.forEach(r => { r.fecha = r.d; r.valor = r.v; });
+    renderReservas(activeRange('rt-reservas'));
+    setText('refresh-status', 'Datos actualizados');
+    setText('last-update', 'últ. act.: ' + new Date().toLocaleTimeString('es-AR'));
+    startCountdown();
+  } catch (e) {
+    setHTML('load-reservas', '<span style="color:var(--red)">⚠ No se pudo conectar con la API del BCRA. Reintenta en 60s…</span>');
+    setText('refresh-status', 'Error de conexión');
+  }
+}
+
+function renderReservas(range) {
+  if (!resData.length) return;
+
+  // Slice según rango
+  let slice;
+  if (range === 'CUSTOM') {
+    const desde = $('res-desde').value;
+    const hasta = $('res-hasta').value;
+    if (!desde || !hasta) { slice = filterRange(resData, 'fecha', '1A'); }
+    else slice = resData.filter(d => d.d >= desde && d.d <= hasta);
+  } else {
+    slice = filterRange(resData, 'fecha', range);
+  }
+  if (!slice.length) return;
+
+  const last = resData[resData.length - 1];
+  const prev = resData[resData.length - 2] || last;
+  const hace30 = resData[Math.max(0, resData.length - 31)] || resData[0];
+  const oneYearAgoStr = (() => {
+    const d = new Date(last.d + 'T12:00:00');
+    d.setFullYear(d.getFullYear() - 1);
+    return d.toISOString().slice(0,10);
+  })();
+  const hace1y = resData.find(d => d.d >= oneYearAgoStr) || resData[0];
+
+  // Header valor
+  setText('val-reservas', fmtUSD_M(last.v));
+  setText('meta-reservas', `Último dato: ${fmtDate(last.d)}`);
+  const dDay = last.v - prev.v;
+  const dDayPct = prev.v ? (dDay / prev.v * 100) : 0;
+  const badge = $('badge-reservas');
+  badge.textContent = fmtPct(dDayPct);
+  badge.className = `ind-badge ${badgeCls(dDayPct, false)}`;
+
+  // Stat cards
+  const dDayUSD = `${dDay >= 0 ? '+' : ''}${fmtInt(dDay)} M`;
+  setText('stat-res-day', dDayUSD);
+  $('stat-res-day').className = 'stat-val ' + (dDay > 0 ? 'pos' : dDay < 0 ? 'neg' : '');
+  setText('stat-res-day-sub', 'vs. ' + fmtDate(prev.d));
+
+  const d30 = last.v - hace30.v;
+  const d30p = hace30.v ? (d30 / hace30.v * 100) : 0;
+  setText('stat-res-30', fmtPct(d30p));
+  $('stat-res-30').className = 'stat-val ' + (d30 > 0 ? 'pos' : d30 < 0 ? 'neg' : '');
+  setText('stat-res-30-sub', `${d30 >= 0 ? '+' : ''}${fmtInt(d30)} M`);
+
+  const d1y = last.v - hace1y.v;
+  const d1yp = hace1y.v ? (d1y / hace1y.v * 100) : 0;
+  setText('stat-res-1y', fmtPct(d1yp));
+  $('stat-res-1y').className = 'stat-val ' + (d1y > 0 ? 'pos' : d1y < 0 ? 'neg' : '');
+  setText('stat-res-1y-sub', `${d1y >= 0 ? '+' : ''}${fmtInt(d1y)} M`);
+
+  // Chart (siempre con el slice del rango)
+  const labels = slice.map(d => {
+    const p = d.d.split('-');
+    return p[2] + '/' + p[1] + '/' + p[0].slice(2);
+  });
+  const values = slice.map(d => d.v);
+  const sliceFirst = slice[0].v, sliceLast = slice[slice.length-1].v;
+  const trendColor = sliceLast >= sliceFirst ? '#4ade80' : '#f87171';
+
+  $('load-reservas').style.display = 'none';
+  $('chart-reservas').style.display = 'block';
+
+  const ctx = $('chart-reservas').getContext('2d');
+  const existing = Chart.getChart('chart-reservas');
+  if (existing) existing.destroy();
+  const grad = ctx.createLinearGradient(0, 0, 0, 280);
+  grad.addColorStop(0, trendColor + '33');
+  grad.addColorStop(1, trendColor + '00');
+
+  new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels,
+      datasets: [{
+        data: values,
+        borderColor: trendColor,
+        backgroundColor: grad,
+        borderWidth: 2,
+        pointRadius: values.length > 60 ? 0 : 2,
+        pointHoverRadius: 4,
+        pointBackgroundColor: trendColor,
+        fill: true,
+        tension: 0.25,
+      }]
+    },
+    options: {
+      ...CHART_OPTS_BASE,
+      plugins: {
+        ...CHART_OPTS_BASE.plugins,
+        tooltip: {
+          ...CHART_OPTS_BASE.plugins.tooltip,
+          callbacks: { label: ctx => ' USD ' + fmtInt(ctx.parsed.y) + 'M' },
+        },
+      },
+      scales: {
+        x: {
+          grid: { color: 'rgba(35,39,54,0.6)' },
+          ticks: { maxTicksLimit: 8, maxRotation: 0 },
+        },
+        y: {
+          grid: { color: 'rgba(35,39,54,0.6)' },
+          ticks: {
+            maxTicksLimit: 6,
+            callback: v => 'USD ' + (Math.abs(v) >= 1000 ? (v/1000).toFixed(1).replace('.',',') + 'B' : fmtInt(v) + 'M'),
+          },
+          position: 'right',
+        },
+      },
+    },
+  });
+
+  // Actualizar ticker
+  updateTicker();
+}
+
+function setupReservasRangeTabs() {
+  setupRangeTabs('rt-reservas', r => {
+    $('res-date-inputs').style.display = (r === 'CUSTOM') ? 'flex' : 'none';
+    if (r !== 'CUSTOM') renderReservas(r);
+    else if ($('res-desde').value && $('res-hasta').value) renderReservas('CUSTOM');
+  });
+  $('res-desde').addEventListener('change', () => {
+    if (activeRange('rt-reservas') === 'CUSTOM') renderReservas('CUSTOM');
+  });
+  $('res-hasta').addEventListener('change', () => {
+    if (activeRange('rt-reservas') === 'CUSTOM') renderReservas('CUSTOM');
+  });
+  // Defaults custom
+  const hoy = new Date().toISOString().slice(0,10);
+  const hace1a = new Date(); hace1a.setFullYear(hace1a.getFullYear() - 1);
+  $('res-desde').value = hace1a.toISOString().slice(0,10);
+  $('res-hasta').value = hoy;
+}
+
+// Countdown de refresh
+let _cdTimer = null;
+function startCountdown() {
+  let cd = REFRESH_SEC;
+  const bar = $('refresh-bar');
+  const txt = $('refresh-status');
+  clearInterval(_cdTimer);
+  _cdTimer = setInterval(() => {
+    cd--;
+    if (bar) bar.style.width = (cd / REFRESH_SEC * 100) + '%';
+    if (txt) txt.textContent = `Próx. actualización en ${cd}s`;
+    if (cd <= 0) clearInterval(_cdTimer);
+  }, 1000);
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+// 2. DEUDA EXTERNA — datos curados (OPC/Finanzas/FMI)
+// ═══════════════════════════════════════════════════════════════════════════
+const DEUDA_DATA = {
+  años: [2024, 2025, 2026, 2027, 2028, 2029, 2030, 2031, 2032],
+  acreedores: [
+    { id:'fmi',          nombre:'FMI',              color:'#60a5fa',
+      total:[3200, 2600, 4401, 6800, 8200, 9500, 8800, 7200, 5900],
+      capital:[0, 0, 3413, 5100, 6400, 7800, 7200, 5900, 4800] },
+    { id:'bonos',        nombre:'Bonos Soberanos',  color:'#fb923c',
+      total:[9300, 9300, 8446, 8000, 7200, 6800, 7400, 8200, 7800],
+      capital:[4600, 4600, 6500, 6000, 5500, 5200, 5800, 6400, 6100] },
+    { id:'bopreal',      nombre:'BOPREAL',          color:'#a78bfa',
+      total:[0, 2800, 1200, 800, 400, 200, 0, 0, 0],
+      capital:[0, 2000, 900, 600, 300, 150, 0, 0, 0] },
+    { id:'multilateral', nombre:'Multilaterales',   color:'#2dd4bf',
+      total:[3200, 3200, 4716, 4200, 3900, 3600, 3400, 3200, 3000],
+      capital:[1800, 1800, 2800, 2500, 2300, 2100, 2000, 1900, 1800] },
+    { id:'otros',        nombre:'Otros',            color:'#6b7090',
+      total:[800, 985, 742, 700, 650, 600, 550, 500, 450],
+      capital:[400, 500, 400, 380, 350, 320, 300, 280, 260] },
+  ],
+};
+
+let deudaView = 'total';
+const activeAcreedores = new Set(DEUDA_DATA.acreedores.map(a => a.id));
+
+function buildAcreedorChips() {
+  const wrap = $('acreedor-chips');
+  if (!wrap) return;
+  wrap.innerHTML = DEUDA_DATA.acreedores.map(a => `
+    <span class="toggle-chip on" data-id="${a.id}">
+      <span class="chip-dot" style="background:${a.color}"></span>${a.nombre}
+    </span>
+  `).join('');
+  wrap.querySelectorAll('.toggle-chip').forEach(chip => {
+    chip.addEventListener('click', () => {
+      const id = chip.dataset.id;
+      if (activeAcreedores.has(id)) activeAcreedores.delete(id);
+      else activeAcreedores.add(id);
+      chip.classList.toggle('on');
+      chip.classList.toggle('off');
+      drawDeudaChart();
+    });
+  });
+}
+
+function setupDeudaTabs() {
+  setupRangeTabs('rt-deuda', r => {
+    deudaView = r;
+    drawDeudaChart();
+  });
+}
+
+function drawDeudaChart() {
+  const años = DEUDA_DATA.años;
+  const key  = (deudaView === 'capital') ? 'capital' : 'total';
+  const acreedores = (deudaView === 'fmi')
+    ? DEUDA_DATA.acreedores.filter(a => a.id === 'fmi')
+    : DEUDA_DATA.acreedores.filter(a => activeAcreedores.has(a.id));
+
+  const datasets = acreedores.map(a => ({
+    label: a.nombre,
+    data: a[key],
+    backgroundColor: a.color,
+    borderRadius: 4,
+    borderSkipped: false,
+    borderWidth: 0,
+  }));
+
+  const existing = Chart.getChart('chart-deuda');
+  if (existing) existing.destroy();
+  const ctx = $('chart-deuda').getContext('2d');
+  new Chart(ctx, {
+    type: 'bar',
+    data: { labels: años.map(String), datasets },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      interaction: { mode: 'index', intersect: false },
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          backgroundColor: '#1a1e28',
+          borderColor: '#2d3245',
+          borderWidth: 1,
+          titleColor: '#8b90a4',
+          bodyColor: '#e8eaf0',
+          callbacks: {
+            label: ctx => `${ctx.dataset.label}: USD ${fmtInt(ctx.parsed.y)}M`,
+            footer: items => 'Total: USD ' + fmtInt(items.reduce((s,i)=>s+i.parsed.y,0)) + 'M',
+          },
+          footerColor: '#e8eaf0',
+          footerFont: { family: 'IBM Plex Mono', size: 12, weight: 'bold' },
+        },
+      },
+      scales: {
+        x: {
+          stacked: true,
+          ticks: { color: '#6b7090' },
+          grid: { display: false },
+        },
+        y: {
+          stacked: true,
+          ticks: {
+            color: '#6b7090',
+            callback: v => 'USD ' + (Math.abs(v) >= 1000 ? (v/1000).toFixed(1).replace('.',',') + 'B' : fmtInt(v) + 'M'),
+          },
+          grid: { color: 'rgba(35,39,54,0.6)' },
+          position: 'right',
+        },
+      },
+    },
+  });
+
+  // Leyenda manual
+  const legend = $('deuda-legend');
+  legend.innerHTML = acreedores.map(a => `
+    <div class="legend-item">
+      <div class="legend-dot" style="background:${a.color}"></div>${a.nombre}
+    </div>`).join('');
+
+  // Tabla
+  renderDeudaTable(acreedores, key);
+}
+
+function renderDeudaTable(acreedores, key) {
+  const años = DEUDA_DATA.años;
+  const table = $('deuda-table');
+  if (!table) return;
+
+  const th = '<thead><tr><th>Acreedor</th>' +
+    años.map(a => `<th>${a}</th>`).join('') +
+    '<th>Total</th></tr></thead>';
+
+  const totalesPorAño = años.map((_, i) =>
+    acreedores.reduce((s, a) => s + (a[key][i] || 0), 0)
+  );
+
+  const rows = acreedores.map(a => {
+    const total = a[key].reduce((s,v) => s+v, 0);
+    const maxVal = Math.max(...a[key]);
+    return `<tr>
+      <td><span style="display:inline-block;width:8px;height:8px;border-radius:2px;background:${a.color};margin-right:8px;vertical-align:middle"></span>${a.nombre}</td>
+      ${años.map((_, i) => {
+        const v = a[key][i] || 0;
+        const pct = maxVal > 0 ? (v / maxVal * 50) : 0;
+        return `<td>
+          <div class="td-bar-wrap">
+            <span>${v > 0 ? fmtInt(v) : '—'}</span>
+            ${v > 0 ? `<div class="td-bar" style="width:${pct}px;background:${a.color};opacity:0.6"></div>` : ''}
+          </div>
+        </td>`;
+      }).join('')}
+      <td class="td-total">${fmtInt(total)}</td>
+    </tr>`;
+  }).join('');
+
+  const totalRow = `<tr class="highlight-row">
+    <td><strong>Total</strong></td>
+    ${totalesPorAño.map(t => `<td class="td-total">${fmtInt(t)}</td>`).join('')}
+    <td class="td-total">${fmtInt(totalesPorAño.reduce((s,v)=>s+v,0))}</td>
+  </tr>`;
+
+  table.innerHTML = th + '<tbody>' + rows + totalRow + '</tbody>';
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+// 3. RIESGO PAÍS
+// ═══════════════════════════════════════════════════════════════════════════
+let riesgoRaw = [];
+async function loadRiesgo() {
+  riesgoRaw = await fetchAD('/finanzas/indices/riesgo-pais');
+}
+function renderRiesgo(range) {
+  const data = filterRange(riesgoRaw, 'fecha', range);
+  if (!data.length) return;
+  const labels = data.map(d => fmtDateShort(d.fecha));
+  const values = data.map(d => d.valor);
+  const s = calcStats(data, d => d.valor);
+  const last = data[data.length-1];
+  const prev = data.length > 1 ? data[data.length-2] : null;
+  const diff = prev ? ((last.valor - prev.valor) / prev.valor * 100) : null;
+
+  setText('val-riesgo', `${last.valor.toLocaleString('es-AR')} pb`);
+  setText('meta-riesgo', `Último dato: ${fmtDate(last.fecha)}`);
+  const badge = $('badge-riesgo');
+  badge.textContent = diff !== null ? fmtPct(diff) : '—';
+  badge.className = `ind-badge ${badgeCls(diff, true)}`;
+
+  setText('stat-riesgo-max', s.max.toLocaleString('es-AR'));
+  setText('stat-riesgo-max-fecha', fmtDateShort(s.maxItem?.fecha));
+  setText('stat-riesgo-min', s.min.toLocaleString('es-AR'));
+  setText('stat-riesgo-min-fecha', fmtDateShort(s.minItem?.fecha));
+  const varTotal = s.first ? ((s.last - s.first) / s.first * 100) : null;
+  setText('stat-riesgo-var', varTotal !== null ? fmtPct(varTotal) : '—');
+
+  $('load-riesgo').style.display = 'none';
+  $('chart-riesgo').style.display = 'block';
+  makeLineChart('chart-riesgo', labels, values, '#f87171', true, ' pb');
+  updateTicker();
+}
+async function initRiesgo() {
+  try {
+    await loadRiesgo();
+    renderRiesgo(activeRange('rt-riesgo'));
+    setupRangeTabs('rt-riesgo', r => renderRiesgo(r));
+  } catch(e) { setText('load-riesgo', 'Error al cargar datos.'); }
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+// 4. INFLACIÓN MENSUAL
+// ═══════════════════════════════════════════════════════════════════════════
+let inflRaw = [];
+async function loadInflacion() {
+  inflRaw = await fetchAD('/finanzas/indices/inflacion');
+}
+function renderInflacion(range) {
+  const data = filterRange(inflRaw, 'fecha', range);
+  if (!data.length) return;
+  const labels = data.map(d => fmtDateShort(d.fecha));
+  const values = data.map(d => d.valor);
+  const s = calcStats(data, d => d.valor);
+  const last = data[data.length-1];
+  const prev = data.length > 1 ? data[data.length-2] : null;
+  const diff = prev ? last.valor - prev.valor : null;
+
+  setText('val-inflacion', `${fmtNum(last.valor)}%`);
+  setText('meta-inflacion', `Último dato: ${fmtDate(last.fecha)}`);
+  const badge = $('badge-inflacion');
+  badge.textContent = diff !== null ? fmtPct(diff) : '—';
+  badge.className = `ind-badge ${badgeCls(diff, true)}`;
+
+  // Acumulado año
+  const hoy = new Date();
+  const inicioAnio = inflRaw.filter(d => new Date(d.fecha).getFullYear() === hoy.getFullYear());
+  const acum = inicioAnio.reduce((acc, d) => acc * (1 + d.valor/100), 1) - 1;
+  setText('stat-infl-anual', `${(acum*100).toFixed(1)}%`);
+  setText('stat-infl-anual-sub', `${hoy.getFullYear()}`);
+  setText('stat-infl-max', `${fmtNum(s.max)}%`);
+  setText('stat-infl-max-fecha', fmtDateShort(s.maxItem?.fecha));
+  setText('stat-infl-min', `${fmtNum(s.min)}%`);
+  setText('stat-infl-min-fecha', fmtDateShort(s.minItem?.fecha));
+
+  $('load-inflacion').style.display = 'none';
+  $('chart-inflacion').style.display = 'block';
+  makeBarChart('chart-inflacion', labels, values, '#4ade80', '%');
+  updateTicker();
+}
+async function initInflacion() {
+  try {
+    await loadInflacion();
+    renderInflacion(activeRange('rt-inflacion'));
+    setupRangeTabs('rt-inflacion', r => renderInflacion(r));
+  } catch(e) { setText('load-inflacion', 'Error al cargar datos.'); }
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+// 5. INFLACIÓN INTERANUAL
+// ═══════════════════════════════════════════════════════════════════════════
+let inflIARaw = [];
+async function loadInflacionIA() {
+  inflIARaw = await fetchAD('/finanzas/indices/inflacion-interanual');
+}
+function renderInflacionIA(range) {
+  const data = filterRange(inflIARaw, 'fecha', range);
+  if (!data.length) return;
+  const labels = data.map(d => fmtDateShort(d.fecha));
+  const values = data.map(d => d.valor);
+  const s = calcStats(data, d => d.valor);
+  const last = data[data.length-1];
+  const prev = data.length > 1 ? data[data.length-2] : null;
+  const diff = prev ? (last.valor - prev.valor) : null;
+
+  setText('val-inflacion-ia', `${fmtNum(last.valor, 1)}%`);
+  setText('meta-inflacion-ia', `Último dato: ${fmtDate(last.fecha)}`);
+  const badge = $('badge-inflacion-ia');
+  badge.textContent = diff !== null ? `${diff >= 0 ? '+' : ''}${fmtNum(diff, 1)} pp` : '—';
+  badge.className = `ind-badge ${badgeCls(diff, true)}`;
+
+  setText('stat-ia-max', `${fmtNum(s.max, 1)}%`);
+  setText('stat-ia-max-fecha', fmtDateShort(s.maxItem?.fecha));
+  setText('stat-ia-min', `${fmtNum(s.min, 1)}%`);
+  setText('stat-ia-min-fecha', fmtDateShort(s.minItem?.fecha));
+
+  $('load-inflacion-ia').style.display = 'none';
+  $('chart-inflacion-ia').style.display = 'block';
+  makeLineChart('chart-inflacion-ia', labels, values, '#2dd4bf', true, '%');
+}
+async function initInflacionIA() {
+  try {
+    await loadInflacionIA();
+    renderInflacionIA(activeRange('rt-inflacion-ia'));
+    setupRangeTabs('rt-inflacion-ia', r => renderInflacionIA(r));
+  } catch(e) { setText('load-inflacion-ia', 'Error al cargar datos.'); }
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+// 6. TASA DE POLÍTICA MONETARIA (proxy: depósitos 30 días BCRA)
+// ═══════════════════════════════════════════════════════════════════════════
+let tasaRaw = [];
+async function loadTasa() {
+  tasaRaw = await fetchAD('/finanzas/tasas/depositos-30-dias');
+}
+function renderTasa(range) {
+  const data = filterRange(tasaRaw, 'fecha', range);
+  if (!data.length) return;
+  const valFn = d => d.bcra ?? d.valor ?? null;
+  const valid = data.filter(d => valFn(d) !== null);
+  if (!valid.length) return;
+  const labels = valid.map(d => fmtDateShort(d.fecha));
+  const values = valid.map(d => valFn(d));
+  const s = calcStats(valid, valFn);
+  const last = valid[valid.length-1];
+  const prev = valid.length > 1 ? valid[valid.length-2] : null;
+  const diff = prev ? (valFn(last) - valFn(prev)) : null;
+
+  setText('val-tasa', `${fmtNum(valFn(last))}% TNA`);
+  setText('meta-tasa', `Último dato: ${fmtDate(last.fecha)}`);
+  const badge = $('badge-tasa');
+  badge.textContent = diff !== null ? `${diff >= 0 ? '+' : ''}${fmtNum(diff)} pp` : '—';
+  badge.className = 'ind-badge badge-neu';
+
+  setText('stat-tasa-max', `${fmtNum(s.max)}%`);
+  setText('stat-tasa-max-fecha', fmtDateShort(s.maxItem?.fecha));
+  setText('stat-tasa-min', `${fmtNum(s.min)}%`);
+  setText('stat-tasa-min-fecha', fmtDateShort(s.minItem?.fecha));
+  const varTotal = s.last - s.first;
+  setText('stat-tasa-var', `${varTotal >= 0 ? '+' : ''}${fmtNum(varTotal)} pp`);
+
+  $('load-tasa').style.display = 'none';
+  $('chart-tasa').style.display = 'block';
+  makeLineChart('chart-tasa', labels, values, '#a78bfa', true, '% TNA', true);
+}
+async function initTasa() {
+  try {
+    await loadTasa();
+    renderTasa(activeRange('rt-tasa'));
+    setupRangeTabs('rt-tasa', r => renderTasa(r));
+  } catch(e) { setText('load-tasa', 'Error al cargar datos.'); }
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+// 7. UVA
+// ═══════════════════════════════════════════════════════════════════════════
+let uvaRaw = [];
+async function loadUVA() {
+  uvaRaw = await fetchAD('/finanzas/indices/uva');
+}
+function renderUVA(range) {
+  const data = filterRange(uvaRaw, 'fecha', range);
+  if (!data.length) return;
+  const labels = data.map(d => fmtDateShort(d.fecha));
+  const values = data.map(d => d.valor);
+  const s = calcStats(data, d => d.valor);
+  const last = data[data.length-1];
+  const prev = data.length > 1 ? data[data.length-2] : null;
+  const diff = prev ? ((last.valor - prev.valor) / prev.valor * 100) : null;
+
+  setText('val-uva', `$${fmtNum(last.valor, 2)}`);
+  setText('meta-uva', `Último dato: ${fmtDate(last.fecha)}`);
+  const badge = $('badge-uva');
+  badge.textContent = diff !== null ? fmtPct(diff) : '—';
+  badge.className = 'ind-badge badge-neu';
+
+  const varTotal = s.first ? ((s.last - s.first) / s.first * 100) : null;
+  setText('stat-uva-var', varTotal !== null ? fmtPct(varTotal) : '—');
+  setText('stat-uva-max', `$${fmtNum(s.max, 2)}`);
+  setText('stat-uva-max-fecha', fmtDateShort(s.maxItem?.fecha));
+
+  $('load-uva').style.display = 'none';
+  $('chart-uva').style.display = 'block';
+  makeLineChart('chart-uva', labels, values, '#f472b6', true, '');
+}
+async function initUVA() {
+  try {
+    await loadUVA();
+    renderUVA(activeRange('rt-uva'));
+    setupRangeTabs('rt-uva', r => renderUVA(r));
+  } catch(e) { setText('load-uva', 'Error al cargar datos.'); }
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+// 8. DESOCUPACIÓN (datos.gob.ar — EPH INDEC trimestral)
+// ═══════════════════════════════════════════════════════════════════════════
+let desocRaw = [];
+async function loadDesocupacion() {
+  const url = 'https://apis.datos.gob.ar/series/api/series/?ids=138.3_NO_OCU_POBL_0_T_15&limit=500&format=json';
+  const res = await fetch(url, { cache: 'no-store' });
+  if (!res.ok) throw new Error('HTTP ' + res.status);
+  const json = await res.json();
+  desocRaw = (json.data || []).map(([fecha, valor]) => ({ fecha, valor })).filter(d => d.valor !== null);
+}
+function renderDesocupacion(range) {
+  const data = filterRange(desocRaw, 'fecha', range);
+  if (!data.length) return;
+  const labels = data.map(d => fmtDateShort(d.fecha));
+  const values = data.map(d => d.valor);
+  const s = calcStats(data, d => d.valor);
+  const last = data[data.length-1];
+  const prev = data.length > 1 ? data[data.length-2] : null;
+  const diff = prev ? (last.valor - prev.valor) : null;
+
+  setText('val-desocupacion', `${fmtNum(last.valor)}%`);
+  setText('meta-desocupacion', `Último dato: ${fmtDate(last.fecha)} — EPH trimestral`);
+  const badge = $('badge-desocupacion');
+  badge.textContent = diff !== null ? `${diff >= 0 ? '+' : ''}${fmtNum(diff)} pp` : '—';
+  badge.className = `ind-badge ${badgeCls(diff, true)}`;
+
+  setText('stat-desoc-max', `${fmtNum(s.max)}%`);
+  setText('stat-desoc-max-fecha', fmtDateShort(s.maxItem?.fecha));
+  setText('stat-desoc-min', `${fmtNum(s.min)}%`);
+  setText('stat-desoc-min-fecha', fmtDateShort(s.minItem?.fecha));
+  const varTotal = s.last - s.first;
+  setText('stat-desoc-var', `${varTotal >= 0 ? '+' : ''}${fmtNum(varTotal)} pp`);
+
+  $('load-desocupacion').style.display = 'none';
+  $('chart-desocupacion').style.display = 'block';
+  makeLineChart('chart-desocupacion', labels, values, '#fbbf24', true, '%');
+}
+async function initDesocupacion() {
+  try {
+    await loadDesocupacion();
+    renderDesocupacion(activeRange('rt-desocupacion'));
+    setupRangeTabs('rt-desocupacion', r => renderDesocupacion(r));
+  } catch(e) { setText('load-desocupacion', 'Temporalmente no disponible.'); }
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+// 9. POBREZA (datos.gob.ar — EPH INDEC semestral)
+// ═══════════════════════════════════════════════════════════════════════════
+let pobrezaRaw = [];
+async function loadPobreza() {
+  const url = 'https://apis.datos.gob.ar/series/api/series/?ids=138.3_POBLA_PENAL_0_A_15&limit=200&format=json';
+  const res = await fetch(url, { cache: 'no-store' });
+  if (!res.ok) throw new Error('HTTP ' + res.status);
+  const json = await res.json();
+  pobrezaRaw = (json.data || []).map(([fecha, valor]) => ({ fecha, valor })).filter(d => d.valor !== null);
+}
+function renderPobreza(range) {
+  const data = filterRange(pobrezaRaw, 'fecha', range);
+  if (!data.length) return;
+  const labels = data.map(d => fmtDateShort(d.fecha));
+  const values = data.map(d => d.valor);
+  const s = calcStats(data, d => d.valor);
+  const last = data[data.length-1];
+  const prev = data.length > 1 ? data[data.length-2] : null;
+  const diff = prev ? (last.valor - prev.valor) : null;
+
+  setText('val-pobreza', `${fmtNum(last.valor)}%`);
+  setText('meta-pobreza', `Último dato: ${fmtDate(last.fecha)} — EPH semestral`);
+  const badge = $('badge-pobreza');
+  badge.textContent = diff !== null ? `${diff >= 0 ? '+' : ''}${fmtNum(diff)} pp` : '—';
+  badge.className = `ind-badge ${badgeCls(diff, true)}`;
+
+  setText('stat-pob-max', `${fmtNum(s.max)}%`);
+  setText('stat-pob-max-fecha', fmtDateShort(s.maxItem?.fecha));
+  setText('stat-pob-min', `${fmtNum(s.min)}%`);
+  setText('stat-pob-min-fecha', fmtDateShort(s.minItem?.fecha));
+  const varTotal = s.last - s.first;
+  setText('stat-pob-var', `${varTotal >= 0 ? '+' : ''}${fmtNum(varTotal)} pp`);
+
+  $('load-pobreza').style.display = 'none';
+  $('chart-pobreza').style.display = 'block';
+  makeLineChart('chart-pobreza', labels, values, '#f87171', true, '%');
+}
+async function initPobreza() {
+  try {
+    await loadPobreza();
+    renderPobreza(activeRange('rt-pobreza'));
+    setupRangeTabs('rt-pobreza', r => renderPobreza(r));
+  } catch(e) { setText('load-pobreza', 'Temporalmente no disponible.'); }
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+// TICKER — se construye dinámicamente con valores actuales.
+// Los items se duplican para el loop infinito, por eso usamos data-tk-key
+// (clase) en lugar de id, para evitar IDs duplicados en runtime.
+// ═══════════════════════════════════════════════════════════════════════════
+function buildTicker() {
+  const items = [
+    { key:'reservas',  name:'Reservas Brutas', val:'—', var:'' },
+    { key:'inflacion', name:'Inflación m/m',   val:'—', var:'' },
+    { key:'riesgo',    name:'Riesgo País',     val:'—', var:'' },
+    { key:'venc',      name:'Venc. 2026',      val:'USD 19.505M', var:'' },
+    { key:'fmi',       name:'FMI 2026',        val:'USD 4.401M',  var:'' },
+    { key:'prox',      name:'Próx. venc.',     val:'9 jul 2026 · USD 4.200M', var:'' },
+  ];
+  const renderItem = it => `
+    <div class="ticker-item">
+      <span class="t-name">${it.name}</span>
+      <span class="t-val" data-tk-key="${it.key}">${it.val}</span>
+      <span class="t-var neu" data-tk-key="${it.key}-var">${it.var}</span>
+    </div>`;
+  // Duplicar para loop infinito
+  $('tickerTrack').innerHTML = items.map(renderItem).join('') + items.map(renderItem).join('');
+}
+
+function setTickerVal(key, text) {
+  document.querySelectorAll(`[data-tk-key="${key}"]`).forEach(el => { el.textContent = text; });
+}
+function setTickerVar(key, text, cls) {
+  document.querySelectorAll(`[data-tk-key="${key}-var"]`).forEach(el => {
+    el.textContent = text;
+    el.className = 't-var ' + cls;
+  });
+}
+
+function updateTicker() {
+  if (resData.length) {
+    const last = resData[resData.length - 1];
+    const prev = resData[resData.length - 2] || last;
+    const dDay = last.v - prev.v;
+    setTickerVal('reservas', fmtUSD_M(last.v));
+    setTickerVar('reservas',
+      `${dDay >= 0 ? '+' : ''}${fmtInt(dDay)}M`,
+      dDay > 0 ? 'pos' : dDay < 0 ? 'neg' : 'neu');
+  }
+  if (inflRaw.length) {
+    const last = inflRaw[inflRaw.length - 1];
+    setTickerVal('inflacion', fmtNum(last.valor) + '%');
+  }
+  if (riesgoRaw.length) {
+    const last = riesgoRaw[riesgoRaw.length - 1];
+    setTickerVal('riesgo', last.valor.toLocaleString('es-AR') + ' pb');
+  }
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+// INIT
+// ═══════════════════════════════════════════════════════════════════════════
+(function init() {
+  buildTicker();
+
+  // Reservas (con auto-refresh)
+  setupReservasRangeTabs();
+  fetchReservas();
+  setInterval(fetchReservas, REFRESH_SEC * 1000);
+
+  // Deuda
+  buildAcreedorChips();
+  setupDeudaTabs();
+  drawDeudaChart();
+
+  // Resto de indicadores (paralelo)
+  initRiesgo();
+  initInflacion();
+  initInflacionIA();
+  initTasa();
+  initUVA();
+  initDesocupacion();
+  initPobreza();
+})();
+</script>
+
+</body>
+</html>
+();
+  initInflacion();
+  initInflacionIA();
+  initTasa();
+  initUVA();
+  initDesocupacion();
+  initPobreza();
+})();
+</script>
+
+</body>
+</html>
