@@ -1046,10 +1046,11 @@
   <!-- NOTA FINAL -->
   <div class="nota-final">
     <strong style="color:var(--text2)">Fuentes y metodología:</strong>
-    Reservas brutas: <a href="https://api.estadisticasbcra.com" target="_blank" rel="noopener">api.estadisticasbcra.com</a> (BCRA, rezago 1–2 días hábiles).
-    Vencimientos: <a href="https://opc.gob.ar" target="_blank" rel="noopener">OPC</a> · Secretaría de Finanzas · FMI MFSM. 2024–2026 reportados; 2027–2032 estimados (capital + intereses; pueden variar por refinanciaciones, canjes y nuevos acuerdos).
-    Inflación, riesgo país, tasa y UVA: <a href="https://argentinadatos.com" target="_blank" rel="noopener">ArgentinaDatos</a> (open source, sin API key).
-    Desocupación y pobreza: <a href="https://www.indec.gob.ar" target="_blank" rel="noopener">INDEC EPH</a> vía <a href="https://datos.gob.ar" target="_blank" rel="noopener">datos.gob.ar</a>.
+    Reservas brutas: API oficial del <a href="https://www.bcra.gob.ar/en/central-bank-api-catalog/" target="_blank" rel="noopener">BCRA</a> (Estadísticas Monetarias v3.0, idVariable 1). Si CORS falla, fallback a serie mensual de <a href="https://datos.gob.ar" target="_blank" rel="noopener">datos.gob.ar</a>.
+    Tasa: API oficial del BCRA (Monetarias) — se prueban variables 6/7/34/35/46 hasta encontrar la que responde.
+    Vencimientos: <a href="https://opc.gob.ar" target="_blank" rel="noopener">OPC</a> · Secretaría de Finanzas · FMI MFSM. 2024–2026 reportados; 2027–2032 estimados (pueden variar por refinanciaciones, canjes y nuevos acuerdos).
+    Inflación, riesgo país y UVA: <a href="https://argentinadatos.com" target="_blank" rel="noopener">ArgentinaDatos</a> (open source, sin API key).
+    Desocupación y pobreza: datos oficiales de <a href="https://www.indec.gob.ar" target="_blank" rel="noopener">INDEC</a> (EPH), curados manualmente en el código (la API de datos.gob.ar para estas series fue inestable). Para actualizarlos: editar las constantes <code>DESOC_DATA</code> y <code>POBREZA_DATA</code> en el HTML.
     Esta herramienta es informativa y no constituye asesoría financiera.
   </div>
 
@@ -1071,6 +1072,32 @@ const REFRESH_SEC = 300; // 5 min para reservas BCRA
 Chart.defaults.color = '#6b7090';
 Chart.defaults.font.family = "'IBM Plex Mono', monospace";
 Chart.defaults.font.size = 11;
+
+// ─── Plugin watermark "canuto.ar" sobre cada gráfico ───────────────────
+const canutoWatermarkPlugin = {
+  id: 'canutoWatermark',
+  beforeDraw(chart) {
+    const { ctx, chartArea } = chart;
+    if (!chartArea) return;
+    ctx.save();
+    // Marca chica abajo-derecha
+    ctx.font = '600 14px "IBM Plex Mono", monospace';
+    ctx.fillStyle = 'rgba(139,144,164,0.16)';
+    ctx.textAlign = 'right';
+    ctx.textBaseline = 'bottom';
+    ctx.fillText('canuto.ar', chartArea.right - 6, chartArea.bottom - 4);
+    // Marca grande centrada (más sutil)
+    ctx.font = '700 32px "IBM Plex Mono", monospace';
+    ctx.fillStyle = 'rgba(139,144,164,0.06)';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    const cx = (chartArea.left + chartArea.right) / 2;
+    const cy = (chartArea.top + chartArea.bottom) / 2;
+    ctx.fillText('canuto.ar', cx, cy);
+    ctx.restore();
+  }
+};
+Chart.register(canutoWatermarkPlugin);
 
 const CHART_OPTS_BASE = {
   responsive: true,
@@ -1268,23 +1295,51 @@ function makeBarChart(canvasId, labels, values, color, tooltipSuffix='') {
 }
 
 // ═══════════════════════════════════════════════════════════════════════════
-// 1. RESERVAS BCRA — fetch desde api.estadisticasbcra.com
+// 1. RESERVAS BCRA — fetch desde la API OFICIAL del BCRA
+//    api.bcra.gob.ar/estadisticas/v3.0/Monetarias/1 (idVariable 1 = Reservas Internacionales)
+//    Si falla por CORS o downtime, fallback a datos.gob.ar series (mensual)
 // ═══════════════════════════════════════════════════════════════════════════
 let resData = []; // [{d:'YYYY-MM-DD', v: número (millones USD)}]
 
 async function fetchReservas() {
+  // Intento 1: BCRA oficial (diario). Pedimos los últimos 5 años (1825 días)
   try {
-    const res = await fetch('https://api.estadisticasbcra.com/reservas');
+    const desde = (() => { const d = new Date(); d.setFullYear(d.getFullYear() - 5); return d.toISOString().slice(0,10); })();
+    const hasta = new Date().toISOString().slice(0,10);
+    const url = `https://api.bcra.gob.ar/estadisticas/v3.0/Monetarias/1?desde=${desde}&hasta=${hasta}&limit=3000`;
+    const res = await fetch(url, { cache: 'no-store' });
     if (!res.ok) throw new Error('HTTP ' + res.status);
-    resData = await res.json();
-    // Normalizamos al formato {fecha, valor} interno también
-    resData.forEach(r => { r.fecha = r.d; r.valor = r.v; });
+    const json = await res.json();
+    const arr = json?.results || [];
+    if (!arr.length) throw new Error('respuesta vacía');
+    // Normalizamos: BCRA devuelve {idVariable, fecha:'YYYY-MM-DD', valor}
+    // Internamente usamos {d, v, fecha, valor}. Orden cronológico ascendente.
+    arr.sort((a, b) => a.fecha < b.fecha ? -1 : 1);
+    resData = arr.map(r => ({ d: r.fecha, v: r.valor, fecha: r.fecha, valor: r.valor }));
     renderReservas(activeRange('rt-reservas'));
-    setText('refresh-status', 'Datos actualizados');
+    setText('refresh-status', 'Datos actualizados (BCRA)');
     setText('last-update', 'últ. act.: ' + new Date().toLocaleTimeString('es-AR'));
     startCountdown();
-  } catch (e) {
-    setHTML('load-reservas', '<span style="color:var(--red)">⚠ No se pudo conectar con la API del BCRA. Reintenta en 60s…</span>');
+    return;
+  } catch (e) { /* sigue al fallback */ }
+
+  // Intento 2: datos.gob.ar series (mensual, fallback)
+  try {
+    const url2 = 'https://apis.datos.gob.ar/series/api/series/?ids=92.2_RESERVAS_IRES_0_0_32_40&limit=5000&format=json&sort=asc';
+    const res2 = await fetch(url2, { cache: 'no-store' });
+    if (!res2.ok) throw new Error('HTTP ' + res2.status);
+    const json2 = await res2.json();
+    const rows = (json2.data || []).filter(([f, v]) => v !== null);
+    if (!rows.length) throw new Error('respuesta vacía');
+    // Convertir miles de millones (1.000) a millones para mantener escala
+    resData = rows.map(([fecha, valor]) => ({ d: fecha, v: valor * 1000, fecha, valor: valor * 1000 }));
+    renderReservas(activeRange('rt-reservas'));
+    setText('refresh-status', 'Datos actualizados (datos.gob.ar mensual)');
+    setText('last-update', 'últ. act.: ' + new Date().toLocaleTimeString('es-AR'));
+    startCountdown();
+    return;
+  } catch (e2) {
+    setHTML('load-reservas', '<span style="color:var(--red)">⚠ No se pudo conectar con la API del BCRA ni con datos.gob.ar. Reintentamos en 5 min…</span>');
     setText('refresh-status', 'Error de conexión');
   }
 }
@@ -1702,7 +1757,8 @@ async function initInflacion() {
 // ═══════════════════════════════════════════════════════════════════════════
 let inflIARaw = [];
 async function loadInflacionIA() {
-  inflIARaw = await fetchAD('/finanzas/indices/inflacion-interanual');
+  // ArgentinaDatos usa camelCase: /finanzas/indices/inflacionInteranual
+  inflIARaw = await fetchAD('/finanzas/indices/inflacionInteranual');
 }
 function renderInflacionIA(range) {
   const data = filterRange(inflIARaw, 'fecha', range);
@@ -1738,16 +1794,34 @@ async function initInflacionIA() {
 }
 
 // ═══════════════════════════════════════════════════════════════════════════
-// 6. TASA DE POLÍTICA MONETARIA (proxy: depósitos 30 días BCRA)
+// 6. TASA DE POLÍTICA MONETARIA / TAMAR
+//    Intento 1: BCRA oficial Monetarias var 6 (TPM/TAMAR) — diaria, sin auth
+//    Intento 2: BCRA Monetarias var 7 (BADLAR bancos privados)
 // ═══════════════════════════════════════════════════════════════════════════
 let tasaRaw = [];
 async function loadTasa() {
-  tasaRaw = await fetchAD('/finanzas/tasas/depositos-30-dias');
+  const desde = (() => { const d = new Date(); d.setFullYear(d.getFullYear() - 5); return d.toISOString().slice(0,10); })();
+  const hasta = new Date().toISOString().slice(0,10);
+  // probar varias variables en orden hasta encontrar una con datos
+  for (const idVar of [6, 7, 34, 35, 46]) {
+    try {
+      const url = `https://api.bcra.gob.ar/estadisticas/v3.0/Monetarias/${idVar}?desde=${desde}&hasta=${hasta}&limit=3000`;
+      const res = await fetch(url, { cache: 'no-store' });
+      if (!res.ok) continue;
+      const json = await res.json();
+      const arr = json?.results || [];
+      if (!arr.length) continue;
+      arr.sort((a, b) => a.fecha < b.fecha ? -1 : 1);
+      tasaRaw = arr.map(r => ({ fecha: r.fecha, valor: r.valor }));
+      return;
+    } catch (e) { /* probar siguiente */ }
+  }
+  throw new Error('ninguna serie de tasa BCRA respondió');
 }
 function renderTasa(range) {
   const data = filterRange(tasaRaw, 'fecha', range);
   if (!data.length) return;
-  const valFn = d => d.bcra ?? d.valor ?? null;
+  const valFn = d => d.valor ?? null;
   const valid = data.filter(d => valFn(d) !== null);
   if (!valid.length) return;
   const labels = valid.map(d => fmtDateShort(d.fecha));
@@ -1823,15 +1897,35 @@ async function initUVA() {
 }
 
 // ═══════════════════════════════════════════════════════════════════════════
-// 8. DESOCUPACIÓN (datos.gob.ar — EPH INDEC trimestral)
+// 8. DESOCUPACIÓN — datos curados manualmente desde INDEC EPH
+//    Para actualizar: agregar el último trimestre cuando INDEC publica
+//    Fuente: https://www.indec.gob.ar/indec/web/Nivel4-Tema-4-31-58
 // ═══════════════════════════════════════════════════════════════════════════
+const DESOC_DATA = [
+  { fecha: '2021-03-31', valor: 10.2 },
+  { fecha: '2021-06-30', valor: 9.6  },
+  { fecha: '2021-09-30', valor: 8.2  },
+  { fecha: '2021-12-31', valor: 7.0  },
+  { fecha: '2022-03-31', valor: 7.0  },
+  { fecha: '2022-06-30', valor: 6.9  },
+  { fecha: '2022-09-30', valor: 7.1  },
+  { fecha: '2022-12-31', valor: 6.3  },
+  { fecha: '2023-03-31', valor: 6.9  },
+  { fecha: '2023-06-30', valor: 6.2  },
+  { fecha: '2023-09-30', valor: 5.7  },
+  { fecha: '2023-12-31', valor: 5.7  },
+  { fecha: '2024-03-31', valor: 7.7  },
+  { fecha: '2024-06-30', valor: 7.6  },
+  { fecha: '2024-09-30', valor: 6.9  },
+  { fecha: '2024-12-31', valor: 6.4  },
+  { fecha: '2025-03-31', valor: 7.9  },
+  { fecha: '2025-06-30', valor: 7.6  },
+  { fecha: '2025-09-30', valor: 6.3  },
+  { fecha: '2025-12-31', valor: 7.5  },
+];
 let desocRaw = [];
 async function loadDesocupacion() {
-  const url = 'https://apis.datos.gob.ar/series/api/series/?ids=138.3_NO_OCU_POBL_0_T_15&limit=500&format=json';
-  const res = await fetch(url, { cache: 'no-store' });
-  if (!res.ok) throw new Error('HTTP ' + res.status);
-  const json = await res.json();
-  desocRaw = (json.data || []).map(([fecha, valor]) => ({ fecha, valor })).filter(d => d.valor !== null);
+  desocRaw = DESOC_DATA.slice();
 }
 function renderDesocupacion(range) {
   const data = filterRange(desocRaw, 'fecha', range);
@@ -1869,15 +1963,26 @@ async function initDesocupacion() {
 }
 
 // ═══════════════════════════════════════════════════════════════════════════
-// 9. POBREZA (datos.gob.ar — EPH INDEC semestral)
+// 9. POBREZA — datos curados manualmente desde INDEC EPH (semestral)
+//    Para actualizar: agregar el último semestre cuando INDEC publica
+//    Fuente: https://www.indec.gob.ar/indec/web/Nivel3-Tema-4-46
 // ═══════════════════════════════════════════════════════════════════════════
+const POBREZA_DATA = [
+  { fecha: '2020-06-30', valor: 40.9 },
+  { fecha: '2020-12-31', valor: 42.0 },
+  { fecha: '2021-06-30', valor: 40.6 },
+  { fecha: '2021-12-31', valor: 37.3 },
+  { fecha: '2022-06-30', valor: 36.5 },
+  { fecha: '2022-12-31', valor: 39.2 },
+  { fecha: '2023-06-30', valor: 40.1 },
+  { fecha: '2023-12-31', valor: 41.7 },
+  { fecha: '2024-12-31', valor: 38.1 },
+  { fecha: '2025-06-30', valor: 31.6 },
+  { fecha: '2025-12-31', valor: 28.2 },
+];
 let pobrezaRaw = [];
 async function loadPobreza() {
-  const url = 'https://apis.datos.gob.ar/series/api/series/?ids=138.3_POBLA_PENAL_0_A_15&limit=200&format=json';
-  const res = await fetch(url, { cache: 'no-store' });
-  if (!res.ok) throw new Error('HTTP ' + res.status);
-  const json = await res.json();
-  pobrezaRaw = (json.data || []).map(([fecha, valor]) => ({ fecha, valor })).filter(d => d.valor !== null);
+  pobrezaRaw = POBREZA_DATA.slice();
 }
 function renderPobreza(range) {
   const data = filterRange(pobrezaRaw, 'fecha', range);
@@ -1916,8 +2021,6 @@ async function initPobreza() {
 
 // ═══════════════════════════════════════════════════════════════════════════
 // TICKER — se construye dinámicamente con valores actuales.
-// Los items se duplican para el loop infinito, por eso usamos data-tk-key
-// (clase) en lugar de id, para evitar IDs duplicados en runtime.
 // ═══════════════════════════════════════════════════════════════════════════
 function buildTicker() {
   const items = [
@@ -1934,7 +2037,6 @@ function buildTicker() {
       <span class="t-val" data-tk-key="${it.key}">${it.val}</span>
       <span class="t-var neu" data-tk-key="${it.key}-var">${it.var}</span>
     </div>`;
-  // Duplicar para loop infinito
   $('tickerTrack').innerHTML = items.map(renderItem).join('') + items.map(renderItem).join('');
 }
 
@@ -1974,30 +2076,15 @@ function updateTicker() {
 (function init() {
   buildTicker();
 
-  // Reservas (con auto-refresh)
   setupReservasRangeTabs();
   fetchReservas();
   setInterval(fetchReservas, REFRESH_SEC * 1000);
 
-  // Deuda
   buildAcreedorChips();
   setupDeudaTabs();
   drawDeudaChart();
 
-  // Resto de indicadores (paralelo)
   initRiesgo();
-  initInflacion();
-  initInflacionIA();
-  initTasa();
-  initUVA();
-  initDesocupacion();
-  initPobreza();
-})();
-</script>
-
-</body>
-</html>
-();
   initInflacion();
   initInflacionIA();
   initTasa();
