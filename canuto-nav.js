@@ -10,6 +10,7 @@
     { id: 'retiro',          label: 'Mi Retiro',         emoji: '🏖️', href: '/retiro/',           desc: 'Calculá tu retiro' },
     { id: 'dolar-en-vivo',   label: 'Dólar en Vivo',    emoji: '💵', href: '/dolar-en-vivo/',    desc: 'Cotizaciones al instante' },
     { id: 'dolar-historico', label: 'Dólar Histórico',  emoji: '📈', href: '/dolar-historico/',  desc: 'Historial desde 2003' },
+    { id: 'inflaciona',      label: 'Inflacioná',        emoji: '🔥', href: '/inflaciona/',       desc: 'Calculá inflación AR/USA desde 1943' },
     { id: 'datos-macro',     label: 'Datos Macro',      emoji: '🏛️', href: '/datos-macro/',      desc: 'Reservas, deuda, inflación, riesgo país y más' },
   ];
 
