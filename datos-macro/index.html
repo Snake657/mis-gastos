@@ -1172,7 +1172,7 @@
         <button class="range-tab" data-r="TODO">Todo</button>
         <button class="range-tab" data-r="CUSTOM">Rango</button>
       </div>
-      <div class="nota-fuente">World Bank · USD corrientes · anual</div>
+      <div class="nota-fuente">World Bank · USD corrientes · anual (delay ~6 meses)</div>
     </div>
     <div class="date-range-wrap" id="pbipc-date-inputs" style="display:none">
       <input type="date" id="pbipc-desde" />
@@ -1220,7 +1220,7 @@
         <button class="range-tab" data-r="TODO">Todo</button>
         <button class="range-tab" data-r="CUSTOM">Rango</button>
       </div>
-      <div class="nota-fuente">Merval ARS / CCL · diario · USD</div>
+      <div class="nota-fuente">Merval ARS / CCL · serie larga desde 1996 (mensual) + diaria reciente · USD</div>
     </div>
     <div class="date-range-wrap" id="merval-date-inputs" style="display:none">
       <input type="date" id="merval-desde" />
@@ -2834,7 +2834,8 @@ function renderPbiPc(range) {
   const diff = prev ? ((last.valor - prev.valor) / prev.valor * 100) : null;
 
   setText('val-pbipc', `USD ${fmtInt(last.valor)}`);
-  setText('meta-pbipc', `Último dato anual: ${last.fecha.slice(0,4)} · USD corrientes`);
+  // World Bank publica el dato anual con ~6 meses de delay (el de 2025 sale en jul-2026)
+  setText('meta-pbipc', `Último dato: ${last.fecha.slice(0,4)} · USD corrientes · World Bank publica con ~6 meses de delay`);
   const badge = $('badge-pbipc');
   badge.textContent = diff !== null ? `${diff >= 0 ? '+' : ''}${fmtNum(diff)}% i.a.` : '—';
   badge.className = `ind-badge ${badgeCls(diff, true)}`;
@@ -2896,20 +2897,33 @@ async function _fetchFirstOk(urls) {
 }
 async function loadMerval() {
   try {
-    // Pedimos las dos series en paralelo: Merval ARS desde el worker + CCL desde argentinadatos
-    const [mervalRes, cclRes] = await Promise.all([
-      fetch(MERVAL_API + '?range=10y', { cache: 'no-store' }),
+    // Dual fetch: 'max' nos da serie larga mensual (~1996+) y '5y' nos da granularidad
+    // diaria de los últimos 5 años. Combinamos: histórico mensual hasta 2021 + diario después.
+    const [mervalMaxRes, mervalRecentRes, cclRes] = await Promise.all([
+      fetch(MERVAL_API + '?range=max', { cache: 'no-store' }),
+      fetch(MERVAL_API + '?range=5y', { cache: 'no-store' }),
       fetch(CCL_API, { cache: 'no-store' }),
     ]);
-    if (!mervalRes.ok) throw new Error('merval worker http ' + mervalRes.status);
+    if (!mervalMaxRes.ok) throw new Error('merval max http ' + mervalMaxRes.status);
     if (!cclRes.ok) throw new Error('ccl http ' + cclRes.status);
 
-    const mervalJson = await mervalRes.json();
+    const mervalMaxJson = await mervalMaxRes.json();
+    const mervalRecentJson = mervalRecentRes.ok ? await mervalRecentRes.json() : [];
     const cclJson = await cclRes.json();
 
-    const merval = _normalizeSerie(mervalJson);
+    const mervalMax = _normalizeSerie(mervalMaxJson);
+    const mervalRecent = _normalizeSerie(mervalRecentJson);
     const ccl = _normalizeSerie(cclJson);
-    if (!merval.length || !ccl.length) throw new Error('merval/ccl empty');
+    if (!mervalMax.length || !ccl.length) throw new Error('merval/ccl empty');
+
+    // Combinar: max (mensual) hasta 2020-12, recent (diario) desde 2021-01
+    const cutoff = '2021-01-01';
+    const merged = [
+      ...mervalMax.filter(p => p.fecha < cutoff),
+      ...mervalRecent.filter(p => p.fecha >= cutoff),
+    ];
+    // Si recent no devolvió nada, usar max completo
+    const merval = merged.length > mervalMax.length / 2 ? merged : mervalMax;
 
     // Si el worker ya devuelve Merval EN USD (campo "moneda":"USD" o si los valores son chicos < 5000),
     // lo usamos directo. Si está en ARS, dividimos por CCL.
