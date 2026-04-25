@@ -702,6 +702,30 @@
       <canvas id="chart-deuda"></canvas>
     </div>
     <div class="legend-row" id="deuda-legend"></div>
+
+    <!-- Drill-down: ver desglose mensual por año -->
+    <div class="ind-toolbar" style="margin-top:18px">
+      <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+        <span style="font-family:'IBM Plex Mono',monospace;font-size:0.7rem;color:var(--text3)">Detalle mensual:</span>
+        <select id="deuda-mes-year" style="background:var(--surface2);border:1px solid var(--border2);border-radius:6px;padding:4px 10px;color:var(--text);font-family:'IBM Plex Mono',monospace;font-size:0.7rem;outline:none">
+          <option value="">— elegir año —</option>
+        </select>
+        <button id="deuda-mes-cerrar" style="background:transparent;border:1px solid var(--border);border-radius:6px;padding:4px 10px;color:var(--text3);font-family:'IBM Plex Mono',monospace;font-size:0.68rem;font-weight:600;cursor:pointer;display:none">Cerrar</button>
+      </div>
+      <div class="nota-fuente" id="deuda-mes-fuente">datos OPC · estimación mensual</div>
+    </div>
+    <div id="deuda-mes-wrap" style="display:none">
+      <div class="chart-wrap tall">
+        <canvas id="chart-deuda-mes"></canvas>
+      </div>
+      <div class="legend-row" id="deuda-mes-legend"></div>
+      <div class="table-wrap" style="margin-top:14px">
+        <div class="table-scroll">
+          <table class="data-table" id="deuda-mes-table"></table>
+        </div>
+      </div>
+    </div>
+
     <div class="table-wrap">
       <div class="table-wrap-header">
         <div style="font-family:'IBM Plex Mono',monospace;font-size:0.62rem;letter-spacing:0.08em;text-transform:uppercase;color:var(--text4)">Detalle anual — USD millones</div>
@@ -1213,6 +1237,83 @@ function activeRange(containerId) {
   return el?.dataset.r || '1A';
 }
 
+// ─── Helper genérico: agrega tab CUSTOM + date inputs + presets faltantes ─
+// prefix: 'riesgo' (espera #rt-riesgo, agrega #riesgo-desde, #riesgo-hasta)
+// presets: array adicional de {r, label} a inyectar antes del CUSTOM
+// renderFn: función a llamar con el range cuando cambie
+function attachCustomRange(prefix, presets, renderFn) {
+  const tabsContainer = $(`rt-${prefix}`);
+  if (!tabsContainer) return;
+
+  // Inyectar presets faltantes
+  for (const p of (presets || [])) {
+    if (!tabsContainer.querySelector(`[data-r="${p.r}"]`)) {
+      const btn = document.createElement('button');
+      btn.className = 'range-tab';
+      btn.dataset.r = p.r;
+      btn.textContent = p.label;
+      tabsContainer.appendChild(btn);
+    }
+  }
+
+  // Inyectar tab CUSTOM si no existe
+  if (!tabsContainer.querySelector('[data-r="CUSTOM"]')) {
+    const btn = document.createElement('button');
+    btn.className = 'range-tab';
+    btn.dataset.r = 'CUSTOM';
+    btn.textContent = 'Rango';
+    tabsContainer.appendChild(btn);
+  }
+
+  // Inyectar inputs de fecha justo después del toolbar
+  let dateWrap = $(`${prefix}-date-inputs`);
+  if (!dateWrap) {
+    const toolbar = tabsContainer.closest('.ind-toolbar');
+    if (toolbar) {
+      dateWrap = document.createElement('div');
+      dateWrap.className = 'date-range-wrap';
+      dateWrap.id = `${prefix}-date-inputs`;
+      dateWrap.style.display = 'none';
+      dateWrap.innerHTML = `
+        <input type="date" id="${prefix}-desde" />
+        <span class="date-sep">→</span>
+        <input type="date" id="${prefix}-hasta" />
+      `;
+      toolbar.parentNode.insertBefore(dateWrap, toolbar.nextSibling);
+
+      // Defaults: -1 año a hoy
+      const hoy = new Date().toISOString().slice(0,10);
+      const hace1a = new Date(); hace1a.setFullYear(hace1a.getFullYear() - 1);
+      $(`${prefix}-desde`).value = hace1a.toISOString().slice(0,10);
+      $(`${prefix}-hasta`).value = hoy;
+
+      $(`${prefix}-desde`).addEventListener('change', () => {
+        if (activeRange(`rt-${prefix}`) === 'CUSTOM') renderFn('CUSTOM');
+      });
+      $(`${prefix}-hasta`).addEventListener('change', () => {
+        if (activeRange(`rt-${prefix}`) === 'CUSTOM') renderFn('CUSTOM');
+      });
+    }
+  }
+
+  // Hook range tabs con toggle de visibilidad de los inputs
+  setupRangeTabs(`rt-${prefix}`, r => {
+    if (dateWrap) dateWrap.style.display = (r === 'CUSTOM') ? 'flex' : 'none';
+    renderFn(r);
+  });
+}
+
+// Devuelve el slice de datos según el range (incluye CUSTOM con inputs)
+function sliceByRange(prefix, raw, dateKey, range) {
+  if (range === 'CUSTOM') {
+    const desde = $(`${prefix}-desde`)?.value;
+    const hasta = $(`${prefix}-hasta`)?.value;
+    if (!desde || !hasta) return filterRange(raw, dateKey, '1A');
+    return raw.filter(d => d[dateKey] >= desde && d[dateKey] <= hasta);
+  }
+  return filterRange(raw, dateKey, range);
+}
+
 // Stats helper
 function calcStats(arr, valFn) {
   if (!arr.length) return {};
@@ -1295,35 +1396,44 @@ function makeBarChart(canvasId, labels, values, color, tooltipSuffix='') {
 }
 
 // ═══════════════════════════════════════════════════════════════════════════
-// 1. RESERVAS BCRA — fetch desde la API OFICIAL del BCRA
-//    api.bcra.gob.ar/estadisticas/v3.0/Monetarias/1 (idVariable 1 = Reservas Internacionales)
-//    Si falla por CORS o downtime, fallback a datos.gob.ar series (mensual)
+// 1. RESERVAS BCRA
+//    BCRA oficial (api.bcra.gob.ar) tiene datos diarios pero NO permite CORS
+//    desde el browser. Probamos varios CORS proxies públicos en cadena.
+//    Último fallback: datos.gob.ar (CORS-friendly, pero solo mensual).
 // ═══════════════════════════════════════════════════════════════════════════
 let resData = []; // [{d:'YYYY-MM-DD', v: número (millones USD)}]
 
 async function fetchReservas() {
-  // Intento 1: BCRA oficial (diario). Pedimos los últimos 5 años (1825 días)
-  try {
-    const desde = (() => { const d = new Date(); d.setFullYear(d.getFullYear() - 5); return d.toISOString().slice(0,10); })();
-    const hasta = new Date().toISOString().slice(0,10);
-    const url = `https://api.bcra.gob.ar/estadisticas/v3.0/Monetarias/1?desde=${desde}&hasta=${hasta}&limit=3000`;
-    const res = await fetch(url, { cache: 'no-store' });
-    if (!res.ok) throw new Error('HTTP ' + res.status);
-    const json = await res.json();
-    const arr = json?.results || [];
-    if (!arr.length) throw new Error('respuesta vacía');
-    // Normalizamos: BCRA devuelve {idVariable, fecha:'YYYY-MM-DD', valor}
-    // Internamente usamos {d, v, fecha, valor}. Orden cronológico ascendente.
-    arr.sort((a, b) => a.fecha < b.fecha ? -1 : 1);
-    resData = arr.map(r => ({ d: r.fecha, v: r.valor, fecha: r.fecha, valor: r.valor }));
-    renderReservas(activeRange('rt-reservas'));
-    setText('refresh-status', 'Datos actualizados (BCRA)');
-    setText('last-update', 'últ. act.: ' + new Date().toLocaleTimeString('es-AR'));
-    startCountdown();
-    return;
-  } catch (e) { /* sigue al fallback */ }
+  const desde = (() => { const d = new Date(); d.setFullYear(d.getFullYear() - 5); return d.toISOString().slice(0,10); })();
+  const hasta = new Date().toISOString().slice(0,10);
+  const bcraUrl = `https://api.bcra.gob.ar/estadisticas/v3.0/Monetarias/1?desde=${desde}&hasta=${hasta}&limit=3000`;
 
-  // Intento 2: datos.gob.ar series (mensual, fallback)
+  // Cadena de proxies CORS para llegar al BCRA oficial (diario)
+  const proxies = [
+    u => `https://corsproxy.io/?${encodeURIComponent(u)}`,
+    u => `https://api.allorigins.win/raw?url=${encodeURIComponent(u)}`,
+    u => `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(u)}`,
+    u => u, // intento directo (por si BCRA habilita CORS algún día)
+  ];
+
+  for (const proxy of proxies) {
+    try {
+      const res = await fetch(proxy(bcraUrl), { cache: 'no-store' });
+      if (!res.ok) continue;
+      const json = await res.json();
+      const arr = json?.results || [];
+      if (!arr.length) continue;
+      arr.sort((a, b) => a.fecha < b.fecha ? -1 : 1);
+      resData = arr.map(r => ({ d: r.fecha, v: r.valor, fecha: r.fecha, valor: r.valor }));
+      renderReservas(activeRange('rt-reservas'));
+      setText('refresh-status', 'Datos BCRA · ' + (proxy === proxies[3] ? 'directo' : 'vía proxy'));
+      setText('last-update', 'últ. act.: ' + new Date().toLocaleTimeString('es-AR'));
+      startCountdown();
+      return;
+    } catch (e) { /* siguiente proxy */ }
+  }
+
+  // Fallback final: datos.gob.ar mensual (CORS-friendly, no requiere proxy)
   try {
     const url2 = 'https://apis.datos.gob.ar/series/api/series/?ids=92.2_RESERVAS_IRES_0_0_32_40&limit=5000&format=json&sort=asc';
     const res2 = await fetch(url2, { cache: 'no-store' });
@@ -1331,15 +1441,14 @@ async function fetchReservas() {
     const json2 = await res2.json();
     const rows = (json2.data || []).filter(([f, v]) => v !== null);
     if (!rows.length) throw new Error('respuesta vacía');
-    // Convertir miles de millones (1.000) a millones para mantener escala
     resData = rows.map(([fecha, valor]) => ({ d: fecha, v: valor * 1000, fecha, valor: valor * 1000 }));
     renderReservas(activeRange('rt-reservas'));
-    setText('refresh-status', 'Datos actualizados (datos.gob.ar mensual)');
+    setText('refresh-status', 'Datos mensuales (datos.gob.ar)');
     setText('last-update', 'últ. act.: ' + new Date().toLocaleTimeString('es-AR'));
     startCountdown();
     return;
   } catch (e2) {
-    setHTML('load-reservas', '<span style="color:var(--red)">⚠ No se pudo conectar con la API del BCRA ni con datos.gob.ar. Reintentamos en 5 min…</span>');
+    setHTML('load-reservas', '<span style="color:var(--red)">⚠ No se pudo conectar con BCRA ni con datos.gob.ar. Reintentamos en 5 min…</span>');
     setText('refresh-status', 'Error de conexión');
   }
 }
@@ -1670,7 +1779,7 @@ async function loadRiesgo() {
   riesgoRaw = await fetchAD('/finanzas/indices/riesgo-pais');
 }
 function renderRiesgo(range) {
-  const data = filterRange(riesgoRaw, 'fecha', range);
+  const data = sliceByRange('riesgo', riesgoRaw, 'fecha', range);
   if (!data.length) return;
   const labels = data.map(d => fmtDateShort(d.fecha));
   const values = data.map(d => d.valor);
@@ -1701,7 +1810,7 @@ async function initRiesgo() {
   try {
     await loadRiesgo();
     renderRiesgo(activeRange('rt-riesgo'));
-    setupRangeTabs('rt-riesgo', r => renderRiesgo(r));
+    attachCustomRange('riesgo', [], renderRiesgo);
   } catch(e) { setText('load-riesgo', 'Error al cargar datos.'); }
 }
 
@@ -1713,7 +1822,7 @@ async function loadInflacion() {
   inflRaw = await fetchAD('/finanzas/indices/inflacion');
 }
 function renderInflacion(range) {
-  const data = filterRange(inflRaw, 'fecha', range);
+  const data = sliceByRange('inflacion', inflRaw, 'fecha', range);
   if (!data.length) return;
   const labels = data.map(d => fmtDateShort(d.fecha));
   const values = data.map(d => d.valor);
@@ -1748,7 +1857,7 @@ async function initInflacion() {
   try {
     await loadInflacion();
     renderInflacion(activeRange('rt-inflacion'));
-    setupRangeTabs('rt-inflacion', r => renderInflacion(r));
+    attachCustomRange('inflacion', [{r:"1M",label:"1M"},{r:"3M",label:"3M"}], renderInflacion);
   } catch(e) { setText('load-inflacion', 'Error al cargar datos.'); }
 }
 
@@ -1761,7 +1870,7 @@ async function loadInflacionIA() {
   inflIARaw = await fetchAD('/finanzas/indices/inflacionInteranual');
 }
 function renderInflacionIA(range) {
-  const data = filterRange(inflIARaw, 'fecha', range);
+  const data = sliceByRange('inflacion-ia', inflIARaw, 'fecha', range);
   if (!data.length) return;
   const labels = data.map(d => fmtDateShort(d.fecha));
   const values = data.map(d => d.valor);
@@ -1789,7 +1898,7 @@ async function initInflacionIA() {
   try {
     await loadInflacionIA();
     renderInflacionIA(activeRange('rt-inflacion-ia'));
-    setupRangeTabs('rt-inflacion-ia', r => renderInflacionIA(r));
+    attachCustomRange('inflacion-ia', [{r:"6M",label:"6M"}], renderInflacionIA);
   } catch(e) { setText('load-inflacion-ia', 'Error al cargar datos.'); }
 }
 
@@ -1819,7 +1928,7 @@ async function loadTasa() {
   throw new Error('ninguna serie de tasa BCRA respondió');
 }
 function renderTasa(range) {
-  const data = filterRange(tasaRaw, 'fecha', range);
+  const data = sliceByRange('tasa', tasaRaw, 'fecha', range);
   if (!data.length) return;
   const valFn = d => d.valor ?? null;
   const valid = data.filter(d => valFn(d) !== null);
@@ -1852,7 +1961,7 @@ async function initTasa() {
   try {
     await loadTasa();
     renderTasa(activeRange('rt-tasa'));
-    setupRangeTabs('rt-tasa', r => renderTasa(r));
+    attachCustomRange('tasa', [], renderTasa);
   } catch(e) { setText('load-tasa', 'Error al cargar datos.'); }
 }
 
@@ -1864,7 +1973,7 @@ async function loadUVA() {
   uvaRaw = await fetchAD('/finanzas/indices/uva');
 }
 function renderUVA(range) {
-  const data = filterRange(uvaRaw, 'fecha', range);
+  const data = sliceByRange('uva', uvaRaw, 'fecha', range);
   if (!data.length) return;
   const labels = data.map(d => fmtDateShort(d.fecha));
   const values = data.map(d => d.valor);
@@ -1892,7 +2001,7 @@ async function initUVA() {
   try {
     await loadUVA();
     renderUVA(activeRange('rt-uva'));
-    setupRangeTabs('rt-uva', r => renderUVA(r));
+    attachCustomRange('uva', [{r:"5A",label:"5A"}], renderUVA);
   } catch(e) { setText('load-uva', 'Error al cargar datos.'); }
 }
 
@@ -1928,7 +2037,7 @@ async function loadDesocupacion() {
   desocRaw = DESOC_DATA.slice();
 }
 function renderDesocupacion(range) {
-  const data = filterRange(desocRaw, 'fecha', range);
+  const data = sliceByRange('desocupacion', desocRaw, 'fecha', range);
   if (!data.length) return;
   const labels = data.map(d => fmtDateShort(d.fecha));
   const values = data.map(d => d.valor);
@@ -1958,7 +2067,7 @@ async function initDesocupacion() {
   try {
     await loadDesocupacion();
     renderDesocupacion(activeRange('rt-desocupacion'));
-    setupRangeTabs('rt-desocupacion', r => renderDesocupacion(r));
+    attachCustomRange('desocupacion', [{r:"1A",label:"1A"}], renderDesocupacion);
   } catch(e) { setText('load-desocupacion', 'Temporalmente no disponible.'); }
 }
 
@@ -1985,7 +2094,7 @@ async function loadPobreza() {
   pobrezaRaw = POBREZA_DATA.slice();
 }
 function renderPobreza(range) {
-  const data = filterRange(pobrezaRaw, 'fecha', range);
+  const data = sliceByRange('pobreza', pobrezaRaw, 'fecha', range);
   if (!data.length) return;
   const labels = data.map(d => fmtDateShort(d.fecha));
   const values = data.map(d => d.valor);
@@ -2015,7 +2124,7 @@ async function initPobreza() {
   try {
     await loadPobreza();
     renderPobreza(activeRange('rt-pobreza'));
-    setupRangeTabs('rt-pobreza', r => renderPobreza(r));
+    attachCustomRange('pobreza', [{r:"1A",label:"1A"}], renderPobreza);
   } catch(e) { setText('load-pobreza', 'Temporalmente no disponible.'); }
 }
 
