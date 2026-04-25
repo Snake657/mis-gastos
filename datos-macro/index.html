@@ -601,6 +601,9 @@
     <a href="#sec-uva">🏠 UVA</a>
     <a href="#sec-desocupacion">👷 Desocupación</a>
     <a href="#sec-pobreza">📉 Pobreza</a>
+    <a href="#sec-emae">📊 EMAE</a>
+    <a href="#sec-pbi-pc">🌎 PBI/cápita USD</a>
+    <a href="#sec-merval">📈 Merval USD</a>
   </nav>
 
   <!-- ═══════════════════════════════════════════════════════════════ -->
@@ -1074,6 +1077,9 @@
     Tasa: BCRA Monetarias v4.0 idVariable 44 (TAMAR bancos privados, reemplazo moderno de la TPM).
     Vencimientos: <a href="https://opc.gob.ar" target="_blank" rel="noopener">OPC</a> · Secretaría de Finanzas · FMI MFSM. 2024–2026 reportados; 2027–2032 estimados (pueden variar por refinanciaciones, canjes y nuevos acuerdos).
     Inflación, riesgo país y UVA: <a href="https://argentinadatos.com" target="_blank" rel="noopener">ArgentinaDatos</a> (open source, sin API key).
+    <strong style="color:var(--text2)">EMAE:</strong> serie mensual del INDEC vía <a href="https://apis.datos.gob.ar/series/api/" target="_blank" rel="noopener">API de datos.gob.ar</a> (variación interanual %).
+    <strong style="color:var(--text2)">PBI per cápita USD:</strong> serie anual desde 1960 vía <a href="https://api.worldbank.org/v2/" target="_blank" rel="noopener">API del World Bank</a> (indicador NY.GDP.PCAP.CD, USD corrientes).
+    <strong style="color:var(--text2)">Merval USD CCL:</strong> Merval en pesos vía estadisticasbcra.com / argentinadatos.com, dividido por la cotización CCL (también de argentinadatos.com). Cálculo en cliente.
     <strong style="color:var(--text2)">Desocupación:</strong> serie larga del <a href="https://www.indec.gob.ar" target="_blank" rel="noopener">INDEC</a> — EPH puntual GBA 1974-2003 (semestral) + EPH continua nacional 31 aglomerados desde 2003 (trimestral). Las dos series tienen metodología distinta y no son directamente comparables, pero se grafican juntas. Datos hardcodeados con upgrade en vivo desde la <a href="https://apis.datos.gob.ar/series/api/" target="_blank" rel="noopener">API de datos.gob.ar</a> cuando está disponible.
     <br><br>
     <strong style="color:var(--text2)">Pobreza:</strong> dos series superpuestas. La línea roja es la oficial del <a href="https://www.indec.gob.ar" target="_blank" rel="noopener">INDEC</a> (EPH semestral). La línea naranja punteada es la del <a href="https://uca.edu.ar/es/observatorio-de-la-deuda-social-argentina" target="_blank" rel="noopener">Observatorio de la Deuda Social Argentina (UCA)</a>, serie anual independiente de hogares en aglomerados urbanos de más de 80 mil habitantes.
@@ -1081,6 +1087,151 @@
     ⚠️ <strong style="color:var(--text2)">2007–2015:</strong> el INDEC fue intervenido políticamente. Los datos oficiales de pobreza de ese período (que se muestran en gris punteado) subreportaban la realidad — mediciones privadas y la propia UCA daban valores entre 2 y 3 veces mayores. En 2013 el INDEC dejó de publicar oficialmente y reanudó en 2016 con una metodología nueva. Para actualizar manualmente: editar las constantes <code>DESOC_DATA_PUNTUAL</code>, <code>DESOC_DATA_CONTINUA</code>, <code>POBREZA_INDEC_DATA</code> y <code>POBREZA_UCA_DATA</code> en el HTML.
     Esta herramienta es informativa y no constituye asesoría financiera.
   </div>
+
+
+  <!-- ═══════════════════════════════════════════════════════════════ -->
+  <!-- 10. EMAE — Estimador Mensual de Actividad Económica            -->
+  <!-- ═══════════════════════════════════════════════════════════════ -->
+  <section class="ind-section" data-color="green" id="sec-emae">
+    <div class="ind-header">
+      <div>
+        <div class="ind-name">EMAE — Actividad Económica</div>
+        <div class="ind-value-row">
+          <div class="ind-value" id="val-emae">—</div>
+          <div class="ind-badge badge-neu" id="badge-emae">—</div>
+        </div>
+        <div class="ind-meta" id="meta-emae">Cargando…</div>
+      </div>
+      <div class="ind-stats">
+        <div class="stat-card">
+          <div class="stat-label">Máx. período</div>
+          <div class="stat-val" id="stat-emae-max">—</div>
+          <div class="stat-sub" id="stat-emae-max-fecha">—</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Mín. período</div>
+          <div class="stat-val" id="stat-emae-min">—</div>
+          <div class="stat-sub" id="stat-emae-min-fecha">—</div>
+        </div>
+      </div>
+    </div>
+    <hr class="ind-divider">
+    <div class="ind-toolbar">
+      <div class="range-tabs" id="rt-emae">
+        <button class="range-tab" data-r="1A">1A</button>
+        <button class="range-tab" data-r="2A">2A</button>
+        <button class="range-tab active" data-r="5A">5A</button>
+        <button class="range-tab" data-r="TODO">Todo</button>
+        <button class="range-tab" data-r="CUSTOM">Rango</button>
+      </div>
+      <div class="nota-fuente">INDEC · variación interanual % · mensual</div>
+    </div>
+    <div class="date-range-wrap" id="emae-date-inputs" style="display:none">
+      <input type="date" id="emae-desde" />
+      <span class="date-sep">→</span>
+      <input type="date" id="emae-hasta" />
+    </div>
+    <div class="chart-wrap">
+      <div class="chart-loading" id="load-emae">Cargando datos…</div>
+      <canvas id="chart-emae" style="display:none"></canvas>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════════════════ -->
+  <!-- 11. PBI PER CÁPITA en USD — World Bank, anual                  -->
+  <!-- ═══════════════════════════════════════════════════════════════ -->
+  <section class="ind-section" data-color="teal" id="sec-pbi-pc">
+    <div class="ind-header">
+      <div>
+        <div class="ind-name">PBI per cápita (USD)</div>
+        <div class="ind-value-row">
+          <div class="ind-value" id="val-pbipc">—</div>
+          <div class="ind-badge badge-neu" id="badge-pbipc">—</div>
+        </div>
+        <div class="ind-meta" id="meta-pbipc">Cargando…</div>
+      </div>
+      <div class="ind-stats">
+        <div class="stat-card">
+          <div class="stat-label">Máx. histórico</div>
+          <div class="stat-val" id="stat-pbipc-max">—</div>
+          <div class="stat-sub" id="stat-pbipc-max-fecha">—</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Mín. histórico</div>
+          <div class="stat-val" id="stat-pbipc-min">—</div>
+          <div class="stat-sub" id="stat-pbipc-min-fecha">—</div>
+        </div>
+      </div>
+    </div>
+    <hr class="ind-divider">
+    <div class="ind-toolbar">
+      <div class="range-tabs" id="rt-pbipc">
+        <button class="range-tab" data-r="5A">5A</button>
+        <button class="range-tab" data-r="10A">10A</button>
+        <button class="range-tab active" data-r="20A">20A</button>
+        <button class="range-tab" data-r="TODO">Todo</button>
+        <button class="range-tab" data-r="CUSTOM">Rango</button>
+      </div>
+      <div class="nota-fuente">World Bank · USD corrientes · anual</div>
+    </div>
+    <div class="date-range-wrap" id="pbipc-date-inputs" style="display:none">
+      <input type="date" id="pbipc-desde" />
+      <span class="date-sep">→</span>
+      <input type="date" id="pbipc-hasta" />
+    </div>
+    <div class="chart-wrap">
+      <div class="chart-loading" id="load-pbipc">Cargando datos…</div>
+      <canvas id="chart-pbipc" style="display:none"></canvas>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════════════════ -->
+  <!-- 12. MERVAL en USD CCL — diario                                 -->
+  <!-- ═══════════════════════════════════════════════════════════════ -->
+  <section class="ind-section" data-color="violet" id="sec-merval">
+    <div class="ind-header">
+      <div>
+        <div class="ind-name">Merval en USD (CCL)</div>
+        <div class="ind-value-row">
+          <div class="ind-value" id="val-merval">—</div>
+          <div class="ind-badge badge-neu" id="badge-merval">—</div>
+        </div>
+        <div class="ind-meta" id="meta-merval">Cargando…</div>
+      </div>
+      <div class="ind-stats">
+        <div class="stat-card">
+          <div class="stat-label">Máx. período</div>
+          <div class="stat-val" id="stat-merval-max">—</div>
+          <div class="stat-sub" id="stat-merval-max-fecha">—</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Mín. período</div>
+          <div class="stat-val" id="stat-merval-min">—</div>
+          <div class="stat-sub" id="stat-merval-min-fecha">—</div>
+        </div>
+      </div>
+    </div>
+    <hr class="ind-divider">
+    <div class="ind-toolbar">
+      <div class="range-tabs" id="rt-merval">
+        <button class="range-tab" data-r="1A">1A</button>
+        <button class="range-tab active" data-r="2A">2A</button>
+        <button class="range-tab" data-r="5A">5A</button>
+        <button class="range-tab" data-r="TODO">Todo</button>
+        <button class="range-tab" data-r="CUSTOM">Rango</button>
+      </div>
+      <div class="nota-fuente">Merval ARS / CCL · diario · USD</div>
+    </div>
+    <div class="date-range-wrap" id="merval-date-inputs" style="display:none">
+      <input type="date" id="merval-desde" />
+      <span class="date-sep">→</span>
+      <input type="date" id="merval-hasta" />
+    </div>
+    <div class="chart-wrap">
+      <div class="chart-loading" id="load-merval">Cargando datos…</div>
+      <canvas id="chart-merval" style="display:none"></canvas>
+    </div>
+  </section>
 
 </main>
 
@@ -2585,7 +2736,214 @@ function updateTicker() {
   initUVA();
   initDesocupacion();
   initPobreza();
+  initEmae();
+  initPbiPc();
+  initMerval();
 })();
+
+// ═══════════════════════════════════════════════════════════════════════════
+// 10. EMAE — Variación interanual mensual desde INDEC vía datos.gob.ar
+// ═══════════════════════════════════════════════════════════════════════════
+const EMAE_API = 'https://apis.datos.gob.ar/series/api/series/?ids=143.3_NO_PR_2004_A_21&format=json&limit=500&representation_mode=value';
+let emaeRaw = [];
+async function loadEmae() {
+  try {
+    const r = await fetch(EMAE_API, { cache: 'no-store' });
+    if (!r.ok) throw new Error('emae http ' + r.status);
+    const j = await r.json();
+    const rows = (j && j.data) || [];
+    emaeRaw = rows
+      .filter(([d, v]) => typeof v === 'number')
+      .map(([d, v]) => ({
+        fecha: d.length === 10 ? d : (d.slice(0,7) + '-15'),
+        valor: +(v * 100).toFixed(2)
+      }))
+      .sort((a, b) => a.fecha.localeCompare(b.fecha));
+  } catch (e) { emaeRaw = []; throw e; }
+}
+function renderEmae(range) {
+  const data = sliceByRange('emae', emaeRaw, 'fecha', range);
+  if (!data.length) return;
+  const labels = data.map(d => fmtDateShort(d.fecha));
+  const values = data.map(d => d.valor);
+  const s = calcStats(data, d => d.valor);
+  const last = data[data.length - 1];
+
+  setText('val-emae', `${last.valor >= 0 ? '+' : ''}${fmtNum(last.valor)}%`);
+  setText('meta-emae', `Último dato: ${fmtDate(last.fecha)} · variación interanual`);
+  const badge = $('badge-emae');
+  badge.textContent = last.valor >= 0 ? '↑ creciendo' : '↓ contracción';
+  badge.className = `ind-badge ${last.valor >= 0 ? 'badge-pos' : 'badge-neg'}`;
+
+  setText('stat-emae-max', `${s.max >= 0 ? '+' : ''}${fmtNum(s.max)}%`);
+  setText('stat-emae-max-fecha', fmtDateShort(s.maxItem?.fecha));
+  setText('stat-emae-min', `${s.min >= 0 ? '+' : ''}${fmtNum(s.min)}%`);
+  setText('stat-emae-min-fecha', fmtDateShort(s.minItem?.fecha));
+
+  $('load-emae').style.display = 'none';
+  $('chart-emae').style.display = 'block';
+  makeLineChart('chart-emae', labels, values, '#4ade80', true, '%');
+}
+async function initEmae() {
+  try {
+    await loadEmae();
+    renderEmae(activeRange('rt-emae'));
+    attachCustomRange('emae', [{r:"1A",label:"1A"},{r:"2A",label:"2A"},{r:"5A",label:"5A"}], renderEmae);
+  } catch (e) {
+    setText('load-emae', 'Temporalmente no disponible.');
+  }
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+// 11. PBI PER CÁPITA USD — World Bank API, anual
+// ═══════════════════════════════════════════════════════════════════════════
+const PBIPC_API = 'https://api.worldbank.org/v2/country/AR/indicator/NY.GDP.PCAP.CD?format=json&per_page=200';
+let pbipcRaw = [];
+async function loadPbiPc() {
+  try {
+    const r = await fetch(PBIPC_API, { cache: 'no-store' });
+    if (!r.ok) throw new Error('pbipc http ' + r.status);
+    const j = await r.json();
+    const items = (Array.isArray(j) && j[1]) ? j[1] : [];
+    pbipcRaw = items
+      .filter(it => it.value !== null && it.value !== undefined)
+      .map(it => ({ fecha: it.date + '-12-31', valor: it.value }))
+      .sort((a, b) => a.fecha.localeCompare(b.fecha));
+  } catch (e) { pbipcRaw = []; throw e; }
+}
+function renderPbiPc(range) {
+  const data = sliceByRange('pbipc', pbipcRaw, 'fecha', range);
+  if (!data.length) return;
+  const labels = data.map(d => d.fecha.slice(0,4));
+  const values = data.map(d => d.valor);
+  const s = calcStats(data, d => d.valor);
+  const last = data[data.length - 1];
+  const prev = data.length > 1 ? data[data.length - 2] : null;
+  const diff = prev ? ((last.valor - prev.valor) / prev.valor * 100) : null;
+
+  setText('val-pbipc', `USD ${fmtInt(last.valor)}`);
+  setText('meta-pbipc', `Último dato anual: ${last.fecha.slice(0,4)} · USD corrientes`);
+  const badge = $('badge-pbipc');
+  badge.textContent = diff !== null ? `${diff >= 0 ? '+' : ''}${fmtNum(diff)}% i.a.` : '—';
+  badge.className = `ind-badge ${badgeCls(diff, true)}`;
+
+  setText('stat-pbipc-max', `USD ${fmtInt(s.max)}`);
+  setText('stat-pbipc-max-fecha', s.maxItem?.fecha?.slice(0,4) || '—');
+  setText('stat-pbipc-min', `USD ${fmtInt(s.min)}`);
+  setText('stat-pbipc-min-fecha', s.minItem?.fecha?.slice(0,4) || '—');
+
+  $('load-pbipc').style.display = 'none';
+  $('chart-pbipc').style.display = 'block';
+  makeLineChart('chart-pbipc', labels, values, '#2dd4bf', true, '');
+}
+async function initPbiPc() {
+  try {
+    await loadPbiPc();
+    renderPbiPc(activeRange('rt-pbipc'));
+    attachCustomRange('pbipc', [{r:"5A",label:"5A"},{r:"10A",label:"10A"},{r:"20A",label:"20A"}], renderPbiPc);
+  } catch (e) {
+    setText('load-pbipc', 'Temporalmente no disponible.');
+  }
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+// 12. MERVAL en USD CCL — diario
+//     Combina Merval ARS (estadisticasbcra.com) + CCL ARS (argentinadatos.com)
+//     y calcula Merval/CCL en cliente. Si alguna fuente falla, no disponible.
+// ═══════════════════════════════════════════════════════════════════════════
+const MERVAL_ARS_APIS = [
+  'https://api.estadisticasbcra.com/merval',
+  'https://api.argentinadatos.com/v1/finanzas/indices/merval',
+];
+const CCL_API = 'https://api.argentinadatos.com/v1/cotizaciones/dolares/contadoconliqui';
+let mervalRaw = [];
+function _normalizeSerie(j) {
+  if (!Array.isArray(j)) return [];
+  return j.map(it => {
+    const fecha = it.fecha || it.f || it.date || it.d || it.timestamp;
+    const valor = (typeof it.valor === 'number') ? it.valor :
+                  (typeof it.v === 'number') ? it.v :
+                  (typeof it.value === 'number') ? it.value :
+                  (typeof it.venta === 'number') ? it.venta :
+                  (typeof it.compra === 'number') ? it.compra : null;
+    if (!fecha || valor === null) return null;
+    return { fecha: String(fecha).slice(0,10), valor };
+  }).filter(x => x !== null);
+}
+async function _fetchFirstOk(urls) {
+  for (const url of urls) {
+    try {
+      const r = await fetch(url, { cache: 'no-store' });
+      if (!r.ok) continue;
+      const j = await r.json();
+      const s = _normalizeSerie(j);
+      if (s.length) return s;
+    } catch (_) { /* try next */ }
+  }
+  return [];
+}
+async function loadMerval() {
+  try {
+    const [merval, ccl] = await Promise.all([
+      _fetchFirstOk(MERVAL_ARS_APIS),
+      _fetchFirstOk([CCL_API]),
+    ]);
+    if (!merval.length || !ccl.length) throw new Error('merval/ccl source failed');
+
+    // Map CCL por fecha para lookup rápido
+    const cclMap = new Map(ccl.map(c => [c.fecha, c.valor]));
+    const cclSorted = ccl.slice().sort((a,b) => a.fecha.localeCompare(b.fecha));
+
+    // Para cada punto Merval, dividir por CCL del mismo día (o el más cercano anterior)
+    mervalRaw = merval
+      .sort((a,b) => a.fecha.localeCompare(b.fecha))
+      .map(m => {
+        let cclVal = cclMap.get(m.fecha);
+        if (!cclVal) {
+          // buscar CCL con fecha <= m.fecha (más cercano anterior)
+          for (let i = cclSorted.length - 1; i >= 0; i--) {
+            if (cclSorted[i].fecha <= m.fecha) { cclVal = cclSorted[i].valor; break; }
+          }
+        }
+        return cclVal ? { fecha: m.fecha, valor: m.valor / cclVal } : null;
+      })
+      .filter(x => x !== null && isFinite(x.valor));
+  } catch (e) { mervalRaw = []; throw e; }
+}
+function renderMerval(range) {
+  const data = sliceByRange('merval', mervalRaw, 'fecha', range);
+  if (!data.length) return;
+  const labels = data.map(d => fmtDateShort(d.fecha));
+  const values = data.map(d => d.valor);
+  const s = calcStats(data, d => d.valor);
+  const last = data[data.length - 1];
+  const prev = data.length > 1 ? data[data.length - 2] : null;
+  const diff = prev ? ((last.valor - prev.valor) / prev.valor * 100) : null;
+
+  setText('val-merval', `USD ${fmtNum(last.valor)}`);
+  setText('meta-merval', `Último dato: ${fmtDate(last.fecha)} · Merval ARS / CCL`);
+  const badge = $('badge-merval');
+  badge.textContent = diff !== null ? `${diff >= 0 ? '+' : ''}${fmtNum(diff)}%` : '—';
+  badge.className = `ind-badge ${badgeCls(diff, true)}`;
+
+  setText('stat-merval-max', `USD ${fmtNum(s.max)}`);
+  setText('stat-merval-max-fecha', fmtDateShort(s.maxItem?.fecha));
+  setText('stat-merval-min', `USD ${fmtNum(s.min)}`);
+  setText('stat-merval-min-fecha', fmtDateShort(s.minItem?.fecha));
+
+  $('load-merval').style.display = 'none';
+  $('chart-merval').style.display = 'block';
+  makeLineChart('chart-merval', labels, values, '#a78bfa', true, '');
+}
+async function initMerval() {
+  try {
+    await loadMerval();
+    renderMerval(activeRange('rt-merval'));
+    attachCustomRange('merval', [{r:"1A",label:"1A"},{r:"2A",label:"2A"},{r:"5A",label:"5A"}], renderMerval);
+  } catch (e) {
+    setText('load-merval', 'Temporalmente no disponible.');
+  }
+}
 </script>
 
 </body>
