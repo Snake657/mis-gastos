@@ -604,6 +604,8 @@
     <a href="#sec-emae">📊 EMAE</a>
     <a href="#sec-pbi-pc">🌎 PBI/cápita USD</a>
     <a href="#sec-merval">📈 Merval USD</a>
+    <a href="#sec-ccl-real">💵 CCL Real</a>
+    <a href="#sec-tcr-usa">🇺🇸 TCR vs USA</a>
   </nav>
 
   <!-- ═══════════════════════════════════════════════════════════════ -->
@@ -1204,6 +1206,96 @@
     </div>
   </section>
 
+
+  <!-- ═══════════════════════════════════════════════════════════════ -->
+  <!-- 13. CCL REAL — CCL deflactado por IPC AR (pesos de hoy)        -->
+  <!-- ═══════════════════════════════════════════════════════════════ -->
+  <section class="ind-section" data-color="pink" id="sec-ccl-real">
+    <div class="ind-header">
+      <div>
+        <div class="ind-name">Dólar CCL Real (en pesos de hoy)</div>
+        <div class="ind-value-row">
+          <div class="ind-value" id="val-cclreal">—</div>
+          <div class="ind-badge badge-neu" id="badge-cclreal">—</div>
+        </div>
+        <div class="ind-meta" id="meta-cclreal">Cargando…</div>
+      </div>
+      <div class="ind-stats">
+        <div class="stat-card">
+          <div class="stat-label">Máx. período</div>
+          <div class="stat-val" id="stat-cclreal-max">—</div>
+          <div class="stat-sub" id="stat-cclreal-max-fecha">—</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Mín. período</div>
+          <div class="stat-val" id="stat-cclreal-min">—</div>
+          <div class="stat-sub" id="stat-cclreal-min-fecha">—</div>
+        </div>
+      </div>
+    </div>
+    <hr class="ind-divider">
+    <div class="ind-toolbar">
+      <div class="range-tabs" id="rt-cclreal">
+        <button class="range-tab" data-r="1M">1M</button>
+        <button class="range-tab" data-r="3M">3M</button>
+        <button class="range-tab" data-r="YTD">YTD</button>
+        <button class="range-tab" data-r="1A">1A</button>
+        <button class="range-tab active" data-r="2A">2A</button>
+        <button class="range-tab" data-r="5A">5A</button>
+        <button class="range-tab" data-r="TODO">Todo</button>
+      </div>
+      <div class="nota-fuente">CCL × IPC_AR(hoy) / IPC_AR(t) · pesos del último mes · diario</div>
+    </div>
+    <div class="chart-wrap">
+      <div class="chart-loading" id="load-cclreal">Cargando datos…</div>
+      <canvas id="chart-cclreal" style="display:none"></canvas>
+    </div>
+  </section>
+
+
+  <!-- ═══════════════════════════════════════════════════════════════ -->
+  <!-- 14. TCR BILATERAL USA — CCL deflactado por inflación AR/USA    -->
+  <!-- ═══════════════════════════════════════════════════════════════ -->
+  <section class="ind-section" data-color="orange" id="sec-tcr-usa">
+    <div class="ind-header">
+      <div>
+        <div class="ind-name">TCR Bilateral con USA (base 100 = primer dato)</div>
+        <div class="ind-value-row">
+          <div class="ind-value" id="val-tcrusa">—</div>
+          <div class="ind-badge badge-neu" id="badge-tcrusa">—</div>
+        </div>
+        <div class="ind-meta" id="meta-tcrusa">Cargando…</div>
+      </div>
+      <div class="ind-stats">
+        <div class="stat-card">
+          <div class="stat-label">Máx. período</div>
+          <div class="stat-val" id="stat-tcrusa-max">—</div>
+          <div class="stat-sub" id="stat-tcrusa-max-fecha">—</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Mín. período</div>
+          <div class="stat-val" id="stat-tcrusa-min">—</div>
+          <div class="stat-sub" id="stat-tcrusa-min-fecha">—</div>
+        </div>
+      </div>
+    </div>
+    <hr class="ind-divider">
+    <div class="ind-toolbar">
+      <div class="range-tabs" id="rt-tcrusa">
+        <button class="range-tab" data-r="1A">1A</button>
+        <button class="range-tab" data-r="2A">2A</button>
+        <button class="range-tab" data-r="5A">5A</button>
+        <button class="range-tab" data-r="10A">10A</button>
+        <button class="range-tab active" data-r="TODO">Todo</button>
+      </div>
+      <div class="nota-fuente">CCL × CPI_USA / IPC_AR · base 100 = primer dato · marcas de gobierno</div>
+    </div>
+    <div class="chart-wrap tall">
+      <div class="chart-loading" id="load-tcrusa">Cargando datos…</div>
+      <canvas id="chart-tcrusa" style="display:none"></canvas>
+    </div>
+  </section>
+
   <!-- NOTA FINAL -->
   <div class="nota-final">
     <strong style="color:var(--text2)">Fuentes y metodología:</strong>
@@ -1214,6 +1306,8 @@
     <strong style="color:var(--text2)">EMAE:</strong> serie mensual del INDEC (índice base 2004=100, desestacionalizado) vía <a href="https://apis.datos.gob.ar/series/api/" target="_blank" rel="noopener">API de datos.gob.ar</a>, serie 302.3. La variación interanual se calcula en cliente.
     <strong style="color:var(--text2)">PBI per cápita USD:</strong> serie anual desde 1960 vía <a href="https://api.worldbank.org/v2/" target="_blank" rel="noopener">API del World Bank</a> (indicador NY.GDP.PCAP.CD, USD corrientes).
     <strong style="color:var(--text2)">Merval USD CCL:</strong> Yahoo Finance ^MERV proxeado por el worker propio en <code>canuto-dolar.lenzimartin.workers.dev/api/merval</code>. Si el worker devuelve datos en ARS, se divide por la cotización CCL en cliente.
+    <strong style="color:var(--text2)">TCR Bilateral con USA:</strong> CCL deflactado por inflación argentina e inflada por inflación USA, normalizado a base 100 en el primer dato del rango. Se calcula <code>CCL(t) × CPI_USA(t) / IPC_AR(t)</code>. Conceptualmente similar al ITCRM oficial del BCRA (multilateral) pero bilateral solo con USA. Las marcas con iniciales arriba del gráfico son los cambios de gobierno argentino. CPI USA viene de <a href="https://api.worldbank.org/v2/" target="_blank" rel="noopener">World Bank</a> (anual interpolado a meses).
+        <strong style="color:var(--text2)">CCL Real (en pesos de hoy):</strong> serie diaria del CCL desde <a href="https://argentinadatos.com" target="_blank" rel="noopener">argentinadatos.com</a> deflactada en cliente por la inflación mensual del INDEC (también argentinadatos). Se aplica la fórmula <code>ccl_nominal(t) × IPC_AR(hoy) / IPC_AR(t)</code> para mostrar cada cotización pasada en pesos del último mes con dato de inflación disponible.
     <strong style="color:var(--text2)">Desocupación:</strong> serie larga del <a href="https://www.indec.gob.ar" target="_blank" rel="noopener">INDEC</a> — EPH puntual GBA 1974-2003 (semestral) + EPH continua nacional 31 aglomerados desde 2003 (trimestral). Las dos series tienen metodología distinta y no son directamente comparables, pero se grafican juntas. Datos hardcodeados con upgrade en vivo desde la <a href="https://apis.datos.gob.ar/series/api/" target="_blank" rel="noopener">API de datos.gob.ar</a> cuando está disponible.
     <br><br>
     <strong style="color:var(--text2)">Pobreza:</strong> dos series superpuestas. La línea roja es la oficial del <a href="https://www.indec.gob.ar" target="_blank" rel="noopener">INDEC</a> (EPH semestral). La línea naranja punteada es la del <a href="https://uca.edu.ar/es/observatorio-de-la-deuda-social-argentina" target="_blank" rel="noopener">Observatorio de la Deuda Social Argentina (UCA)</a>, serie anual independiente de hogares en aglomerados urbanos de más de 80 mil habitantes.
@@ -2979,13 +3073,339 @@ async function initMerval() {
   }
 }
 
-// ─── Inicializar los 3 indicadores nuevos ──────────────────────
+// ═══════════════════════════════════════════════════════════════════════════
+// 13. CCL REAL — Cotización CCL deflactada por IPC AR ("pesos de hoy")
+//     Usa argentinadatos.com para CCL diario y para inflación AR mensual.
+//     Para cada día del CCL: ccl_real(t) = ccl(t) × IPC_AR(hoy) / IPC_AR(t)
+// ═══════════════════════════════════════════════════════════════════════════
+let cclRealRaw = [];
+async function loadCclReal() {
+  try {
+    const [cclRes, inflRes] = await Promise.all([
+      fetch(CCL_API, { cache: 'no-store' }),
+      fetch(AD + '/finanzas/indices/inflacion', { cache: 'no-store' }),
+    ]);
+    if (!cclRes.ok) throw new Error('ccl http ' + cclRes.status);
+    if (!inflRes.ok) throw new Error('inflacion http ' + inflRes.status);
+
+    const cclJson = await cclRes.json();
+    const inflJson = await inflRes.json();
+
+    // CCL diario: usamos venta
+    const ccl = (cclJson || [])
+      .filter(d => typeof d.venta === 'number' && d.fecha)
+      .map(d => ({ fecha: String(d.fecha).slice(0, 10), valor: d.venta }))
+      .sort((a, b) => a.fecha.localeCompare(b.fecha));
+
+    // Inflación AR: variación mensual %. Acumulamos para tener un índice de IPC.
+    const infl = (inflJson || [])
+      .filter(d => typeof d.valor === 'number' && d.fecha)
+      .sort((a, b) => a.fecha.localeCompare(b.fecha));
+    const cumIpc = {};
+    let acc = 1;
+    for (const d of infl) {
+      acc *= (1 + d.valor / 100);
+      cumIpc[d.fecha.slice(0, 7)] = acc;
+    }
+    const mesesIpc = Object.keys(cumIpc).sort();
+    if (!mesesIpc.length) throw new Error('no inflation data');
+    const cumNow = cumIpc[mesesIpc[mesesIpc.length - 1]];
+
+    // Deflactar el CCL al último mes con dato de inflación
+    cclRealRaw = ccl.map(c => {
+      const mesT = c.fecha.slice(0, 7);
+      let ipcT = cumIpc[mesT];
+      if (!ipcT) {
+        // buscar el último mes <= mesT
+        for (let i = mesesIpc.length - 1; i >= 0; i--) {
+          if (mesesIpc[i] <= mesT) { ipcT = cumIpc[mesesIpc[i]]; break; }
+        }
+      }
+      if (!ipcT) return null;
+      return { fecha: c.fecha, valor: c.valor * cumNow / ipcT };
+    }).filter(x => x !== null);
+  } catch (e) { cclRealRaw = []; throw e; }
+}
+
+function renderCclReal(range) {
+  const data = sliceByRange('cclreal', cclRealRaw, 'fecha', range);
+  if (!data.length) return;
+  const labels = data.map(d => fmtDateShort(d.fecha));
+  const values = data.map(d => d.valor);
+  const s = calcStats(data, d => d.valor);
+  const last = data[data.length - 1];
+  const prev = data.length > 1 ? data[data.length - 2] : null;
+  const diff = prev ? ((last.valor - prev.valor) / prev.valor * 100) : null;
+
+  setText('val-cclreal', '$' + fmtInt(last.valor));
+  setText('meta-cclreal', `Último dato: ${fmtDate(last.fecha)} · CCL deflactado por IPC AR`);
+  const badge = $('badge-cclreal');
+  badge.textContent = diff !== null ? `${diff >= 0 ? '+' : ''}${fmtNum(diff)}%` : '—';
+  badge.className = `ind-badge ${badgeCls(diff, true)}`;
+
+  setText('stat-cclreal-max', '$' + fmtInt(s.max));
+  setText('stat-cclreal-max-fecha', fmtDateShort(s.maxItem?.fecha));
+  setText('stat-cclreal-min', '$' + fmtInt(s.min));
+  setText('stat-cclreal-min-fecha', fmtDateShort(s.minItem?.fecha));
+
+  $('load-cclreal').style.display = 'none';
+  $('chart-cclreal').style.display = 'block';
+  makeLineChart('chart-cclreal', labels, values, '#fbbf24', true, '');
+}
+
+async function initCclReal() {
+  try {
+    await loadCclReal();
+    renderCclReal(activeRange('rt-cclreal'));
+    attachCustomRange('cclreal', [], renderCclReal);
+  } catch (e) {
+    setText('load-cclreal', 'Temporalmente no disponible.');
+  }
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+// 14. TCR BILATERAL USA — CCL deflactado por inflación AR e inflación USA
+//     Conceptualmente similar al ITCRM pero solo bilateral (USA, no canasta).
+//     Marcadores verticales en cambios de gobierno argentino.
+// ═══════════════════════════════════════════════════════════════════════════
+const PRESIDENTES_AR = [
+  { fecha: '1999-12-10', nombre: 'De la Rúa',         short: 'DLR', color: '#60a5fa' },
+  { fecha: '2002-01-02', nombre: 'Duhalde',           short: 'ED',  color: '#94a3b8' },
+  { fecha: '2003-05-25', nombre: 'N. Kirchner',       short: 'NK',  color: '#fbbf24' },
+  { fecha: '2007-12-10', nombre: 'CFK',               short: 'CFK', color: '#a78bfa' },
+  { fecha: '2015-12-10', nombre: 'Macri',             short: 'MM',  color: '#fb923c' },
+  { fecha: '2019-12-10', nombre: 'A. Fernández',      short: 'AF',  color: '#22c55e' },
+  { fecha: '2023-12-10', nombre: 'Milei',             short: 'JM',  color: '#a855f7' },
+];
+
+// Plugin Chart.js: dibuja líneas verticales + círculos con iniciales en
+// los cambios de gobierno. Se activa solo si options.plugins.presMarkers existe.
+const presidentMarkersPlugin = {
+  id: 'presMarkers',
+  afterDatasetsDraw(chart, args, opts) {
+    if (!opts || !opts.dates || !opts.fechasFull) return;
+    const { ctx, chartArea, scales } = chart;
+    if (!chartArea || !scales.x) return;
+    const fechas = opts.fechasFull;
+    const xScale = scales.x;
+
+    opts.dates.forEach(p => {
+      // encontrar primer índice cuya fecha >= p.fecha
+      let idx = fechas.findIndex(f => f >= p.fecha);
+      if (idx < 0) return;
+      const x = xScale.getPixelForValue(idx);
+      if (x < chartArea.left || x > chartArea.right) return;
+
+      ctx.save();
+      // Línea vertical sutil
+      ctx.strokeStyle = p.color + 'aa';
+      ctx.lineWidth = 1;
+      ctx.setLineDash([3, 4]);
+      ctx.beginPath();
+      ctx.moveTo(x, chartArea.top + 22);
+      ctx.lineTo(x, chartArea.bottom);
+      ctx.stroke();
+      ctx.setLineDash([]);
+
+      // Círculo con iniciales (arriba del chart)
+      const cy = chartArea.top + 11;
+      ctx.fillStyle = p.color;
+      ctx.beginPath();
+      ctx.arc(x, cy, 11, 0, 2 * Math.PI);
+      ctx.fill();
+      ctx.strokeStyle = 'rgba(15, 18, 28, 0.85)';
+      ctx.lineWidth = 1.5;
+      ctx.stroke();
+
+      ctx.fillStyle = '#fff';
+      ctx.font = '700 9px "IBM Plex Mono", monospace';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText(p.short, x, cy);
+
+      ctx.restore();
+    });
+  }
+};
+Chart.register(presidentMarkersPlugin);
+
+const WB_CPI_USA_API = 'https://api.worldbank.org/v2/country/US/indicator/FP.CPI.TOTL?format=json&date=1999:2030&per_page=100';
+let tcrUsaRaw = [];
+
+async function loadTcrUsa() {
+  try {
+    const [cclRes, inflRes, cpiRes] = await Promise.all([
+      fetch(CCL_API, { cache: 'no-store' }),
+      fetch(AD + '/finanzas/indices/inflacion', { cache: 'no-store' }),
+      fetch(WB_CPI_USA_API, { cache: 'no-store' }),
+    ]);
+    if (!cclRes.ok || !inflRes.ok || !cpiRes.ok) throw new Error('source http error');
+
+    const cclJson  = await cclRes.json();
+    const inflJson = await inflRes.json();
+    const cpiJson  = await cpiRes.json();
+
+    // CCL diario (venta)
+    const ccl = (cclJson || [])
+      .filter(d => typeof d.venta === 'number' && d.fecha)
+      .map(d => ({ fecha: String(d.fecha).slice(0, 10), valor: d.venta }))
+      .sort((a, b) => a.fecha.localeCompare(b.fecha));
+
+    // IPC AR mensual → acumulado
+    const inflSorted = (inflJson || [])
+      .filter(d => typeof d.valor === 'number' && d.fecha)
+      .sort((a, b) => a.fecha.localeCompare(b.fecha));
+    const cumIpcAr = {};
+    let acc = 1;
+    for (const d of inflSorted) {
+      acc *= (1 + d.valor / 100);
+      cumIpcAr[d.fecha.slice(0, 7)] = acc;
+    }
+    const mesesIpc = Object.keys(cumIpcAr).sort();
+
+    // CPI USA anual (World Bank): { '2000': 100.0, '2001': 102.83, ... }
+    const cpiUsaAnual = {};
+    const wbItems = (Array.isArray(cpiJson) && cpiJson[1]) ? cpiJson[1] : [];
+    wbItems.forEach(it => {
+      if (it && it.value != null && it.date) cpiUsaAnual[it.date] = it.value;
+    });
+    const usaYears = Object.keys(cpiUsaAnual).map(Number).sort((a,b)=>a-b);
+    if (!usaYears.length) throw new Error('no CPI USA data');
+    const lastUsaYear = usaYears[usaYears.length - 1];
+    const lastUsaVal = cpiUsaAnual[lastUsaYear];
+
+    // Interpolar CPI USA para una fecha cualquiera (anual → mensual lineal)
+    // Si el año no está, extrapolar al ~3% anual desde el último conocido.
+    function getCpiUsa(fecha) {
+      const y = parseInt(fecha.slice(0, 4), 10);
+      const m = parseInt(fecha.slice(5, 7), 10);
+      let v0 = cpiUsaAnual[y];
+      let v1 = cpiUsaAnual[y + 1];
+      if (v0 == null) v0 = lastUsaVal * Math.pow(1.03, y - lastUsaYear);
+      if (v1 == null) v1 = v0 * 1.03;
+      const t = (m - 1) / 12;
+      return v0 + (v1 - v0) * t;
+    }
+
+    // Calcular TCR para cada punto, normalizar a base 100 = primer dato
+    let baseTcr = null;
+    const result = [];
+    for (const c of ccl) {
+      const mes = c.fecha.slice(0, 7);
+      let ipcAr = cumIpcAr[mes];
+      if (!ipcAr) {
+        for (let i = mesesIpc.length - 1; i >= 0; i--) {
+          if (mesesIpc[i] <= mes) { ipcAr = cumIpcAr[mesesIpc[i]]; break; }
+        }
+      }
+      if (!ipcAr) continue;
+      const cpiUsa = getCpiUsa(c.fecha);
+      if (!cpiUsa) continue;
+      const tcr = c.valor * cpiUsa / ipcAr;
+      if (baseTcr === null) baseTcr = tcr;
+      result.push({ fecha: c.fecha, valor: tcr / baseTcr * 100 });
+    }
+    tcrUsaRaw = result;
+  } catch (e) { tcrUsaRaw = []; throw e; }
+}
+
+function renderTcrUsa(range) {
+  const data = sliceByRange('tcrusa', tcrUsaRaw, 'fecha', range);
+  if (!data.length) return;
+  const labels = data.map(d => fmtDateShort(d.fecha));
+  const values = data.map(d => d.valor);
+  const fechas = data.map(d => d.fecha);  // pasamos las fechas raw al plugin
+  const s = calcStats(data, d => d.valor);
+  const last = data[data.length - 1];
+  const prev = data.length > 1 ? data[data.length - 2] : null;
+  const diff = prev ? ((last.valor - prev.valor) / prev.valor * 100) : null;
+
+  setText('val-tcrusa', fmtNum(last.valor));
+  setText('meta-tcrusa', `Último dato: ${fmtDate(last.fecha)} · CCL × CPI_USA / IPC_AR · base 100 = ${data[0].fecha.slice(0,7)}`);
+  const badge = $('badge-tcrusa');
+  badge.textContent = diff !== null ? `${diff >= 0 ? '+' : ''}${fmtNum(diff)}%` : '—';
+  badge.className = `ind-badge ${badgeCls(diff, true)}`;
+
+  setText('stat-tcrusa-max', fmtNum(s.max));
+  setText('stat-tcrusa-max-fecha', fmtDateShort(s.maxItem?.fecha));
+  setText('stat-tcrusa-min', fmtNum(s.min));
+  setText('stat-tcrusa-min-fecha', fmtDateShort(s.minItem?.fecha));
+
+  $('load-tcrusa').style.display = 'none';
+  $('chart-tcrusa').style.display = 'block';
+
+  // Render con plugin de presidentes
+  const ctx = $('chart-tcrusa').getContext('2d');
+  const existing = Chart.getChart('chart-tcrusa');
+  if (existing) existing.destroy();
+
+  const gradient = ctx.createLinearGradient(0, 0, 0, 280);
+  gradient.addColorStop(0, '#fb923c33');
+  gradient.addColorStop(1, '#fb923c00');
+
+  new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels,
+      datasets: [{
+        data: values,
+        borderColor: '#fb923c',
+        borderWidth: 2,
+        backgroundColor: gradient,
+        fill: true,
+        tension: 0.25,
+        pointRadius: values.length > 60 ? 0 : 2,
+        pointHoverRadius: 4,
+        pointBackgroundColor: '#fb923c',
+      }],
+    },
+    options: {
+      ...CHART_OPTS_BASE,
+      layout: { padding: { top: 32 } },  // espacio arriba para los círculos
+      plugins: {
+        ...CHART_OPTS_BASE.plugins,
+        tooltip: {
+          ...CHART_OPTS_BASE.plugins.tooltip,
+          callbacks: {
+            label: ctx => {
+              const v = fmtNum(ctx.parsed.y);
+              // detectar si la fecha cae bajo algún presidente
+              const f = fechas[ctx.dataIndex];
+              let pres = null;
+              for (let i = PRESIDENTES_AR.length - 1; i >= 0; i--) {
+                if (PRESIDENTES_AR[i].fecha <= f) { pres = PRESIDENTES_AR[i]; break; }
+              }
+              return ` ${v}` + (pres ? ` · ${pres.nombre}` : '');
+            },
+          },
+        },
+        presMarkers: {
+          dates: PRESIDENTES_AR,
+          fechasFull: fechas,
+        },
+      },
+    },
+  });
+}
+
+async function initTcrUsa() {
+  try {
+    await loadTcrUsa();
+    renderTcrUsa(activeRange('rt-tcrusa'));
+    attachCustomRange('tcrusa', [], renderTcrUsa);
+  } catch (e) {
+    setText('load-tcrusa', 'Temporalmente no disponible.');
+  }
+}
+
+// ─── Inicializar los indicadores nuevos ──────────────────────
 // Se llama al final del script (NO desde el IIFE inicial) para que
-// las constantes EMAE_API, PBIPC_API, MERVAL_API y los let *Raw
-// ya estén definidos cuando se ejecuten loadEmae/loadPbiPc/loadMerval.
+// las constantes y los let *Raw ya estén definidos cuando se ejecuten.
 initEmae();
 initPbiPc();
 initMerval();
+initCclReal();
+initTcrUsa();
 </script>
 
 </body>
