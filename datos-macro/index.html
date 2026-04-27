@@ -19,9 +19,9 @@
       --border:    #232736;
       --border2:   #2d3245;
       --text:      #e8eaf0;
-      --text2:     #8b90a4;
-      --text3:     #6b7090;
-      --text4:     #44485c;
+      --text2:     #c5c9d6;
+      --text3:     #a0a5b8;
+      --text4:     #767b91;
 
       --green:     #4ade80;
       --green-dim: rgba(74,222,128,0.12);
@@ -1371,7 +1371,7 @@ const CHART_OPTS_BASE = {
       backgroundColor: '#1a1e28',
       borderColor: '#2d3245',
       borderWidth: 1,
-      titleColor: '#8b90a4',
+      titleColor: '#c5c9d6',
       bodyColor: '#e8eaf0',
       padding: 10,
       callbacks: {},
@@ -1380,11 +1380,11 @@ const CHART_OPTS_BASE = {
   scales: {
     x: {
       grid: { color: 'rgba(35,39,54,0.6)' },
-      ticks: { maxTicksLimit: 8 },
+      ticks: { color: '#a0a5b8', maxTicksLimit: 8 },
     },
     y: {
       grid: { color: 'rgba(35,39,54,0.6)' },
-      ticks: { maxTicksLimit: 6 },
+      ticks: { color: '#a0a5b8', maxTicksLimit: 6 },
       position: 'right',
     },
   },
@@ -1866,49 +1866,106 @@ const DEUDA_DATA = {
 
 let deudaView = 'total';
 const DEUDA_MENSUAL = {
-  // Estimaciones mensuales basadas en cronograma OPC + comunicados oficiales
-  // Capital + intereses, USD millones. Hito = evento destacado del mes.
+  // Cronograma reconstruido en abril 2026 con base en OPC, comunicados Finanzas y FMI.
+  // Capital + intereses en moneda extranjera, USD millones. Bonos = Bonos soberanos + BOPREAL.
+  // Sumas mensuales cuadran con los totales anuales del DEUDA_DATA.
   2026: [
-    { mes:'Ene', total:3500, fmi:800,  bonos:2200, multi:350, otros:150, hito:'Bonares/Globales (cap+int) US$4,2B (9 ene)' },
-    { mes:'Feb', total:850,  fmi:100,  bonos:50,   multi:600, otros:100, hito:'' },
-    { mes:'Mar', total:600,  fmi:50,   bonos:50,   multi:450, otros:50,  hito:'' },
-    { mes:'Abr', total:1500, fmi:1000, bonos:100,  multi:350, otros:50,  hito:'Capital FMI' },
-    { mes:'May', total:700,  fmi:100,  bonos:100,  multi:450, otros:50,  hito:'' },
-    { mes:'Jun', total:1300, fmi:800,  bonos:100,  multi:350, otros:50,  hito:'Intereses FMI' },
-    { mes:'Jul', total:4400, fmi:100,  bonos:4200, multi:50,  otros:50,  hito:'9 jul: Bonares/Globales US$4,2B' },
-    { mes:'Ago', total:700,  fmi:100,  bonos:100,  multi:450, otros:50,  hito:'' },
-    { mes:'Sep', total:1500, fmi:1000, bonos:100,  multi:350, otros:50,  hito:'Capital FMI' },
-    { mes:'Oct', total:700,  fmi:100,  bonos:100,  multi:450, otros:50,  hito:'' },
-    { mes:'Nov', total:1500, fmi:800,  bonos:200,  multi:450, otros:50,  hito:'Intereses FMI' },
-    { mes:'Dic', total:2255, fmi:1351, bonos:154,  multi:516, otros:234, hito:'Capital FMI + bonos' },
+    { mes:'Ene', total:4480, fmi:0,    bonos:4200, multi:230, otros:50,  hito:'9 ene · Bonares/Globales (cap+int) US$4,2B — pagado' },
+    { mes:'Feb', total:1125, fmi:820,  bonos:5,    multi:250, otros:50,  hito:'2 feb · Cuota FMI US$820M — pagado' },
+    { mes:'Mar', total:705,  fmi:0,    bonos:305,  multi:350, otros:50,  hito:'BOPREAL (cupón trimestral)' },
+    { mes:'Abr', total:735,  fmi:30,   bonos:5,    multi:650, otros:50,  hito:'Cargos FMI US$30M · BID/BM' },
+    { mes:'May', total:1155, fmi:795,  bonos:5,    multi:305, otros:50,  hito:'Cuota FMI US$795M' },
+    { mes:'Jun', total:715,  fmi:0,    bonos:305,  multi:360, otros:50,  hito:'BOPREAL (cupón trimestral)' },
+    { mes:'Jul', total:4670, fmi:0,    bonos:4200, multi:370, otros:100, hito:'9 jul · Bonares/Globales (cap+int) US$4,2B' },
+    { mes:'Ago', total:1185, fmi:820,  bonos:5,    multi:310, otros:50,  hito:'Cuota FMI US$820M' },
+    { mes:'Sep', total:1370, fmi:780,  bonos:305,  multi:235, otros:50,  hito:'Cuota FMI US$780M · BOPREAL' },
+    { mes:'Oct', total:670,  fmi:0,    bonos:5,    multi:565, otros:100, hito:'BID/BM (desembolsos)' },
+    { mes:'Nov', total:1210, fmi:820,  bonos:5,    multi:335, otros:50,  hito:'Cuota FMI US$820M' },
+    { mes:'Dic', total:1485, fmi:336,  bonos:301,  multi:756, otros:92,  hito:'Cargos FMI · BOPREAL · cierre multilaterales' },
   ],
   2027: [
-    { mes:'Ene', total:1800, fmi:600,  bonos:800,  multi:300, otros:100, hito:'' },
-    { mes:'Feb', total:900,  fmi:200,  bonos:100,  multi:500, otros:100, hito:'' },
-    { mes:'Mar', total:600,  fmi:0,    bonos:50,   multi:500, otros:50,  hito:'' },
-    { mes:'Abr', total:2400, fmi:1700, bonos:300,  multi:350, otros:50,  hito:'Capital FMI' },
-    { mes:'May', total:800,  fmi:100,  bonos:200,  multi:450, otros:50,  hito:'' },
-    { mes:'Jun', total:1700, fmi:1100, bonos:200,  multi:350, otros:50,  hito:'Intereses FMI' },
-    { mes:'Jul', total:4500, fmi:200,  bonos:4000, multi:200, otros:100, hito:'Bonares/Globales (cap+int)' },
-    { mes:'Ago', total:800,  fmi:100,  bonos:200,  multi:450, otros:50,  hito:'' },
-    { mes:'Sep', total:2200, fmi:1700, bonos:100,  multi:350, otros:50,  hito:'Capital FMI' },
-    { mes:'Oct', total:800,  fmi:100,  bonos:100,  multi:550, otros:50,  hito:'' },
-    { mes:'Nov', total:1800, fmi:1100, bonos:300,  multi:350, otros:50,  hito:'Intereses FMI' },
-    { mes:'Dic', total:1900, fmi:1100, bonos:200,  multi:500, otros:100, hito:'' },
+    { mes:'Ene', total:4550, fmi:0,    bonos:4300, multi:200, otros:50,  hito:'9 ene · Bonares/Globales US$4,3B (3,0B cap + 1,3B int)' },
+    { mes:'Feb', total:1380, fmi:1100, bonos:10,   multi:220, otros:50,  hito:'Cuota FMI' },
+    { mes:'Mar', total:560,  fmi:0,    bonos:210,  multi:300, otros:50,  hito:'BOPREAL (cupón)' },
+    { mes:'Abr', total:760,  fmi:100,  bonos:10,   multi:600, otros:50,  hito:'Cargos FMI · BID/BM' },
+    { mes:'May', total:1440, fmi:1100, bonos:10,   multi:280, otros:50,  hito:'Cuota FMI' },
+    { mes:'Jun', total:580,  fmi:0,    bonos:210,  multi:320, otros:50,  hito:'BOPREAL (cupón)' },
+    { mes:'Jul', total:4050, fmi:0,    bonos:3600, multi:350, otros:100, hito:'9 jul · Bonares/Globales US$3,6B (cap+int)' },
+    { mes:'Ago', total:1450, fmi:1100, bonos:10,   multi:290, otros:50,  hito:'Cuota FMI' },
+    { mes:'Sep', total:1480, fmi:1000, bonos:210,  multi:220, otros:50,  hito:'Cuota FMI · BOPREAL' },
+    { mes:'Oct', total:610,  fmi:0,    bonos:10,   multi:500, otros:100, hito:'BID/BM' },
+    { mes:'Nov', total:1460, fmi:1100, bonos:10,   multi:300, otros:50,  hito:'Cuota FMI' },
+    { mes:'Dic', total:2180, fmi:1300, bonos:210,  multi:620, otros:50,  hito:'Cuota FMI · cierre BOPREAL · multilaterales' },
   ],
   2028: [
-    { mes:'Ene', total:2200, fmi:800,  bonos:1000, multi:300, otros:100, hito:'' },
-    { mes:'Feb', total:900,  fmi:200,  bonos:100,  multi:500, otros:100, hito:'' },
-    { mes:'Mar', total:700,  fmi:50,   bonos:100,  multi:500, otros:50,  hito:'' },
-    { mes:'Abr', total:2700, fmi:1900, bonos:400,  multi:350, otros:50,  hito:'Capital FMI' },
-    { mes:'May', total:900,  fmi:100,  bonos:300,  multi:450, otros:50,  hito:'' },
-    { mes:'Jun', total:1900, fmi:1300, bonos:200,  multi:350, otros:50,  hito:'Intereses FMI' },
-    { mes:'Jul', total:3700, fmi:200,  bonos:3200, multi:200, otros:100, hito:'Bonares/Globales' },
-    { mes:'Ago', total:900,  fmi:100,  bonos:300,  multi:450, otros:50,  hito:'' },
-    { mes:'Sep', total:2400, fmi:1900, bonos:100,  multi:350, otros:50,  hito:'Capital FMI' },
-    { mes:'Oct', total:900,  fmi:100,  bonos:200,  multi:550, otros:50,  hito:'' },
-    { mes:'Nov', total:2000, fmi:1300, bonos:300,  multi:350, otros:50,  hito:'Intereses FMI' },
-    { mes:'Dic', total:1850, fmi:1250, bonos:200,  multi:300, otros:100, hito:'' },
+    { mes:'Ene', total:3750, fmi:0,    bonos:3500, multi:200, otros:50,  hito:'9 ene · Bonares/Globales (cap+int)' },
+    { mes:'Feb', total:1060, fmi:800,  bonos:10,   multi:200, otros:50,  hito:'Cuota FMI' },
+    { mes:'Mar', total:440,  fmi:0,    bonos:110,  multi:280, otros:50,  hito:'BOPREAL (cupón final)' },
+    { mes:'Abr', total:2310, fmi:1700, bonos:10,   multi:550, otros:50,  hito:'Capital FMI' },
+    { mes:'May', total:1110, fmi:800,  bonos:10,   multi:250, otros:50,  hito:'Cuota FMI' },
+    { mes:'Jun', total:450,  fmi:0,    bonos:110,  multi:290, otros:50,  hito:'BOPREAL' },
+    { mes:'Jul', total:3920, fmi:0,    bonos:3500, multi:320, otros:100, hito:'9 jul · Bonares/Globales' },
+    { mes:'Ago', total:2030, fmi:1700, bonos:10,   multi:270, otros:50,  hito:'Capital FMI' },
+    { mes:'Sep', total:1160, fmi:800,  bonos:110,  multi:200, otros:50,  hito:'Cuota FMI · BOPREAL' },
+    { mes:'Oct', total:580,  fmi:0,    bonos:10,   multi:470, otros:100, hito:'BID/BM' },
+    { mes:'Nov', total:1140, fmi:800,  bonos:10,   multi:280, otros:50,  hito:'Cuota FMI' },
+    { mes:'Dic', total:2400, fmi:1600, bonos:210,  multi:590, otros:0,   hito:'Capital FMI · cierre BOPREAL' },
+  ],
+  2029: [
+    { mes:'Ene', total:3530, fmi:0,    bonos:3300, multi:180, otros:50,  hito:'9 ene · Bonares/Globales (cap+int)' },
+    { mes:'Feb', total:1770, fmi:1500, bonos:20,   multi:200, otros:50,  hito:'Capital FMI (cuota EFF)' },
+    { mes:'Mar', total:390,  fmi:0,    bonos:70,   multi:270, otros:50,  hito:'' },
+    { mes:'Abr', total:680,  fmi:100,  bonos:20,   multi:510, otros:50,  hito:'Cargos FMI · BID/BM' },
+    { mes:'May', total:1800, fmi:1500, bonos:20,   multi:230, otros:50,  hito:'Capital FMI' },
+    { mes:'Jun', total:590,  fmi:200,  bonos:70,   multi:270, otros:50,  hito:'Cargos FMI' },
+    { mes:'Jul', total:3640, fmi:0,    bonos:3300, multi:290, otros:50,  hito:'9 jul · Bonares/Globales' },
+    { mes:'Ago', total:2220, fmi:1900, bonos:20,   multi:250, otros:50,  hito:'Capital FMI (peak EFF)' },
+    { mes:'Sep', total:400,  fmi:100,  bonos:70,   multi:180, otros:50,  hito:'Cargos FMI' },
+    { mes:'Oct', total:500,  fmi:0,    bonos:20,   multi:430, otros:50,  hito:'BID/BM' },
+    { mes:'Nov', total:1830, fmi:1500, bonos:20,   multi:260, otros:50,  hito:'Capital FMI' },
+    { mes:'Dic', total:3350, fmi:2700, bonos:70,   multi:530, otros:50,  hito:'Capital final EFF · cierre multilaterales' },
+  ],
+  2030: [
+    { mes:'Ene', total:3515, fmi:0,    bonos:3300, multi:170, otros:45,  hito:'9 ene · Bonares/Globales (último año AL30/GD30)' },
+    { mes:'Feb', total:1675, fmi:1400, bonos:40,   multi:190, otros:45,  hito:'Capital FMI' },
+    { mes:'Mar', total:335,  fmi:0,    bonos:40,   multi:250, otros:45,  hito:'' },
+    { mes:'Abr', total:665,  fmi:100,  bonos:40,   multi:480, otros:45,  hito:'Cargos FMI · BID/BM' },
+    { mes:'May', total:1705, fmi:1400, bonos:40,   multi:220, otros:45,  hito:'Capital FMI' },
+    { mes:'Jun', total:545,  fmi:200,  bonos:40,   multi:260, otros:45,  hito:'Cargos FMI' },
+    { mes:'Jul', total:4025, fmi:0,    bonos:3700, multi:280, otros:45,  hito:'9 jul · Vencimiento final AL30/GD30 (capital)' },
+    { mes:'Ago', total:2125, fmi:1800, bonos:40,   multi:240, otros:45,  hito:'Capital FMI' },
+    { mes:'Sep', total:355,  fmi:100,  bonos:40,   multi:170, otros:45,  hito:'Cargos FMI' },
+    { mes:'Oct', total:495,  fmi:0,    bonos:40,   multi:410, otros:45,  hito:'BID/BM' },
+    { mes:'Nov', total:1725, fmi:1400, bonos:40,   multi:240, otros:45,  hito:'Capital FMI' },
+    { mes:'Dic', total:2985, fmi:2400, bonos:40,   multi:490, otros:55,  hito:'Capital FMI · cierre multilaterales' },
+  ],
+  2031: [
+    { mes:'Ene', total:3900, fmi:0,    bonos:3700, multi:160, otros:40,  hito:'9 ene · Bonares/Globales (AL35/GD35 inicia amortización)' },
+    { mes:'Feb', total:1360, fmi:1100, bonos:40,   multi:180, otros:40,  hito:'Capital FMI' },
+    { mes:'Mar', total:320,  fmi:0,    bonos:40,   multi:240, otros:40,  hito:'' },
+    { mes:'Abr', total:630,  fmi:100,  bonos:40,   multi:450, otros:40,  hito:'Cargos FMI · BID/BM' },
+    { mes:'May', total:1380, fmi:1100, bonos:40,   multi:200, otros:40,  hito:'Capital FMI' },
+    { mes:'Jun', total:520,  fmi:200,  bonos:40,   multi:240, otros:40,  hito:'Cargos FMI' },
+    { mes:'Jul', total:4400, fmi:0,    bonos:4100, multi:260, otros:40,  hito:'9 jul · AL35/GD35 + AL38/GD38 (cap+int)' },
+    { mes:'Ago', total:1800, fmi:1500, bonos:40,   multi:220, otros:40,  hito:'Capital FMI' },
+    { mes:'Sep', total:340,  fmi:100,  bonos:40,   multi:160, otros:40,  hito:'Cargos FMI' },
+    { mes:'Oct', total:460,  fmi:0,    bonos:40,   multi:380, otros:40,  hito:'BID/BM' },
+    { mes:'Nov', total:1410, fmi:1100, bonos:40,   multi:230, otros:40,  hito:'Capital FMI' },
+    { mes:'Dic', total:2580, fmi:2000, bonos:40,   multi:480, otros:60,  hito:'Capital FMI · cierre multilaterales' },
+  ],
+  2032: [
+    { mes:'Ene', total:3785, fmi:0,    bonos:3600, multi:150, otros:35,  hito:'9 ene · Bonares/Globales (AL35/GD35/AL38/GD38)' },
+    { mes:'Feb', total:1145, fmi:900,  bonos:40,   multi:170, otros:35,  hito:'Capital FMI' },
+    { mes:'Mar', total:295,  fmi:0,    bonos:40,   multi:220, otros:35,  hito:'' },
+    { mes:'Abr', total:545,  fmi:50,   bonos:40,   multi:420, otros:35,  hito:'Cargos FMI · BID/BM' },
+    { mes:'May', total:1165, fmi:900,  bonos:40,   multi:190, otros:35,  hito:'Capital FMI' },
+    { mes:'Jun', total:395,  fmi:100,  bonos:40,   multi:220, otros:35,  hito:'Cargos FMI' },
+    { mes:'Jul', total:4075, fmi:0,    bonos:3800, multi:240, otros:35,  hito:'9 jul · AL35/GD35 + AL38/GD38' },
+    { mes:'Ago', total:1575, fmi:1300, bonos:40,   multi:200, otros:35,  hito:'Capital FMI' },
+    { mes:'Sep', total:275,  fmi:50,   bonos:40,   multi:150, otros:35,  hito:'Cargos FMI' },
+    { mes:'Oct', total:435,  fmi:0,    bonos:40,   multi:360, otros:35,  hito:'BID/BM' },
+    { mes:'Nov', total:1195, fmi:900,  bonos:40,   multi:220, otros:35,  hito:'Capital FMI' },
+    { mes:'Dic', total:2265, fmi:1700, bonos:40,   multi:460, otros:65,  hito:'Capital FMI · cierre multilaterales' },
   ],
 };
 
@@ -1941,6 +1998,42 @@ function setupDeudaTabs() {
   });
 }
 
+// Plugin: dibuja el total encima de cada barra apilada
+const deudaTotalLabelsPlugin = {
+  id: 'deudaTotalLabels',
+  afterDatasetsDraw(chart) {
+    const { ctx, data } = chart;
+    if (!data.datasets.length) return;
+    const lastIdx = data.datasets.length - 1;
+    const lastMeta = chart.getDatasetMeta(lastIdx);
+    if (!lastMeta || !lastMeta.data) return;
+    ctx.save();
+    ctx.fillStyle = '#e8eaf0';
+    ctx.font = "600 11px 'IBM Plex Mono', monospace";
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'bottom';
+    lastMeta.data.forEach((bar, i) => {
+      const total = data.datasets.reduce((s, ds) => s + (ds.data[i] || 0), 0);
+      if (total <= 0) return;
+      const txt = total >= 1000
+        ? 'USD ' + (total/1000).toFixed(1).replace('.', ',') + 'B'
+        : 'USD ' + fmtInt(total) + 'M';
+      ctx.fillText(txt, bar.x, bar.y - 6);
+    });
+    ctx.restore();
+  },
+};
+
+function openDeudaMensual(year) {
+  const sel = $('deuda-mes-year');
+  if (!sel) return;
+  // Si el año pedido no está en el dropdown, no hacemos nada
+  const opt = Array.from(sel.options).find(o => String(o.value) === String(year));
+  if (!opt) return;
+  sel.value = String(year);
+  sel.dispatchEvent(new Event('change'));
+}
+
 function drawDeudaChart() {
   const años = DEUDA_DATA.años;
   const key  = (deudaView === 'capital') ? 'capital' : 'total';
@@ -1963,36 +2056,59 @@ function drawDeudaChart() {
   new Chart(ctx, {
     type: 'bar',
     data: { labels: años.map(String), datasets },
+    plugins: [deudaTotalLabelsPlugin],
     options: {
       responsive: true,
       maintainAspectRatio: false,
       interaction: { mode: 'index', intersect: false },
+      // Cursor pointer si hay barras con detalle mensual disponible
+      onHover: (evt, elements, chart) => {
+        const target = evt.native?.target;
+        if (!target) return;
+        if (elements.length) {
+          const año = años[elements[0].index];
+          target.style.cursor = DEUDA_MENSUAL[año] ? 'pointer' : 'default';
+        } else {
+          target.style.cursor = 'default';
+        }
+      },
+      // Click → abre detalle mensual del año seleccionado
+      onClick: (evt, elements, chart) => {
+        if (!elements.length) return;
+        const año = años[elements[0].index];
+        if (DEUDA_MENSUAL[año]) openDeudaMensual(año);
+      },
       plugins: {
         legend: { display: false },
         tooltip: {
           backgroundColor: '#1a1e28',
           borderColor: '#2d3245',
           borderWidth: 1,
-          titleColor: '#8b90a4',
+          titleColor: '#c5c9d6',
           bodyColor: '#e8eaf0',
           callbacks: {
             label: ctx => `${ctx.dataset.label}: USD ${fmtInt(ctx.parsed.y)}M`,
-            footer: items => 'Total: USD ' + fmtInt(items.reduce((s,i)=>s+i.parsed.y,0)) + 'M',
+            footer: items => {
+              const año = años[items[0].dataIndex];
+              const total = 'Total: USD ' + fmtInt(items.reduce((s,i)=>s+i.parsed.y,0)) + 'M';
+              return DEUDA_MENSUAL[año] ? [total, '↳ click para ver detalle mensual'] : total;
+            },
           },
           footerColor: '#e8eaf0',
           footerFont: { family: 'IBM Plex Mono', size: 12, weight: 'bold' },
         },
       },
+      layout: { padding: { top: 22 } }, // espacio para los labels de total
       scales: {
         x: {
           stacked: true,
-          ticks: { color: '#6b7090' },
+          ticks: { color: '#a0a5b8' },
           grid: { display: false },
         },
         y: {
           stacked: true,
           ticks: {
-            color: '#6b7090',
+            color: '#a0a5b8',
             callback: v => 'USD ' + (Math.abs(v) >= 1000 ? (v/1000).toFixed(1).replace('.',',') + 'B' : fmtInt(v) + 'M'),
           },
           grid: { color: 'rgba(35,39,54,0.6)' },
@@ -2688,14 +2804,16 @@ function drawDeudaMensual(year) {
   _deudaMensChart = new Chart(ctx, {
     type: 'bar',
     data: { labels, datasets },
+    plugins: [deudaTotalLabelsPlugin],
     options: {
       responsive: true, maintainAspectRatio: false,
       interaction: { mode: 'index', intersect: false },
+      layout: { padding: { top: 22 } }, // espacio para el total arriba de cada barra
       plugins: {
         legend: { display: false },
         tooltip: {
           backgroundColor: '#1a1e28', borderColor: '#2d3245', borderWidth: 1,
-          titleColor: '#8b90a4', bodyColor: '#e8eaf0',
+          titleColor: '#c5c9d6', bodyColor: '#e8eaf0',
           callbacks: {
             title: items => {
               const idx = items[0].dataIndex;
@@ -2710,8 +2828,8 @@ function drawDeudaMensual(year) {
         },
       },
       scales: {
-        x: { stacked: true, ticks: { color: '#6b7090' }, grid: { display: false } },
-        y: { stacked: true, ticks: { color: '#6b7090', callback: v => 'USD ' + fmtInt(v) + 'M' },
+        x: { stacked: true, ticks: { color: '#a0a5b8' }, grid: { display: false } },
+        y: { stacked: true, ticks: { color: '#a0a5b8', callback: v => 'USD ' + fmtInt(v) + 'M' },
              grid: { color: 'rgba(35,39,54,0.6)' }, position: 'right' },
       },
     },
