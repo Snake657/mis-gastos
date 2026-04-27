@@ -1998,7 +1998,9 @@ function setupDeudaTabs() {
   });
 }
 
-// Plugin: dibuja el total encima de cada barra apilada
+// Plugin: dibuja el total encima de cada barra apilada.
+// Adaptativo: en pantallas chicas reduce el font, quita el "USD" y usa
+// notación compacta para que los labels no se amontonen.
 const deudaTotalLabelsPlugin = {
   id: 'deudaTotalLabels',
   afterDatasetsDraw(chart) {
@@ -2006,19 +2008,42 @@ const deudaTotalLabelsPlugin = {
     if (!data.datasets.length) return;
     const lastIdx = data.datasets.length - 1;
     const lastMeta = chart.getDatasetMeta(lastIdx);
-    if (!lastMeta || !lastMeta.data) return;
+    if (!lastMeta || !lastMeta.data || !lastMeta.data.length) return;
+
+    // Espacio disponible por barra (incluye el gap entre barras)
+    const barCount = lastMeta.data.length;
+    const slotWidth = chart.chartArea.width / barCount;
+
+    // Tres niveles según el espacio por barra: holgado, ajustado, muy chico
+    let fontSize, prefix;
+    if (slotWidth >= 70) {
+      fontSize = 11; prefix = 'USD ';
+    } else if (slotWidth >= 45) {
+      fontSize = 10; prefix = '';
+    } else {
+      fontSize = 9;  prefix = '';
+    }
+
     ctx.save();
     ctx.fillStyle = '#e8eaf0';
-    ctx.font = "600 11px 'IBM Plex Mono', monospace";
+    ctx.font = `600 ${fontSize}px 'IBM Plex Mono', monospace`;
     ctx.textAlign = 'center';
     ctx.textBaseline = 'bottom';
+
     lastMeta.data.forEach((bar, i) => {
       const total = data.datasets.reduce((s, ds) => s + (ds.data[i] || 0), 0);
       if (total <= 0) return;
-      const txt = total >= 1000
-        ? 'USD ' + (total/1000).toFixed(1).replace('.', ',') + 'B'
-        : 'USD ' + fmtInt(total) + 'M';
-      ctx.fillText(txt, bar.x, bar.y - 6);
+      let txt;
+      if (total >= 1000) {
+        // Billions con 1 decimal (ej. "4,2B" o "USD 19,5B")
+        txt = prefix + (total / 1000).toFixed(1).replace('.', ',') + 'B';
+      } else {
+        // Millions sin decimales (ej. "985M" o "USD 985M")
+        txt = prefix + fmtInt(total) + 'M';
+      }
+      // Saltar si el texto no entra en el espacio de la barra (margen 2px)
+      if (ctx.measureText(txt).width > slotWidth - 2) return;
+      ctx.fillText(txt, bar.x, bar.y - 4);
     });
     ctx.restore();
   },
