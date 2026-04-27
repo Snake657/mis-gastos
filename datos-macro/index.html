@@ -259,6 +259,29 @@
     .badge-pos { background: rgba(74,222,128,0.15);  color: var(--green); }
     .badge-neg { background: rgba(248,113,113,0.15); color: var(--red); }
     .badge-neu { background: var(--surface2);        color: var(--text3); }
+    .badge-live {
+      background: rgba(74,222,128,0.18);
+      color: #4ade80;
+      border: 1px solid rgba(74,222,128,0.35);
+      font-size: 0.55rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      padding: 2px 7px;
+      animation: live-pulse 2.4s ease-in-out infinite;
+    }
+    .badge-stale {
+      background: var(--surface2);
+      color: var(--text3);
+      border: 1px solid var(--border2);
+      font-size: 0.55rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      padding: 2px 7px;
+    }
+    @keyframes live-pulse {
+      0%, 100% { opacity: 1; }
+      50%      { opacity: 0.55; }
+    }
     .ind-meta {
       font-family: 'IBM Plex Mono', monospace;
       font-size: 0.62rem;
@@ -752,8 +775,10 @@
         <div class="ind-value-row">
           <div class="ind-value" id="val-riesgo">—</div>
           <div class="ind-badge badge-neu" id="badge-riesgo">—</div>
+          <span class="ind-badge badge-stale" id="riesgo-live-tag" title="Indicador de la frescura del valor mostrado">cierre</span>
         </div>
         <div class="ind-meta" id="meta-riesgo">Cargando…</div>
+        <div class="ind-meta" id="meta-riesgo-oficial" style="margin-top:2px"></div>
       </div>
       <div class="ind-stats">
         <div class="stat-card">
@@ -1424,6 +1449,13 @@ function fmtDateShort(str) {
   const d = new Date(str);
   return d.toLocaleDateString('es-AR', { month:'short', year:'2-digit' });
 }
+// Helper para usar fechas completas en el tooltip de un chart.
+// Uso: makeLineChart(..., dateTooltip(data))   -> title del tooltip muestra "27 abr 2026"
+//      makeLineChart(..., dateTooltip(data, 'periodo'))  -> usa otro campo si la fecha no es 'fecha'
+function dateTooltip(data, fechaKey='fecha') {
+  const fullLabels = data.map(d => fmtDate(d[fechaKey]));
+  return { tooltipCallbacks: { title: items => fullLabels[items[0].dataIndex] || items[0].label } };
+}
 function badgeCls(v, invertir=false) {
   if (v === null || v === undefined || isNaN(v)) return 'badge-neu';
   const pos = invertir ? v < 0 : v > 0;
@@ -1570,7 +1602,7 @@ function calcStats(arr, valFn) {
 }
 
 // Charts genéricos
-function makeLineChart(canvasId, labels, values, color, fill=true, tooltipSuffix='', stepped=false) {
+function makeLineChart(canvasId, labels, values, color, fill=true, tooltipSuffix='', stepped=false, extra={}) {
   const ctx = $(canvasId).getContext('2d');
   const existing = Chart.getChart(canvasId);
   if (existing) existing.destroy();
@@ -1579,6 +1611,8 @@ function makeLineChart(canvasId, labels, values, color, fill=true, tooltipSuffix
   gradient.addColorStop(0, color + '33');
   gradient.addColorStop(1, color + '00');
 
+  // `extra.dataset` permite overridear el dataset (ej. pointBackgroundColor/pointRadius por punto).
+  // `extra.tooltipCallbacks` permite agregar/overridear callbacks del tooltip (ej. title).
   return new Chart(ctx, {
     type: 'line',
     data: {
@@ -1594,6 +1628,7 @@ function makeLineChart(canvasId, labels, values, color, fill=true, tooltipSuffix
         pointHoverRadius: 4,
         pointBackgroundColor: color,
         stepped: stepped || false,
+        ...(extra.dataset || {}),
       }],
     },
     options: {
@@ -1602,14 +1637,17 @@ function makeLineChart(canvasId, labels, values, color, fill=true, tooltipSuffix
         ...CHART_OPTS_BASE.plugins,
         tooltip: {
           ...CHART_OPTS_BASE.plugins.tooltip,
-          callbacks: { label: ctx => ` ${fmtNum(ctx.parsed.y)}${tooltipSuffix}` },
+          callbacks: {
+            label: ctx => ` ${fmtNum(ctx.parsed.y)}${tooltipSuffix}`,
+            ...(extra.tooltipCallbacks || {}),
+          },
         },
       },
     },
   });
 }
 
-function makeBarChart(canvasId, labels, values, color, tooltipSuffix='') {
+function makeBarChart(canvasId, labels, values, color, tooltipSuffix='', extra={}) {
   const existing = Chart.getChart(canvasId);
   if (existing) existing.destroy();
 
@@ -1623,6 +1661,7 @@ function makeBarChart(canvasId, labels, values, color, tooltipSuffix='') {
         borderColor: values.map(v => v >= 0 ? color : '#f87171'),
         borderWidth: 1,
         borderRadius: 3,
+        ...(extra.dataset || {}),
       }],
     },
     options: {
@@ -1631,7 +1670,10 @@ function makeBarChart(canvasId, labels, values, color, tooltipSuffix='') {
         ...CHART_OPTS_BASE.plugins,
         tooltip: {
           ...CHART_OPTS_BASE.plugins.tooltip,
-          callbacks: { label: ctx => ` ${fmtNum(ctx.parsed.y)}${tooltipSuffix}` },
+          callbacks: {
+            label: ctx => ` ${fmtNum(ctx.parsed.y)}${tooltipSuffix}`,
+            ...(extra.tooltipCallbacks || {}),
+          },
         },
       },
     },
@@ -1782,7 +1824,10 @@ function renderReservas(range) {
         ...CHART_OPTS_BASE.plugins,
         tooltip: {
           ...CHART_OPTS_BASE.plugins.tooltip,
-          callbacks: { label: ctx => ' USD ' + fmtInt(ctx.parsed.y) + 'M' },
+          callbacks: {
+            label: ctx => ' USD ' + fmtInt(ctx.parsed.y) + 'M',
+            title: items => fmtDate(slice[items[0].dataIndex]?.d) || items[0].label,
+          },
         },
       },
       scales: {
@@ -2014,14 +2059,16 @@ const deudaTotalLabelsPlugin = {
     const barCount = lastMeta.data.length;
     const slotWidth = chart.chartArea.width / barCount;
 
-    // Tres niveles según el espacio por barra: holgado, ajustado, muy chico
+    // Cuatro niveles según el espacio por barra: holgado → muy chico
     let fontSize, prefix;
     if (slotWidth >= 70) {
       fontSize = 11; prefix = 'USD ';
     } else if (slotWidth >= 45) {
       fontSize = 10; prefix = '';
-    } else {
+    } else if (slotWidth >= 30) {
       fontSize = 9;  prefix = '';
+    } else {
+      fontSize = 8;  prefix = '';
     }
 
     ctx.save();
@@ -2041,9 +2088,10 @@ const deudaTotalLabelsPlugin = {
         // Millions sin decimales (ej. "985M" o "USD 985M")
         txt = prefix + fmtInt(total) + 'M';
       }
-      // Saltar si el texto no entra en el espacio de la barra (margen 2px)
-      if (ctx.measureText(txt).width > slotWidth - 2) return;
-      ctx.fillText(txt, bar.x, bar.y - 4);
+      // Permitir leve overflow (hasta 4px) antes de descartar — preferimos
+      // un label algo "apretado" a no mostrarlo
+      if (ctx.measureText(txt).width > slotWidth + 4) return;
+      ctx.fillText(txt, bar.x, bar.y - 3);
     });
     ctx.restore();
   },
@@ -2198,25 +2246,70 @@ function renderDeudaTable(acreedores, key) {
 // ═══════════════════════════════════════════════════════════════════════════
 // 3. RIESGO PAÍS
 // ═══════════════════════════════════════════════════════════════════════════
+// Estrategia de varios niveles:
+//  - Histórico + variaciones (1S/1M/1A/...) → ArgentinaDatos (cierre EMBI+ JP Morgan)
+//  - Valor del header (en orden de preferencia):
+//     1) Worker propio → scrape de BondTerminal (valor exacto en vivo)
+//     2) Estimación intra-day desde Data912 (aprox ±10 pb)
+//     3) Cierre oficial publicado (último publicado por JP Morgan)
+const RIESGO_LIVE_URL = 'https://canuto-riesgo.lenzimartin.workers.dev/';
+
 let riesgoRaw = [];
+let _riesgoLastLive = null;
+
 async function loadRiesgo() {
   riesgoRaw = await fetchAD('/finanzas/indices/riesgo-pais');
 }
+
+// Intenta primero el worker (valor exacto). Si falla, cae a Data912 (estimación).
+async function loadRiesgoLive() {
+  // Nivel 1: worker propio
+  try {
+    const r = await fetch(RIESGO_LIVE_URL, { cache: 'no-store' });
+    if (r.ok) {
+      const j = await r.json();
+      if (typeof j.valor === 'number' && j.valor > 0) {
+        return { exactValue: j.valor, source: 'bondterminal', ts: j.ts };
+      }
+    }
+  } catch(e) {
+    console.warn('riesgo worker failed:', e.message);
+  }
+  // Nivel 2: fallback a Data912 (estimación con duration)
+  try {
+    const r = await fetch('https://data912.com/live/arg_bonds', { cache: 'no-store' });
+    if (!r.ok) throw new Error('data912 ' + r.status);
+    const all = await r.json();
+    const wanted = ['GD29D','GD30D','GD35D','GD38D','GD41D','GD46D'];
+    const bonos = wanted
+      .map(s => all.find(b => b.symbol === s))
+      .filter(b => b && typeof b.pct_change === 'number' && (b.q_op || 0) > 0
+                && b.pct_change > -50 && b.pct_change < 50);
+    if (bonos.length < 2) return null;
+    const totQ = bonos.reduce((s, b) => s + b.q_op, 0);
+    const avgPct = bonos.reduce((s, b) => s + b.pct_change * b.q_op, 0) / totQ;
+    return { avgPctChange: avgPct, count: bonos.length, source: 'data912' };
+  } catch(e) {
+    console.warn('riesgo data912 failed:', e.message);
+    return null;
+  }
+}
+
+// Convierte cambio % de precio (ponderado por liquidez) en delta de spread (bps).
+// Δyield ≈ -(ΔP/P) / MD ; con MD=4 calibrado contra cierres de BondTerminal,
+// el error típico vs el EMBI+ real queda en ±5-15 pb.
+function pctChangeToBpsDelta(pctChange) {
+  const MOD_DURATION = 4;
+  return Math.round(-pctChange * 100 / MOD_DURATION);
+}
+
 function renderRiesgo(range) {
   const data = sliceByRange('riesgo', riesgoRaw, 'fecha', range);
   if (!data.length) return;
-  const labels = data.map(d => fmtDateShort(d.fecha));
-  const values = data.map(d => d.valor);
+  const labels     = data.map(d => fmtDateShort(d.fecha));
+  const values     = data.map(d => d.valor);
+  const fullLabels = data.map(d => fmtDate(d.fecha));
   const s = calcStats(data, d => d.valor);
-  const last = data[data.length-1];
-  const prev = data.length > 1 ? data[data.length-2] : null;
-  const diff = prev ? ((last.valor - prev.valor) / prev.valor * 100) : null;
-
-  setText('val-riesgo', `${last.valor.toLocaleString('es-AR')} pb`);
-  setText('meta-riesgo', `Último dato: ${fmtDate(last.fecha)}`);
-  const badge = $('badge-riesgo');
-  badge.textContent = diff !== null ? fmtPct(diff) : '—';
-  badge.className = `ind-badge ${badgeCls(diff, true)}`;
 
   setText('stat-riesgo-max', s.max.toLocaleString('es-AR'));
   setText('stat-riesgo-max-fecha', fmtDateShort(s.maxItem?.fecha));
@@ -2225,16 +2318,110 @@ function renderRiesgo(range) {
   const varTotal = s.first ? ((s.last - s.first) / s.first * 100) : null;
   setText('stat-riesgo-var', varTotal !== null ? fmtPct(varTotal) : '—');
 
+  // Si hay valor live exacto y es de fecha posterior al último cierre,
+  // agregamos un punto extra destacado al final del gráfico.
+  const live = _riesgoLastLive;
+  const lastFecha = data[data.length - 1].fecha; // YYYY-MM-DD
+  const todayISO = new Date().toISOString().slice(0, 10);
+  let liveIdx = -1;
+  if (live && typeof live.exactValue === 'number' && todayISO > lastFecha) {
+    labels.push(fmtDateShort(todayISO));
+    values.push(live.exactValue);
+    fullLabels.push(`${fmtDate(todayISO)} · en vivo (BondTerminal)`);
+    liveIdx = values.length - 1;
+  }
+
+  // Estilo de los puntos: el punto live va más grande y en verde para resaltar
+  const baseRadius = values.length > 60 ? 0 : 2;
+  const pointBgColor = values.map((_, i) => i === liveIdx ? '#22c55e' : '#f87171');
+  const pointRadius  = values.map((_, i) => i === liveIdx ? 5 : baseRadius);
+
   $('load-riesgo').style.display = 'none';
   $('chart-riesgo').style.display = 'block';
-  makeLineChart('chart-riesgo', labels, values, '#f87171', true, ' pb');
-  updateTicker();
+  makeLineChart('chart-riesgo', labels, values, '#f87171', true, ' pb', false, {
+    dataset: { pointBackgroundColor: pointBgColor, pointRadius },
+    tooltipCallbacks: {
+      title: items => fullLabels[items[0].dataIndex] || items[0].label,
+    },
+  });
+  updateRiesgoHeader();
 }
+
+// Decide qué mostrar en el header (exacto live > estimación > cierre oficial).
+function updateRiesgoHeader() {
+  if (!riesgoRaw.length) return;
+  const last = riesgoRaw[riesgoRaw.length - 1];
+  const prev = riesgoRaw.length > 1 ? riesgoRaw[riesgoRaw.length - 2] : null;
+  const diffOficial = prev ? ((last.valor - prev.valor) / prev.valor * 100) : null;
+
+  const live = _riesgoLastLive;
+  const tag = $('riesgo-live-tag');
+  const badge = $('badge-riesgo');
+  const horaLocal = new Date().toLocaleTimeString('es-AR', { hour:'2-digit', minute:'2-digit' });
+
+  // Caso A: tenemos el valor EXACTO desde el worker (BondTerminal)
+  if (live && typeof live.exactValue === 'number') {
+    const v = live.exactValue;
+    setText('val-riesgo', `${v.toLocaleString('es-AR')} pb`);
+    setText('meta-riesgo', `EMBI en vivo · BondTerminal · ${horaLocal}`);
+    setText('meta-riesgo-oficial', `Cierre EMBI+ JP Morgan: ${last.valor.toLocaleString('es-AR')} pb · ${fmtDate(last.fecha)}`);
+    tag.textContent = 'live';
+    tag.className = 'ind-badge badge-live';
+    const diffLive = ((v - last.valor) / last.valor * 100);
+    badge.textContent = fmtPct(diffLive);
+    badge.className = `ind-badge ${badgeCls(diffLive, true)}`;
+    setTickerVal('riesgo', `${v.toLocaleString('es-AR')} pb`);
+    return;
+  }
+
+  // Caso B: estimación desde Data912 (fallback si el worker está caído)
+  if (live && typeof live.avgPctChange === 'number' && Math.abs(live.avgPctChange) >= 0.05) {
+    const deltaBps = pctChangeToBpsDelta(live.avgPctChange);
+    const liveValue = Math.max(0, last.valor + deltaBps);
+    setText('val-riesgo', `${liveValue.toLocaleString('es-AR')} pb`);
+    setText('meta-riesgo', `Estimación intra-day · ${live.count} bonos · ${horaLocal}`);
+    setText('meta-riesgo-oficial', `Cierre EMBI+: ${last.valor.toLocaleString('es-AR')} pb · ${fmtDate(last.fecha)} · estimación puede diferir ±10-15 pb`);
+    tag.textContent = 'aprox';
+    tag.className = 'ind-badge badge-live';
+    const diffLive = ((liveValue - last.valor) / last.valor * 100);
+    badge.textContent = fmtPct(diffLive);
+    badge.className = `ind-badge ${badgeCls(diffLive, true)}`;
+    setTickerVal('riesgo', `${liveValue.toLocaleString('es-AR')} pb`);
+    return;
+  }
+
+  // Caso C: fallback final, cierre oficial puro
+  setText('val-riesgo', `${last.valor.toLocaleString('es-AR')} pb`);
+  setText('meta-riesgo', `Cierre EMBI+ · ${fmtDate(last.fecha)}`);
+  setText('meta-riesgo-oficial', live ? 'Mercado sin variación intra-day' : 'Datos en vivo no disponibles — mostrando último cierre publicado');
+  tag.textContent = 'cierre';
+  tag.className = 'ind-badge badge-stale';
+  badge.textContent = diffOficial !== null ? fmtPct(diffOficial) : '—';
+  badge.className = `ind-badge ${badgeCls(diffOficial, true)}`;
+  setTickerVal('riesgo', `${last.valor.toLocaleString('es-AR')} pb`);
+}
+
+async function refreshRiesgoLive() {
+  const prev = _riesgoLastLive;
+  _riesgoLastLive = await loadRiesgoLive();
+  updateRiesgoHeader();
+  // Si tenemos valor exacto live, re-renderizamos el chart para reflejar
+  // el punto extra/actualizado. Solo si el valor cambió, para no parpadear de gusto.
+  const newExact = _riesgoLastLive?.exactValue;
+  const prevExact = prev?.exactValue;
+  if (newExact != null && newExact !== prevExact && riesgoRaw.length) {
+    renderRiesgo(activeRange('rt-riesgo'));
+  }
+}
+
 async function initRiesgo() {
   try {
     await loadRiesgo();
     renderRiesgo(activeRange('rt-riesgo'));
     attachCustomRange('riesgo', [], renderRiesgo);
+    // Arranca el ciclo de live (cada 60s)
+    refreshRiesgoLive();
+    setInterval(refreshRiesgoLive, 60 * 1000);
   } catch(e) { setText('load-riesgo', 'Error al cargar datos.'); }
 }
 
@@ -2274,7 +2461,7 @@ function renderInflacion(range) {
 
   $('load-inflacion').style.display = 'none';
   $('chart-inflacion').style.display = 'block';
-  makeBarChart('chart-inflacion', labels, values, '#4ade80', '%');
+  makeBarChart('chart-inflacion', labels, values, '#4ade80', '%', dateTooltip(data));
   updateTicker();
 }
 async function initInflacion() {
@@ -2316,7 +2503,7 @@ function renderInflacionIA(range) {
 
   $('load-inflacion-ia').style.display = 'none';
   $('chart-inflacion-ia').style.display = 'block';
-  makeLineChart('chart-inflacion-ia', labels, values, '#2dd4bf', true, '%');
+  makeLineChart('chart-inflacion-ia', labels, values, '#2dd4bf', true, '%', false, dateTooltip(data));
 }
 async function initInflacionIA() {
   try {
@@ -2373,7 +2560,7 @@ function renderTasa(range) {
 
   $('load-tasa').style.display = 'none';
   $('chart-tasa').style.display = 'block';
-  makeLineChart('chart-tasa', labels, values, '#a78bfa', true, '% TNA', true);
+  makeLineChart('chart-tasa', labels, values, '#a78bfa', true, '% TNA', true, dateTooltip(valid));
 }
 async function initTasa() {
   try {
@@ -2413,7 +2600,7 @@ function renderUVA(range) {
 
   $('load-uva').style.display = 'none';
   $('chart-uva').style.display = 'block';
-  makeLineChart('chart-uva', labels, values, '#f472b6', true, '');
+  makeLineChart('chart-uva', labels, values, '#f472b6', true, '', false, dateTooltip(data));
 }
 async function initUVA() {
   try {
@@ -2540,7 +2727,7 @@ function renderDesocupacion(range) {
 
   $('load-desocupacion').style.display = 'none';
   $('chart-desocupacion').style.display = 'block';
-  makeLineChart('chart-desocupacion', labels, values, '#fbbf24', true, '%');
+  makeLineChart('chart-desocupacion', labels, values, '#fbbf24', true, '%', false, dateTooltip(data));
 }
 async function initDesocupacion() {
   try {
@@ -2757,6 +2944,7 @@ function renderPobrezaChart(canvasId, indecData, ucaData) {
         tooltip: {
           ...CHART_OPTS_BASE.plugins.tooltip,
           callbacks: {
+            title: items => fmtDate(indecData[items[0].dataIndex]?.fecha) || items[0].label,
             label: ctx => {
               const item = indecData[ctx.dataIndex];
               const isInd = ctx.datasetIndex === 0;
@@ -3025,7 +3213,7 @@ function renderEmae(range) {
 
   $('load-emae').style.display = 'none';
   $('chart-emae').style.display = 'block';
-  makeLineChart('chart-emae', labels, values, '#4ade80', true, '');
+  makeLineChart('chart-emae', labels, values, '#4ade80', true, '', false, dateTooltip(data));
 }
 async function initEmae() {
   try {
@@ -3078,7 +3266,7 @@ function renderPbiPc(range) {
 
   $('load-pbipc').style.display = 'none';
   $('chart-pbipc').style.display = 'block';
-  makeLineChart('chart-pbipc', labels, values, '#2dd4bf', true, '');
+  makeLineChart('chart-pbipc', labels, values, '#2dd4bf', true, '', false, dateTooltip(data));
 }
 async function initPbiPc() {
   try {
@@ -3204,7 +3392,7 @@ function renderMerval(range) {
 
   $('load-merval').style.display = 'none';
   $('chart-merval').style.display = 'block';
-  makeLineChart('chart-merval', labels, values, '#a78bfa', true, '');
+  makeLineChart('chart-merval', labels, values, '#a78bfa', true, '', false, dateTooltip(data));
 }
 async function initMerval() {
   try {
@@ -3293,7 +3481,7 @@ function renderCclReal(range) {
 
   $('load-cclreal').style.display = 'none';
   $('chart-cclreal').style.display = 'block';
-  makeLineChart('chart-cclreal', labels, values, '#fbbf24', true, '');
+  makeLineChart('chart-cclreal', labels, values, '#fbbf24', true, '', false, dateTooltip(data));
 }
 
 async function initCclReal() {
@@ -3510,6 +3698,7 @@ function renderTcrUsa(range) {
         tooltip: {
           ...CHART_OPTS_BASE.plugins.tooltip,
           callbacks: {
+            title: items => fmtDate(fechas[items[0].dataIndex]) || items[0].label,
             label: ctx => {
               const v = fmtNum(ctx.parsed.y);
               // detectar si la fecha cae bajo algún presidente
