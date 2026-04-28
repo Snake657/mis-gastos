@@ -665,12 +665,16 @@
     <hr class="ind-divider">
     <div class="ind-toolbar">
       <div class="range-tabs" id="rt-reservas">
+        <button class="range-tab" data-r="1S">1S</button>
         <button class="range-tab" data-r="1M">1M</button>
         <button class="range-tab" data-r="3M">3M</button>
+        <button class="range-tab" data-r="6M">6M</button>
         <button class="range-tab active" data-r="1A">1A</button>
         <button class="range-tab" data-r="2A">2A</button>
+        <button class="range-tab" data-r="5A">5A</button>
         <button class="range-tab" data-r="TODO">Todo</button>
         <button class="range-tab" data-r="CUSTOM">Rango</button>
+        <button class="range-tab presidentes-toggle" id="btn-res-presidentes" type="button" title="Pintar el gráfico por presidencia">🎨 Presidentes</button>
       </div>
       <div class="nota-fuente">BCRA · USD millones · diario</div>
     </div>
@@ -1439,14 +1443,23 @@ function fmtUSD_M(v) { // millones a B/M legible
   if (Math.abs(v) >= 1000) return `USD ${(v/1000).toFixed(2).replace('.',',')}B`;
   return `USD ${fmtInt(v)}M`;
 }
+// Parser que evita el "off by one" de zona horaria al usar fechas ISO YYYY-MM-DD.
+// `new Date("2026-04-27")` devuelve medianoche UTC → en Argentina sale el día anterior.
+// Esta función la trata como hora local cuando viene sin hora, y respeta el resto.
+function _parseFecha(str) {
+  if (!str) return null;
+  const m = String(str).match(/^(\d{4})-(\d{2})-(\d{2})$/);
+  if (m) return new Date(+m[1], +m[2] - 1, +m[3]);
+  return new Date(str);
+}
 function fmtDate(str) {
-  if (!str) return '—';
-  const d = new Date(str);
+  const d = _parseFecha(str);
+  if (!d) return '—';
   return d.toLocaleDateString('es-AR', { day:'2-digit', month:'short', year:'numeric' });
 }
 function fmtDateShort(str) {
-  if (!str) return '—';
-  const d = new Date(str);
+  const d = _parseFecha(str);
+  if (!d) return '—';
   return d.toLocaleDateString('es-AR', { month:'short', year:'2-digit' });
 }
 // Helper para usar fechas completas en el tooltip de un chart.
@@ -1492,23 +1505,26 @@ function filterRange(data, dateKey, range) {
   else if (range === '30A') cut.setFullYear(now.getFullYear()-30);
   else if (range === '50A') cut.setFullYear(now.getFullYear()-50);
   else return data;
-  return data.filter(d => new Date(d[dateKey]) >= cut);
+  return data.filter(d => {
+    const f = _parseFecha(d[dateKey]);
+    return f && f >= cut;
+  });
 }
 
 // Setup de range tabs (genérico, basado en data-r)
 function setupRangeTabs(containerId, callback) {
   const container = $(containerId);
   if (!container) return;
-  container.querySelectorAll('.range-tab').forEach(btn => {
+  container.querySelectorAll('.range-tab[data-r]').forEach(btn => {
     btn.addEventListener('click', () => {
-      container.querySelectorAll('.range-tab').forEach(b => b.classList.remove('active'));
+      container.querySelectorAll('.range-tab[data-r]').forEach(b => b.classList.remove('active'));
       btn.classList.add('active');
       callback(btn.dataset.r);
     });
   });
 }
 function activeRange(containerId) {
-  const el = $(containerId)?.querySelector('.range-tab.active');
+  const el = $(containerId)?.querySelector('.range-tab.active[data-r]');
   return el?.dataset.r || '1A';
 }
 
@@ -1693,6 +1709,26 @@ let resData = []; // [{d:'YYYY-MM-DD', v: número (millones USD)}]
 const RESERVAS_PRELIM_URL = 'https://canuto-reservas.lenzimartin.workers.dev/';
 let _reservasPrelim = []; // [{fecha, valor, ts}]
 
+// Modo "Presidentes": pinta el chart de reservas en segmentos por presidencia.
+// Colores definidos por el usuario (independientes de los del plugin TCRusa).
+let _resPorPresidente = false;
+const PRESIDENTES_RES = [
+  { fecha: '2003-05-25', nombre: 'N. Kirchner',  color: '#60a5fa' }, // azul claro
+  { fecha: '2007-12-10', nombre: 'CFK',          color: '#7dd3fc' }, // celeste
+  { fecha: '2015-12-10', nombre: 'Macri',        color: '#fbbf24' }, // amarillo
+  { fecha: '2019-12-10', nombre: 'A. Fernández', color: '#1e40af' }, // azul oscuro
+  { fecha: '2023-12-10', nombre: 'Milei',        color: '#a855f7' }, // violeta
+];
+function _presidenteDe(fecha) {
+  // Devuelve el presidente cuyo período contiene la fecha (o null si es antes de NK).
+  let cur = null;
+  for (const p of PRESIDENTES_RES) {
+    if (fecha >= p.fecha) cur = p;
+    else break;
+  }
+  return cur;
+}
+
 async function fetchReservasPreliminares() {
   try {
     const r = await fetch(RESERVAS_PRELIM_URL, { cache: 'no-store' });
@@ -1715,26 +1751,58 @@ function mergeConPreliminares(serieBcra, preliminares) {
   return [...serieBcra, ...extra].sort((a, b) => a.d < b.d ? -1 : 1);
 }
 
-async function fetchReservas() {
-  // BCRA v4.0 — funciona directo desde el browser, sin proxy, sin auth.
-  // idVariable 1 = Reservas Internacionales (USD millones, diaria).
-  // Shape: { results: [ { idVariable, detalle: [ {fecha, valor}, ... ] } ] }
-  const desde = (() => { const d = new Date(); d.setFullYear(d.getFullYear() - 5); return d.toISOString().slice(0,10); })();
-  const hasta = new Date().toISOString().slice(0,10);
-  const url = `https://api.bcra.gob.ar/estadisticas/v4.0/Monetarias/1?desde=${desde}&hasta=${hasta}&limit=3000`;
+// Fetch un chunk del BCRA. Devuelve array (puede ser vacío). null si falla.
+async function _fetchReservasChunk(desde, hasta) {
   try {
-    // En paralelo: BCRA oficial + preliminares cargados manualmente
-    const [resBcra, prelim] = await Promise.all([
-      fetch(url, { cache: 'no-store' }),
-      fetchReservasPreliminares(),
-    ]);
-    if (!resBcra.ok) throw new Error('HTTP ' + resBcra.status);
-    const json = await resBcra.json();
-    const arr = json?.results?.[0]?.detalle || [];
+    const r = await fetch(`https://api.bcra.gob.ar/estadisticas/v4.0/Monetarias/1?desde=${desde}&hasta=${hasta}&limit=3000`, { cache: 'no-store' });
+    if (!r.ok) return null;
+    const j = await r.json();
+    return j?.results?.[0]?.detalle || [];
+  } catch { return null; }
+}
+
+async function fetchReservas() {
+  // BCRA v4.0 — datos disponibles desde 2003-01-02. La API tiene tope de
+  // ~3000 puntos por request, así que partimos el rango histórico en chunks
+  // de ~8 años. En la primera carga se trae todo (~3 requests paralelos).
+  // En refrescos posteriores solo se actualizan los últimos 90 días.
+  const hoyISO = new Date().toISOString().slice(0, 10);
+  const esPrimeraCarga = !resData.length;
+  try {
+    let arr;
+    if (esPrimeraCarga) {
+      const chunks = [
+        ['2003-01-01', '2010-12-31'],
+        ['2011-01-01', '2018-12-31'],
+        ['2019-01-01', hoyISO],
+      ];
+      const results = await Promise.all(chunks.map(([d, h]) => _fetchReservasChunk(d, h)));
+      const todos = [].concat(...results.filter(Boolean));
+      // Eliminar duplicados por fecha (entre chunks puede haber solape)
+      const seen = new Set();
+      arr = todos.filter(x => {
+        if (seen.has(x.fecha)) return false;
+        seen.add(x.fecha);
+        return true;
+      });
+    } else {
+      // Refresh: solo los últimos 90 días para captar nuevas publicaciones
+      const hace90 = new Date(); hace90.setDate(hace90.getDate() - 90);
+      const desde = hace90.toISOString().slice(0, 10);
+      const nuevos = await _fetchReservasChunk(desde, hoyISO);
+      // Mergear con la serie existente, sin duplicar
+      if (!nuevos || !nuevos.length) throw new Error('refresh vacío');
+      const fechasNuevas = new Set(nuevos.map(x => x.fecha));
+      const previos = resData
+        .filter(d => !fechasNuevas.has(d.fecha) && !d._preliminar)
+        .map(d => ({ fecha: d.fecha, valor: d.valor }));
+      arr = [...previos, ...nuevos];
+    }
     if (!arr.length) throw new Error('respuesta vacía');
-    // BCRA devuelve descendente (último primero). Ordenamos ascendente.
     arr.sort((a, b) => a.fecha < b.fecha ? -1 : 1);
     let serie = arr.map(r => ({ d: r.fecha, v: r.valor, fecha: r.fecha, valor: r.valor }));
+    // Preliminares manuales — los traemos siempre (cambian más rápido)
+    const prelim = await fetchReservasPreliminares();
     _reservasPrelim = prelim;
     serie = mergeConPreliminares(serie, prelim);
     resData = serie;
@@ -1844,33 +1912,90 @@ function renderReservas(range) {
   grad.addColorStop(0, trendColor + '33');
   grad.addColorStop(1, trendColor + '00');
 
-  new Chart(ctx, {
-    type: 'line',
-    data: {
-      labels,
-      datasets: [{
-        data: values,
-        borderColor: trendColor,
-        backgroundColor: grad,
+  // Construir datasets:
+  //  - Modo normal: 1 dataset con la curva completa.
+  //  - Modo "Presidentes": 1 dataset por presidente con datos solo en su período (resto = null).
+  //    Los segmentos vecinos comparten un punto de empalme para que la línea no quede cortada.
+  let datasets;
+  if (_resPorPresidente) {
+    datasets = [];
+    for (let i = 0; i < PRESIDENTES_RES.length; i++) {
+      const p = PRESIDENTES_RES[i];
+      const next = PRESIDENTES_RES[i + 1];
+      const dStart = p.fecha;
+      const dEnd   = next ? next.fecha : '9999-99-99';
+      // Datos del rango + un punto de empalme inmediatamente posterior para conectar
+      let primerPostIdx = -1;
+      const data = slice.map((d, idx) => {
+        if (d.d >= dStart && d.d < dEnd) return d.v;
+        if (next && d.d >= dEnd && primerPostIdx === -1) {
+          primerPostIdx = idx;
+          return d.v;
+        }
+        return null;
+      });
+      if (data.every(v => v === null)) continue;
+      datasets.push({
+        label: p.nombre,
+        data,
+        borderColor: p.color,
+        backgroundColor: p.color + '2e',
         borderWidth: 2,
-        pointRadius,
+        pointRadius: slice.map((d, idx) => {
+          const dentro = d.d >= dStart && d.d < dEnd;
+          if (!dentro) return 0;
+          if (d._preliminar) return 5;
+          return baseRadius;
+        }),
         pointHoverRadius: 5,
-        pointBackgroundColor: pointBgColor,
+        pointBackgroundColor: slice.map(d => d._preliminar ? '#22c55e' : p.color),
         fill: true,
         tension: 0.25,
-      }]
-    },
+        spanGaps: false,
+      });
+    }
+    // Si por algún motivo no hubo segmentos (rango 100% pre-2003), fallback al modo normal.
+    if (!datasets.length) {
+      datasets = [{
+        data: values, borderColor: trendColor, backgroundColor: grad, borderWidth: 2,
+        pointRadius, pointHoverRadius: 5, pointBackgroundColor: pointBgColor,
+        fill: true, tension: 0.25,
+      }];
+    }
+  } else {
+    datasets = [{
+      data: values,
+      borderColor: trendColor,
+      backgroundColor: grad,
+      borderWidth: 2,
+      pointRadius,
+      pointHoverRadius: 5,
+      pointBackgroundColor: pointBgColor,
+      fill: true,
+      tension: 0.25,
+    }];
+  }
+
+  new Chart(ctx, {
+    type: 'line',
+    data: { labels, datasets },
     options: {
       ...CHART_OPTS_BASE,
       plugins: {
         ...CHART_OPTS_BASE.plugins,
+        legend: _resPorPresidente
+          ? { display: true, position: 'top', align: 'end',
+              labels: { color: 'rgba(232,234,240,0.75)', font:{size:11,family:'IBM Plex Mono'},
+                boxWidth: 14, boxHeight: 2, padding: 10 } }
+          : { display: false },
         tooltip: {
           ...CHART_OPTS_BASE.plugins.tooltip,
           callbacks: {
             label: ctx => {
               const pt = slice[ctx.dataIndex];
               const tag = pt?._preliminar ? ' · preliminar (carga manual)' : '';
-              return ' USD ' + fmtInt(ctx.parsed.y) + 'M' + tag;
+              const pres = _resPorPresidente ? ` · ${ctx.dataset.label}` : '';
+              return ' USD ' + fmtInt(ctx.parsed.y) + 'M' + tag + pres;
             },
             title: items => fmtDate(slice[items[0].dataIndex]?.d) || items[0].label,
           },
@@ -1914,6 +2039,16 @@ function setupReservasRangeTabs() {
   const hace1a = new Date(); hace1a.setFullYear(hace1a.getFullYear() - 1);
   $('res-desde').value = hace1a.toISOString().slice(0,10);
   $('res-hasta').value = hoy;
+
+  // Toggle "Presidentes" — independiente del rango activo
+  const btnPres = $('btn-res-presidentes');
+  if (btnPres) {
+    btnPres.addEventListener('click', () => {
+      _resPorPresidente = !_resPorPresidente;
+      btnPres.classList.toggle('active', _resPorPresidente);
+      renderReservas(activeRange('rt-reservas'));
+    });
+  }
 }
 
 // Countdown de refresh
@@ -2496,7 +2631,10 @@ function renderInflacion(range) {
 
   // Acumulado año
   const hoy = new Date();
-  const inicioAnio = inflRaw.filter(d => new Date(d.fecha).getFullYear() === hoy.getFullYear());
+  const inicioAnio = inflRaw.filter(d => {
+    const f = _parseFecha(d.fecha);
+    return f && f.getFullYear() === hoy.getFullYear();
+  });
   const acum = inicioAnio.reduce((acc, d) => acc * (1 + d.valor/100), 1) - 1;
   setText('stat-infl-anual', `${(acum*100).toFixed(1)}%`);
   setText('stat-infl-anual-sub', `${hoy.getFullYear()}`);
