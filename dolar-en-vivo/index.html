@@ -16,9 +16,9 @@
       --surface3:  #1e2230;
       --border:    #1e2230;
       --border2:   #2a2f42;
-      --text:      #dde0ea;
-      --text2:     #7a7f96;
-      --text3:     #6b7090;
+      --text:      #e8eaf0;
+      --text2:     #b0b6c8;
+      --text3:     #9095ab;
       --green:     #22d65f;
       --green-dim: rgba(34,214,95,0.1);
       --red:       #f05050;
@@ -222,8 +222,8 @@
     .dolar-card {
       background: var(--surface);
       border: 1px solid var(--border);
-      border-radius: 14px;
-      padding: 20px 18px 16px;
+      border-radius: 12px;
+      padding: 14px 14px 10px;
       position: relative;
       overflow: hidden;
       transition: border-color 0.2s, transform 0.15s;
@@ -246,11 +246,11 @@
       display: flex;
       justify-content: space-between;
       align-items: flex-start;
-      margin-bottom: 14px;
+      margin-bottom: 8px;
     }
     .card-name {
       font-family: 'IBM Plex Mono', monospace;
-      font-size: 0.68rem;
+      font-size: 0.74rem;
       font-weight: 700;
       letter-spacing: 0.1em;
       text-transform: uppercase;
@@ -263,7 +263,7 @@
 
     .card-badge {
       font-family: 'IBM Plex Mono', monospace;
-      font-size: 0.63rem;
+      font-size: 0.7rem;
       padding: 3px 7px;
       border-radius: 4px;
       font-weight: 600;
@@ -272,11 +272,11 @@
     .badge-neg { background: var(--red-dim);   color: var(--red); }
     .badge-neu { background: var(--surface3);  color: var(--text3); }
 
-    .card-prices { display: flex; gap: 18px; margin-bottom: 12px; align-items: flex-end; }
+    .card-prices { display: flex; gap: 14px; margin-bottom: 8px; align-items: flex-end; }
     .price-label {
       font-family: 'IBM Plex Mono', monospace;
-      font-size: 0.6rem;
-      color: var(--text3);
+      font-size: 0.68rem;
+      color: var(--text2);
       text-transform: uppercase;
       letter-spacing: 0.08em;
       margin-bottom: 2px;
@@ -298,36 +298,44 @@
       display: flex;
       justify-content: space-between;
       border-top: 1px solid var(--border);
-      padding-top: 9px;
+      padding-top: 6px;
     }
     .card-source, .card-time {
       font-family: 'IBM Plex Mono', monospace;
-      font-size: 0.62rem;
+      font-size: 0.68rem;
       color: var(--text3);
     }
-    /* Marca de agua canuto.ar — vive en el card-meta, no es absoluta */
+    /* Marca de agua canuto.ar — debajo del nombre de la card */
     .card-watermark {
       font-family: 'IBM Plex Mono', monospace;
-      font-size: 0.55rem;
+      font-size: 0.78rem;
       font-weight: 600;
-      letter-spacing: 0.06em;
-      color: rgba(255,255,255,0.28);
+      letter-spacing: 0.04em;
+      color: rgba(255,255,255,0.16);
       pointer-events: none;
       user-select: none;
-      position: absolute;
-      bottom: 9px;
-      left: 50%;
-      transform: translateX(-50%);
+      line-height: 1;
     }
-
+    .card-top-left {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
     /* Precio día hábil anterior */
+    .card-top-right {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 4px;
+      max-width: 60%;
+    }
     .price-ayer {
       font-family: 'IBM Plex Mono', monospace;
-      font-size: 0.6rem;
-      color: var(--text3);
-      margin-top: 4px;
-      line-height: 1;
+      font-size: 0.66rem;
+      color: var(--text2);
+      line-height: 1.2;
       min-height: 0.9rem;
+      text-align: right;
     }
     .ayer-up   { color: var(--green); }
     .ayer-down { color: var(--red); }
@@ -401,47 +409,35 @@
     .ss { width: 60px;  height: 1.2rem; }
 
     /* ── BRECHA ── */
-    .brecha-section {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 14px;
-      padding: 18px 20px;
-      margin-bottom: 24px;
-    }
-    .section-title {
-      font-family: 'IBM Plex Mono', monospace;
-      font-size: 0.68rem;
-      text-transform: uppercase;
-      letter-spacing: 0.1em;
-      color: var(--text3);
-      margin-bottom: 14px;
+    /* Card de brechas — usa el mismo shell de .dolar-card pero con layout interno propio */
+    .dolar-card.brechas { cursor: default; }
+    .dolar-card.brechas:hover { transform: none; border-color: var(--border); }
+    .dolar-card.brechas::before { background: var(--yellow); }
+    .dolar-card.brechas .card-name { color: var(--yellow); }
+    .brechas-list {
       display: flex;
-      align-items: center;
-      gap: 8px;
+      flex-direction: column;
+      gap: 6px;
+      margin-top: 4px;
     }
-    .section-title::after { content:''; flex:1; height:1px; background:var(--border); }
-    .brecha-grid {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 8px;
-    }
-    .brecha-item {
+    .brecha-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      padding: 6px 8px;
       background: var(--surface2);
-      border-radius: 10px;
-      padding: 11px 12px;
-      text-align: center;
+      border-radius: 6px;
     }
     .brecha-label {
       font-family: 'IBM Plex Mono', monospace;
-      font-size: 0.6rem;
-      color: var(--text3);
+      font-size: 0.7rem;
+      color: var(--text2);
       text-transform: uppercase;
       letter-spacing: 0.08em;
-      margin-bottom: 5px;
     }
     .brecha-value {
       font-family: 'IBM Plex Mono', monospace;
-      font-size: 1.1rem;
+      font-size: 0.95rem;
       font-weight: 700;
       color: var(--yellow);
     }
@@ -612,14 +608,19 @@
 
     <div class="dolar-card oficial" id="card-oficial" onclick="abrirModal('oficial','Minorista BNA')">
       <div class="card-top">
-        <div class="card-name">Minorista BNA</div>
-        <div class="card-badge badge-neu" id="badge-oficial">—</div>
+        <div class="card-top-left">
+          <div class="card-name">Minorista BNA</div>
+          <div class="card-watermark">canuto.ar</div>
+        </div>
+        <div class="card-top-right">
+          <div class="card-badge badge-neu" id="badge-oficial">—</div>
+          <div class="price-ayer" id="ayer-oficial"></div>
+        </div>
       </div>
       <div class="card-prices">
         <div>
           <div class="price-label">Venta</div>
           <div class="price-value" id="v-oficial-venta"><span class="shimmer sv"></span></div>
-          <div class="price-ayer" id="ayer-oficial"></div>
         </div>
         <div>
           <div class="price-label">Compra</div>
@@ -630,19 +631,23 @@
         <span class="card-source">Fuente: BNA</span>
         <span class="card-time" id="t-oficial">—</span>
       </div>
-      <div class="card-watermark">canuto.ar</div>
     </div>
 
     <div class="dolar-card blue" id="card-blue" onclick="abrirModal('blue','Blue')">
       <div class="card-top">
-        <div class="card-name">Blue</div>
-        <div class="card-badge badge-neu" id="badge-blue">—</div>
+        <div class="card-top-left">
+          <div class="card-name">Blue</div>
+          <div class="card-watermark">canuto.ar</div>
+        </div>
+        <div class="card-top-right">
+          <div class="card-badge badge-neu" id="badge-blue">—</div>
+          <div class="price-ayer" id="ayer-blue"></div>
+        </div>
       </div>
       <div class="card-prices">
         <div>
           <div class="price-label">Venta</div>
           <div class="price-value" id="v-blue-venta"><span class="shimmer sv"></span></div>
-          <div class="price-ayer" id="ayer-blue"></div>
         </div>
         <div>
           <div class="price-label">Compra</div>
@@ -653,19 +658,23 @@
         <span class="card-source">Mercado informal</span>
         <span class="card-time" id="t-blue">—</span>
       </div>
-      <div class="card-watermark">canuto.ar</div>
     </div>
 
     <div class="dolar-card mep" id="card-mep" onclick="abrirModal('mep','MEP / Bolsa')">
       <div class="card-top">
-        <div class="card-name">MEP / Bolsa</div>
-        <div class="card-badge badge-neu" id="badge-mep">—</div>
+        <div class="card-top-left">
+          <div class="card-name">MEP / Bolsa</div>
+          <div class="card-watermark">canuto.ar</div>
+        </div>
+        <div class="card-top-right">
+          <div class="card-badge badge-neu" id="badge-mep">—</div>
+          <div class="price-ayer" id="ayer-mep"></div>
+        </div>
       </div>
       <div class="card-prices">
         <div>
           <div class="price-label">Venta</div>
           <div class="price-value" id="v-mep-venta"><span class="shimmer sv"></span></div>
-          <div class="price-ayer" id="ayer-mep"></div>
         </div>
         <div>
           <div class="price-label">Compra</div>
@@ -676,19 +685,23 @@
         <span class="card-source">Mercado bursátil</span>
         <span class="card-time" id="t-mep">—</span>
       </div>
-      <div class="card-watermark">canuto.ar</div>
     </div>
 
     <div class="dolar-card ccl" id="card-ccl" onclick="abrirModal('ccl','CCL')">
       <div class="card-top">
-        <div class="card-name">CCL</div>
-        <div class="card-badge badge-neu" id="badge-ccl">—</div>
+        <div class="card-top-left">
+          <div class="card-name">CCL</div>
+          <div class="card-watermark">canuto.ar</div>
+        </div>
+        <div class="card-top-right">
+          <div class="card-badge badge-neu" id="badge-ccl">—</div>
+          <div class="price-ayer" id="ayer-ccl"></div>
+        </div>
       </div>
       <div class="card-prices">
         <div>
           <div class="price-label">Venta</div>
           <div class="price-value" id="v-ccl-venta"><span class="shimmer sv"></span></div>
-          <div class="price-ayer" id="ayer-ccl"></div>
         </div>
         <div>
           <div class="price-label">Compra</div>
@@ -699,18 +712,22 @@
         <span class="card-source">Contado con liqui</span>
         <span class="card-time" id="t-ccl">—</span>
       </div>
-      <div class="card-watermark">canuto.ar</div>
     </div>
     <div class="dolar-card mayorista" id="card-mayorista" onclick="abrirModal('mayorista','Mayorista')">
       <div class="card-top">
-        <div class="card-name">Mayorista</div>
-        <div class="card-badge badge-neu" id="badge-mayorista">—</div>
+        <div class="card-top-left">
+          <div class="card-name">Mayorista</div>
+          <div class="card-watermark">canuto.ar</div>
+        </div>
+        <div class="card-top-right">
+          <div class="card-badge badge-neu" id="badge-mayorista">—</div>
+          <div class="price-ayer" id="ayer-mayorista"></div>
+        </div>
       </div>
       <div class="card-prices">
         <div>
           <div class="price-label">Venta</div>
           <div class="price-value" id="v-mayorista-venta"><span class="shimmer sv"></span></div>
-          <div class="price-ayer" id="ayer-mayorista"></div>
         </div>
         <div>
           <div class="price-label">Compra</div>
@@ -721,32 +738,36 @@
         <span class="card-source">Mercado mayorista</span>
         <span class="card-time" id="t-mayorista">—</span>
       </div>
-      <div class="card-watermark">canuto.ar</div>
     </div>
 
-  </div>
-
-  <!-- BRECHA -->
-  <div class="brecha-section">
-    <div class="section-title">Brecha vs Oficial</div>
-    <div class="brecha-grid">
-      <div class="brecha-item">
-        <div class="brecha-label">Blue</div>
-        <div class="brecha-value" id="brecha-blue">—</div>
+    <!-- Card de brechas vs oficial -->
+    <div class="dolar-card brechas" id="card-brechas">
+      <div class="card-top">
+        <div class="card-top-left">
+          <div class="card-name">Brecha vs Oficial</div>
+          <div class="card-watermark">canuto.ar</div>
+        </div>
       </div>
-      <div class="brecha-item">
-        <div class="brecha-label">MEP</div>
-        <div class="brecha-value" id="brecha-mep">—</div>
-      </div>
-      <div class="brecha-item">
-        <div class="brecha-label">CCL</div>
-        <div class="brecha-value" id="brecha-ccl">—</div>
-      </div>
-      <div class="brecha-item">
-        <div class="brecha-label">Mayorista</div>
-        <div class="brecha-value" id="brecha-mayorista">—</div>
+      <div class="brechas-list">
+        <div class="brecha-row">
+          <span class="brecha-label">Blue</span>
+          <span class="brecha-value" id="brecha-blue">—</span>
+        </div>
+        <div class="brecha-row">
+          <span class="brecha-label">MEP</span>
+          <span class="brecha-value" id="brecha-mep">—</span>
+        </div>
+        <div class="brecha-row">
+          <span class="brecha-label">CCL</span>
+          <span class="brecha-value" id="brecha-ccl">—</span>
+        </div>
+        <div class="brecha-row">
+          <span class="brecha-label">Mayorista</span>
+          <span class="brecha-value" id="brecha-mayorista">—</span>
+        </div>
       </div>
     </div>
+
   </div>
 
   <!-- TOOLS NAV -->
@@ -841,7 +862,7 @@ async function fetchAyer() {
   const dd   = String(arg.getDate()).padStart(2, '0');
   const fecha = `${yyyy}-${mm}-${dd}`;
 
-  const tipos = ['oficial', 'blue', 'mep', 'ccl'];
+  const tipos = ['oficial', 'blue', 'mep', 'ccl', 'mayorista'];
   await Promise.all(tipos.map(async tipo => {
     // Intentamos con la fecha exacta; si no hay dato (día no hábil) buscamos el último disponible
     try {
@@ -943,15 +964,20 @@ function renderCard(id, merged) {
   document.getElementById(`v-${id}-compra`).textContent = fmt(d.compra);
   document.getElementById(`t-${id}`).textContent        = fmtTime(d.fechaActualizacion);
 
-  // Valor del día hábil anterior
+  // Valor del día hábil anterior — se muestra como "subió $20 vs cierre anterior"
   const ayerEl  = document.getElementById(`ayer-${id}`);
   const ayerVal = _ayer[id];
   if (ayerEl) {
     if (ayerVal && d.venta) {
       const diff  = d.venta - ayerVal;
-      const arrow = diff > 0 ? '↑' : diff < 0 ? '↓' : '→';
-      const cls   = diff > 0 ? 'ayer-up' : diff < 0 ? 'ayer-down' : '';
-      ayerEl.innerHTML = `ant: ${fmt(ayerVal)}&nbsp;<span class="${cls}">${arrow}</span>`;
+      if (Math.abs(diff) < 0.005) {
+        ayerEl.innerHTML = `sin cambios vs cierre anterior`;
+      } else {
+        const verbo = diff > 0 ? 'subió' : 'bajó';
+        const arrow = diff > 0 ? '↑' : '↓';
+        const cls   = diff > 0 ? 'ayer-up' : 'ayer-down';
+        ayerEl.innerHTML = `<span class="${cls}">${arrow} ${verbo} ${fmt(Math.abs(diff))}</span> vs cierre anterior`;
+      }
     } else {
       ayerEl.textContent = '';
     }
