@@ -1,1 +1,338 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="robots" content="noindex,nofollow,noarchive" />
+  <title>Admin · Reservas</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg:        #0a0c10;
+      --surface:   #111318;
+      --surface2:  #181b22;
+      --surface3:  #1e2230;
+      --border:    #1e2230;
+      --border2:   #2a2f42;
+      --text:      #e8eaf0;
+      --text2:     #b0b6c8;
+      --text3:     #9095ab;
+      --green:     #22d65f;
+      --red:       #f05050;
+      --blue:      #4fa8f5;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'IBM Plex Sans', sans-serif;
+      min-height: 100vh;
+      padding: 24px;
+      -webkit-font-smoothing: antialiased;
+    }
+    .wrap { max-width: 720px; margin: 0 auto; }
+    h1 {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 1.2rem;
+      letter-spacing: 0.04em;
+      color: var(--blue);
+      margin-bottom: 4px;
+    }
+    .sub {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.7rem;
+      color: var(--text3);
+      margin-bottom: 24px;
+    }
 
+    .panel {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 18px;
+      margin-bottom: 18px;
+    }
+    .panel-title {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--text3);
+      margin-bottom: 14px;
+    }
+
+    .form-row {
+      display: flex;
+      gap: 10px;
+      align-items: flex-end;
+      flex-wrap: wrap;
+    }
+    .field { display: flex; flex-direction: column; gap: 4px; }
+    .field label {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.65rem;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--text3);
+    }
+    .field input {
+      background: var(--surface2);
+      border: 1px solid var(--border2);
+      border-radius: 6px;
+      padding: 8px 10px;
+      color: var(--text);
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.9rem;
+      outline: none;
+      min-width: 140px;
+    }
+    .field input:focus { border-color: var(--blue); }
+    button.primary {
+      background: var(--blue);
+      color: var(--bg);
+      border: none;
+      padding: 9px 18px;
+      border-radius: 6px;
+      font-family: 'IBM Plex Mono', monospace;
+      font-weight: 700;
+      font-size: 0.8rem;
+      cursor: pointer;
+      letter-spacing: 0.03em;
+    }
+    button.primary:hover { opacity: 0.85; }
+    button.icon {
+      background: transparent;
+      border: 1px solid var(--border2);
+      color: var(--text2);
+      padding: 4px 8px;
+      border-radius: 5px;
+      font-size: 0.75rem;
+      cursor: pointer;
+      font-family: 'IBM Plex Mono', monospace;
+    }
+    button.icon:hover { color: var(--text); border-color: var(--blue); }
+    button.icon.danger:hover { color: var(--red); border-color: var(--red); }
+
+    .msg {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.75rem;
+      margin-top: 12px;
+      min-height: 1.1rem;
+    }
+    .msg.ok  { color: var(--green); }
+    .msg.err { color: var(--red); }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.82rem;
+    }
+    th, td {
+      text-align: left;
+      padding: 8px 10px;
+      border-bottom: 1px solid var(--border);
+    }
+    th {
+      font-size: 0.65rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--text3);
+      font-weight: 600;
+    }
+    td .num { font-weight: 700; color: var(--text); }
+    td.actions { text-align: right; white-space: nowrap; }
+    td.actions button + button { margin-left: 4px; }
+    .empty {
+      color: var(--text3);
+      font-size: 0.75rem;
+      padding: 14px;
+      text-align: center;
+      font-family: 'IBM Plex Mono', monospace;
+    }
+    .stat-row {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-bottom: 6px;
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.72rem;
+      color: var(--text2);
+    }
+    .stat-row b { color: var(--text); }
+    .back-link {
+      display: inline-block;
+      margin-top: 14px;
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.7rem;
+      color: var(--text3);
+      text-decoration: none;
+    }
+    .back-link:hover { color: var(--blue); }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <h1>Reservas BCRA — Carga preliminar</h1>
+    <p class="sub">Cargar valores que el BCRA tuitea (@BancoCentral_AR) antes de que aparezcan en la API oficial. Solo días hábiles.</p>
+
+    <div class="panel">
+      <div class="panel-title">Nuevo dato</div>
+      <div class="form-row">
+        <div class="field">
+          <label for="fecha">Fecha</label>
+          <input type="date" id="fecha" />
+        </div>
+        <div class="field">
+          <label for="valor">Valor (USD M)</label>
+          <input type="number" id="valor" placeholder="46088" min="0" step="1" />
+        </div>
+        <button class="primary" id="btn-guardar">Guardar</button>
+      </div>
+      <div class="msg" id="msg"></div>
+    </div>
+
+    <div class="panel">
+      <div class="panel-title">Preliminares cargados</div>
+      <div class="stat-row" id="stat-row"></div>
+      <table id="tabla">
+        <thead>
+          <tr><th>Fecha</th><th>Valor (USD M)</th><th>Cargado</th><th></th></tr>
+        </thead>
+        <tbody id="tbody"></tbody>
+      </table>
+    </div>
+
+    <a class="back-link" href="/datos-macro/">← Volver a Datos Macro</a>
+  </div>
+
+  <script>
+    const WORKER_URL = 'https://canuto-reservas.lenzimartin.workers.dev/';
+
+    const $ = id => document.getElementById(id);
+    const fmtNum = n => Number(n).toLocaleString('es-AR');
+    const fmtDate = s => {
+      if (!s) return '—';
+      const [y,m,d] = s.split('-');
+      return `${d}/${m}/${y}`;
+    };
+    const fmtDateTime = s => {
+      if (!s) return '—';
+      const d = new Date(s);
+      return d.toLocaleString('es-AR', { dateStyle:'short', timeStyle:'short' });
+    };
+
+    let _lista = [];
+
+    function showMsg(text, type = 'ok') {
+      const el = $('msg');
+      el.textContent = text;
+      el.className = 'msg ' + type;
+      if (type === 'ok') setTimeout(() => { if (el.textContent === text) el.textContent = ''; }, 4000);
+    }
+
+    function renderTable() {
+      const tbody = $('tbody');
+      const stat = $('stat-row');
+      if (!_lista.length) {
+        tbody.innerHTML = `<tr><td colspan="4" class="empty">No hay datos cargados todavía.</td></tr>`;
+        stat.innerHTML = '';
+        return;
+      }
+      // ordenar de más nuevo a más viejo para visualizar
+      const ord = [..._lista].sort((a,b) => a.fecha < b.fecha ? 1 : -1);
+      const ult = ord[0];
+      stat.innerHTML = `Total: <b>${_lista.length}</b> · Último: <b>${fmtDate(ult.fecha)} → ${fmtNum(ult.valor)} M USD</b>`;
+      tbody.innerHTML = ord.map(d => `
+        <tr>
+          <td>${fmtDate(d.fecha)}</td>
+          <td class="num">${fmtNum(d.valor)}</td>
+          <td style="color:var(--text3);font-size:0.7rem">${fmtDateTime(d.ts)}</td>
+          <td class="actions">
+            <button class="icon" data-act="edit" data-fecha="${d.fecha}" data-valor="${d.valor}">editar</button>
+            <button class="icon danger" data-act="del" data-fecha="${d.fecha}">borrar</button>
+          </td>
+        </tr>
+      `).join('');
+    }
+
+    async function cargarLista() {
+      try {
+        const r = await fetch(WORKER_URL, { cache: 'no-store' });
+        if (!r.ok) throw new Error('HTTP ' + r.status);
+        _lista = await r.json();
+        renderTable();
+      } catch (e) {
+        showMsg('Error cargando lista: ' + e.message, 'err');
+      }
+    }
+
+    async function guardar() {
+      const fecha = $('fecha').value;
+      const valor = $('valor').value;
+      if (!fecha || !valor) { showMsg('Faltan fecha o valor', 'err'); return; }
+      const clave = window.prompt('Palabra clave para confirmar:');
+      if (clave == null) return; // cancelado
+      try {
+        const r = await fetch(WORKER_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ fecha, valor: Number(valor), clave }),
+        });
+        const data = await r.json();
+        if (!r.ok) throw new Error(data.error || ('HTTP ' + r.status));
+        _lista = data;
+        renderTable();
+        $('valor').value = '';
+        showMsg(`Guardado ${fmtDate(fecha)} → ${fmtNum(valor)} M USD`, 'ok');
+      } catch (e) {
+        showMsg('Error: ' + e.message, 'err');
+      }
+    }
+
+    async function borrar(fecha) {
+      if (!window.confirm(`¿Borrar el dato del ${fmtDate(fecha)}?`)) return;
+      const clave = window.prompt('Palabra clave para confirmar:');
+      if (clave == null) return;
+      try {
+        const r = await fetch(WORKER_URL, {
+          method: 'DELETE',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ fecha, clave }),
+        });
+        const data = await r.json();
+        if (!r.ok) throw new Error(data.error || ('HTTP ' + r.status));
+        _lista = data;
+        renderTable();
+        showMsg(`Borrado ${fmtDate(fecha)}`, 'ok');
+      } catch (e) {
+        showMsg('Error: ' + e.message, 'err');
+      }
+    }
+
+    function editar(fecha, valor) {
+      $('fecha').value = fecha;
+      $('valor').value = valor;
+      $('valor').focus();
+      showMsg(`Editando ${fmtDate(fecha)} — modificá el valor y "Guardar".`, 'ok');
+    }
+
+    // Listeners
+    $('btn-guardar').addEventListener('click', guardar);
+    $('valor').addEventListener('keydown', e => { if (e.key === 'Enter') guardar(); });
+    $('tbody').addEventListener('click', e => {
+      const btn = e.target.closest('button[data-act]');
+      if (!btn) return;
+      const fecha = btn.dataset.fecha;
+      if (btn.dataset.act === 'del')  borrar(fecha);
+      if (btn.dataset.act === 'edit') editar(fecha, btn.dataset.valor);
+    });
+
+    // Init: hoy por default en el campo fecha + cargar lista
+    $('fecha').value = new Date().toLocaleDateString('sv-SE', { timeZone: 'America/Argentina/Buenos_Aires' });
+    cargarLista();
+  </script>
+</body>
+</html>
