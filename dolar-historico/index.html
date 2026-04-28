@@ -598,16 +598,49 @@ function filterRange(data, range, from, to) {
 }
 
 // ── LIVE PATCH ────────────────────────────────────────────
-const LIVE_API = 'https://dolarapi.com/v1/dolares';
+// El "valor del día" se sobrescribe en background cada LIVE_REFRESH_MS para
+// que la cotización siga al mercado intra-day, sin re-bajar la serie histórica.
+// Se consultan las mismas dos fuentes que /dolar-en-vivo (dolarapi + Ámbito) y
+// para cada tipo se elige la cotización más reciente — así los dos sitios
+// muestran exactamente el mismo número.
+const LIVE_API        = 'https://dolarapi.com/v1/dolares';
+const LIVE_API_AMBITO = 'https://dolarapi.com/v1/ambito/dolares';
 const LIVE_CASA = { oficial:'oficial', blue:'blue', mep:'bolsa', ccl:'contadoconliqui', mayorista:'mayorista' };
+const LIVE_CACHE_MS   = 25 * 1000; // TTL del cache del fetch (evita pedir muchas veces si el usuario navega)
+const LIVE_REFRESH_MS = 30 * 1000; // Cada 30 segundos vuelve a buscar precios live
 let _liveCache = null;
+let _liveCacheTs = 0;
+
+// Devuelve el más reciente comparando fechaActualizacion (igual lógica que /dolar-en-vivo)
+function masReciente(a, b) {
+  if (!a) return b;
+  if (!b) return a;
+  const ta = a.fechaActualizacion ? new Date(a.fechaActualizacion).getTime() : 0;
+  const tb = b.fechaActualizacion ? new Date(b.fechaActualizacion).getTime() : 0;
+  return ta >= tb ? a : b;
+}
 
 async function fetchLive() {
-  if (_liveCache) return _liveCache;
+  if (_liveCache && (Date.now() - _liveCacheTs) < LIVE_CACHE_MS) return _liveCache;
   try {
-    const res = await fetch(LIVE_API, { cache: 'no-store' });
-    if (!res.ok) return null;
-    _liveCache = await res.json();
+    // Pegamos a las dos fuentes en paralelo; si una falla, seguimos con la otra
+    const [resPrin, resAmb] = await Promise.allSettled([
+      fetch(LIVE_API,        { cache: 'no-store' }).then(r => r.ok ? r.json() : null),
+      fetch(LIVE_API_AMBITO, { cache: 'no-store' }).then(r => r.ok ? r.json() : null),
+    ]);
+    const dataPrin = resPrin.status === 'fulfilled' ? resPrin.value : null;
+    const dataAmb  = resAmb.status  === 'fulfilled' ? resAmb.value  : null;
+    if (!dataPrin && !dataAmb) return null;
+    // Para cada casa que nos importa, quedarse con el más reciente
+    const merged = [];
+    for (const casa of Object.values(LIVE_CASA)) {
+      const dPrin = dataPrin?.find(x => x.casa === casa) || null;
+      const dAmb  = dataAmb?.find(x  => x.casa === casa) || null;
+      const mejor = masReciente(dPrin, dAmb);
+      if (mejor) merged.push(mejor);
+    }
+    _liveCache = merged;
+    _liveCacheTs = Date.now();
     return _liveCache;
   } catch { return null; }
 }
@@ -623,6 +656,37 @@ async function injectToday(tipo, data) {
     data = [...data, { fecha:today, compra:match.compra, venta:match.venta, _live:true }];
   }
   return data;
+}
+
+// Pisa el último punto live de cada tipo cargado en allData con la cotización
+// actual. Devuelve true si cambió algo del tipo actualmente visible (para
+// decidir si vale la pena re-renderizar).
+async function refreshLiveData() {
+  _liveCacheTs = 0; // forzar refetch
+  const live = await fetchLive();
+  if (!live) return false;
+  const today = new Date().toLocaleDateString('sv-SE', { timeZone: 'America/Argentina/Buenos_Aires' });
+  let currentChanged = false;
+  for (const tipo of Object.keys(TIPOS)) {
+    if (!allData[tipo]) continue;
+    const match = live.find(d => d.casa === LIVE_CASA[tipo]);
+    if (!match?.venta) continue;
+    const arr  = allData[tipo];
+    const last = arr[arr.length - 1];
+    const lastFecha = last?.fecha?.slice(0,10);
+    if (last?._live && lastFecha === today) {
+      // Sobrescribir el punto live del día si los valores cambiaron
+      if (last.venta !== match.venta || last.compra !== match.compra) {
+        arr[arr.length - 1] = { ...last, compra: match.compra, venta: match.venta };
+        if (tipo === currentTipo) currentChanged = true;
+      }
+    } else if (lastFecha && lastFecha < today) {
+      // Cruzamos de día: agregar el primer punto live del nuevo día
+      arr.push({ fecha: today, compra: match.compra, venta: match.venta, _live: true });
+      if (tipo === currentTipo) currentChanged = true;
+    }
+  }
+  return currentChanged;
 }
 
 // ── DATA ─────────────────────────────────────────────────
@@ -915,6 +979,15 @@ document.getElementById('btn-clr-range').addEventListener('click',()=>{
 })();
 
 render();
+
+// Auto-refresh: cada 30s pide el live y, si cambió el tipo visible, re-renderiza.
+// El re-render reusa allData[tipo] (ya actualizado), así que es liviano.
+setInterval(async () => {
+  try {
+    const changed = await refreshLiveData();
+    if (changed) await render();
+  } catch (e) { /* silencioso, evita romper el ciclo */ }
+}, LIVE_REFRESH_MS);
 </script>
 
 
