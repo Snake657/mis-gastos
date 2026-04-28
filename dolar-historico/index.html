@@ -578,6 +578,14 @@ function fmtDS(d) {
   const [y,m] = d.slice(0,10).split('-');
   return `${m}/${y.slice(2)}`;
 }
+// Parser que evita el "off by one" de zona horaria al usar fechas ISO YYYY-MM-DD.
+// `new Date("2026-04-27")` devuelve medianoche UTC → en Argentina sale el día anterior.
+function _parseFechaDH(str) {
+  if (!str) return null;
+  const m = String(str).slice(0,10).match(/^(\d{4})-(\d{2})-(\d{2})$/);
+  if (m) return new Date(+m[1], +m[2] - 1, +m[3]);
+  return new Date(str);
+}
 function filterRange(data, range, from, to) {
   if (!data?.length) return [];
   if (range === 'CUSTOM') {
@@ -594,7 +602,10 @@ function filterRange(data, range, from, to) {
   else if (range==='2A') cut.setFullYear(now.getFullYear()-2);
   else if (range==='5A') cut.setFullYear(now.getFullYear()-5);
   else return data;
-  return data.filter(d => new Date(d.fecha) >= cut);
+  return data.filter(d => {
+    const f = _parseFechaDH(d.fecha);
+    return f && f >= cut;
+  });
 }
 
 // ── LIVE PATCH ────────────────────────────────────────────
