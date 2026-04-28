@@ -1344,8 +1344,11 @@
       <div class="range-tabs" id="rt-patent-tipo">
         <button class="range-tab active" data-tipo="autos">🚗 Autos</button>
         <button class="range-tab" data-tipo="motos">🏍 Motos</button>
+        <span class="range-tabs-divider"></span>
+        <button class="range-tab active" data-vista="mensual">📅 Mensual</button>
+        <button class="range-tab" data-vista="anual">📊 Anual</button>
       </div>
-      <div class="nota-fuente">DNRPA · datos.jus.gob.ar · inscripciones iniciales 0KM · mensual</div>
+      <div class="nota-fuente">DNRPA · datos.jus.gob.ar · inscripciones iniciales 0KM</div>
     </div>
     <div class="ind-toolbar">
       <div class="range-tabs" id="rt-patent">
@@ -1406,6 +1409,13 @@
     </div>
     <hr class="ind-divider">
     <div class="ind-toolbar">
+      <div class="range-tabs" id="rt-ypf-vista">
+        <button class="range-tab active" data-vista="mensual">📅 Mensual</button>
+        <button class="range-tab" data-vista="anual">📊 Anual</button>
+      </div>
+      <div class="nota-fuente">Sec. Energía · datos.gob.ar series · kbpd · desde 1999</div>
+    </div>
+    <div class="ind-toolbar">
       <div class="range-tabs" id="rt-ypf">
         <button class="range-tab" data-r="6M">6M</button>
         <button class="range-tab active" data-r="1A">1A</button>
@@ -1418,7 +1428,6 @@
         <span id="rt-ypf-pres" style="display:contents"></span>
         <button class="range-tab presidentes-toggle" id="btn-ypf-presidentes" type="button" title="Pintar el gráfico por presidencia">🎨 Presidentes</button>
       </div>
-      <div class="nota-fuente">Sec. Energía · datos.gob.ar series · kbpd · mensual desde 1999</div>
     </div>
     <div class="date-range-wrap" id="ypf-date-inputs" style="display:none">
       <input type="date" id="ypf-desde" />
@@ -4535,6 +4544,7 @@ async function initDeudaPub() {
 const PATENT_URL = '/patentamientos/data.json';
 let patentRaw = null;            // { autos: {YYYY-MM: n}, motos: {...} }
 let _patentTipo = 'autos';       // tipo activo
+let _patentVista = 'mensual';    // 'mensual' o 'anual'
 let _patentPorPres = false;
 
 const PRESIDENTES_PATENT = [
@@ -4562,6 +4572,37 @@ function _patentSerie() {
   return Object.entries(obj)
     .map(([ym, v]) => ({ fecha: ym + '-01', ym, valor: Number(v) }))
     .sort((a, b) => a.ym < b.ym ? -1 : 1);
+}
+
+// Agrega los meses de cada año en una serie anual.
+// Recibe una serie mensual (o un slice de ella) y devuelve [{año, fecha, valor, parcial, meses}].
+// `parcial: true` cuando ese año no tiene los 12 meses cargados en la serie completa.
+function _patentAgrupaAnual(monthlyArr) {
+  if (!monthlyArr || !monthlyArr.length) return [];
+  const fullObj = (patentRaw && patentRaw[_patentTipo]) || {};
+  const acc = {};
+  for (const d of monthlyArr) {
+    const año = d.ym.slice(0, 4);
+    if (!acc[año]) acc[año] = { año, valor: 0, meses: 0 };
+    acc[año].valor += d.valor;
+    acc[año].meses += 1;
+  }
+  // Detectar parcialidad mirando la serie original completa, no el slice
+  const conteoCompleto = {};
+  for (const k of Object.keys(fullObj)) {
+    const año = k.slice(0, 4);
+    conteoCompleto[año] = (conteoCompleto[año] || 0) + 1;
+  }
+  return Object.values(acc)
+    .map(o => ({
+      año: o.año,
+      ym: o.año,                    // para compatibilidad con renderers existentes
+      fecha: o.año + '-01-01',      // pivot al 1° de enero del año
+      valor: o.valor,
+      meses: o.meses,
+      parcial: (conteoCompleto[o.año] || 0) < 12
+    }))
+    .sort((a, b) => a.año < b.año ? -1 : 1);
 }
 
 async function loadPatent() {
@@ -4673,35 +4714,56 @@ function renderPatent(range) {
 
   $('load-patent').style.display = 'none';
   $('chart-patent').style.display = 'block';
-  const labels = slice.map(d => _patentFmtFecha(d.ym));
   const ctx = $('chart-patent').getContext('2d');
   const existing = Chart.getChart('chart-patent');
   if (existing) existing.destroy();
 
   const baseColor = _patentTipo === 'autos' ? '#fb923c' : '#a78bfa';
+  const esAnual = _patentVista === 'anual';
+
+  // Datos a graficar: mensual = slice tal cual; anual = aggregación
+  const plotData = esAnual ? _patentAgrupaAnual(slice) : slice;
+  const labels = plotData.map(d => esAnual ? d.año + (d.parcial ? ' (parcial)' : '') : _patentFmtFecha(d.ym));
+
   let datasets;
   if (!_patentPorPres) {
-    datasets = [{
-      label: tipoLabel.charAt(0).toUpperCase() + tipoLabel.slice(1) + ' 0KM',
-      data: slice.map(d => d.valor),
-      borderColor: baseColor,
-      backgroundColor: baseColor + '20',
-      borderWidth: 2,
-      pointRadius: slice.length > 60 ? 0 : 2,
-      pointHoverRadius: 4,
-      fill: true,
-      tension: 0.15
-    }];
+    if (esAnual) {
+      // Bar chart: barras parciales con opacidad reducida y borde dasheado
+      datasets = [{
+        label: tipoLabel.charAt(0).toUpperCase() + tipoLabel.slice(1) + ' 0KM',
+        data: plotData.map(d => d.valor),
+        backgroundColor: plotData.map(d => d.parcial ? baseColor + '55' : baseColor + 'cc'),
+        borderColor: plotData.map(d => d.parcial ? baseColor + '88' : baseColor),
+        borderWidth: plotData.map(d => d.parcial ? 1.5 : 1),
+        borderDash: plotData.map(d => d.parcial ? [4, 3] : [])
+      }];
+    } else {
+      datasets = [{
+        label: tipoLabel.charAt(0).toUpperCase() + tipoLabel.slice(1) + ' 0KM',
+        data: plotData.map(d => d.valor),
+        borderColor: baseColor,
+        backgroundColor: baseColor + '20',
+        borderWidth: 2,
+        pointRadius: plotData.length > 60 ? 0 : 2,
+        pointHoverRadius: 4,
+        fill: true,
+        tension: 0.15
+      }];
+    }
   } else {
     datasets = PRESIDENTES_PATENT.map((p, i) => {
       const fin = (i + 1 < PRESIDENTES_PATENT.length) ? PRESIDENTES_PATENT[i + 1].fecha : '9999-12-31';
-      return {
+      const baseDS = {
         label: p.nombre,
-        data: slice.map(d => (d.fecha >= p.fecha && d.fecha < fin) ? d.valor : null),
+        data: plotData.map(d => (d.fecha >= p.fecha && d.fecha < fin) ? d.valor : null),
         borderColor: p.color,
         backgroundColor: p.color + '33',
-        borderWidth: 2.2,
-        pointRadius: slice.length > 60 ? 0 : 2,
+        borderWidth: 2.2
+      };
+      if (esAnual) return baseDS;
+      return {
+        ...baseDS,
+        pointRadius: plotData.length > 60 ? 0 : 2,
         pointHoverRadius: 4,
         fill: true,
         tension: 0.15,
@@ -4711,7 +4773,7 @@ function renderPatent(range) {
   }
 
   new Chart(ctx, {
-    type: 'line',
+    type: esAnual ? 'bar' : 'line',
     data: { labels, datasets },
     options: {
       responsive: true, maintainAspectRatio: false,
@@ -4726,20 +4788,23 @@ function renderPatent(range) {
           callbacks: {
             label: (c) => {
               if (c.parsed.y == null) return null;
-              return c.dataset.label + ': ' + _patentFmtUnidades(c.parsed.y) + ' unid.';
+              const punto = plotData[c.dataIndex];
+              const sufijo = (esAnual && punto && punto.parcial) ? ` (parcial · ${punto.meses}m)` : '';
+              return c.dataset.label + ': ' + _patentFmtUnidades(c.parsed.y) + ' unid.' + sufijo;
             }
           }
         }
       },
       scales: {
         x: { ticks: { color: '#545870', font: { family: 'IBM Plex Mono', size: 10 }, maxRotation: 0, autoSkip: true, maxTicksLimit: 10 }, grid: { color: '#1a1e28', drawTicks: false } },
-        y: { ticks: { color: '#545870', font: { family: 'IBM Plex Mono', size: 10 }, callback: (v) => v >= 1000 ? (v/1000).toFixed(0) + 'k' : v }, grid: { color: '#1a1e28' }, beginAtZero: true }
+        y: { ticks: { color: '#545870', font: { family: 'IBM Plex Mono', size: 10 }, callback: (v) => v >= 1000 ? (v/1000).toFixed(0) + 'k' : v }, grid: { color: '#1a1e28' }, stacked: false, beginAtZero: true }
       }
     }
   });
 }
 
 function setupPatentTabs() {
+  // Toggle Autos/Motos
   document.querySelectorAll('#rt-patent-tipo .range-tab[data-tipo]').forEach(btn => {
     btn.addEventListener('click', () => {
       document.querySelectorAll('#rt-patent-tipo .range-tab[data-tipo]').forEach(b => b.classList.remove('active'));
@@ -4759,6 +4824,16 @@ function setupPatentTabs() {
         $('patent-desde').min = first.fecha; $('patent-desde').max = lastP.fecha;
         $('patent-hasta').min = first.fecha; $('patent-hasta').max = lastP.fecha;
       }
+      renderPatent(activeRange('rt-patent'));
+    });
+  });
+
+  // Toggle Mensual/Anual
+  document.querySelectorAll('#rt-patent-tipo .range-tab[data-vista]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('#rt-patent-tipo .range-tab[data-vista]').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      _patentVista = btn.dataset.vista;
       renderPatent(activeRange('rt-patent'));
     });
   });
@@ -4823,7 +4898,40 @@ async function initPatentamientos() {
 const YPF_API = 'https://apis.datos.gob.ar/series/api/series/?ids=365.3_PRODUCCION_SA__35&format=json&limit=5000';
 const M3_TO_BBL = 6.2898;
 let ypfData = [];
+let _ypfVista = 'mensual';   // 'mensual' o 'anual'
 let _ypfPorPres = false;
+
+// Agrega los meses en una serie anual con kbpd promedio ponderado por días.
+// Devuelve [{año, fecha, kbpd, m3, dias, meses, parcial}].
+function _ypfAgrupaAnual(monthlyArr) {
+  if (!monthlyArr || !monthlyArr.length) return [];
+  const acc = {};
+  for (const d of monthlyArr) {
+    const año = d.ym.slice(0, 4);
+    if (!acc[año]) acc[año] = { año, m3: 0, dias: 0, meses: 0 };
+    acc[año].m3 += d.m3;
+    acc[año].dias += _ypfDiasMes(d.ym);
+    acc[año].meses += 1;
+  }
+  // Detectar parcialidad mirando la serie completa, no el slice
+  const conteoCompleto = {};
+  for (const d of ypfData) {
+    const año = d.ym.slice(0, 4);
+    conteoCompleto[año] = (conteoCompleto[año] || 0) + 1;
+  }
+  return Object.values(acc)
+    .map(o => ({
+      año: o.año,
+      ym: o.año,
+      fecha: o.año + '-01-01',
+      m3: o.m3,
+      dias: o.dias,
+      meses: o.meses,
+      kbpd: (o.m3 * M3_TO_BBL) / o.dias / 1000,
+      parcial: (conteoCompleto[o.año] || 0) < 12
+    }))
+    .sort((a, b) => a.año < b.año ? -1 : 1);
+}
 
 const PRESIDENTES_YPF = [
   { key:'fdr', fecha:'1999-12-10', nombre:'De la Rúa',     color:'#94a3b8' },
@@ -4968,34 +5076,53 @@ function renderYpf(range) {
 
   $('load-ypf').style.display = 'none';
   $('chart-ypf').style.display = 'block';
-  const labels = slice.map(d => _ypfFmtFecha(d.ym));
   const ctx = $('chart-ypf').getContext('2d');
   const existing = Chart.getChart('chart-ypf');
   if (existing) existing.destroy();
 
+  const esAnual = _ypfVista === 'anual';
+  const plotData = esAnual ? _ypfAgrupaAnual(slice) : slice;
+  const labels = plotData.map(d => esAnual ? d.año + (d.parcial ? ' (parcial)' : '') : _ypfFmtFecha(d.ym));
+  const baseColor = '#fbbf24';
+
   let datasets;
   if (!_ypfPorPres) {
-    datasets = [{
-      label: 'YPF kbpd',
-      data: slice.map(d => d.kbpd),
-      borderColor: '#fbbf24',
-      backgroundColor: 'rgba(251,191,36,0.10)',
-      borderWidth: 2,
-      pointRadius: slice.length > 60 ? 0 : 2,
-      pointHoverRadius: 4,
-      fill: true,
-      tension: 0.15
-    }];
+    if (esAnual) {
+      datasets = [{
+        label: 'YPF kbpd (prom. año)',
+        data: plotData.map(d => d.kbpd),
+        backgroundColor: plotData.map(d => d.parcial ? baseColor + '55' : baseColor + 'cc'),
+        borderColor: plotData.map(d => d.parcial ? baseColor + '88' : baseColor),
+        borderWidth: plotData.map(d => d.parcial ? 1.5 : 1),
+        borderDash: plotData.map(d => d.parcial ? [4, 3] : [])
+      }];
+    } else {
+      datasets = [{
+        label: 'YPF kbpd',
+        data: plotData.map(d => d.kbpd),
+        borderColor: baseColor,
+        backgroundColor: 'rgba(251,191,36,0.10)',
+        borderWidth: 2,
+        pointRadius: plotData.length > 60 ? 0 : 2,
+        pointHoverRadius: 4,
+        fill: true,
+        tension: 0.15
+      }];
+    }
   } else {
     datasets = PRESIDENTES_YPF.map((p, i) => {
       const fin = (i + 1 < PRESIDENTES_YPF.length) ? PRESIDENTES_YPF[i + 1].fecha : '9999-12-31';
-      return {
+      const baseDS = {
         label: p.nombre,
-        data: slice.map(d => (d.fecha >= p.fecha && d.fecha < fin) ? d.kbpd : null),
+        data: plotData.map(d => (d.fecha >= p.fecha && d.fecha < fin) ? d.kbpd : null),
         borderColor: p.color,
         backgroundColor: p.color + '33',
-        borderWidth: 2.2,
-        pointRadius: slice.length > 60 ? 0 : 2,
+        borderWidth: 2.2
+      };
+      if (esAnual) return baseDS;
+      return {
+        ...baseDS,
+        pointRadius: plotData.length > 60 ? 0 : 2,
         pointHoverRadius: 4,
         fill: true,
         tension: 0.15,
@@ -5005,7 +5132,7 @@ function renderYpf(range) {
   }
 
   new Chart(ctx, {
-    type: 'line',
+    type: esAnual ? 'bar' : 'line',
     data: { labels, datasets },
     options: {
       responsive: true, maintainAspectRatio: false,
@@ -5020,22 +5147,33 @@ function renderYpf(range) {
           callbacks: {
             label: (c) => {
               if (c.parsed.y == null) return null;
-              const punto = slice[c.dataIndex];
+              const punto = plotData[c.dataIndex];
               const m3 = punto ? _ypfFmtM3(punto.m3) : '';
-              return `${c.dataset.label}: ${c.parsed.y.toFixed(1).replace('.',',')} kbpd${m3 ? ' (' + m3 + ')' : ''}`;
+              const sufijo = (esAnual && punto && punto.parcial) ? ` (parcial · ${punto.meses}m)` : '';
+              return `${c.dataset.label}: ${c.parsed.y.toFixed(1).replace('.',',')} kbpd${m3 ? ' (' + m3 + ')' : ''}${sufijo}`;
             }
           }
         }
       },
       scales: {
         x: { ticks: { color: '#545870', font: { family: 'IBM Plex Mono', size: 10 }, maxRotation: 0, autoSkip: true, maxTicksLimit: 10 }, grid: { color: '#1a1e28', drawTicks: false } },
-        y: { ticks: { color: '#545870', font: { family: 'IBM Plex Mono', size: 10 }, callback: (v) => v.toFixed(0) + ' kbpd' }, grid: { color: '#1a1e28' }, beginAtZero: false }
+        y: { ticks: { color: '#545870', font: { family: 'IBM Plex Mono', size: 10 }, callback: (v) => v.toFixed(0) + ' kbpd' }, grid: { color: '#1a1e28' }, beginAtZero: esAnual }
       }
     }
   });
 }
 
 function setupYpfTabs() {
+  // Toggle Mensual/Anual
+  document.querySelectorAll('#rt-ypf-vista .range-tab[data-vista]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('#rt-ypf-vista .range-tab[data-vista]').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      _ypfVista = btn.dataset.vista;
+      renderYpf(activeRange('rt-ypf'));
+    });
+  });
+
   const presContainer = $('rt-ypf-pres');
   if (presContainer && !presContainer.children.length) {
     PRESIDENTES_YPF.forEach(p => {
