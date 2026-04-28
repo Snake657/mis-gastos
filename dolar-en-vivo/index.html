@@ -441,7 +441,9 @@
       font-weight: 700;
       color: var(--yellow);
     }
-    .brecha-value.ok { color: var(--green); }
+    .brecha-value.ok     { color: var(--green); }
+    .brecha-value.warn   { color: var(--orange); }
+    .brecha-value.danger { color: var(--red); }
 
     /* ── TOOL NAV ── */
     .footer-contact-block { margin-top:18px; padding-top:14px; border-top:1px solid var(--border); text-align:center; }
@@ -1037,7 +1039,16 @@ function renderBrechas(merged) {
     if (d?.venta) {
       const b = ((d.venta - of.venta) / of.venta) * 100;
       el.textContent = fmtPct(b);
-      el.className   = `brecha-value ${Math.abs(b) < 5 ? 'ok' : ''}`;
+      // Escala de color según magnitud de la brecha:
+      //   negativa → verde (oficial > paralelo, situación "buena")
+      //   0-5%     → amarillo (default)
+      //   5-7%     → naranja
+      //   ≥7%      → rojo
+      let cls = '';
+      if (b < 0)         cls = 'ok';
+      else if (b >= 7)   cls = 'danger';
+      else if (b >= 5)   cls = 'warn';
+      el.className = `brecha-value ${cls}`;
     }
   }
 }
