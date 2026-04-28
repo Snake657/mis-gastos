@@ -1688,6 +1688,33 @@ function makeBarChart(canvasId, labels, values, color, tooltipSuffix='', extra={
 // ═══════════════════════════════════════════════════════════════════════════
 let resData = []; // [{d:'YYYY-MM-DD', v: número (millones USD)}]
 
+// URL del Worker que provee los datos preliminares cargados manualmente
+// desde la imagen que tuitea @BancoCentral_AR antes de que entren a la API oficial
+const RESERVAS_PRELIM_URL = 'https://canuto-reservas.lenzimartin.workers.dev/';
+let _reservasPrelim = []; // [{fecha, valor, ts}]
+
+async function fetchReservasPreliminares() {
+  try {
+    const r = await fetch(RESERVAS_PRELIM_URL, { cache: 'no-store' });
+    if (!r.ok) return [];
+    const data = await r.json();
+    return Array.isArray(data) ? data : [];
+  } catch { return []; }
+}
+
+// Mergea la serie BCRA con los preliminares manuales: agrega los preliminares
+// que tengan fecha posterior al último dato del BCRA (o sobrescribe duplicados).
+function mergeConPreliminares(serieBcra, preliminares) {
+  if (!preliminares.length) return serieBcra;
+  const lastBcra = serieBcra.length ? serieBcra[serieBcra.length - 1].d : '0000-00-00';
+  const fechasBcra = new Set(serieBcra.map(d => d.d));
+  const extra = preliminares
+    .filter(p => p.fecha > lastBcra && !fechasBcra.has(p.fecha))
+    .map(p => ({ d: p.fecha, v: p.valor, fecha: p.fecha, valor: p.valor, _preliminar: true }));
+  if (!extra.length) return serieBcra;
+  return [...serieBcra, ...extra].sort((a, b) => a.d < b.d ? -1 : 1);
+}
+
 async function fetchReservas() {
   // BCRA v4.0 — funciona directo desde el browser, sin proxy, sin auth.
   // idVariable 1 = Reservas Internacionales (USD millones, diaria).
@@ -1696,17 +1723,26 @@ async function fetchReservas() {
   const hasta = new Date().toISOString().slice(0,10);
   const url = `https://api.bcra.gob.ar/estadisticas/v4.0/Monetarias/1?desde=${desde}&hasta=${hasta}&limit=3000`;
   try {
-    const res = await fetch(url, { cache: 'no-store' });
-    if (!res.ok) throw new Error('HTTP ' + res.status);
-    const json = await res.json();
+    // En paralelo: BCRA oficial + preliminares cargados manualmente
+    const [resBcra, prelim] = await Promise.all([
+      fetch(url, { cache: 'no-store' }),
+      fetchReservasPreliminares(),
+    ]);
+    if (!resBcra.ok) throw new Error('HTTP ' + resBcra.status);
+    const json = await resBcra.json();
     const arr = json?.results?.[0]?.detalle || [];
     if (!arr.length) throw new Error('respuesta vacía');
     // BCRA devuelve descendente (último primero). Ordenamos ascendente.
     arr.sort((a, b) => a.fecha < b.fecha ? -1 : 1);
-    resData = arr.map(r => ({ d: r.fecha, v: r.valor, fecha: r.fecha, valor: r.valor }));
+    let serie = arr.map(r => ({ d: r.fecha, v: r.valor, fecha: r.fecha, valor: r.valor }));
+    _reservasPrelim = prelim;
+    serie = mergeConPreliminares(serie, prelim);
+    resData = serie;
     renderReservas(activeRange('rt-reservas'));
-    setText('refresh-status', 'Datos BCRA v4.0 (diario)');
-    setText('last-update', 'últ. dato: ' + resData[resData.length-1].d + ' · act.: ' + new Date().toLocaleTimeString('es-AR'));
+    const lastPunto = resData[resData.length-1];
+    const sufijoPrelim = lastPunto._preliminar ? ' (preliminar manual)' : '';
+    setText('refresh-status', 'Datos BCRA v4.0 (diario)' + (prelim.length ? ` · +${prelim.length} preliminar(es)` : ''));
+    setText('last-update', 'últ. dato: ' + lastPunto.d + sufijoPrelim + ' · act.: ' + new Date().toLocaleTimeString('es-AR'));
     startCountdown();
     return;
   } catch (e) {
@@ -1792,6 +1828,12 @@ function renderReservas(range) {
   const sliceFirst = slice[0].v, sliceLast = slice[slice.length-1].v;
   const trendColor = sliceLast >= sliceFirst ? '#4ade80' : '#f87171';
 
+  // Identificar puntos preliminares (cargados manualmente, post último BCRA)
+  // para destacarlos visualmente con un círculo más grande en otro tono.
+  const baseRadius = values.length > 60 ? 0 : 2;
+  const pointBgColor = slice.map(d => d._preliminar ? '#22c55e' : trendColor);
+  const pointRadius  = slice.map(d => d._preliminar ? 5 : baseRadius);
+
   $('load-reservas').style.display = 'none';
   $('chart-reservas').style.display = 'block';
 
@@ -1811,9 +1853,9 @@ function renderReservas(range) {
         borderColor: trendColor,
         backgroundColor: grad,
         borderWidth: 2,
-        pointRadius: values.length > 60 ? 0 : 2,
-        pointHoverRadius: 4,
-        pointBackgroundColor: trendColor,
+        pointRadius,
+        pointHoverRadius: 5,
+        pointBackgroundColor: pointBgColor,
         fill: true,
         tension: 0.25,
       }]
@@ -1825,7 +1867,11 @@ function renderReservas(range) {
         tooltip: {
           ...CHART_OPTS_BASE.plugins.tooltip,
           callbacks: {
-            label: ctx => ' USD ' + fmtInt(ctx.parsed.y) + 'M',
+            label: ctx => {
+              const pt = slice[ctx.dataIndex];
+              const tag = pt?._preliminar ? ' · preliminar (carga manual)' : '';
+              return ' USD ' + fmtInt(ctx.parsed.y) + 'M' + tag;
+            },
             title: items => fmtDate(slice[items[0].dataIndex]?.d) || items[0].label,
           },
         },
