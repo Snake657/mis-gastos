@@ -665,11 +665,6 @@
       <h1>Datos Macro</h1>
       <p class="subtitle">Reservas del BCRA, vencimientos de deuda externa, inflación, riesgo país, tasa, desocupación, pobreza y UVA — todo en una sola página, con datos oficiales y APIs públicas.</p>
     </div>
-    <div class="head-right">
-      <div class="refresh-status" id="refresh-status">Cargando…</div>
-      <div class="refresh-bar-wrap"><div class="refresh-bar" id="refresh-bar"></div></div>
-      <div class="last-update" id="last-update"></div>
-    </div>
   </div>
 
   <!-- TOC -->
@@ -686,6 +681,8 @@
     <a href="#sec-pobreza">📉 Pobreza</a>
     <a href="#sec-emae">📊 EMAE</a>
     <a href="#sec-pbi-pc">🌎 PBI/cápita USD</a>
+    <a href="#sec-patentamientos">🚗 Patentamientos</a>
+    <a href="#sec-ypf">🛢️ Petróleo YPF</a>
     <a href="#sec-merval">📈 Merval USD</a>
     <a href="#sec-ccl-real">💵 CCL Real</a>
     <a href="#sec-tcr-usa">🇺🇸 TCR vs USA</a>
@@ -1312,7 +1309,131 @@
   </section>
 
   <!-- ═══════════════════════════════════════════════════════════════ -->
-  <!-- 12. MERVAL en USD CCL — diario                                 -->
+  <!-- 12. PATENTAMIENTOS 0KM — DNRPA, autos desde 2000, motos desde 2007 -->
+  <!-- ═══════════════════════════════════════════════════════════════ -->
+  <section class="ind-section" data-color="orange" id="sec-patentamientos">
+    <div class="ind-header">
+      <div>
+        <div class="ind-name">Patentamientos 0KM</div>
+        <div class="ind-value-row">
+          <div class="ind-value" id="val-patent">—</div>
+          <div class="ind-badge badge-neu" id="badge-patent">—</div>
+        </div>
+        <div class="ind-meta" id="meta-patent">Cargando…</div>
+      </div>
+      <div class="ind-stats">
+        <div class="stat-card">
+          <div class="stat-label">Var. mes</div>
+          <div class="stat-val" id="stat-patent-mes">—</div>
+          <div class="stat-sub" id="stat-patent-mes-sub">vs. mes ant.</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Var. 1 año</div>
+          <div class="stat-val" id="stat-patent-1y">—</div>
+          <div class="stat-sub" id="stat-patent-1y-sub">vs. hace 12m</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Acum. 12 meses</div>
+          <div class="stat-val" id="stat-patent-12m">—</div>
+          <div class="stat-sub" id="stat-patent-12m-sub">unidades</div>
+        </div>
+      </div>
+    </div>
+    <hr class="ind-divider">
+    <div class="ind-toolbar">
+      <div class="range-tabs" id="rt-patent-tipo">
+        <button class="range-tab active" data-tipo="autos">🚗 Autos</button>
+        <button class="range-tab" data-tipo="motos">🏍 Motos</button>
+      </div>
+      <div class="nota-fuente">DNRPA · datos.jus.gob.ar · inscripciones iniciales 0KM · mensual</div>
+    </div>
+    <div class="ind-toolbar">
+      <div class="range-tabs" id="rt-patent">
+        <button class="range-tab" data-r="6M">6M</button>
+        <button class="range-tab active" data-r="1A">1A</button>
+        <button class="range-tab" data-r="2A">2A</button>
+        <button class="range-tab" data-r="5A">5A</button>
+        <button class="range-tab" data-r="10A">10A</button>
+        <button class="range-tab" data-r="TODO">Todo</button>
+        <button class="range-tab" data-r="CUSTOM">Rango</button>
+        <span class="range-tabs-divider"></span>
+        <span id="rt-patent-pres" style="display:contents"></span>
+        <button class="range-tab presidentes-toggle" id="btn-patent-presidentes" type="button" title="Pintar el gráfico por presidencia">🎨 Presidentes</button>
+      </div>
+    </div>
+    <div class="date-range-wrap" id="patent-date-inputs" style="display:none">
+      <input type="date" id="patent-desde" />
+      <span class="date-sep">→</span>
+      <input type="date" id="patent-hasta" />
+    </div>
+    <div class="range-stats" id="range-stats-patent" style="display:none"></div>
+    <div class="chart-wrap tall">
+      <div class="chart-loading" id="load-patent"><span class="spinner"></span>Cargando datos de DNRPA…</div>
+      <canvas id="chart-patent" style="display:none"></canvas>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════════════════ -->
+  <!-- 13. PRODUCCIÓN DE PETRÓLEO YPF — Sec. Energía, mensual desde 1999 -->
+  <!-- ═══════════════════════════════════════════════════════════════ -->
+  <section class="ind-section" data-color="yellow" id="sec-ypf">
+    <div class="ind-header">
+      <div>
+        <div class="ind-name">Producción YPF · Petróleo Crudo</div>
+        <div class="ind-value-row">
+          <div class="ind-value" id="val-ypf">—</div>
+          <div class="ind-badge badge-neu" id="badge-ypf">—</div>
+        </div>
+        <div class="ind-meta" id="meta-ypf">Cargando…</div>
+      </div>
+      <div class="ind-stats">
+        <div class="stat-card">
+          <div class="stat-label">m³ del mes</div>
+          <div class="stat-val" id="stat-ypf-m3">—</div>
+          <div class="stat-sub" id="stat-ypf-m3-sub">unidad nativa</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Var. 1 año</div>
+          <div class="stat-val" id="stat-ypf-1y">—</div>
+          <div class="stat-sub" id="stat-ypf-1y-sub">vs. hace 12m</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Máx. histórico</div>
+          <div class="stat-val" id="stat-ypf-max">—</div>
+          <div class="stat-sub" id="stat-ypf-max-fecha">—</div>
+        </div>
+      </div>
+    </div>
+    <hr class="ind-divider">
+    <div class="ind-toolbar">
+      <div class="range-tabs" id="rt-ypf">
+        <button class="range-tab" data-r="6M">6M</button>
+        <button class="range-tab active" data-r="1A">1A</button>
+        <button class="range-tab" data-r="2A">2A</button>
+        <button class="range-tab" data-r="5A">5A</button>
+        <button class="range-tab" data-r="10A">10A</button>
+        <button class="range-tab" data-r="TODO">Todo</button>
+        <button class="range-tab" data-r="CUSTOM">Rango</button>
+        <span class="range-tabs-divider"></span>
+        <span id="rt-ypf-pres" style="display:contents"></span>
+        <button class="range-tab presidentes-toggle" id="btn-ypf-presidentes" type="button" title="Pintar el gráfico por presidencia">🎨 Presidentes</button>
+      </div>
+      <div class="nota-fuente">Sec. Energía · datos.gob.ar series · kbpd · mensual desde 1999</div>
+    </div>
+    <div class="date-range-wrap" id="ypf-date-inputs" style="display:none">
+      <input type="date" id="ypf-desde" />
+      <span class="date-sep">→</span>
+      <input type="date" id="ypf-hasta" />
+    </div>
+    <div class="range-stats" id="range-stats-ypf" style="display:none"></div>
+    <div class="chart-wrap tall">
+      <div class="chart-loading" id="load-ypf"><span class="spinner"></span>Conectando con Energía…</div>
+      <canvas id="chart-ypf" style="display:none"></canvas>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════════════════ -->
+  <!-- 14. MERVAL en USD CCL — diario                                 -->
   <!-- ═══════════════════════════════════════════════════════════════ -->
   <section class="ind-section" data-color="violet" id="sec-merval">
     <div class="ind-header">
@@ -1456,7 +1577,7 @@
     Inflación, riesgo país y UVA: <a href="https://argentinadatos.com" target="_blank" rel="noopener">ArgentinaDatos</a> (open source, sin API key).
     <strong style="color:var(--text2)">EMAE:</strong> serie mensual del INDEC (índice base 2004=100, desestacionalizado) vía <a href="https://apis.datos.gob.ar/series/api/" target="_blank" rel="noopener">API de datos.gob.ar</a>, serie 302.3. La variación interanual se calcula en cliente.
     <strong style="color:var(--text2)">PBI per cápita USD:</strong> serie anual desde 1960 vía <a href="https://api.worldbank.org/v2/" target="_blank" rel="noopener">API del World Bank</a> (indicador NY.GDP.PCAP.CD, USD corrientes).
-    <strong style="color:var(--text2)">Merval USD CCL:</strong> Yahoo Finance ^MERV proxeado por el worker propio en <code>canuto-dolar.lenzimartin.workers.dev/api/merval</code>. Si el worker devuelve datos en ARS, se divide por la cotización CCL en cliente.
+    <strong style="color:var(--text2)">Merval USD CCL:</strong> Yahoo Finance ^MERV proxeado por un worker propio. Si el worker devuelve datos en ARS, se divide por la cotización CCL en cliente.
     <strong style="color:var(--text2)">TCR Bilateral con USA:</strong> CCL deflactado por inflación argentina e inflada por inflación USA, normalizado a base 100 en el primer dato del rango. Se calcula <code>CCL(t) × CPI_USA(t) / IPC_AR(t)</code>. Conceptualmente similar al ITCRM oficial del BCRA (multilateral) pero bilateral solo con USA. Las marcas con iniciales arriba del gráfico son los cambios de gobierno argentino. CPI USA viene de <a href="https://api.worldbank.org/v2/" target="_blank" rel="noopener">World Bank</a> (anual interpolado a meses).
         <strong style="color:var(--text2)">CCL Real (en pesos de hoy):</strong> serie diaria del CCL desde <a href="https://argentinadatos.com" target="_blank" rel="noopener">argentinadatos.com</a> deflactada en cliente por la inflación mensual del INDEC (también argentinadatos). Se aplica la fórmula <code>ccl_nominal(t) × IPC_AR(hoy) / IPC_AR(t)</code> para mostrar cada cotización pasada en pesos del último mes con dato de inflación disponible.
     <strong style="color:var(--text2)">Desocupación:</strong> serie larga del <a href="https://www.indec.gob.ar" target="_blank" rel="noopener">INDEC</a> — EPH puntual GBA 1974-2003 (semestral) + EPH continua nacional 31 aglomerados desde 2003 (trimestral). Las dos series tienen metodología distinta y no son directamente comparables, pero se grafican juntas. Datos hardcodeados con upgrade en vivo desde la <a href="https://apis.datos.gob.ar/series/api/" target="_blank" rel="noopener">API de datos.gob.ar</a> cuando está disponible.
@@ -3665,9 +3786,9 @@ async function initPbiPc() {
 //     Combina Merval ARS (estadisticasbcra.com) + CCL ARS (argentinadatos.com)
 //     y calcula Merval/CCL en cliente. Si alguna fuente falla, no disponible.
 // ═══════════════════════════════════════════════════════════════════════════
-// Merval USD: el worker del user (canuto-dolar.lenzimartin.workers.dev) sirve el ^MERV de
-// Yahoo Finance ya en USD (Yahoo lo expone en "USD spot" del peso). Si el worker no expone
-// el endpoint /api/merval o falla, mostramos "no disponible".
+// Merval USD: un worker propio sirve el ^MERV de Yahoo Finance ya en USD
+// (Yahoo lo expone en "USD spot" del peso). Si el worker no expone el endpoint
+// /api/merval o falla, mostramos "no disponible".
 const MERVAL_API = 'https://canuto-dolar.lenzimartin.workers.dev/api/merval';
 const CCL_API = 'https://api.argentinadatos.com/v1/cotizaciones/dolares/contadoconliqui';
 let mervalRaw = [];
@@ -4406,6 +4527,563 @@ async function initDeudaPub() {
   }
 }
 
+// ═══════════════════════════════════════════════════════════════════════════
+// 12. PATENTAMIENTOS 0KM — Autos desde 2000, Motos desde 2007 (DNRPA)
+//     Datos cargados desde /patentamientos/data.json (regenerado mensualmente
+//     desde los CSV oficiales de datos.jus.gob.ar).
+// ═══════════════════════════════════════════════════════════════════════════
+const PATENT_URL = '/patentamientos/data.json';
+let patentRaw = null;            // { autos: {YYYY-MM: n}, motos: {...} }
+let _patentTipo = 'autos';       // tipo activo
+let _patentPorPres = false;
+
+const PRESIDENTES_PATENT = [
+  { key:'fdr', fecha:'1999-12-10', nombre:'De la Rúa',     color:'#94a3b8' },
+  { key:'ed',  fecha:'2002-01-02', nombre:'Duhalde',       color:'#a3e635' },
+  { key:'nk',  fecha:'2003-05-25', nombre:'N. Kirchner',   color:'#60a5fa' },
+  { key:'cfk', fecha:'2007-12-10', nombre:'CFK',           color:'#7dd3fc' },
+  { key:'mm',  fecha:'2015-12-10', nombre:'Macri',         color:'#fbbf24' },
+  { key:'af',  fecha:'2019-12-10', nombre:'A. Fernández',  color:'#1e40af' },
+  { key:'jm',  fecha:'2023-12-10', nombre:'Milei',         color:'#a855f7' }
+];
+
+function _patentFmtFecha(ym) {
+  const [y, m] = ym.split('-').map(Number);
+  const meses = ['ene','feb','mar','abr','may','jun','jul','ago','sep','oct','nov','dic'];
+  return meses[m-1] + ' ' + y;
+}
+function _patentFmtUnidades(v) {
+  if (v === null || v === undefined || isNaN(v)) return '—';
+  return Math.round(v).toLocaleString('es-AR');
+}
+function _patentSerie() {
+  if (!patentRaw) return [];
+  const obj = patentRaw[_patentTipo] || {};
+  return Object.entries(obj)
+    .map(([ym, v]) => ({ fecha: ym + '-01', ym, valor: Number(v) }))
+    .sort((a, b) => a.ym < b.ym ? -1 : 1);
+}
+
+async function loadPatent() {
+  const r = await fetch(PATENT_URL, { cache: 'no-store' });
+  if (!r.ok) throw new Error('HTTP ' + r.status);
+  patentRaw = await r.json();
+}
+
+function _patentSlice(range) {
+  const data = _patentSerie();
+  if (!data.length) return [];
+  const last = data[data.length - 1];
+  if (range === 'TODO') return data.slice();
+  if (range === 'CUSTOM') {
+    const desde = $('patent-desde').value;
+    const hasta = $('patent-hasta').value;
+    if (!desde || !hasta) return data.slice();
+    return data.filter(d => d.fecha >= desde && d.fecha <= hasta);
+  }
+  if (typeof range === 'string' && range.startsWith('PRES-')) {
+    const k = range.slice(5);
+    const idx = PRESIDENTES_PATENT.findIndex(p => p.key === k);
+    if (idx < 0) return data.slice();
+    const desde = PRESIDENTES_PATENT[idx].fecha;
+    const hasta = (idx + 1 < PRESIDENTES_PATENT.length) ? PRESIDENTES_PATENT[idx + 1].fecha : new Date().toISOString().slice(0,10);
+    return data.filter(d => d.fecha >= desde && d.fecha <= hasta);
+  }
+  const mMonths = /^(\d+)M$/.exec(range);
+  const mYears = /^(\d+)A$/.exec(range);
+  const cut = new Date(last.fecha + 'T12:00:00');
+  if (mMonths) cut.setMonth(cut.getMonth() - parseInt(mMonths[1], 10));
+  else if (mYears) cut.setFullYear(cut.getFullYear() - parseInt(mYears[1], 10));
+  else return data.slice();
+  const desde = cut.toISOString().slice(0, 10);
+  return data.filter(d => d.fecha >= desde);
+}
+
+function _patentRenderRangeStats(slice, range) {
+  const el = $('range-stats-patent');
+  if (!el || slice.length < 2) { if (el) el.style.display = 'none'; return; }
+  const first = slice[0], last = slice[slice.length - 1];
+  const total = slice.reduce((acc, d) => acc + d.valor, 0);
+  const dRange = last.valor - first.valor;
+  const dRangePct = first.valor ? (dRange / first.valor * 100) : 0;
+  const labelMap = {
+    '6M':'Últimos 6 meses','1A':'Último año','2A':'Últimos 2 años',
+    '5A':'Últimos 5 años','10A':'Últimos 10 años',
+    'TODO':'Histórico completo','CUSTOM':'Rango personalizado'
+  };
+  let label = labelMap[range] || 'Variación';
+  let accent = '#fb923c';
+  if (typeof range === 'string' && range.startsWith('PRES-')) {
+    const p = PRESIDENTES_PATENT.find(x => x.key === range.slice(5));
+    if (p) { label = `Mandato de ${p.nombre}`; accent = p.color; }
+  }
+  el.style.setProperty('--accent-color', accent);
+  el.style.display = 'flex';
+  const cls = dRange > 0 ? 'rs-pos' : dRange < 0 ? 'rs-neg' : 'rs-neu';
+  const pctFmt = (dRangePct >= 0 ? '+' : '') + dRangePct.toFixed(1).replace('.',',') + '%';
+  el.innerHTML = `
+    <span class="rs-label">${label}</span>
+    <span class="rs-pct ${cls}">${pctFmt}</span>
+    <span class="rs-amt">Total: ${_patentFmtUnidades(total)} unid.</span>
+    <span class="rs-period">${_patentFmtFecha(first.ym)} → ${_patentFmtFecha(last.ym)}</span>
+  `;
+}
+
+function renderPatent(range) {
+  const data = _patentSerie();
+  if (!data.length) return;
+  const slice = _patentSlice(range);
+  if (!slice.length) return;
+
+  const last = data[data.length - 1];
+  const tipoLabel = _patentTipo === 'autos' ? 'autos' : 'motos';
+  setText('val-patent', _patentFmtUnidades(last.valor));
+  setText('meta-patent', `${tipoLabel.charAt(0).toUpperCase()+tipoLabel.slice(1)} 0KM · ${_patentFmtFecha(last.ym)}`);
+
+  const prev = data[data.length - 2] || last;
+  const dPrev = prev.valor ? ((last.valor - prev.valor) / prev.valor * 100) : 0;
+  const badge = $('badge-patent');
+  badge.textContent = (dPrev >= 0 ? '+' : '') + dPrev.toFixed(1).replace('.',',') + '%';
+  badge.className = `ind-badge ${badgeCls(dPrev, false)}`;
+
+  const dMes = last.valor - prev.valor;
+  setText('stat-patent-mes', (dMes >= 0 ? '+' : '') + _patentFmtUnidades(dMes));
+  $('stat-patent-mes').className = 'stat-val ' + (dMes > 0 ? 'pos' : dMes < 0 ? 'neg' : '');
+  setText('stat-patent-mes-sub', 'vs. ' + _patentFmtFecha(prev.ym));
+
+  const lastYm = last.ym.split('-').map(Number);
+  const ym1y = `${lastYm[0]-1}-${String(lastYm[1]).padStart(2,'0')}`;
+  const hace1y = data.find(d => d.ym === ym1y);
+  if (hace1y && hace1y.valor) {
+    const d1y = (last.valor - hace1y.valor) / hace1y.valor * 100;
+    setText('stat-patent-1y', (d1y >= 0 ? '+' : '') + d1y.toFixed(1).replace('.',',') + '%');
+    $('stat-patent-1y').className = 'stat-val ' + (d1y > 0 ? 'pos' : d1y < 0 ? 'neg' : '');
+    setText('stat-patent-1y-sub', `vs. ${_patentFmtFecha(ym1y)}`);
+  } else {
+    setText('stat-patent-1y', '—');
+    setText('stat-patent-1y-sub', 'sin dato a 12m');
+  }
+
+  const last12 = data.slice(-12);
+  const acum12 = last12.reduce((acc, d) => acc + d.valor, 0);
+  setText('stat-patent-12m', _patentFmtUnidades(acum12));
+  setText('stat-patent-12m-sub', `${_patentFmtFecha(last12[0].ym)} → ${_patentFmtFecha(last.ym)}`);
+
+  _patentRenderRangeStats(slice, range);
+
+  $('load-patent').style.display = 'none';
+  $('chart-patent').style.display = 'block';
+  const labels = slice.map(d => _patentFmtFecha(d.ym));
+  const ctx = $('chart-patent').getContext('2d');
+  const existing = Chart.getChart('chart-patent');
+  if (existing) existing.destroy();
+
+  const baseColor = _patentTipo === 'autos' ? '#fb923c' : '#a78bfa';
+  let datasets;
+  if (!_patentPorPres) {
+    datasets = [{
+      label: tipoLabel.charAt(0).toUpperCase() + tipoLabel.slice(1) + ' 0KM',
+      data: slice.map(d => d.valor),
+      borderColor: baseColor,
+      backgroundColor: baseColor + '20',
+      borderWidth: 2,
+      pointRadius: slice.length > 60 ? 0 : 2,
+      pointHoverRadius: 4,
+      fill: true,
+      tension: 0.15
+    }];
+  } else {
+    datasets = PRESIDENTES_PATENT.map((p, i) => {
+      const fin = (i + 1 < PRESIDENTES_PATENT.length) ? PRESIDENTES_PATENT[i + 1].fecha : '9999-12-31';
+      return {
+        label: p.nombre,
+        data: slice.map(d => (d.fecha >= p.fecha && d.fecha < fin) ? d.valor : null),
+        borderColor: p.color,
+        backgroundColor: p.color + '33',
+        borderWidth: 2.2,
+        pointRadius: slice.length > 60 ? 0 : 2,
+        pointHoverRadius: 4,
+        fill: true,
+        tension: 0.15,
+        spanGaps: false
+      };
+    });
+  }
+
+  new Chart(ctx, {
+    type: 'line',
+    data: { labels, datasets },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      interaction: { mode: 'index', intersect: false },
+      plugins: {
+        legend: {
+          display: _patentPorPres,
+          position: 'bottom',
+          labels: { color: '#8b90a4', font: { family: 'IBM Plex Mono', size: 10 }, boxWidth: 10, boxHeight: 10, padding: 10 }
+        },
+        tooltip: {
+          callbacks: {
+            label: (c) => {
+              if (c.parsed.y == null) return null;
+              return c.dataset.label + ': ' + _patentFmtUnidades(c.parsed.y) + ' unid.';
+            }
+          }
+        }
+      },
+      scales: {
+        x: { ticks: { color: '#545870', font: { family: 'IBM Plex Mono', size: 10 }, maxRotation: 0, autoSkip: true, maxTicksLimit: 10 }, grid: { color: '#1a1e28', drawTicks: false } },
+        y: { ticks: { color: '#545870', font: { family: 'IBM Plex Mono', size: 10 }, callback: (v) => v >= 1000 ? (v/1000).toFixed(0) + 'k' : v }, grid: { color: '#1a1e28' }, beginAtZero: true }
+      }
+    }
+  });
+}
+
+function setupPatentTabs() {
+  document.querySelectorAll('#rt-patent-tipo .range-tab[data-tipo]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('#rt-patent-tipo .range-tab[data-tipo]').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      _patentTipo = btn.dataset.tipo;
+      const r = activeRange('rt-patent');
+      const data = _patentSerie();
+      if (typeof r === 'string' && r.startsWith('PRES-') && data.length) {
+        const slice = _patentSlice(r);
+        if (!slice.length) {
+          document.querySelectorAll('#rt-patent .range-tab[data-r]').forEach(b => b.classList.remove('active'));
+          $('rt-patent').querySelector('[data-r="1A"]')?.classList.add('active');
+        }
+      }
+      if (data.length) {
+        const first = data[0], lastP = data[data.length - 1];
+        $('patent-desde').min = first.fecha; $('patent-desde').max = lastP.fecha;
+        $('patent-hasta').min = first.fecha; $('patent-hasta').max = lastP.fecha;
+      }
+      renderPatent(activeRange('rt-patent'));
+    });
+  });
+
+  const presContainer = $('rt-patent-pres');
+  if (presContainer && !presContainer.children.length) {
+    PRESIDENTES_PATENT.forEach(p => {
+      const btn = document.createElement('button');
+      btn.className = 'range-tab pres-tab';
+      btn.dataset.r = 'PRES-' + p.key;
+      btn.textContent = p.nombre;
+      btn.title = `Filtrar al período de ${p.nombre}`;
+      btn.style.setProperty('--pres-color', p.color);
+      presContainer.appendChild(btn);
+    });
+  }
+
+  setupRangeTabs('rt-patent', r => {
+    $('patent-date-inputs').style.display = (r === 'CUSTOM') ? 'flex' : 'none';
+    if (r !== 'CUSTOM') renderPatent(r);
+    else if ($('patent-desde').value && $('patent-hasta').value) renderPatent('CUSTOM');
+  });
+
+  const data = _patentSerie();
+  if (data.length) {
+    const last = data[data.length - 1];
+    const first = data[0];
+    $('patent-desde').min = first.fecha; $('patent-desde').max = last.fecha;
+    $('patent-hasta').min = first.fecha; $('patent-hasta').max = last.fecha;
+    const d = new Date(last.fecha + 'T12:00:00'); d.setFullYear(d.getFullYear() - 1);
+    $('patent-desde').value = d.toISOString().slice(0, 10);
+    $('patent-hasta').value = last.fecha;
+  }
+  $('patent-desde').addEventListener('change', () => { if (activeRange('rt-patent') === 'CUSTOM') renderPatent('CUSTOM'); });
+  $('patent-hasta').addEventListener('change', () => { if (activeRange('rt-patent') === 'CUSTOM') renderPatent('CUSTOM'); });
+
+  const btnPres = $('btn-patent-presidentes');
+  if (btnPres) {
+    btnPres.addEventListener('click', () => {
+      _patentPorPres = !_patentPorPres;
+      btnPres.classList.toggle('active', _patentPorPres);
+      renderPatent(activeRange('rt-patent'));
+    });
+  }
+}
+
+async function initPatentamientos() {
+  try {
+    await loadPatent();
+    setupPatentTabs();
+    renderPatent(activeRange('rt-patent'));
+  } catch (e) {
+    setText('load-patent', 'No se pudieron cargar los datos: ' + e.message);
+  }
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+// 13. PRODUCCIÓN YPF — Petróleo Crudo, mensual desde 1999 (Sec. Energía)
+//     Fuente: apis.datos.gob.ar series → 365.3_PRODUCCION_SA__35
+//     Unidad nativa m³; mostramos kbpd como métrica primaria.
+// ═══════════════════════════════════════════════════════════════════════════
+const YPF_API = 'https://apis.datos.gob.ar/series/api/series/?ids=365.3_PRODUCCION_SA__35&format=json&limit=5000';
+const M3_TO_BBL = 6.2898;
+let ypfData = [];
+let _ypfPorPres = false;
+
+const PRESIDENTES_YPF = [
+  { key:'fdr', fecha:'1999-12-10', nombre:'De la Rúa',     color:'#94a3b8' },
+  { key:'ed',  fecha:'2002-01-02', nombre:'Duhalde',       color:'#a3e635' },
+  { key:'nk',  fecha:'2003-05-25', nombre:'N. Kirchner',   color:'#60a5fa' },
+  { key:'cfk', fecha:'2007-12-10', nombre:'CFK',           color:'#7dd3fc' },
+  { key:'mm',  fecha:'2015-12-10', nombre:'Macri',         color:'#fbbf24' },
+  { key:'af',  fecha:'2019-12-10', nombre:'A. Fernández',  color:'#1e40af' },
+  { key:'jm',  fecha:'2023-12-10', nombre:'Milei',         color:'#a855f7' }
+];
+
+function _ypfDiasMes(ym) {
+  const [y, m] = ym.split('-').map(Number);
+  return new Date(y, m, 0).getDate();
+}
+function _ypfFmtFecha(ym) {
+  const [y, m] = ym.split('-').map(Number);
+  const meses = ['ene','feb','mar','abr','may','jun','jul','ago','sep','oct','nov','dic'];
+  return meses[m-1] + ' ' + y;
+}
+function _ypfFmtKbpd(v) {
+  if (v === null || v === undefined || isNaN(v)) return '—';
+  return v.toLocaleString('es-AR', { maximumFractionDigits: 1, minimumFractionDigits: 1 }) + ' kbpd';
+}
+function _ypfFmtM3(v) {
+  if (v === null || v === undefined || isNaN(v)) return '—';
+  if (v >= 1_000_000) return (v / 1_000_000).toLocaleString('es-AR', { maximumFractionDigits: 2 }) + ' Mm³';
+  return Math.round(v).toLocaleString('es-AR') + ' m³';
+}
+
+async function loadYpf() {
+  const r = await fetch(YPF_API, { cache: 'no-store' });
+  if (!r.ok) throw new Error('HTTP ' + r.status);
+  const j = await r.json();
+  const arr = (j.data || [])
+    .filter(row => row && row.length >= 2 && row[1] !== null)
+    .map(row => {
+      const fecha = row[0];
+      const ym = fecha.slice(0, 7);
+      const m3 = Number(row[1]);
+      const dias = _ypfDiasMes(ym);
+      const kbpd = (m3 * M3_TO_BBL) / dias / 1000;
+      return { fecha, ym, m3, kbpd };
+    })
+    .sort((a, b) => a.fecha < b.fecha ? -1 : 1);
+  ypfData = arr;
+}
+
+function _ypfSlice(range) {
+  if (!ypfData.length) return [];
+  const last = ypfData[ypfData.length - 1];
+  if (range === 'TODO') return ypfData.slice();
+  if (range === 'CUSTOM') {
+    const desde = $('ypf-desde').value;
+    const hasta = $('ypf-hasta').value;
+    if (!desde || !hasta) return ypfData.slice();
+    return ypfData.filter(d => d.fecha >= desde && d.fecha <= hasta);
+  }
+  if (typeof range === 'string' && range.startsWith('PRES-')) {
+    const k = range.slice(5);
+    const idx = PRESIDENTES_YPF.findIndex(p => p.key === k);
+    if (idx < 0) return ypfData.slice();
+    const desde = PRESIDENTES_YPF[idx].fecha;
+    const hasta = (idx + 1 < PRESIDENTES_YPF.length) ? PRESIDENTES_YPF[idx + 1].fecha : new Date().toISOString().slice(0,10);
+    return ypfData.filter(d => d.fecha >= desde && d.fecha <= hasta);
+  }
+  const mMonths = /^(\d+)M$/.exec(range);
+  const mYears = /^(\d+)A$/.exec(range);
+  const cut = new Date(last.fecha + 'T12:00:00');
+  if (mMonths) cut.setMonth(cut.getMonth() - parseInt(mMonths[1], 10));
+  else if (mYears) cut.setFullYear(cut.getFullYear() - parseInt(mYears[1], 10));
+  else return ypfData.slice();
+  const desde = cut.toISOString().slice(0, 10);
+  return ypfData.filter(d => d.fecha >= desde);
+}
+
+function _ypfRenderRangeStats(slice, range) {
+  const el = $('range-stats-ypf');
+  if (!el || slice.length < 2) { if (el) el.style.display = 'none'; return; }
+  const first = slice[0], last = slice[slice.length - 1];
+  const dRange = last.kbpd - first.kbpd;
+  const dRangePct = first.kbpd ? (dRange / first.kbpd * 100) : 0;
+  const labelMap = {
+    '6M':'Últimos 6 meses','1A':'Último año','2A':'Últimos 2 años',
+    '5A':'Últimos 5 años','10A':'Últimos 10 años',
+    'TODO':'Histórico completo','CUSTOM':'Rango personalizado'
+  };
+  let label = labelMap[range] || 'Variación';
+  let accent = '#fbbf24';
+  if (typeof range === 'string' && range.startsWith('PRES-')) {
+    const p = PRESIDENTES_YPF.find(x => x.key === range.slice(5));
+    if (p) { label = `Mandato de ${p.nombre}`; accent = p.color; }
+  }
+  el.style.setProperty('--accent-color', accent);
+  el.style.display = 'flex';
+  const cls = dRange > 0 ? 'rs-pos' : dRange < 0 ? 'rs-neg' : 'rs-neu';
+  const pctFmt = (dRangePct >= 0 ? '+' : '') + dRangePct.toFixed(1).replace('.',',') + '%';
+  const sign = dRange >= 0 ? '+' : '';
+  el.innerHTML = `
+    <span class="rs-label">${label}</span>
+    <span class="rs-pct ${cls}">${pctFmt}</span>
+    <span class="rs-amt">${sign}${dRange.toFixed(1).replace('.',',')} kbpd</span>
+    <span class="rs-period">${_ypfFmtFecha(first.ym)} → ${_ypfFmtFecha(last.ym)}</span>
+  `;
+}
+
+function renderYpf(range) {
+  if (!ypfData.length) return;
+  const slice = _ypfSlice(range);
+  if (!slice.length) return;
+
+  const last = ypfData[ypfData.length - 1];
+  setText('val-ypf', _ypfFmtKbpd(last.kbpd));
+  setText('meta-ypf', `Petróleo crudo · ${_ypfFmtFecha(last.ym)} · YPF S.A.`);
+
+  const prev = ypfData[ypfData.length - 2] || last;
+  const dPrev = prev.kbpd ? ((last.kbpd - prev.kbpd) / prev.kbpd * 100) : 0;
+  const badge = $('badge-ypf');
+  badge.textContent = (dPrev >= 0 ? '+' : '') + dPrev.toFixed(1).replace('.',',') + '%';
+  badge.className = `ind-badge ${badgeCls(dPrev, false)}`;
+
+  setText('stat-ypf-m3', _ypfFmtM3(last.m3));
+  setText('stat-ypf-m3-sub', 'unidad nativa');
+
+  const lastYm = last.ym.split('-').map(Number);
+  const ym1y = `${lastYm[0]-1}-${String(lastYm[1]).padStart(2,'0')}`;
+  const hace1y = ypfData.find(d => d.ym === ym1y);
+  if (hace1y && hace1y.kbpd) {
+    const d1y = (last.kbpd - hace1y.kbpd) / hace1y.kbpd * 100;
+    setText('stat-ypf-1y', (d1y >= 0 ? '+' : '') + d1y.toFixed(1).replace('.',',') + '%');
+    $('stat-ypf-1y').className = 'stat-val ' + (d1y > 0 ? 'pos' : d1y < 0 ? 'neg' : '');
+    setText('stat-ypf-1y-sub', `vs. ${_ypfFmtFecha(ym1y)}`);
+  } else {
+    setText('stat-ypf-1y', '—');
+  }
+
+  const max = ypfData.reduce((a, b) => b.kbpd > a.kbpd ? b : a, ypfData[0]);
+  setText('stat-ypf-max', _ypfFmtKbpd(max.kbpd));
+  setText('stat-ypf-max-fecha', _ypfFmtFecha(max.ym));
+
+  _ypfRenderRangeStats(slice, range);
+
+  $('load-ypf').style.display = 'none';
+  $('chart-ypf').style.display = 'block';
+  const labels = slice.map(d => _ypfFmtFecha(d.ym));
+  const ctx = $('chart-ypf').getContext('2d');
+  const existing = Chart.getChart('chart-ypf');
+  if (existing) existing.destroy();
+
+  let datasets;
+  if (!_ypfPorPres) {
+    datasets = [{
+      label: 'YPF kbpd',
+      data: slice.map(d => d.kbpd),
+      borderColor: '#fbbf24',
+      backgroundColor: 'rgba(251,191,36,0.10)',
+      borderWidth: 2,
+      pointRadius: slice.length > 60 ? 0 : 2,
+      pointHoverRadius: 4,
+      fill: true,
+      tension: 0.15
+    }];
+  } else {
+    datasets = PRESIDENTES_YPF.map((p, i) => {
+      const fin = (i + 1 < PRESIDENTES_YPF.length) ? PRESIDENTES_YPF[i + 1].fecha : '9999-12-31';
+      return {
+        label: p.nombre,
+        data: slice.map(d => (d.fecha >= p.fecha && d.fecha < fin) ? d.kbpd : null),
+        borderColor: p.color,
+        backgroundColor: p.color + '33',
+        borderWidth: 2.2,
+        pointRadius: slice.length > 60 ? 0 : 2,
+        pointHoverRadius: 4,
+        fill: true,
+        tension: 0.15,
+        spanGaps: false
+      };
+    });
+  }
+
+  new Chart(ctx, {
+    type: 'line',
+    data: { labels, datasets },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      interaction: { mode: 'index', intersect: false },
+      plugins: {
+        legend: {
+          display: _ypfPorPres,
+          position: 'bottom',
+          labels: { color: '#8b90a4', font: { family: 'IBM Plex Mono', size: 10 }, boxWidth: 10, boxHeight: 10, padding: 10 }
+        },
+        tooltip: {
+          callbacks: {
+            label: (c) => {
+              if (c.parsed.y == null) return null;
+              const punto = slice[c.dataIndex];
+              const m3 = punto ? _ypfFmtM3(punto.m3) : '';
+              return `${c.dataset.label}: ${c.parsed.y.toFixed(1).replace('.',',')} kbpd${m3 ? ' (' + m3 + ')' : ''}`;
+            }
+          }
+        }
+      },
+      scales: {
+        x: { ticks: { color: '#545870', font: { family: 'IBM Plex Mono', size: 10 }, maxRotation: 0, autoSkip: true, maxTicksLimit: 10 }, grid: { color: '#1a1e28', drawTicks: false } },
+        y: { ticks: { color: '#545870', font: { family: 'IBM Plex Mono', size: 10 }, callback: (v) => v.toFixed(0) + ' kbpd' }, grid: { color: '#1a1e28' }, beginAtZero: false }
+      }
+    }
+  });
+}
+
+function setupYpfTabs() {
+  const presContainer = $('rt-ypf-pres');
+  if (presContainer && !presContainer.children.length) {
+    PRESIDENTES_YPF.forEach(p => {
+      const btn = document.createElement('button');
+      btn.className = 'range-tab pres-tab';
+      btn.dataset.r = 'PRES-' + p.key;
+      btn.textContent = p.nombre;
+      btn.title = `Filtrar al período de ${p.nombre}`;
+      btn.style.setProperty('--pres-color', p.color);
+      presContainer.appendChild(btn);
+    });
+  }
+  setupRangeTabs('rt-ypf', r => {
+    $('ypf-date-inputs').style.display = (r === 'CUSTOM') ? 'flex' : 'none';
+    if (r !== 'CUSTOM') renderYpf(r);
+    else if ($('ypf-desde').value && $('ypf-hasta').value) renderYpf('CUSTOM');
+  });
+  if (ypfData.length) {
+    const last = ypfData[ypfData.length - 1];
+    const first = ypfData[0];
+    $('ypf-desde').min = first.fecha; $('ypf-desde').max = last.fecha;
+    $('ypf-hasta').min = first.fecha; $('ypf-hasta').max = last.fecha;
+    const d = new Date(last.fecha + 'T12:00:00'); d.setFullYear(d.getFullYear() - 1);
+    $('ypf-desde').value = d.toISOString().slice(0, 10);
+    $('ypf-hasta').value = last.fecha;
+  }
+  $('ypf-desde').addEventListener('change', () => { if (activeRange('rt-ypf') === 'CUSTOM') renderYpf('CUSTOM'); });
+  $('ypf-hasta').addEventListener('change', () => { if (activeRange('rt-ypf') === 'CUSTOM') renderYpf('CUSTOM'); });
+  const btnPres = $('btn-ypf-presidentes');
+  if (btnPres) {
+    btnPres.addEventListener('click', () => {
+      _ypfPorPres = !_ypfPorPres;
+      btnPres.classList.toggle('active', _ypfPorPres);
+      renderYpf(activeRange('rt-ypf'));
+    });
+  }
+}
+
+async function initYpf() {
+  try {
+    await loadYpf();
+    setupYpfTabs();
+    renderYpf(activeRange('rt-ypf'));
+  } catch (e) {
+    setText('load-ypf', 'No se pudieron cargar los datos: ' + e.message);
+  }
+}
+
 // ─── Inicializar los indicadores nuevos ──────────────────────
 // Se llama al final del script (NO desde el IIFE inicial) para que
 // las constantes y los let *Raw ya estén definidos cuando se ejecuten.
@@ -4415,6 +5093,8 @@ initPbiPc();
 initMerval();
 initCclReal();
 initTcrUsa();
+initPatentamientos();
+initYpf();
 </script>
 
 </body>
