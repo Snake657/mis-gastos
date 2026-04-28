@@ -368,6 +368,65 @@
     .ind-section[data-color="yellow"] .range-tab.active { background: var(--yellow); }
     .ind-section[data-color="red"]    .range-tab.active { background: var(--red); }
 
+    /* Botones de rango por presidencia: muestran un punto del color del
+       presidente y, al activarse, usan ese color como background. */
+    .range-tab.pres-tab { padding-left: 8px; }
+    .range-tab.pres-tab::before {
+      content: '';
+      display: inline-block;
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--pres-color, var(--text3));
+      margin-right: 5px;
+      vertical-align: middle;
+    }
+    .ind-section .range-tab.pres-tab.active {
+      background: var(--pres-color, var(--text2));
+      border-color: transparent;
+      color: var(--bg);
+    }
+    .ind-section .range-tab.pres-tab.active::before { background: var(--bg); }
+    /* Pequeño separador visual entre los rangos clásicos y los de presidencia */
+    .range-tabs-divider {
+      width: 1px;
+      align-self: stretch;
+      background: var(--border);
+      margin: 0 4px;
+    }
+    /* Banner con la variación del rango activo (chart de reservas).
+       Aparece debajo del toolbar y se actualiza con cada click. */
+    .range-stats {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 8px 14px;
+      margin: 10px 0 6px;
+      background: var(--surface2);
+      border-radius: 8px;
+      border-left: 3px solid var(--accent-color, var(--blue));
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.78rem;
+      flex-wrap: wrap;
+    }
+    .rs-label {
+      color: var(--text3);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      font-size: 0.66rem;
+      font-weight: 600;
+    }
+    .rs-pct  { font-weight: 700; font-size: 0.95rem; }
+    .rs-pct.rs-pos { color: var(--green); }
+    .rs-pct.rs-neg { color: var(--red); }
+    .rs-pct.rs-neu { color: var(--text2); }
+    .rs-amt  { color: var(--text2); font-weight: 600; }
+    .rs-period {
+      color: var(--text3);
+      font-size: 0.7rem;
+      margin-left: auto;
+    }
+
     /* ── DATE RANGE INPUTS (custom) ──────────────────────────────── */
     .date-range-wrap {
       display: flex;
@@ -674,6 +733,8 @@
         <button class="range-tab" data-r="5A">5A</button>
         <button class="range-tab" data-r="TODO">Todo</button>
         <button class="range-tab" data-r="CUSTOM">Rango</button>
+        <span class="range-tabs-divider"></span>
+        <span id="rt-reservas-pres" style="display:contents"></span>
         <button class="range-tab presidentes-toggle" id="btn-res-presidentes" type="button" title="Pintar el gráfico por presidencia">🎨 Presidentes</button>
       </div>
       <div class="nota-fuente">BCRA · USD millones · diario</div>
@@ -683,6 +744,7 @@
       <span class="date-sep">→</span>
       <input type="date" id="res-hasta" />
     </div>
+    <div class="range-stats" id="range-stats-reservas" style="display:none"></div>
     <div class="chart-wrap tall">
       <div class="chart-loading" id="load-reservas"><span class="spinner"></span>Conectando con BCRA…</div>
       <canvas id="chart-reservas" style="display:none"></canvas>
@@ -1438,10 +1500,9 @@ function fmtPct(v, dec=1) {
   if (v === null || v === undefined || isNaN(v)) return '—';
   return `${v >= 0 ? '+' : ''}${v.toFixed(dec)}%`;
 }
-function fmtUSD_M(v) { // millones a B/M legible
+function fmtUSD_M(v) { // valor en millones → "USD 46.090 millones"
   if (v === null || v === undefined || isNaN(v)) return '—';
-  if (Math.abs(v) >= 1000) return `USD ${(v/1000).toFixed(2).replace('.',',')}B`;
-  return `USD ${fmtInt(v)}M`;
+  return `USD ${fmtInt(v)} millones`;
 }
 // Parser que evita el "off by one" de zona horaria al usar fechas ISO YYYY-MM-DD.
 // `new Date("2026-04-27")` devuelve medianoche UTC → en Argentina sale el día anterior.
@@ -1490,6 +1551,22 @@ async function fetchAD(path) {
 function filterRange(data, dateKey, range) {
   if (!data || !data.length) return [];
   if (range === 'TODO' || range === 'CUSTOM') return data;
+  // Rango por presidencia argentina: PRES-nk, PRES-cfk, PRES-mm, PRES-af, PRES-jm.
+  // El último (Milei) queda "abierto a la fecha" — sin fin → toma datos hasta hoy
+  // y se actualiza solo a medida que entran nuevos puntos.
+  if (typeof range === 'string' && range.startsWith('PRES-')) {
+    if (typeof PRESIDENTES_RES === 'undefined') return data;
+    const k = range.slice(5);
+    const idx = PRESIDENTES_RES.findIndex(p => p.key === k);
+    if (idx === -1) return data;
+    const inicio = PRESIDENTES_RES[idx].fecha;
+    const next = PRESIDENTES_RES[idx + 1];
+    const fin = next ? next.fecha : null;
+    return data.filter(d => {
+      const f = (d[dateKey] || '').slice(0, 10);
+      return f >= inicio && (fin === null || f < fin);
+    });
+  }
   const now = new Date(), cut = new Date(now);
   if      (range === '1S')  cut.setDate(now.getDate()-7);
   else if (range === '1M')  cut.setMonth(now.getMonth()-1);
@@ -1713,11 +1790,11 @@ let _reservasPrelim = []; // [{fecha, valor, ts}]
 // Colores definidos por el usuario (independientes de los del plugin TCRusa).
 let _resPorPresidente = false;
 const PRESIDENTES_RES = [
-  { fecha: '2003-05-25', nombre: 'N. Kirchner',  color: '#60a5fa' }, // azul claro
-  { fecha: '2007-12-10', nombre: 'CFK',          color: '#7dd3fc' }, // celeste
-  { fecha: '2015-12-10', nombre: 'Macri',        color: '#fbbf24' }, // amarillo
-  { fecha: '2019-12-10', nombre: 'A. Fernández', color: '#1e40af' }, // azul oscuro
-  { fecha: '2023-12-10', nombre: 'Milei',        color: '#a855f7' }, // violeta
+  { key:'nk',  fecha: '2003-05-25', nombre: 'N. Kirchner',  color: '#60a5fa' }, // azul claro
+  { key:'cfk', fecha: '2007-12-10', nombre: 'CFK',          color: '#7dd3fc' }, // celeste
+  { key:'mm',  fecha: '2015-12-10', nombre: 'Macri',        color: '#fbbf24' }, // amarillo
+  { key:'af',  fecha: '2019-12-10', nombre: 'A. Fernández', color: '#1e40af' }, // azul oscuro
+  { key:'jm',  fecha: '2023-12-10', nombre: 'Milei',        color: '#a855f7' }, // violeta
 ];
 function _presidenteDe(fecha) {
   // Devuelve el presidente cuyo período contiene la fecha (o null si es antes de NK).
@@ -1849,6 +1926,9 @@ function renderReservas(range) {
     slice = filterRange(resData, 'fecha', range);
   }
   if (!slice.length) return;
+
+  // Banner con la variación del rango activo (siempre visible debajo del toolbar)
+  renderReservasRangeStats(slice, range);
 
   const last = resData[resData.length - 1];
   const prev = resData[resData.length - 2] || last;
@@ -1995,7 +2075,7 @@ function renderReservas(range) {
               const pt = slice[ctx.dataIndex];
               const tag = pt?._preliminar ? ' · preliminar (carga manual)' : '';
               const pres = _resPorPresidente ? ` · ${ctx.dataset.label}` : '';
-              return ' USD ' + fmtInt(ctx.parsed.y) + 'M' + tag + pres;
+              return ' USD ' + fmtInt(ctx.parsed.y) + ' millones' + tag + pres;
             },
             title: items => fmtDate(slice[items[0].dataIndex]?.d) || items[0].label,
           },
@@ -2010,7 +2090,7 @@ function renderReservas(range) {
           grid: { color: 'rgba(35,39,54,0.6)' },
           ticks: {
             maxTicksLimit: 6,
-            callback: v => 'USD ' + (Math.abs(v) >= 1000 ? (v/1000).toFixed(1).replace('.',',') + 'B' : fmtInt(v) + 'M'),
+            callback: v => 'USD ' + fmtInt(v),
           },
           position: 'right',
         },
@@ -2022,7 +2102,67 @@ function renderReservas(range) {
   updateTicker();
 }
 
+// Banner que muestra la variación dentro del rango activo (% y delta en USD).
+// Se actualiza con cada click de rango (incluidos los de presidencia).
+function renderReservasRangeStats(slice, range) {
+  const el = $('range-stats-reservas');
+  if (!el || !slice || slice.length < 2) {
+    if (el) el.style.display = 'none';
+    return;
+  }
+  const first = slice[0];
+  const last  = slice[slice.length - 1];
+  const dRange    = last.v - first.v;                       // en USD millones
+  const dRangePct = first.v ? (dRange / first.v * 100) : 0;
+
+  // Etiqueta del rango: amigable para los presets, nombre del presidente para los PRES-*
+  const labelMap = {
+    '1S':'Última semana','1M':'Último mes','3M':'Últimos 3 meses','6M':'Últimos 6 meses',
+    '1A':'Último año','2A':'Últimos 2 años','5A':'Últimos 5 años',
+    'TODO':'Histórico completo','CUSTOM':'Rango personalizado',
+  };
+  let label = labelMap[range] || 'Variación';
+  let accent = '#4fa8f5'; // azul default de la sección Reservas
+  if (typeof range === 'string' && range.startsWith('PRES-')) {
+    const p = (typeof PRESIDENTES_RES !== 'undefined') &&
+              PRESIDENTES_RES.find(x => x.key === range.slice(5));
+    if (p) { label = `Mandato de ${p.nombre}`; accent = p.color; }
+  }
+
+  const cls = dRange > 0 ? 'rs-pos' : dRange < 0 ? 'rs-neg' : 'rs-neu';
+  const pctSign = dRangePct >= 0 ? '+' : '';
+  const pctFmt  = `${pctSign}${dRangePct.toFixed(1).replace('.', ',')}%`;
+  const usdSign = dRange >= 0 ? '+' : '-';
+  const usdAbs  = Math.abs(dRange);
+  const usdFmt = `${usdSign}US$ ${fmtInt(usdAbs)} millones`;
+
+  el.style.setProperty('--accent-color', accent);
+  el.style.display = 'flex';
+  el.innerHTML = `
+    <span class="rs-label">${label}</span>
+    <span class="rs-pct ${cls}">${pctFmt}</span>
+    <span class="rs-amt">${usdFmt}</span>
+    <span class="rs-period">${fmtDate(first.d)} → ${fmtDate(last.d)}</span>
+  `;
+}
+
 function setupReservasRangeTabs() {
+  // Inyectar botones de "rango por presidencia" antes de setupRangeTabs.
+  // Cada uno usa data-r="PRES-{key}" — filterRange los entiende y filtra
+  // por el período exacto del mandato (Milei queda abierto a la fecha actual).
+  const presContainer = $('rt-reservas-pres');
+  if (presContainer && !presContainer.children.length) {
+    PRESIDENTES_RES.forEach(p => {
+      const btn = document.createElement('button');
+      btn.className = 'range-tab pres-tab';
+      btn.dataset.r = 'PRES-' + p.key;
+      btn.textContent = p.nombre;
+      btn.title = `Filtrar al período de ${p.nombre}`;
+      btn.style.setProperty('--pres-color', p.color);
+      presContainer.appendChild(btn);
+    });
+  }
+
   setupRangeTabs('rt-reservas', r => {
     $('res-date-inputs').style.display = (r === 'CUSTOM') ? 'flex' : 'none';
     if (r !== 'CUSTOM') renderReservas(r);
@@ -2241,15 +2381,18 @@ const deudaTotalLabelsPlugin = {
     const slotWidth = chart.chartArea.width / barCount;
 
     // Cuatro niveles según el espacio por barra: holgado → muy chico
-    let fontSize, prefix;
-    if (slotWidth >= 70) {
-      fontSize = 11; prefix = 'USD ';
+    // En el holgado mostramos "USD 19.505 millones"; en el resto solo el número.
+    let fontSize, prefix, suffix;
+    if (slotWidth >= 110) {
+      fontSize = 11; prefix = 'USD '; suffix = ' millones';
+    } else if (slotWidth >= 70) {
+      fontSize = 11; prefix = 'USD '; suffix = '';
     } else if (slotWidth >= 45) {
-      fontSize = 10; prefix = '';
+      fontSize = 10; prefix = '';     suffix = '';
     } else if (slotWidth >= 30) {
-      fontSize = 9;  prefix = '';
+      fontSize = 9;  prefix = '';     suffix = '';
     } else {
-      fontSize = 8;  prefix = '';
+      fontSize = 8;  prefix = '';     suffix = '';
     }
 
     ctx.save();
@@ -2261,14 +2404,9 @@ const deudaTotalLabelsPlugin = {
     lastMeta.data.forEach((bar, i) => {
       const total = data.datasets.reduce((s, ds) => s + (ds.data[i] || 0), 0);
       if (total <= 0) return;
-      let txt;
-      if (total >= 1000) {
-        // Billions con 1 decimal (ej. "4,2B" o "USD 19,5B")
-        txt = prefix + (total / 1000).toFixed(1).replace('.', ',') + 'B';
-      } else {
-        // Millions sin decimales (ej. "985M" o "USD 985M")
-        txt = prefix + fmtInt(total) + 'M';
-      }
+      // Total en millones — número plano con separador de miles
+      // (ej. "USD 19.505 millones", "19.505" o "985")
+      const txt = prefix + fmtInt(total) + suffix;
       // Permitir leve overflow (hasta 4px) antes de descartar — preferimos
       // un label algo "apretado" a no mostrarlo
       if (ctx.measureText(txt).width > slotWidth + 4) return;
@@ -2341,10 +2479,10 @@ function drawDeudaChart() {
           titleColor: '#c5c9d6',
           bodyColor: '#e8eaf0',
           callbacks: {
-            label: ctx => `${ctx.dataset.label}: USD ${fmtInt(ctx.parsed.y)}M`,
+            label: ctx => `${ctx.dataset.label}: USD ${fmtInt(ctx.parsed.y)} millones`,
             footer: items => {
               const año = años[items[0].dataIndex];
-              const total = 'Total: USD ' + fmtInt(items.reduce((s,i)=>s+i.parsed.y,0)) + 'M';
+              const total = 'Total: USD ' + fmtInt(items.reduce((s,i)=>s+i.parsed.y,0)) + ' millones';
               return DEUDA_MENSUAL[año] ? [total, '↳ click para ver detalle mensual'] : total;
             },
           },
@@ -2363,7 +2501,7 @@ function drawDeudaChart() {
           stacked: true,
           ticks: {
             color: '#a0a5b8',
-            callback: v => 'USD ' + (Math.abs(v) >= 1000 ? (v/1000).toFixed(1).replace('.',',') + 'B' : fmtInt(v) + 'M'),
+            callback: v => 'USD ' + fmtInt(v),
           },
           grid: { color: 'rgba(35,39,54,0.6)' },
           position: 'right',
@@ -3217,8 +3355,8 @@ function drawDeudaMensual(year) {
               const hito = data[idx].hito;
               return data[idx].mes + ' ' + year + (hito ? '  ·  ' + hito : '');
             },
-            label: ctx => `${ctx.dataset.label}: USD ${fmtInt(ctx.parsed.y)}M`,
-            footer: items => 'Total: USD ' + fmtInt(items.reduce((s,i)=>s+i.parsed.y,0)) + 'M',
+            label: ctx => `${ctx.dataset.label}: USD ${fmtInt(ctx.parsed.y)} millones`,
+            footer: items => 'Total: USD ' + fmtInt(items.reduce((s,i)=>s+i.parsed.y,0)) + ' millones',
           },
           footerColor: '#e8eaf0',
           footerFont: { family: 'IBM Plex Mono', size: 12, weight: 'bold' },
@@ -3226,7 +3364,7 @@ function drawDeudaMensual(year) {
       },
       scales: {
         x: { stacked: true, ticks: { color: '#a0a5b8' }, grid: { display: false } },
-        y: { stacked: true, ticks: { color: '#a0a5b8', callback: v => 'USD ' + fmtInt(v) + 'M' },
+        y: { stacked: true, ticks: { color: '#a0a5b8', callback: v => 'USD ' + fmtInt(v) },
              grid: { color: 'rgba(35,39,54,0.6)' }, position: 'right' },
       },
     },
