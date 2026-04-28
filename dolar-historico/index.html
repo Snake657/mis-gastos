@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Dólar Histórico — Canuto.ar</title>
-  <meta name="description" content="Cotización histórica del dólar en Argentina: Oficial, Blue, MEP y CCL desde 2003." />
+  <meta name="description" content="Cotización histórica del dólar en Argentina: Oficial, Blue, MEP, CCL y Mayorista desde 2003." />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
@@ -382,7 +382,7 @@
 <main>
   <div class="eyebrow">herramienta</div>
   <h1>Cotización histórica<br>del dólar</h1>
-  <p class="subtitle">Oficial, Blue, MEP y CCL — datos diarios desde 2003.</p>
+  <p class="subtitle">Oficial, Blue, MEP, CCL y Mayorista — datos diarios desde 2003.</p>
 
   <!-- TIPO TABS -->
   <div class="tipo-tabs">
@@ -906,7 +906,7 @@ document.getElementById('btn-clr-range').addEventListener('click',()=>{
 (function applyURLParam() {
   const params = new URLSearchParams(window.location.search);
   const tipoParam = params.get('tipo');
-  if (tipoParam && ['oficial','blue','mep','ccl'].includes(tipoParam)) {
+  if (tipoParam && ['oficial','blue','mep','ccl','mayorista'].includes(tipoParam)) {
     currentTipo = tipoParam;
     document.querySelectorAll('.tipo-tab').forEach(btn => {
       btn.classList.toggle('active', btn.dataset.tipo === tipoParam);
