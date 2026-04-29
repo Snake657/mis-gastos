@@ -829,7 +829,6 @@
 </footer>
 
 <script>
-const API = 'https://dolarapi.com/v1/dolares';
 const REFRESH = 60;
 
 function fmt(n) {
@@ -854,7 +853,13 @@ function fmtTime(s) {
 // Cierre del día anterior desde ArgentinaDatos — base real para la variación diaria
 const HIST_API = 'https://api.argentinadatos.com/v1/cotizaciones/dolares/';
 const HIST_KEY  = { oficial:'oficial', blue:'blue', mep:'bolsa', ccl:'contadoconliqui', mayorista:'mayorista' };
-let _ayer = {};   // { oficial: 1000, blue: 1100, mep: 1050, ccl: 1060 }
+let _ayer = {};         // { oficial: 1000, blue: 1100, mep: 1050, ccl: 1060 }
+let _ayerYmd = null;    // YYYY-MM-DD (ARG) en el que se calculó _ayer; sirve para
+                        // re-fetch automático al cruzar la medianoche.
+
+function _hoyArgYmd() {
+  return new Date().toLocaleDateString('sv-SE', { timeZone: 'America/Argentina/Buenos_Aires' });
+}
 
 async function fetchAyer() {
   // Fecha de ayer en Argentina
@@ -864,6 +869,7 @@ async function fetchAyer() {
   const mm   = String(arg.getMonth() + 1).padStart(2, '0');
   const dd   = String(arg.getDate()).padStart(2, '0');
   const fecha = `${yyyy}-${mm}-${dd}`;
+  const hoyStr = _hoyArgYmd();
 
   const tipos = ['oficial', 'blue', 'mep', 'ccl', 'mayorista'];
   await Promise.all(tipos.map(async tipo => {
@@ -879,12 +885,11 @@ async function fetchAyer() {
       if (!res.ok) return;
       const serie = await res.json();
       // Filtrar datos hasta ayer (excluir hoy)
-      const hoyStr = new Date(new Date().toLocaleString('en-US', { timeZone: 'America/Argentina/Buenos_Aires' }))
-        .toLocaleDateString('sv-SE');
       const previos = serie.filter(d => d.fecha.slice(0,10) < hoyStr && d.venta > 0);
       if (previos.length) _ayer[tipo] = previos[previos.length - 1].venta;
     } catch { /* silencioso */ }
   }));
+  _ayerYmd = hoyStr;
 }
 
 function varPct(tipo, cur) {
@@ -892,70 +897,44 @@ function varPct(tipo, cur) {
   return (b && cur) ? ((cur - b) / b) * 100 : null;
 }
 
-// Estado de mercado
+// Estado de mercado — delega en window.CanutoDolar para que UI y freeze coincidan.
+// Banner abierto: 10:30-17:00 lun-vie no feriado. Cualquier otro caso → cerrado.
 function updateMarket() {
   const arg = new Date(new Date().toLocaleString('en-US', { timeZone: 'America/Argentina/Buenos_Aires' }));
   const day = arg.getDay(), h = arg.getHours(), m = arg.getMinutes();
-  const t = h * 100 + m;
+  const t = h * 60 + m;
   const el = document.getElementById('market-status');
   const txt = document.getElementById('market-text');
   let open = false, msg = '';
-  if (day === 0 || day === 6) msg = 'Fin de semana — mercado cerrado';
-  else if (t < 1100) msg = 'Abre a las 11:00 hs';
-  else if (t >= 1700) msg = 'Mercado cerrado — reabre el próximo día hábil';
-  else { open = true; msg = 'Mercado abierto · cierra 17:00 hs'; }
+
+  const habil = window.CanutoDolar && window.CanutoDolar.esDiaHabilArg
+    ? window.CanutoDolar.esDiaHabilArg()
+    : (day !== 0 && day !== 6);
+  const enBanner = window.CanutoDolar && window.CanutoDolar.isMercadoBanner
+    ? window.CanutoDolar.isMercadoBanner()
+    : (habil && t >= (10 * 60 + 30) && t <= 17 * 60);
+
+  if (enBanner) {
+    open = true;
+    msg = 'Mercado abierto · cierra 17:00 hs';
+  } else if (!habil) {
+    msg = (day === 0 || day === 6)
+      ? 'Fin de semana — mercado cerrado'
+      : 'Feriado — mercado cerrado';
+  } else if (t < 10 * 60 + 30) {
+    msg = 'Abre a las 10:30 hs';
+  } else {
+    msg = 'Mercado cerrado — reabre el próximo día hábil';
+  }
   el.className = `market-status ${open ? 'open' : 'closed'}`;
   txt.textContent = msg;
 }
 
 let prev = {};
 
-// ── Fuentes de datos ─────────────────────────────────────────────────────────
-// Para cada tipo de dólar consultamos dos fuentes en paralelo y usamos la más reciente.
-// - Fuente A: dolarapi.com/v1/dolares       (scraping BNA / Ámbito para oficial/blue/mayorista)
-// - Fuente B: dolarapi.com/v1/ambito/dolares (Ámbito Financiero, más frecuente para MEP/CCL)
-// - Fuente C: bluelytics.com.ar/json          (fallback para oficial y blue)
-//
-// El "ganador" se elige comparando fechaActualizacion.
-// Si una fuente falla, usamos la otra sin importar la fecha.
-
-const API_AMBITO = 'https://dolarapi.com/v1/ambito/dolares';
-
-// Normaliza el campo casa de Ámbito al mismo esquema que la API principal
-const AMBITO_CASA_MAP = {
-  oficial:         'oficial',
-  blue:            'blue',
-  bolsa:           'bolsa',
-  contadoconliqui: 'contadoconliqui',
-};
-
-// Dado dos objetos {venta, compra, fechaActualizacion}, devuelve el más reciente.
-// Si alguno es null, devuelve el otro.
-function masReciente(a, b) {
-  if (!a) return b;
-  if (!b) return a;
-  const ta = a.fechaActualizacion ? new Date(a.fechaActualizacion).getTime() : 0;
-  const tb = b.fechaActualizacion ? new Date(b.fechaActualizacion).getTime() : 0;
-  return ta >= tb ? a : b;
-}
-
-// Combina los arrays de ambas fuentes por "tipo" interno y devuelve un array
-// con el dato más reciente para cada tipo.
-function mergeFuentes(dataPrincipal, dataAmbito) {
-  const tiposConfig = [
-    { tipo:'oficial', casaPrin:'oficial',         casaAmb:'oficial'         },
-    { tipo:'blue',    casaPrin:'blue',            casaAmb:'blue'            },
-    { tipo:'mep',     casaPrin:'bolsa',           casaAmb:'bolsa'           },
-    { tipo:'ccl',     casaPrin:'contadoconliqui', casaAmb:'contadoconliqui' },
-    { tipo:'mayorista', casaPrin:'mayorista',         casaAmb:'mayorista'         },
-  ];
-  return tiposConfig.map(({ tipo, casaPrin, casaAmb }) => {
-    const dPrin  = dataPrincipal?.find(x => x.casa === casaPrin) || null;
-    const dAmb   = dataAmbito?.find(x => x.casa === casaAmb)    || null;
-    const mejor  = masReciente(dPrin, dAmb);
-    return mejor ? { ...mejor, _tipo: tipo } : null;
-  }).filter(Boolean);
-}
+// El fetch + merge de fuentes (dolarapi + Ámbito + bluelytics) y la lógica de
+// freeze post-cierre / pre-10:30 viven en /canuto-dolar-live.js. Acá sólo se
+// consume window.CanutoDolar.fetchLiveCotizaciones() y se pintan las tarjetas.
 
 function renderCard(id, merged) {
   const casaMap = { oficial:'oficial', blue:'blue', mep:'bolsa', ccl:'contadoconliqui', mayorista:'mayorista' };
@@ -1056,6 +1035,14 @@ function renderBrechas(merged) {
 
 async function fetchData() {
   try {
+    // Si la pestaña quedó abierta cruzando la medianoche ARG, _ayer está stale.
+    // Lanzamos el re-fetch en background; el render usa el _ayer actual y el
+    // próximo refresh (60s después) ya tendrá los valores nuevos.
+    const hoyYmd = _hoyArgYmd();
+    if (_ayerYmd && _ayerYmd !== hoyYmd) {
+      fetchAyer();
+    }
+
     // Cotizaciones de la fuente compartida: cache localStorage + freeze fuera de horario.
     // Garantiza que /dolar-en-vivo y /dolar-historico siempre muestren los mismos números
     // y que MEP/CCL/etc. no oscilen post-cierre del mercado.
@@ -1070,12 +1057,10 @@ async function fetchData() {
     renderBrechas(merged);
     renderTicker(merged);
 
-    // Indicar visualmente si está congelado por horario
-    const frozen = merged.some(c => c._frozen);
-    const refreshStatus = document.getElementById('refresh-status');
-    if (frozen && refreshStatus) {
-      refreshStatus.textContent = 'Mercado cerrado · cotizaciones fijadas';
-    }
+    // Mercado totalmente cerrado = TODAS las casas vienen con _frozen=true.
+    // En el rango 07:00-10:30 oficial/blue/mayorista pueden estar moviéndose
+    // mientras MEP/CCL aún no — ese caso NO se considera "todo congelado".
+    _todoCongelado = merged.length > 0 && merged.every(c => c._frozen);
 
     const _n = new Date();
     const _ts = `${String(_n.getDate()).padStart(2,'0')}/${String(_n.getMonth()+1).padStart(2,'0')}/${_n.getFullYear()} ${String(_n.getHours()).padStart(2,'0')}:${String(_n.getMinutes()).padStart(2,'0')}`;
@@ -1102,13 +1087,21 @@ function irHistorico() {
 }
 document.addEventListener('keydown', e => { if (e.key === 'Escape') cerrarModal(); });
 
-// Countdown
+// Countdown — pausado cuando todo el mercado está congelado (post-17:00 / fin
+// de semana / feriado). En ese caso el texto queda fijo en
+// "Mercado cerrado · cotizaciones fijadas" en vez de hacer cuenta regresiva.
 let cd = REFRESH;
+let _todoCongelado = false;
 function startCountdown() {
   cd = REFRESH;
   const bar = document.getElementById('refresh-bar');
   const txt = document.getElementById('refresh-status');
   clearInterval(window._cdTimer);
+  if (_todoCongelado) {
+    bar.style.width = '100%';
+    txt.textContent = 'Mercado cerrado · cotizaciones fijadas';
+    return;
+  }
   window._cdTimer = setInterval(() => {
     cd--;
     bar.style.width = (cd / REFRESH * 100) + '%';
