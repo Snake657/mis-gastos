@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Dólar Histórico — Canuto.ar</title>
   <meta name="description" content="Cotización histórica del dólar en Argentina: Oficial, Blue, MEP, CCL y Mayorista desde 2003." />
+  <script src="/canuto-dolar-live.js"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
@@ -632,28 +633,17 @@ function masReciente(a, b) {
 }
 
 async function fetchLive() {
-  if (_liveCache && (Date.now() - _liveCacheTs) < LIVE_CACHE_MS) return _liveCache;
+  // Delegamos al módulo compartido: el merge de fuentes + el freeze post-17:30 vive ahí,
+  // y las dos páginas (en vivo + histórico) leen el mismo cache de localStorage.
   try {
-    // Pegamos a las dos fuentes en paralelo; si una falla, seguimos con la otra
-    const [resPrin, resAmb] = await Promise.allSettled([
-      fetch(LIVE_API,        { cache: 'no-store' }).then(r => r.ok ? r.json() : null),
-      fetch(LIVE_API_AMBITO, { cache: 'no-store' }).then(r => r.ok ? r.json() : null),
-    ]);
-    const dataPrin = resPrin.status === 'fulfilled' ? resPrin.value : null;
-    const dataAmb  = resAmb.status  === 'fulfilled' ? resAmb.value  : null;
-    if (!dataPrin && !dataAmb) return null;
-    // Para cada casa que nos importa, quedarse con el más reciente
-    const merged = [];
-    for (const casa of Object.values(LIVE_CASA)) {
-      const dPrin = dataPrin?.find(x => x.casa === casa) || null;
-      const dAmb  = dataAmb?.find(x  => x.casa === casa) || null;
-      const mejor = masReciente(dPrin, dAmb);
-      if (mejor) merged.push(mejor);
+    if (window.CanutoDolar && typeof window.CanutoDolar.fetchLiveCotizaciones === 'function') {
+      const merged = await window.CanutoDolar.fetchLiveCotizaciones();
+      _liveCache = merged || null;
+      _liveCacheTs = Date.now();
+      return _liveCache;
     }
-    _liveCache = merged;
-    _liveCacheTs = Date.now();
-    return _liveCache;
-  } catch { return null; }
+  } catch { /* fall through */ }
+  return null;
 }
 
 async function injectToday(tipo, data) {
