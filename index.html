@@ -181,6 +181,45 @@ main{max-width:1080px;margin:0 auto;padding:48px 20px 60px;}
 .tool-card:hover .tc-cta{gap:11px;}
 .tc-cta-arrow{font-size:.95rem;line-height:1;}
 
+/* ── INDICADORES SECTION ────────────────────────────────────────────── */
+.indicators-section{margin-top:38px;}
+.indicators-section .section-label .ind-count{
+  font-family:'IBM Plex Mono',monospace;font-size:.68rem;color:var(--text3);font-weight:500;letter-spacing:.05em;margin-left:4px;
+}
+.indicators-grid{
+  display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));
+  gap:8px;
+}
+.ind-chip{
+  display:flex;align-items:center;gap:10px;
+  padding:10px 14px;
+  background:var(--surface);border:1px solid var(--border);border-radius:10px;
+  text-decoration:none;color:var(--text);
+  font-size:.86rem;font-weight:500;
+  transition:all .15s;
+  position:relative;
+}
+.ind-chip:hover{
+  background:var(--surface2);border-color:var(--border2);
+  transform:translateY(-1px);
+}
+.ind-chip-emoji{font-size:1rem;line-height:1;flex-shrink:0;}
+.ind-chip-name{flex:1;letter-spacing:-.005em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.ind-chip-arrow{
+  font-family:'IBM Plex Mono',monospace;color:var(--text3);
+  opacity:0;transform:translateX(-4px);transition:all .15s;
+  font-size:.85rem;
+}
+.ind-chip:hover .ind-chip-arrow{opacity:1;transform:translateX(0);}
+.ind-chip.is-new::after{
+  content:'NEW';
+  position:absolute;top:6px;right:8px;
+  font-family:'IBM Plex Mono',monospace;font-size:.55rem;font-weight:700;
+  color:var(--green);background:rgba(74,222,128,0.10);
+  padding:2px 5px;border-radius:99px;letter-spacing:.04em;
+  border:1px solid rgba(74,222,128,0.22);
+}
+
 /* ── ABOUT BLOCK ────────────────────────────────────────────────────── */
 .about{
   margin-top:48px;padding:24px 24px;
@@ -352,6 +391,103 @@ main{max-width:1080px;margin:0 auto;padding:48px 20px 60px;}
         <span class="tc-cta">Calcular mi número <span class="tc-cta-arrow">→</span></span>
       </a>
 
+    </div>
+  </section>
+
+  <!-- INDICADORES MACRO — accesos directos a cada dashboard -->
+  <section class="indicators-section">
+    <div class="section-label">Indicadores macro <span class="ind-count">— accesos directos</span></div>
+    <div class="indicators-grid">
+      <a class="ind-chip" href="/datos-macro/#sec-reservas">
+        <span class="ind-chip-emoji">🏦</span>
+        <span class="ind-chip-name">Reservas BCRA</span>
+        <span class="ind-chip-arrow">→</span>
+      </a>
+      <a class="ind-chip" href="/datos-macro/#sec-deuda-publica">
+        <span class="ind-chip-emoji">📉</span>
+        <span class="ind-chip-name">Deuda Pública</span>
+        <span class="ind-chip-arrow">→</span>
+      </a>
+      <a class="ind-chip" href="/datos-macro/#sec-deuda">
+        <span class="ind-chip-emoji">📅</span>
+        <span class="ind-chip-name">Vencimientos</span>
+        <span class="ind-chip-arrow">→</span>
+      </a>
+      <a class="ind-chip" href="/datos-macro/#sec-riesgo">
+        <span class="ind-chip-emoji">⚠️</span>
+        <span class="ind-chip-name">Riesgo País</span>
+        <span class="ind-chip-arrow">→</span>
+      </a>
+      <a class="ind-chip" href="/datos-macro/#sec-inflacion">
+        <span class="ind-chip-emoji">📊</span>
+        <span class="ind-chip-name">Inflación</span>
+        <span class="ind-chip-arrow">→</span>
+      </a>
+      <a class="ind-chip" href="/datos-macro/#sec-inflacion-ia">
+        <span class="ind-chip-emoji">📈</span>
+        <span class="ind-chip-name">Infl. interanual</span>
+        <span class="ind-chip-arrow">→</span>
+      </a>
+      <a class="ind-chip" href="/datos-macro/#sec-tasa">
+        <span class="ind-chip-emoji">💹</span>
+        <span class="ind-chip-name">Tasa</span>
+        <span class="ind-chip-arrow">→</span>
+      </a>
+      <a class="ind-chip" href="/datos-macro/#sec-uva">
+        <span class="ind-chip-emoji">🏠</span>
+        <span class="ind-chip-name">UVA</span>
+        <span class="ind-chip-arrow">→</span>
+      </a>
+      <a class="ind-chip" href="/datos-macro/#sec-desocupacion">
+        <span class="ind-chip-emoji">👷</span>
+        <span class="ind-chip-name">Desocupación</span>
+        <span class="ind-chip-arrow">→</span>
+      </a>
+      <a class="ind-chip" href="/datos-macro/#sec-pobreza">
+        <span class="ind-chip-emoji">📉</span>
+        <span class="ind-chip-name">Pobreza</span>
+        <span class="ind-chip-arrow">→</span>
+      </a>
+      <a class="ind-chip is-new" href="/datos-macro/#sec-natalidad">
+        <span class="ind-chip-emoji">👶</span>
+        <span class="ind-chip-name">Natalidad</span>
+        <span class="ind-chip-arrow">→</span>
+      </a>
+      <a class="ind-chip" href="/datos-macro/#sec-emae">
+        <span class="ind-chip-emoji">📊</span>
+        <span class="ind-chip-name">EMAE</span>
+        <span class="ind-chip-arrow">→</span>
+      </a>
+      <a class="ind-chip" href="/datos-macro/#sec-pbi-pc">
+        <span class="ind-chip-emoji">🌎</span>
+        <span class="ind-chip-name">PBI per cápita</span>
+        <span class="ind-chip-arrow">→</span>
+      </a>
+      <a class="ind-chip is-new" href="/datos-macro/#sec-patentamientos">
+        <span class="ind-chip-emoji">🚗</span>
+        <span class="ind-chip-name">Patentamientos</span>
+        <span class="ind-chip-arrow">→</span>
+      </a>
+      <a class="ind-chip is-new" href="/datos-macro/#sec-ypf">
+        <span class="ind-chip-emoji">🛢️</span>
+        <span class="ind-chip-name">Petróleo YPF</span>
+        <span class="ind-chip-arrow">→</span>
+      </a>
+      <a class="ind-chip" href="/datos-macro/#sec-merval">
+        <span class="ind-chip-emoji">📈</span>
+        <span class="ind-chip-name">Merval USD</span>
+        <span class="ind-chip-arrow">→</span>
+      </a>
+      <a class="ind-chip" href="/datos-macro/#sec-ccl-real">
+        <span class="ind-chip-emoji">💵</span>
+        <span class="ind-chip-name">CCL Real</span>
+        <span class="ind-chip-arrow">→</span>
+      </a>
+      <a class="ind-chip" href="/datos-macro/#sec-tcr-usa">
+        <span class="ind-chip-emoji">🇺🇸</span>
+        <span class="ind-chip-name">TCR vs USA</span>
+        <span class="ind-chip-arrow">→</span>
+      </a>
     </div>
   </section>
 
