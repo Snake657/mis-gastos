@@ -10,19 +10,23 @@
  * - Una sola fuente de verdad por origen: cache en localStorage compartido entre todas
  *   las pestañas/páginas de canuto.ar. Mientras una cotización está fresca (<25s), todas
  *   las páginas leen lo mismo.
- * - Freeze fuera de horario de mercado: Lun-Vie 07:00-17:00 ARG (excluyendo feriados),
- *   las cotizaciones se mueven (se aceptan updates con fechaActualizacion >=); de 17:01
- *   a 07:00 quedan congeladas en el último valor visto. Política de "máxima fechaActualizacion
- *   por casa": un valor viejo nunca pisa uno nuevo, ni en horario ni fuera.
+ * - Freeze de mercado: el _aplicarFreeze sólo acepta updates dentro del horario
+ *   de mercado (Lun-Vie 07:00-17:00 ARG, no feriados). Fuera de esa ventana las
+ *   cards quedan congeladas en el último valor visto durante la rueda — la fuente
+ *   puede seguir reportando precios post-cierre (informal a las 20:31, criptoya
+ *   a las 23:00) pero ya no entran al freeze. Política "máxima fechaActualizacion
+ *   por casa" dentro del horario: un valor viejo no pisa uno nuevo.
  * - Banner "Mercado abierto" del UI: 10:30-17:00 lun-vie no feriado (más estricto que el
  *   freeze; el oficial / blue / mayorista pueden moverse desde antes pero el banner
  *   reserva ese rótulo a la rueda bursátil).
  * - MEP y CCL: antes de las 10:30 ARG quedan congeladas en el cierre del último día hábil
  *   (sus valores del freeze NO se actualizan aunque la API devuelva algo). A las 10:30
  *   empiezan a aceptar updates en vivo.
- * - Seed inicial: si el navegador nunca tuvo freeze (primer load) traemos el último
- *   cierre histórico desde argentinadatos.com para que MEP/CCL pre-10:30 tengan algo
- *   coherente desde el primer pintado.
+ * - Seed inicial: si el navegador nunca tuvo freeze (primer load), llamamos primero
+ *   al Worker `canuto-intraday` (que tiene los ticks intra-día acumulados) y tomamos
+ *   el último tick cuya fechaActualizacion sea ≤17:00 ARG — eso es el "cierre real"
+ *   de la rueda. Para casas sin ticks intra-horario, fallback a argentinadatos con
+ *   el cierre del último día hábil.
  * - Calendario de feriados: argentinadatos.com/v1/feriados + Día del Bancario hardcodeado.
  *
  * API pública (window.CanutoDolar):
@@ -37,6 +41,8 @@
   // Endpoint único — el Worker `canuto-dolar` resuelve fuentes y entrega un array
   // `cotizaciones` ya mergeado, con un campo `_source` por casa indicando el origen.
   const API_DOLAR    = 'https://canuto-dolar.lenzimartin.workers.dev/api/dolar';
+  // Worker propio que persiste ticks intra-día — usado para el seed inicial.
+  const API_INTRADAY_TODAY = 'https://canuto-intraday.lenzimartin.workers.dev/today';
   const API_FERIADOS = (year) => `https://api.argentinadatos.com/v1/feriados/${year}`;
   const API_HIST     = (key)  => `https://api.argentinadatos.com/v1/cotizaciones/dolares/${key}`;
 
@@ -108,6 +114,34 @@
     const ymd = `${m.year}-${m.month}-${m.day}`;
     const dow = new Date(`${ymd}T12:00:00`).getDay();
     return { ymd, hour: parseInt(m.hour, 10), minute: parseInt(m.minute, 10), dow };
+  }
+
+  // Devuelve los minutos del día (HH*60+MM) en hora ARG para un timestamp dado.
+  function _minutosArgDe(iso) {
+    if (!iso) return null;
+    const d = new Date(iso);
+    if (isNaN(d.getTime())) return null;
+    const fmt = new Intl.DateTimeFormat('en-GB', {
+      timeZone: 'America/Argentina/Buenos_Aires',
+      hour: '2-digit', minute: '2-digit', hour12: false,
+    });
+    const parts = fmt.formatToParts(d);
+    let hh = 0, mm = 0;
+    for (const p of parts) {
+      if (p.type === 'hour') hh = parseInt(p.value, 10);
+      if (p.type === 'minute') mm = parseInt(p.value, 10);
+    }
+    return hh * 60 + mm;
+  }
+
+  // True si la fechaActualizacion cae dentro de la ventana de mercado (07:00-17:00 ARG).
+  // Sirve al seed inicial para descartar ticks post-cierre que el cron pudo capturar.
+  function _isFaIntraHorario(iso) {
+    const mins = _minutosArgDe(iso);
+    if (mins == null) return false;
+    const minIni = HORA_APERTURA * 60 + MIN_APERTURA;
+    const minFin = HORA_CIERRE * 60 + MIN_CIERRE;
+    return mins >= minIni && mins <= minFin;
   }
 
   let _feriadosPromise = null;
@@ -219,16 +253,18 @@
   }
 
   // Política de freeze:
-  //   1) Por casa, sólo aceptamos un valor nuevo si su fechaActualizacion >= la guardada.
-  //      Así una respuesta vieja del worker jamás pisa un dato más reciente.
-  //   2) MEP/CCL antes de las 10:30 ARG son intocables: no se actualiza el freeze para
-  //      esas casas aunque el worker devuelva algo. La idea es que muestren el cierre del
-  //      último día hábil hasta que abra el mercado bursátil.
-  //   3) La salida la armamos siempre desde el freeze (la "máxima fecha vista" por casa),
-  //      así las cotizaciones nunca retroceden.
-  //   4) _frozen=true en el output significa "este valor está fijo" y aplica:
+  //   1) Sólo aceptamos updates dentro del horario de mercado (07:00-17:00 lun-vie no
+  //      feriado). Fuera de esa ventana las cards quedan fijas en el último valor visto
+  //      durante la rueda — sin esto, post-cierre las fechaActualizacion seguían avanzando
+  //      con precios del informal/criptoya post-mercado (19:55, 20:31, etc.).
+  //   2) En horario, por casa, sólo aceptamos un valor nuevo si su fechaActualizacion
+  //      es >= a la guardada. Una respuesta vieja del worker nunca pisa una más reciente.
+  //   3) MEP/CCL antes de las 10:30 ARG son intocables aunque estemos en horario:
+  //      muestran el cierre del último día hábil hasta que abra el mercado bursátil.
+  //   4) La salida la armamos siempre desde el freeze (la "máxima fecha vista" por casa).
+  //   5) _frozen=true en el output significa "este valor está fijo" y aplica:
   //        - para todas las casas cuando isHorarioMercado() es false
-  //        - para MEP/CCL cuando aún no son las 10:30 ARG, aunque el freeze general esté abierto
+  //        - para MEP/CCL cuando aún no son las 10:30 ARG
   function _aplicarFreeze(cotizaciones) {
     const enHorario = isHorarioMercado();
     const mepCclOk  = _mepCclDisponible();
@@ -238,6 +274,11 @@
     }
 
     for (const cot of cotizaciones) {
+      // Fuera del horario de mercado (17:01-07:00, fines de semana, feriados) no
+      // aceptamos updates: las cards quedan fijas en el último valor visto durante
+      // la rueda. Sin esto las fechas seguían avanzando post-cierre (19:55, 20:31)
+      // aunque los precios fueran del informal/criptoya post-mercado.
+      if (!enHorario) continue;
       // No tocamos MEP/CCL antes de las 10:30: deben quedar pegadas al cierre anterior.
       if (CASAS_MEPCCL.includes(cot.casa) && !mepCclOk) continue;
 
@@ -287,15 +328,61 @@
     return out;
   }
 
-  // Seed del freeze cuando faltan casas. Trae el último cierre histórico desde
-  // argentinadatos.com y lo mete como base. Sólo se ejecuta si hay casas faltantes,
-  // y sólo escribe la casa que aún sigue faltando al momento de la respuesta (evita
-  // pisar un valor que el flujo normal ya haya cargado en paralelo).
+  // Para una serie de ticks `[{ts, fa, compra, venta, ...}, ...]` ordenada
+  // ascendentemente, devuelve el último tick cuya fechaActualizacion (`fa`) cae
+  // dentro del horario de mercado (07:00-17:00 ARG). Devuelve null si no hay
+  // ningún tick válido (p.ej. todos son post-cierre, o el array está vacío).
+  function _ultimoTickIntraHorario(ticks) {
+    if (!Array.isArray(ticks)) return null;
+    for (let i = ticks.length - 1; i >= 0; i--) {
+      const t = ticks[i];
+      if (!t || t.venta == null) continue;
+      if (_isFaIntraHorario(t.fa || t.ts)) return t;
+    }
+    return null;
+  }
+
+  // Seed del freeze cuando faltan casas. Estrategia en dos pasos:
+  //   1) Worker propio canuto-intraday/today: trae los ticks intra-día acumulados.
+  //      Por cada casa con ticks tomamos el último cuya fechaActualizacion ≤17:00 ARG
+  //      (cierre real de la rueda). Esto cubre el caso "primer load post-cierre del
+  //      navegador" sin tener que mostrar valores post-mercado raros.
+  //   2) Para casas que sigan faltando, fallback a argentinadatos con el cierre del
+  //      último día hábil publicado (sirve para MEP/CCL pre-10:30 cuando todavía no
+  //      hubo movimiento hoy, o para cualquier casa que el intraday no tenga).
   let _seedPromise = null;
   async function _seedFreezeFromHistorico() {
     const freeze0 = _read(KEY_FREEZE) || { cotizaciones: {} };
     const cot0 = freeze0.cotizaciones || {};
-    const casasFaltantes = CASAS.filter(c => !cot0[c]);
+    let casasFaltantes = CASAS.filter(c => !cot0[c]);
+    if (!casasFaltantes.length) return;
+
+    // Paso 1 — canuto-intraday (un solo fetch, todas las casas a la vez).
+    try {
+      const res = await fetch(API_INTRADAY_TODAY, { cache: 'no-store' });
+      if (res.ok) {
+        const body = await res.json();
+        const ticksPorCasa = (body && body.cotizaciones) || {};
+        for (const casa of casasFaltantes.slice()) {
+          const tick = _ultimoTickIntraHorario(ticksPorCasa[casa]);
+          if (!tick) continue;
+          const cur = _read(KEY_FREEZE) || { cotizaciones: {} };
+          if (!cur.cotizaciones) cur.cotizaciones = {};
+          if (cur.cotizaciones[casa]) continue; // alguien ya escribió, no pisar
+          cur.cotizaciones[casa] = {
+            compra: tick.compra,
+            venta:  tick.venta,
+            fechaActualizacion: tick.fa || tick.ts,
+          };
+          _write(KEY_FREEZE, cur);
+        }
+      }
+    } catch { /* silencioso */ }
+
+    // Paso 2 — fallback a argentinadatos para casas que sigan faltando.
+    const freeze1 = _read(KEY_FREEZE) || { cotizaciones: {} };
+    const cot1 = freeze1.cotizaciones || {};
+    casasFaltantes = CASAS.filter(c => !cot1[c]);
     if (!casasFaltantes.length) return;
 
     await Promise.all(casasFaltantes.map(async casa => {
@@ -304,7 +391,6 @@
         if (!res.ok) return;
         const serie = await res.json();
         if (!Array.isArray(serie)) return;
-        // Último elemento con venta válida.
         let ultimo = null;
         for (let i = serie.length - 1; i >= 0; i--) {
           if (serie[i] && serie[i].venta > 0 && serie[i].fecha) { ultimo = serie[i]; break; }
@@ -313,7 +399,7 @@
         const fechaIso = `${String(ultimo.fecha).slice(0, 10)}T17:00:00-03:00`;
         const cur = _read(KEY_FREEZE) || { cotizaciones: {} };
         if (!cur.cotizaciones) cur.cotizaciones = {};
-        if (cur.cotizaciones[casa]) return; // alguien ya escribió, no pisar
+        if (cur.cotizaciones[casa]) return;
         cur.cotizaciones[casa] = {
           compra: ultimo.compra,
           venta:  ultimo.venta,
@@ -341,7 +427,7 @@
 
   async function fetchLiveCotizaciones() {
     _kickoffFeriados();
-    // Si el freeze no tiene todas las casas, traemos el último cierre histórico
+    // Si el freeze no tiene todas las casas, traemos el seed (intraday + argentinadatos)
     // antes de hacer el fetch live. Sólo bloquea la primera carga del navegador.
     await _kickoffSeed();
 
