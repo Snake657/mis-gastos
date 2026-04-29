@@ -679,6 +679,7 @@
     <a href="#sec-uva">🏠 UVA</a>
     <a href="#sec-desocupacion">👷 Desocupación</a>
     <a href="#sec-pobreza">📉 Pobreza</a>
+    <a href="#sec-natalidad">👶 Natalidad</a>
     <a href="#sec-emae">📊 EMAE</a>
     <a href="#sec-pbi-pc">🌎 PBI/cápita USD</a>
     <a href="#sec-patentamientos">🚗 Patentamientos</a>
@@ -1221,6 +1222,71 @@
   </section>
 
 
+
+  <!-- ═══════════════════════════════════════════════════════════════ -->
+  <!-- 9.5. NATALIDAD — DEIS + World Bank (anual desde 1914)           -->
+  <!-- ═══════════════════════════════════════════════════════════════ -->
+  <section class="ind-section" data-color="pink" id="sec-natalidad">
+    <div class="ind-header">
+      <div>
+        <div class="ind-name">Natalidad</div>
+        <div class="ind-value-row">
+          <div class="ind-value" id="val-natalidad">—</div>
+          <div class="ind-badge badge-neu" id="badge-natalidad">—</div>
+        </div>
+        <div class="ind-meta" id="meta-natalidad">Cargando…</div>
+      </div>
+      <div class="ind-stats">
+        <div class="stat-card">
+          <div class="stat-label">Pico histórico</div>
+          <div class="stat-val" id="stat-nat-max">—</div>
+          <div class="stat-sub" id="stat-nat-max-fecha">—</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Var. 1 año</div>
+          <div class="stat-val" id="stat-nat-1y">—</div>
+          <div class="stat-sub" id="stat-nat-1y-sub">vs. año ant.</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Var. 10 años</div>
+          <div class="stat-val" id="stat-nat-10y">—</div>
+          <div class="stat-sub" id="stat-nat-10y-sub">vs. hace 10a</div>
+        </div>
+      </div>
+    </div>
+    <hr class="ind-divider">
+    <div class="ind-toolbar">
+      <div class="range-tabs" id="rt-natalidad-ind">
+        <button class="range-tab active" data-ind="nacimientos">👶 Nacimientos</button>
+        <button class="range-tab" data-ind="tasa">📊 Tasa /1000</button>
+        <button class="range-tab" data-ind="tgf">👩 TGF</button>
+      </div>
+      <div class="nota-fuente" id="nota-natalidad">DEIS · serie 1914-2024 · próx. dato 2025 ~abr/may 2026</div>
+    </div>
+    <div class="ind-toolbar">
+      <div class="range-tabs" id="rt-natalidad">
+        <button class="range-tab" data-r="10A">10A</button>
+        <button class="range-tab" data-r="20A">20A</button>
+        <button class="range-tab active" data-r="30A">30A</button>
+        <button class="range-tab" data-r="50A">50A</button>
+        <button class="range-tab" data-r="TODO">Todo</button>
+        <button class="range-tab" data-r="CUSTOM">Rango</button>
+        <span class="range-tabs-divider"></span>
+        <span id="rt-natalidad-pres" style="display:contents"></span>
+        <button class="range-tab presidentes-toggle" id="btn-nat-presidentes" type="button" title="Pintar el gráfico por presidencia">🎨 Presidentes</button>
+      </div>
+    </div>
+    <div class="date-range-wrap" id="natalidad-date-inputs" style="display:none">
+      <input type="date" id="natalidad-desde" />
+      <span class="date-sep">→</span>
+      <input type="date" id="natalidad-hasta" />
+    </div>
+    <div class="range-stats" id="range-stats-natalidad" style="display:none"></div>
+    <div class="chart-wrap tall">
+      <div class="chart-loading" id="load-natalidad"><span class="spinner"></span>Cargando datos de DEIS y World Bank…</div>
+      <canvas id="chart-natalidad" style="display:none"></canvas>
+    </div>
+  </section>
 
   <!-- ═══════════════════════════════════════════════════════════════ -->
   <!-- 10. EMAE — Estimador Mensual de Actividad Económica            -->
@@ -4898,11 +4964,9 @@ async function initPatentamientos() {
 const YPF_API = 'https://apis.datos.gob.ar/series/api/series/?ids=365.3_PRODUCCION_SA__35&format=json&limit=5000';
 const M3_TO_BBL = 6.2898;
 let ypfData = [];
-let _ypfVista = 'mensual';   // 'mensual' o 'anual'
+let _ypfVista = 'mensual';
 let _ypfPorPres = false;
 
-// Agrega los meses en una serie anual con kbpd promedio ponderado por días.
-// Devuelve [{año, fecha, kbpd, m3, dias, meses, parcial}].
 function _ypfAgrupaAnual(monthlyArr) {
   if (!monthlyArr || !monthlyArr.length) return [];
   const acc = {};
@@ -4913,7 +4977,6 @@ function _ypfAgrupaAnual(monthlyArr) {
     acc[año].dias += _ypfDiasMes(d.ym);
     acc[año].meses += 1;
   }
-  // Detectar parcialidad mirando la serie completa, no el slice
   const conteoCompleto = {};
   for (const d of ypfData) {
     const año = d.ym.slice(0, 4);
@@ -4921,12 +4984,8 @@ function _ypfAgrupaAnual(monthlyArr) {
   }
   return Object.values(acc)
     .map(o => ({
-      año: o.año,
-      ym: o.año,
-      fecha: o.año + '-01-01',
-      m3: o.m3,
-      dias: o.dias,
-      meses: o.meses,
+      año: o.año, ym: o.año, fecha: o.año + '-01-01',
+      m3: o.m3, dias: o.dias, meses: o.meses,
       kbpd: (o.m3 * M3_TO_BBL) / o.dias / 1000,
       parcial: (conteoCompleto[o.año] || 0) < 12
     }))
@@ -5222,6 +5281,313 @@ async function initYpf() {
   }
 }
 
+// ═══════════════════════════════════════════════════════════════════════════
+// 14. NATALIDAD — DEIS (1914-2024) + World Bank (1960-2024)
+//     Toggle entre: Nacimientos absolutos / Tasa por 1000 hab / TGF (hijos por mujer)
+// ═══════════════════════════════════════════════════════════════════════════
+const NAT_URL = '/natalidad/data.json';
+const NAT_WB_TASA = 'https://api.worldbank.org/v2/country/AR/indicator/SP.DYN.CBRT.IN?format=json&date=1960:2025&per_page=200';
+const NAT_WB_TGF  = 'https://api.worldbank.org/v2/country/AR/indicator/SP.DYN.TFRT.IN?format=json&date=1960:2025&per_page=200';
+let natRaw = { nacimientos: {}, tasa: {}, tgf: {} };
+let _natIndicador = 'nacimientos';
+let _natPorPres = false;
+
+const PRESIDENTES_NAT = [
+  { key:'rta', fecha:'1983-12-10', nombre:'Alfonsín',      color:'#fde047' },
+  { key:'cm',  fecha:'1989-07-08', nombre:'Menem',         color:'#f59e0b' },
+  { key:'fdr', fecha:'1999-12-10', nombre:'De la Rúa',     color:'#94a3b8' },
+  { key:'ed',  fecha:'2002-01-02', nombre:'Duhalde',       color:'#a3e635' },
+  { key:'nk',  fecha:'2003-05-25', nombre:'N. Kirchner',   color:'#60a5fa' },
+  { key:'cfk', fecha:'2007-12-10', nombre:'CFK',           color:'#7dd3fc' },
+  { key:'mm',  fecha:'2015-12-10', nombre:'Macri',         color:'#fbbf24' },
+  { key:'af',  fecha:'2019-12-10', nombre:'A. Fernández',  color:'#1e40af' },
+  { key:'jm',  fecha:'2023-12-10', nombre:'Milei',         color:'#a855f7' }
+];
+
+const NAT_COLORES = { nacimientos:'#f472b6', tasa:'#a78bfa', tgf:'#fbbf24' };
+const NAT_UNIDAD  = { nacimientos:'nacimientos/año', tasa:'por 1000 hab.', tgf:'hijos por mujer' };
+const NAT_LABEL   = { nacimientos:'Nacimientos', tasa:'Tasa /1000', tgf:'TGF' };
+
+function _natFmtValor(v, ind) {
+  if (v === null || v === undefined || isNaN(v)) return '—';
+  if (ind === 'nacimientos') return Math.round(v).toLocaleString('es-AR');
+  if (ind === 'tasa') return v.toFixed(1).replace('.',',') + ' ‰';
+  if (ind === 'tgf')  return v.toFixed(2).replace('.',',');
+  return String(v);
+}
+function _natSerie() {
+  const obj = natRaw[_natIndicador] || {};
+  return Object.entries(obj)
+    .map(([año, v]) => ({ año: String(año), fecha: año + '-01-01', valor: Number(v) }))
+    .filter(d => !isNaN(d.valor))
+    .sort((a, b) => a.año < b.año ? -1 : 1);
+}
+
+async function loadNatalidad() {
+  const r = await fetch(NAT_URL, { cache: 'no-store' });
+  if (!r.ok) throw new Error('HTTP ' + r.status);
+  const j = await r.json();
+  natRaw.nacimientos = j.nacimientos || {};
+  const [tasaRes, tgfRes] = await Promise.allSettled([
+    fetch(NAT_WB_TASA, { cache: 'force-cache' }).then(r => r.ok ? r.json() : null),
+    fetch(NAT_WB_TGF,  { cache: 'force-cache' }).then(r => r.ok ? r.json() : null),
+  ]);
+  function parseWB(arr) {
+    if (!Array.isArray(arr) || arr.length < 2 || !Array.isArray(arr[1])) return {};
+    const out = {};
+    for (const x of arr[1]) {
+      if (x && x.value !== null && x.date) out[String(x.date)] = Number(x.value);
+    }
+    return out;
+  }
+  if (tasaRes.status === 'fulfilled' && tasaRes.value) natRaw.tasa = parseWB(tasaRes.value);
+  if (tgfRes.status  === 'fulfilled' && tgfRes.value)  natRaw.tgf  = parseWB(tgfRes.value);
+}
+
+function _natSlice(range) {
+  const data = _natSerie();
+  if (!data.length) return [];
+  const last = data[data.length - 1];
+  if (range === 'TODO') return data.slice();
+  if (range === 'CUSTOM') {
+    const desde = $('natalidad-desde').value;
+    const hasta = $('natalidad-hasta').value;
+    if (!desde || !hasta) return data.slice();
+    return data.filter(d => d.fecha >= desde && d.fecha <= hasta);
+  }
+  if (typeof range === 'string' && range.startsWith('PRES-')) {
+    const k = range.slice(5);
+    const idx = PRESIDENTES_NAT.findIndex(p => p.key === k);
+    if (idx < 0) return data.slice();
+    const desde = PRESIDENTES_NAT[idx].fecha;
+    const hasta = (idx + 1 < PRESIDENTES_NAT.length) ? PRESIDENTES_NAT[idx + 1].fecha : new Date().toISOString().slice(0,10);
+    return data.filter(d => d.fecha >= desde && d.fecha <= hasta);
+  }
+  const m = /^(\d+)A$/.exec(range);
+  if (m) {
+    const n = parseInt(m[1], 10);
+    const lastYear = parseInt(last.año, 10);
+    return data.filter(d => parseInt(d.año, 10) >= lastYear - n);
+  }
+  return data.slice();
+}
+
+function _natRenderRangeStats(slice, range) {
+  const el = $('range-stats-natalidad');
+  if (!el || slice.length < 2) { if (el) el.style.display = 'none'; return; }
+  const first = slice[0], last = slice[slice.length - 1];
+  const dRange = last.valor - first.valor;
+  const dRangePct = first.valor ? (dRange / first.valor * 100) : 0;
+  const labelMap = {
+    '10A':'Últimos 10 años','20A':'Últimos 20 años',
+    '30A':'Últimos 30 años','50A':'Últimos 50 años',
+    'TODO':'Histórico completo','CUSTOM':'Rango personalizado'
+  };
+  let label = labelMap[range] || 'Variación';
+  let accent = NAT_COLORES[_natIndicador];
+  if (typeof range === 'string' && range.startsWith('PRES-')) {
+    const p = PRESIDENTES_NAT.find(x => x.key === range.slice(5));
+    if (p) { label = `Mandato de ${p.nombre}`; accent = p.color; }
+  }
+  el.style.setProperty('--accent-color', accent);
+  el.style.display = 'flex';
+  const cls = dRange > 0 ? 'rs-pos' : dRange < 0 ? 'rs-neg' : 'rs-neu';
+  const pctFmt = (dRangePct >= 0 ? '+' : '') + dRangePct.toFixed(1).replace('.',',') + '%';
+  el.innerHTML = `
+    <span class="rs-label">${label}</span>
+    <span class="rs-pct ${cls}">${pctFmt}</span>
+    <span class="rs-amt">${first.año} → ${last.año}</span>
+    <span class="rs-period">${_natFmtValor(first.valor, _natIndicador)} → ${_natFmtValor(last.valor, _natIndicador)}</span>
+  `;
+}
+
+function renderNatalidad(range) {
+  const data = _natSerie();
+  if (!data.length) {
+    setText('load-natalidad', 'Sin datos para este indicador.');
+    return;
+  }
+  const slice = _natSlice(range);
+  if (!slice.length) return;
+
+  const last = data[data.length - 1];
+  setText('val-natalidad', _natFmtValor(last.valor, _natIndicador));
+  setText('meta-natalidad', `${NAT_LABEL[_natIndicador]} · ${last.año} · ${NAT_UNIDAD[_natIndicador]}`);
+
+  const prev = data[data.length - 2] || last;
+  const dPrev = prev.valor ? ((last.valor - prev.valor) / prev.valor * 100) : 0;
+  const badge = $('badge-natalidad');
+  badge.textContent = (dPrev >= 0 ? '+' : '') + dPrev.toFixed(1).replace('.',',') + '%';
+  badge.className = `ind-badge ${badgeCls(dPrev, true)}`;
+
+  const max = data.reduce((a, b) => b.valor > a.valor ? b : a, data[0]);
+  setText('stat-nat-max', _natFmtValor(max.valor, _natIndicador));
+  setText('stat-nat-max-fecha', max.año);
+
+  const d1y = (last.valor - prev.valor);
+  const d1yPct = prev.valor ? d1y / prev.valor * 100 : 0;
+  setText('stat-nat-1y', (d1yPct >= 0 ? '+' : '') + d1yPct.toFixed(1).replace('.',',') + '%');
+  $('stat-nat-1y').className = 'stat-val ' + (d1y > 0 ? 'pos' : d1y < 0 ? 'neg' : '');
+  setText('stat-nat-1y-sub', `vs. ${prev.año}`);
+
+  const lastY = parseInt(last.año, 10);
+  const hace10 = data.find(d => parseInt(d.año, 10) === lastY - 10);
+  if (hace10 && hace10.valor) {
+    const d10 = (last.valor - hace10.valor) / hace10.valor * 100;
+    setText('stat-nat-10y', (d10 >= 0 ? '+' : '') + d10.toFixed(1).replace('.',',') + '%');
+    $('stat-nat-10y').className = 'stat-val ' + (d10 > 0 ? 'pos' : d10 < 0 ? 'neg' : '');
+    setText('stat-nat-10y-sub', `vs. ${hace10.año}`);
+  } else {
+    setText('stat-nat-10y', '—');
+    setText('stat-nat-10y-sub', 'sin dato a 10a');
+  }
+
+  _natRenderRangeStats(slice, range);
+
+  $('load-natalidad').style.display = 'none';
+  $('chart-natalidad').style.display = 'block';
+  const labels = slice.map(d => d.año);
+  const ctx = $('chart-natalidad').getContext('2d');
+  const existing = Chart.getChart('chart-natalidad');
+  if (existing) existing.destroy();
+
+  const baseColor = NAT_COLORES[_natIndicador];
+  let datasets;
+  if (!_natPorPres) {
+    datasets = [{
+      label: NAT_LABEL[_natIndicador],
+      data: slice.map(d => d.valor),
+      borderColor: baseColor,
+      backgroundColor: baseColor + '20',
+      borderWidth: 2,
+      pointRadius: slice.length > 60 ? 0 : 2,
+      pointHoverRadius: 4,
+      fill: true,
+      tension: 0.15
+    }];
+  } else {
+    datasets = PRESIDENTES_NAT.map((p, i) => {
+      const fin = (i + 1 < PRESIDENTES_NAT.length) ? PRESIDENTES_NAT[i + 1].fecha : '9999-12-31';
+      return {
+        label: p.nombre,
+        data: slice.map(d => (d.fecha >= p.fecha && d.fecha < fin) ? d.valor : null),
+        borderColor: p.color,
+        backgroundColor: p.color + '33',
+        borderWidth: 2.2,
+        pointRadius: slice.length > 60 ? 0 : 2,
+        pointHoverRadius: 4,
+        fill: true,
+        tension: 0.15,
+        spanGaps: false
+      };
+    });
+  }
+
+  new Chart(ctx, {
+    type: 'line',
+    data: { labels, datasets },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      interaction: { mode: 'index', intersect: false },
+      plugins: {
+        legend: {
+          display: _natPorPres,
+          position: 'bottom',
+          labels: { color: '#8b90a4', font: { family: 'IBM Plex Mono', size: 10 }, boxWidth: 10, boxHeight: 10, padding: 10 }
+        },
+        tooltip: {
+          callbacks: {
+            label: (c) => {
+              if (c.parsed.y == null) return null;
+              return c.dataset.label + ': ' + _natFmtValor(c.parsed.y, _natIndicador);
+            }
+          }
+        }
+      },
+      scales: {
+        x: { ticks: { color: '#545870', font: { family: 'IBM Plex Mono', size: 10 }, maxRotation: 0, autoSkip: true, maxTicksLimit: 12 }, grid: { color: '#1a1e28', drawTicks: false } },
+        y: { ticks: { color: '#545870', font: { family: 'IBM Plex Mono', size: 10 },
+              callback: (v) => _natIndicador === 'nacimientos' ? (v >= 1000 ? (v/1000).toFixed(0) + 'k' : v) : (_natIndicador === 'tasa' ? v.toFixed(0) + '‰' : v.toFixed(1)) },
+              grid: { color: '#1a1e28' }, beginAtZero: _natIndicador !== 'tgf' }
+      }
+    }
+  });
+}
+
+function setupNatalidadTabs() {
+  document.querySelectorAll('#rt-natalidad-ind .range-tab[data-ind]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('#rt-natalidad-ind .range-tab[data-ind]').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      _natIndicador = btn.dataset.ind;
+      const fuentes = {
+        nacimientos: 'DEIS · serie 1914-2024 · próx. dato 2025 ~abr/may 2026',
+        tasa: 'World Bank · SP.DYN.CBRT.IN · 1960-2024 · update anual ~jul',
+        tgf:  'World Bank · SP.DYN.TFRT.IN · 1960-2024 · update anual ~jul',
+      };
+      setText('nota-natalidad', fuentes[_natIndicador]);
+      const data = _natSerie();
+      if (data.length) {
+        const first = data[0], lastN = data[data.length - 1];
+        $('natalidad-desde').min = first.fecha; $('natalidad-desde').max = lastN.fecha;
+        $('natalidad-hasta').min = first.fecha; $('natalidad-hasta').max = lastN.fecha;
+      }
+      renderNatalidad(activeRange('rt-natalidad'));
+    });
+  });
+
+  const presContainer = $('rt-natalidad-pres');
+  if (presContainer && !presContainer.children.length) {
+    PRESIDENTES_NAT.forEach(p => {
+      const btn = document.createElement('button');
+      btn.className = 'range-tab pres-tab';
+      btn.dataset.r = 'PRES-' + p.key;
+      btn.textContent = p.nombre;
+      btn.title = `Filtrar al período de ${p.nombre}`;
+      btn.style.setProperty('--pres-color', p.color);
+      presContainer.appendChild(btn);
+    });
+  }
+
+  setupRangeTabs('rt-natalidad', r => {
+    $('natalidad-date-inputs').style.display = (r === 'CUSTOM') ? 'flex' : 'none';
+    if (r !== 'CUSTOM') renderNatalidad(r);
+    else if ($('natalidad-desde').value && $('natalidad-hasta').value) renderNatalidad('CUSTOM');
+  });
+
+  const data = _natSerie();
+  if (data.length) {
+    const last = data[data.length - 1];
+    const first = data[0];
+    $('natalidad-desde').min = first.fecha; $('natalidad-desde').max = last.fecha;
+    $('natalidad-hasta').min = first.fecha; $('natalidad-hasta').max = last.fecha;
+    const lastY = parseInt(last.año, 10);
+    $('natalidad-desde').value = `${lastY - 30}-01-01`;
+    $('natalidad-hasta').value = last.fecha;
+  }
+  $('natalidad-desde').addEventListener('change', () => { if (activeRange('rt-natalidad') === 'CUSTOM') renderNatalidad('CUSTOM'); });
+  $('natalidad-hasta').addEventListener('change', () => { if (activeRange('rt-natalidad') === 'CUSTOM') renderNatalidad('CUSTOM'); });
+
+  const btnPres = $('btn-nat-presidentes');
+  if (btnPres) {
+    btnPres.addEventListener('click', () => {
+      _natPorPres = !_natPorPres;
+      btnPres.classList.toggle('active', _natPorPres);
+      renderNatalidad(activeRange('rt-natalidad'));
+    });
+  }
+}
+
+async function initNatalidad() {
+  try {
+    await loadNatalidad();
+    setupNatalidadTabs();
+    renderNatalidad(activeRange('rt-natalidad'));
+  } catch (e) {
+    setText('load-natalidad', 'No se pudieron cargar los datos: ' + e.message);
+  }
+}
+
 // ─── Inicializar los indicadores nuevos ──────────────────────
 // Se llama al final del script (NO desde el IIFE inicial) para que
 // las constantes y los let *Raw ya estén definidos cuando se ejecuten.
@@ -5233,6 +5599,7 @@ initCclReal();
 initTcrUsa();
 initPatentamientos();
 initYpf();
+initNatalidad();
 </script>
 
 </body>
