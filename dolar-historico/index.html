@@ -653,15 +653,20 @@ async function injectToday(tipo, data) {
   if (!match?.venta) return data;
   const today = new Date().toLocaleDateString('sv-SE', { timeZone: 'America/Argentina/Buenos_Aires' });
   const lastFecha = data.length ? data[data.length-1].fecha.slice(0,10) : '';
-  if (today > lastFecha) {
+  // Si el último punto histórico ya es de hoy (argentinadatos.com lo publica
+  // como "cierre del día"), lo PISAMOS con el valor del módulo live para que
+  // las dos páginas (en vivo + histórico) muestren el mismo número.
+  if (lastFecha === today) {
+    data[data.length-1] = { ...data[data.length-1], compra:match.compra, venta:match.venta, _live:true };
+  } else if (today > lastFecha) {
     data = [...data, { fecha:today, compra:match.compra, venta:match.venta, _live:true }];
   }
   return data;
 }
 
-// Pisa el último punto live de cada tipo cargado en allData con la cotización
-// actual. Devuelve true si cambió algo del tipo actualmente visible (para
-// decidir si vale la pena re-renderizar).
+// Pisa el último punto del día con la cotización actual del módulo live.
+// Devuelve true si cambió algo del tipo actualmente visible (para decidir si
+// vale la pena re-renderizar).
 async function refreshLiveData() {
   _liveCacheTs = 0; // forzar refetch
   const live = await fetchLive();
@@ -675,10 +680,12 @@ async function refreshLiveData() {
     const arr  = allData[tipo];
     const last = arr[arr.length - 1];
     const lastFecha = last?.fecha?.slice(0,10);
-    if (last?._live && lastFecha === today) {
-      // Sobrescribir el punto live del día si los valores cambiaron
-      if (last.venta !== match.venta || last.compra !== match.compra) {
-        arr[arr.length - 1] = { ...last, compra: match.compra, venta: match.venta };
+    if (lastFecha === today) {
+      // Siempre sobrescribir el punto de hoy con el live (sin importar si tenía
+      // el flag _live previo). Así si argentinadatos publica un "cierre" distinto
+      // al live, igual mostramos el live. Solo re-renderizamos si cambió.
+      if (last.venta !== match.venta || last.compra !== match.compra || !last._live) {
+        arr[arr.length - 1] = { ...last, compra: match.compra, venta: match.venta, _live: true };
         if (tipo === currentTipo) currentChanged = true;
       }
     } else if (lastFecha && lastFecha < today) {
@@ -993,5 +1000,6 @@ setInterval(async () => {
 
 
 <script src="/canuto-nav.js"></script>
+
 </body>
 </html>
