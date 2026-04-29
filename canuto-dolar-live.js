@@ -165,62 +165,69 @@
     return out;
   }
 
+  function _tsOf(s) {
+    if (!s) return 0;
+    const t = new Date(s).getTime();
+    return Number.isFinite(t) ? t : 0;
+  }
+
+  // Política única de freeze, válida dentro y fuera de horario:
+  //   1) Por casa, sólo aceptamos un valor nuevo en el freeze si su fechaActualizacion
+  //      es >= a la última conocida. Así, si la API devuelve momentáneamente una
+  //      respuesta vieja (típico cuando mayorista/MEP/CCL ya cerraron y la fuente
+  //      aún no rota al snapshot del día siguiente), no pisamos un dato bueno.
+  //   2) La salida la construimos siempre desde el freeze (la "máxima fecha vista"
+  //      por casa). De esta forma las cotizaciones jamás retroceden a un valor
+  //      viejo, ni durante el horario ni después del cierre.
+  //   3) _frozen se marca sólo cuando estamos fuera de horario: las páginas usan
+  //      ese flag para mostrar "Mercado cerrado · cotizaciones fijadas".
   function _aplicarFreeze(merged) {
     const ctx = _ahoraArg();
     const enHorario = isHorarioMercado();
-    const diaHabil  = esDiaHabilArg(ctx);
-    let freeze = _read(KEY_FREEZE) || { dia: null, cotizaciones: {} };
-
-    if (enHorario && freeze.dia !== ctx.ymd) {
-      freeze = { dia: ctx.ymd, cotizaciones: {} };
+    const freeze = _read(KEY_FREEZE) || { dia: null, cotizaciones: {} };
+    if (!freeze.cotizaciones || typeof freeze.cotizaciones !== 'object') {
+      freeze.cotizaciones = {};
     }
 
-    if (enHorario) {
-      for (const cot of merged) {
+    for (const cot of merged) {
+      const prev = freeze.cotizaciones[cot.casa];
+      const tNew = _tsOf(cot.fechaActualizacion);
+      const tOld = _tsOf(prev && prev.fechaActualizacion);
+      if (!prev || tNew >= tOld) {
         freeze.cotizaciones[cot.casa] = {
           compra: cot.compra,
           venta:  cot.venta,
           fechaActualizacion: cot.fechaActualizacion,
         };
       }
-      freeze.dia = ctx.ymd;
-      _write(KEY_FREEZE, freeze);
-      return merged;
     }
+    freeze.dia = ctx.ymd;
+    _write(KEY_FREEZE, freeze);
 
-    const usarFreeze = freeze.cotizaciones && Object.keys(freeze.cotizaciones).length > 0;
-    if (usarFreeze) {
-      const out = merged.map(cot => {
-        const f = freeze.cotizaciones[cot.casa];
-        if (!f) return cot;
-        return { ...cot, compra: f.compra, venta: f.venta, fechaActualizacion: f.fechaActualizacion, _frozen: true };
-      });
-      for (const casa of CASAS) {
-        if (!out.find(x => x.casa === casa) && freeze.cotizaciones[casa]) {
-          const f = freeze.cotizaciones[casa];
-          out.push({
-            casa,
-            _tipo: CASA_TO_TIPO[casa] || casa,
-            compra: f.compra,
-            venta: f.venta,
-            fechaActualizacion: f.fechaActualizacion,
-            _frozen: true,
-          });
-        }
+    const mergedByCasa = {};
+    for (const cot of merged) mergedByCasa[cot.casa] = cot;
+
+    const out = [];
+    for (const casa of CASAS) {
+      const f = freeze.cotizaciones[casa];
+      const baseCot = mergedByCasa[casa];
+      if (!f && !baseCot) continue;
+      if (!f) {
+        out.push({ ...baseCot, _tipo: CASA_TO_TIPO[casa] || casa });
+        continue;
       }
-      return out;
-    }
-
-    const nuevoFreeze = { dia: diaHabil ? ctx.ymd : (freeze.dia || ctx.ymd), cotizaciones: {} };
-    for (const cot of merged) {
-      nuevoFreeze.cotizaciones[cot.casa] = {
-        compra: cot.compra,
-        venta:  cot.venta,
-        fechaActualizacion: cot.fechaActualizacion,
+      const cotFinal = {
+        ...(baseCot || {}),
+        casa,
+        _tipo: CASA_TO_TIPO[casa] || casa,
+        compra: f.compra,
+        venta:  f.venta,
+        fechaActualizacion: f.fechaActualizacion,
       };
+      if (!enHorario) cotFinal._frozen = true;
+      out.push(cotFinal);
     }
-    _write(KEY_FREEZE, nuevoFreeze);
-    return merged.map(c => ({ ...c, _frozen: true }));
+    return out;
   }
 
   let _inflight = null;
