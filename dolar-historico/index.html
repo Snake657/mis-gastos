@@ -656,13 +656,14 @@ async function injectToday(tipo, data) {
   if (!match?.venta) return data;
   const liveDate  = _fechaLive(match);
   const lastFecha = data.length ? data[data.length-1].fecha.slice(0,10) : '';
-  // Si el último punto histórico tiene la fecha del live, lo PISAMOS con los
-  // valores del módulo (las dos páginas muestran el mismo número). Si el live
-  // es de un día más reciente, agregamos un punto nuevo.
+  // Propagamos match._frozen al punto: _live indica "vino del módulo CanutoDolar",
+  // _frozen indica "esa cotización está fija (post-cierre, fin de semana, MEP/CCL pre-10:30)".
+  // updateCards usa ambos flags para decidir si mostrar "hoy · en vivo ⚡" o la fecha.
+  const frozen = !!match._frozen;
   if (lastFecha === liveDate) {
-    data[data.length-1] = { ...data[data.length-1], compra:match.compra, venta:match.venta, _live:true };
+    data[data.length-1] = { ...data[data.length-1], compra:match.compra, venta:match.venta, _live:true, _frozen:frozen };
   } else if (liveDate > lastFecha) {
-    data = [...data, { fecha:liveDate, compra:match.compra, venta:match.venta, _live:true }];
+    data = [...data, { fecha:liveDate, compra:match.compra, venta:match.venta, _live:true, _frozen:frozen }];
   }
   return data;
 }
@@ -680,22 +681,24 @@ async function refreshLiveData() {
     const match = live.find(d => d.casa === LIVE_CASA[tipo]);
     if (!match?.venta) continue;
     const liveDate = _fechaLive(match);
+    const frozen   = !!match._frozen;
     const arr  = allData[tipo];
     const last = arr[arr.length - 1];
     const lastFecha = last?.fecha?.slice(0,10);
     if (lastFecha === liveDate) {
       // Siempre sobrescribir el punto del día con el live (sin importar si tenía
       // el flag _live previo). Así si argentinadatos publica un "cierre" distinto
-      // al live, igual mostramos el live. Solo re-renderizamos si cambió.
-      if (last.venta !== match.venta || last.compra !== match.compra || !last._live) {
-        arr[arr.length - 1] = { ...last, compra: match.compra, venta: match.venta, _live: true };
+      // al live, igual mostramos el live. Solo re-renderizamos si cambió algo
+      // visible (incluyendo el flag _frozen, que afecta el cartel "en vivo ⚡").
+      if (last.venta !== match.venta || last.compra !== match.compra || !last._live || last._frozen !== frozen) {
+        arr[arr.length - 1] = { ...last, compra: match.compra, venta: match.venta, _live: true, _frozen: frozen };
         if (tipo === currentTipo) currentChanged = true;
       }
     } else if (lastFecha && lastFecha < liveDate) {
       // El live ya tiene un día más nuevo que el último punto histórico:
       // agregamos ese día al gráfico. (No se ejecuta para MEP/CCL pre-10:30
       // porque su liveDate es el cierre del último día hábil = lastFecha.)
-      arr.push({ fecha: liveDate, compra: match.compra, venta: match.venta, _live: true });
+      arr.push({ fecha: liveDate, compra: match.compra, venta: match.venta, _live: true, _frozen: frozen });
       if (tipo === currentTipo) currentChanged = true;
     }
   }
@@ -808,7 +811,12 @@ function updateCards(data) {
   const vs = data.map(d=>d.venta).filter(v=>v>0);
   const maxV = Math.max(...vs), minV = Math.min(...vs);
   document.getElementById('card-current').textContent = fmt(last.venta);
-  document.getElementById('card-current-date').textContent = last._live ? 'hoy · en vivo ⚡' : fmtD(last.fecha);
+  // "hoy · en vivo ⚡" sólo si el módulo lo está sirviendo SIN _frozen, o sea
+  // cuando la cotización está realmente moviéndose (07:00-17:00 lun-vie no feriado
+  // para oficial/blue/mayorista, 10:30-17:00 para MEP/CCL). En cualquier otro
+  // momento mostramos la fecha del último cierre disponible.
+  const enVivoReal = last._live && !last._frozen;
+  document.getElementById('card-current-date').textContent = enVivoReal ? 'hoy · en vivo ⚡' : fmtD(last.fecha);
   document.getElementById('card-max').textContent = fmt(maxV);
   document.getElementById('card-max-date').textContent = fmtD(data.find(d=>d.venta===maxV)?.fecha||'');
   document.getElementById('card-min').textContent = fmt(minV);
@@ -999,12 +1007,10 @@ setInterval(async () => {
   try {
     const changed = await refreshLiveData();
     if (changed) await render();
-  } catch (e) { /* silencioso, evita romper el ciclo */ }
-}, LIVE_REFRESH_MS);
+  } catch (e) { /* silencioso */ }
+}, 30 * 1000);
 </script>
 
-
 <script src="/canuto-nav.js"></script>
-
 </body>
 </html>
