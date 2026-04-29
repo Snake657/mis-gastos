@@ -612,25 +612,13 @@ function filterRange(data, range, from, to) {
 // ── LIVE PATCH ────────────────────────────────────────────
 // El "valor del día" se sobrescribe en background cada LIVE_REFRESH_MS para
 // que la cotización siga al mercado intra-day, sin re-bajar la serie histórica.
-// Se consultan las mismas dos fuentes que /dolar-en-vivo (dolarapi + Ámbito) y
-// para cada tipo se elige la cotización más reciente — así los dos sitios
-// muestran exactamente el mismo número.
-const LIVE_API        = 'https://dolarapi.com/v1/dolares';
-const LIVE_API_AMBITO = 'https://dolarapi.com/v1/ambito/dolares';
+// Las dos páginas (en vivo + histórico) leen del mismo módulo /canuto-dolar-live.js,
+// que ya hace el merge de fuentes + freeze post-cierre.
 const LIVE_CASA = { oficial:'oficial', blue:'blue', mep:'bolsa', ccl:'contadoconliqui', mayorista:'mayorista' };
 const LIVE_CACHE_MS   = 25 * 1000; // TTL del cache del fetch (evita pedir muchas veces si el usuario navega)
 const LIVE_REFRESH_MS = 30 * 1000; // Cada 30 segundos vuelve a buscar precios live
 let _liveCache = null;
 let _liveCacheTs = 0;
-
-// Devuelve el más reciente comparando fechaActualizacion (igual lógica que /dolar-en-vivo)
-function masReciente(a, b) {
-  if (!a) return b;
-  if (!b) return a;
-  const ta = a.fechaActualizacion ? new Date(a.fechaActualizacion).getTime() : 0;
-  const tb = b.fechaActualizacion ? new Date(b.fechaActualizacion).getTime() : 0;
-  return ta >= tb ? a : b;
-}
 
 async function fetchLive() {
   // Delegamos al módulo compartido: el merge de fuentes + el freeze post-17:30 vive ahí,
@@ -646,20 +634,35 @@ async function fetchLive() {
   return null;
 }
 
+// Devuelve la fecha real del live (en sv-SE / ARG) o, si no hubiera, la fecha actual.
+// Importante usar match.fechaActualizacion en vez de "today": MEP/CCL antes de las
+// 10:30 ARG vienen frizados al cierre del último día hábil con su fecha original,
+// y queremos que ese punto pise el último punto histórico (no que cree uno nuevo
+// del día actual con valor del día anterior).
+function _fechaLive(match) {
+  if (match?.fechaActualizacion) {
+    const d = new Date(match.fechaActualizacion);
+    if (!isNaN(d.getTime())) {
+      return d.toLocaleDateString('sv-SE', { timeZone: 'America/Argentina/Buenos_Aires' });
+    }
+  }
+  return new Date().toLocaleDateString('sv-SE', { timeZone: 'America/Argentina/Buenos_Aires' });
+}
+
 async function injectToday(tipo, data) {
   const live = await fetchLive();
   if (!live) return data;
   const match = live.find(d => d.casa === LIVE_CASA[tipo]);
   if (!match?.venta) return data;
-  const today = new Date().toLocaleDateString('sv-SE', { timeZone: 'America/Argentina/Buenos_Aires' });
+  const liveDate  = _fechaLive(match);
   const lastFecha = data.length ? data[data.length-1].fecha.slice(0,10) : '';
-  // Si el último punto histórico ya es de hoy (argentinadatos.com lo publica
-  // como "cierre del día"), lo PISAMOS con el valor del módulo live para que
-  // las dos páginas (en vivo + histórico) muestren el mismo número.
-  if (lastFecha === today) {
+  // Si el último punto histórico tiene la fecha del live, lo PISAMOS con los
+  // valores del módulo (las dos páginas muestran el mismo número). Si el live
+  // es de un día más reciente, agregamos un punto nuevo.
+  if (lastFecha === liveDate) {
     data[data.length-1] = { ...data[data.length-1], compra:match.compra, venta:match.venta, _live:true };
-  } else if (today > lastFecha) {
-    data = [...data, { fecha:today, compra:match.compra, venta:match.venta, _live:true }];
+  } else if (liveDate > lastFecha) {
+    data = [...data, { fecha:liveDate, compra:match.compra, venta:match.venta, _live:true }];
   }
   return data;
 }
@@ -671,26 +674,28 @@ async function refreshLiveData() {
   _liveCacheTs = 0; // forzar refetch
   const live = await fetchLive();
   if (!live) return false;
-  const today = new Date().toLocaleDateString('sv-SE', { timeZone: 'America/Argentina/Buenos_Aires' });
   let currentChanged = false;
   for (const tipo of Object.keys(TIPOS)) {
     if (!allData[tipo]) continue;
     const match = live.find(d => d.casa === LIVE_CASA[tipo]);
     if (!match?.venta) continue;
+    const liveDate = _fechaLive(match);
     const arr  = allData[tipo];
     const last = arr[arr.length - 1];
     const lastFecha = last?.fecha?.slice(0,10);
-    if (lastFecha === today) {
-      // Siempre sobrescribir el punto de hoy con el live (sin importar si tenía
+    if (lastFecha === liveDate) {
+      // Siempre sobrescribir el punto del día con el live (sin importar si tenía
       // el flag _live previo). Así si argentinadatos publica un "cierre" distinto
       // al live, igual mostramos el live. Solo re-renderizamos si cambió.
       if (last.venta !== match.venta || last.compra !== match.compra || !last._live) {
         arr[arr.length - 1] = { ...last, compra: match.compra, venta: match.venta, _live: true };
         if (tipo === currentTipo) currentChanged = true;
       }
-    } else if (lastFecha && lastFecha < today) {
-      // Cruzamos de día: agregar el primer punto live del nuevo día
-      arr.push({ fecha: today, compra: match.compra, venta: match.venta, _live: true });
+    } else if (lastFecha && lastFecha < liveDate) {
+      // El live ya tiene un día más nuevo que el último punto histórico:
+      // agregamos ese día al gráfico. (No se ejecuta para MEP/CCL pre-10:30
+      // porque su liveDate es el cierre del último día hábil = lastFecha.)
+      arr.push({ fecha: liveDate, compra: match.compra, venta: match.venta, _live: true });
       if (tipo === currentTipo) currentChanged = true;
     }
   }
