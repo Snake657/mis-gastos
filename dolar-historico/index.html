@@ -418,6 +418,7 @@
     <div class="chart-toolbar">
       <span class="chart-title" id="chart-title">DÓLAR OFICIAL — VENTA</span>
       <div class="range-tabs">
+        <button class="range-tab" data-range="1D" title="Intra-día (hoy)">1D</button>
         <button class="range-tab" data-range="1S">1S</button>
         <button class="range-tab" data-range="1M">1M</button>
         <button class="range-tab" data-range="3M">3M</button>
@@ -571,11 +572,27 @@ function fmt(n) {
   if (n == null || isNaN(n)) return '—';
   return '$' + Number(n).toLocaleString('es-AR', {minimumFractionDigits:0, maximumFractionDigits:0});
 }
+// Detecta si la cadena es un ISO completo con hora (ej '2026-04-29T11:30:00-03:00').
+// En ese caso devolvemos HH:mm en hora ARG — útil para la vista intra-día (1D),
+// donde el "label" del punto es el momento exacto del tick, no una fecha.
+function _isIsoConHora(d) {
+  return typeof d === 'string' && d.length > 10 && d.indexOf('T') === 10;
+}
+function _hhmmArg(d) {
+  const dt = new Date(d);
+  if (isNaN(dt.getTime())) return d;
+  return dt.toLocaleTimeString('es-AR', {
+    timeZone: 'America/Argentina/Buenos_Aires',
+    hour: '2-digit', minute: '2-digit', hour12: false,
+  });
+}
 function fmtD(d) {
+  if (_isIsoConHora(d)) return _hhmmArg(d);
   const s = d.slice(0,10), [y,m,day] = s.split('-');
   return `${day}/${m}/${y}`;
 }
 function fmtDS(d) {
+  if (_isIsoConHora(d)) return _hhmmArg(d);
   const [y,m] = d.slice(0,10).split('-');
   return `${m}/${y.slice(2)}`;
 }
@@ -716,6 +733,36 @@ async function loadData(tipo) {
   return allData[tipo];
 }
 
+// ── INTRADAY (vista 1D) ──────────────────────────────────
+// Trae los ticks acumulados del día por el Worker `canuto-intraday` y los normaliza
+// al formato `{fecha, venta, compra, _live}` que usa el resto de la página. La
+// fecha es el ISO completo del tick (cuando la fuente reportó el cambio), así
+// fmtD/fmtDS detectan que tiene hora y muestran "HH:mm" en eje X y tooltip.
+const INTRADAY_API = 'https://canuto-intraday.lenzimartin.workers.dev/today';
+let _intradayCache = { ymd: null, body: null, ts: 0 };
+const INTRADAY_TTL_MS = 25 * 1000;
+
+async function loadIntraday(tipo) {
+  const casa = LIVE_CASA[tipo];
+  const now  = Date.now();
+  let body;
+  if (_intradayCache.body && (now - _intradayCache.ts) < INTRADAY_TTL_MS) {
+    body = _intradayCache.body;
+  } else {
+    const res = await fetch(INTRADAY_API, { cache: 'no-store' });
+    if (!res.ok) throw new Error(`canuto-intraday HTTP ${res.status}`);
+    body = await res.json();
+    _intradayCache = { ymd: body.ymd, body, ts: now };
+  }
+  const ticks = (body.cotizaciones && body.cotizaciones[casa]) || [];
+  return ticks.map(t => ({
+    fecha:  t.fa || t.ts,
+    compra: t.compra,
+    venta:  t.venta,
+    _live:  true,
+  }));
+}
+
 // ── CHART ────────────────────────────────────────────────
 function downsample(arr, n) {
   if (arr.length <= n) return arr;
@@ -837,20 +884,35 @@ function updateTable(data) {
 
 // ── RENDER ───────────────────────────────────────────────
 async function render() {
-  document.getElementById('chart-loading').style.display='flex';
-  document.getElementById('mainChart').style.display='none';
+  const loadingEl = document.getElementById('chart-loading');
+  const chartEl   = document.getElementById('mainChart');
+  loadingEl.style.display='flex';
+  loadingEl.innerHTML = '<div class="loader"></div>';
+  chartEl.style.display='none';
   try {
-    const raw = await loadData(currentTipo);
-    const data = filterRange(raw, currentRange, customFrom, customTo);
-    document.getElementById('chart-loading').style.display='none';
-    document.getElementById('mainChart').style.display='block';
+    let data;
+    if (currentRange === '1D') {
+      // Vista intra-día: trae los ticks del día actual desde el Worker canuto-intraday.
+      data = await loadIntraday(currentTipo);
+      if (!data.length) {
+        loadingEl.innerHTML = '<span style="color:var(--text2);font-size:0.85rem">Sin datos intra-día — el seguimiento empieza con el primer movimiento del día.</span>';
+        // Igual mostramos cards/tabla/var-panel vacíos para que la UI no quede inconsistente
+        document.getElementById('var-panel').classList.remove('visible');
+        return;
+      }
+    } else {
+      const raw = await loadData(currentTipo);
+      data = filterRange(raw, currentRange, customFrom, customTo);
+    }
+    loadingEl.style.display='none';
+    chartEl.style.display='block';
     buildChart(data, currentTipo);
     updateCards(data);
     updateTable(data);
     updateVarPanel(data);
     document.getElementById('chart-title').textContent = TIPOS[currentTipo].label.toUpperCase()+' — VENTA';
   } catch(err) {
-    document.getElementById('chart-loading').innerHTML = `<span style="color:#f87171">Error: ${err.message}</span>`;
+    loadingEl.innerHTML = `<span style="color:#f87171">Error: ${err.message}</span>`;
   }
 }
 
@@ -952,7 +1014,7 @@ document.querySelectorAll('.range-tab').forEach(btn=>btn.addEventListener('click
 document.getElementById('btn-apply-custom').addEventListener('click', ()=>{
   const f = document.getElementById('cr-from').value;
   const t = document.getElementById('cr-to').value;
-  if (!f || !t) return;
+  if (!f || !t) { alert('Completá ambas fechas.'); return; }
   if (f > t) { alert('La fecha de inicio debe ser anterior.'); return; }
   customFrom = f; customTo = t;
   render();
@@ -1001,12 +1063,20 @@ document.getElementById('btn-clr-range').addEventListener('click',()=>{
 
 render();
 
-// Auto-refresh: cada 30s pide el live y, si cambió el tipo visible, re-renderiza.
-// El re-render reusa allData[tipo] (ya actualizado), así que es liviano.
+// Auto-refresh:
+//   - Vista "1D": cada 30s invalidamos el cache del worker intraday y re-renderizamos
+//     (así la línea va creciendo en tiempo real con los nuevos ticks).
+//   - Otras vistas: cada 30s pedimos el live y, si cambió el último punto del día
+//     visible, re-renderizamos. El re-render reusa allData[tipo].
 setInterval(async () => {
   try {
-    const changed = await refreshLiveData();
-    if (changed) await render();
+    if (currentRange === '1D') {
+      _intradayCache = { ymd: null, body: null, ts: 0 };
+      await render();
+    } else {
+      const changed = await refreshLiveData();
+      if (changed) await render();
+    }
   } catch (e) { /* silencioso */ }
 }, 30 * 1000);
 </script>
