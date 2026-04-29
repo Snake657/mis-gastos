@@ -161,32 +161,85 @@
       margin-top: 5px;
     }
 
-    /* ── NAV INTERNA (anchors a cada sección) ───────────────────── */
-    .toc {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 6px;
-      margin-bottom: 24px;
-      padding-bottom: 18px;
+    /* ── NAV INTERNA (chips de accesos directos) ───────────────────── */
+    .indicators-section {
+      margin-bottom: 28px;
+      padding-bottom: 22px;
       border-bottom: 1px dashed var(--border);
     }
-    .toc a {
+    .indicators-section .section-label {
       font-family: 'IBM Plex Mono', monospace;
-      font-size: 0.65rem;
-      font-weight: 600;
+      font-size: 0.7rem;
+      font-weight: 700;
+      letter-spacing: 0.13em;
+      text-transform: uppercase;
+      color: var(--green);
+      margin-bottom: 12px;
+    }
+    .indicators-section .section-label .ind-count {
+      font-size: 0.68rem;
+      color: var(--text3);
+      font-weight: 500;
       letter-spacing: 0.05em;
-      padding: 5px 10px;
-      border-radius: 6px;
+      margin-left: 4px;
+      text-transform: none;
+    }
+    .indicators-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+      gap: 8px;
+    }
+    .ind-chip {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 14px;
       background: var(--surface);
       border: 1px solid var(--border);
-      color: var(--text2);
+      border-radius: 10px;
       text-decoration: none;
-      transition: all 0.12s;
-    }
-    .toc a:hover {
       color: var(--text);
-      border-color: var(--border2);
+      font-size: 0.86rem;
+      font-weight: 500;
+      transition: all 0.15s;
+      position: relative;
+    }
+    .ind-chip:hover {
       background: var(--surface2);
+      border-color: var(--border2);
+      transform: translateY(-1px);
+    }
+    .ind-chip-emoji { font-size: 1rem; line-height: 1; flex-shrink: 0; }
+    .ind-chip-name {
+      flex: 1;
+      letter-spacing: -0.005em;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .ind-chip-arrow {
+      font-family: 'IBM Plex Mono', monospace;
+      color: var(--text3);
+      opacity: 0;
+      transform: translateX(-4px);
+      transition: all 0.15s;
+      font-size: 0.85rem;
+    }
+    .ind-chip:hover .ind-chip-arrow { opacity: 1; transform: translateX(0); }
+    .ind-chip.is-new::after {
+      content: 'NEW';
+      position: absolute;
+      top: 6px;
+      right: 8px;
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.55rem;
+      font-weight: 700;
+      color: var(--green);
+      background: rgba(74,222,128,0.10);
+      padding: 2px 5px;
+      border-radius: 99px;
+      letter-spacing: 0.04em;
+      border: 1px solid rgba(74,222,128,0.22);
     }
 
     /* ── INDICADOR SECTION (card) ───────────────────────────────── */
@@ -667,27 +720,102 @@
     </div>
   </div>
 
-  <!-- TOC -->
-  <nav class="toc" aria-label="Ir a sección">
-    <a href="#sec-reservas">🏦 Reservas</a>
-    <a href="#sec-deuda-publica">📉 Deuda Pública</a>
-    <a href="#sec-deuda">📅 Vencimientos</a>
-    <a href="#sec-riesgo">⚠️ Riesgo País</a>
-    <a href="#sec-inflacion">📊 Inflación</a>
-    <a href="#sec-inflacion-ia">📈 Infl. interanual</a>
-    <a href="#sec-tasa">💹 Tasa</a>
-    <a href="#sec-uva">🏠 UVA</a>
-    <a href="#sec-desocupacion">👷 Desocupación</a>
-    <a href="#sec-pobreza">📉 Pobreza</a>
-    <a href="#sec-natalidad">👶 Natalidad</a>
-    <a href="#sec-emae">📊 EMAE</a>
-    <a href="#sec-pbi-pc">🌎 PBI/cápita USD</a>
-    <a href="#sec-patentamientos">🚗 Patentamientos</a>
-    <a href="#sec-ypf">🛢️ Petróleo YPF</a>
-    <a href="#sec-merval">📈 Merval USD</a>
-    <a href="#sec-ccl-real">💵 CCL Real</a>
-    <a href="#sec-tcr-usa">🇺🇸 TCR vs USA</a>
-  </nav>
+  <!-- INDICADORES MACRO — accesos directos a cada sección -->
+  <section class="indicators-section" aria-label="Ir a sección">
+    <div class="section-label">Indicadores macro <span class="ind-count">— accesos directos</span></div>
+    <div class="indicators-grid">
+      <a class="ind-chip" href="#sec-reservas">
+        <span class="ind-chip-emoji">🏦</span>
+        <span class="ind-chip-name">Reservas BCRA</span>
+        <span class="ind-chip-arrow">→</span>
+      </a>
+      <a class="ind-chip" href="#sec-deuda-publica">
+        <span class="ind-chip-emoji">📉</span>
+        <span class="ind-chip-name">Deuda Pública</span>
+        <span class="ind-chip-arrow">→</span>
+      </a>
+      <a class="ind-chip" href="#sec-deuda">
+        <span class="ind-chip-emoji">📅</span>
+        <span class="ind-chip-name">Vencimientos</span>
+        <span class="ind-chip-arrow">→</span>
+      </a>
+      <a class="ind-chip" href="#sec-riesgo">
+        <span class="ind-chip-emoji">⚠️</span>
+        <span class="ind-chip-name">Riesgo País</span>
+        <span class="ind-chip-arrow">→</span>
+      </a>
+      <a class="ind-chip" href="#sec-inflacion">
+        <span class="ind-chip-emoji">📊</span>
+        <span class="ind-chip-name">Inflación</span>
+        <span class="ind-chip-arrow">→</span>
+      </a>
+      <a class="ind-chip" href="#sec-inflacion-ia">
+        <span class="ind-chip-emoji">📈</span>
+        <span class="ind-chip-name">Infl. interanual</span>
+        <span class="ind-chip-arrow">→</span>
+      </a>
+      <a class="ind-chip" href="#sec-tasa">
+        <span class="ind-chip-emoji">💹</span>
+        <span class="ind-chip-name">Tasa</span>
+        <span class="ind-chip-arrow">→</span>
+      </a>
+      <a class="ind-chip" href="#sec-uva">
+        <span class="ind-chip-emoji">🏠</span>
+        <span class="ind-chip-name">UVA</span>
+        <span class="ind-chip-arrow">→</span>
+      </a>
+      <a class="ind-chip" href="#sec-desocupacion">
+        <span class="ind-chip-emoji">👷</span>
+        <span class="ind-chip-name">Desocupación</span>
+        <span class="ind-chip-arrow">→</span>
+      </a>
+      <a class="ind-chip" href="#sec-pobreza">
+        <span class="ind-chip-emoji">📉</span>
+        <span class="ind-chip-name">Pobreza</span>
+        <span class="ind-chip-arrow">→</span>
+      </a>
+      <a class="ind-chip is-new" href="#sec-natalidad">
+        <span class="ind-chip-emoji">👶</span>
+        <span class="ind-chip-name">Natalidad</span>
+        <span class="ind-chip-arrow">→</span>
+      </a>
+      <a class="ind-chip" href="#sec-emae">
+        <span class="ind-chip-emoji">📊</span>
+        <span class="ind-chip-name">EMAE</span>
+        <span class="ind-chip-arrow">→</span>
+      </a>
+      <a class="ind-chip" href="#sec-pbi-pc">
+        <span class="ind-chip-emoji">🌎</span>
+        <span class="ind-chip-name">PBI per cápita</span>
+        <span class="ind-chip-arrow">→</span>
+      </a>
+      <a class="ind-chip is-new" href="#sec-patentamientos">
+        <span class="ind-chip-emoji">🚗</span>
+        <span class="ind-chip-name">Patentamientos</span>
+        <span class="ind-chip-arrow">→</span>
+      </a>
+      <a class="ind-chip is-new" href="#sec-ypf">
+        <span class="ind-chip-emoji">🛢️</span>
+        <span class="ind-chip-name">Petróleo YPF</span>
+        <span class="ind-chip-arrow">→</span>
+      </a>
+      <a class="ind-chip" href="#sec-merval">
+        <span class="ind-chip-emoji">📈</span>
+        <span class="ind-chip-name">Merval USD</span>
+        <span class="ind-chip-arrow">→</span>
+      </a>
+      <a class="ind-chip" href="#sec-ccl-real">
+        <span class="ind-chip-emoji">💵</span>
+        <span class="ind-chip-name">CCL Real</span>
+        <span class="ind-chip-arrow">→</span>
+      </a>
+      <a class="ind-chip" href="#sec-tcr-usa">
+        <span class="ind-chip-emoji">🇺🇸</span>
+        <span class="ind-chip-name">TCR vs USA</span>
+        <span class="ind-chip-arrow">→</span>
+      </a>
+    </div>
+  </section>
 
   <!-- ═══════════════════════════════════════════════════════════════ -->
   <!-- 1. RESERVAS INTERNACIONALES BCRA                                -->
@@ -934,6 +1062,8 @@
         <button class="range-tab" data-r="2A">2A</button>
         <button class="range-tab" data-r="5A">5A</button>
         <button class="range-tab" data-r="TODO">Todo</button>
+        <span class="range-tabs-divider"></span>
+        <button class="range-tab presidentes-toggle" id="btn-riesgo-presidentes" type="button" title="Pintar el gráfico por presidencia">🎨 Presidentes</button>
       </div>
       <div class="nota-fuente">J.P. Morgan · puntos básicos</div>
     </div>
@@ -2832,6 +2962,21 @@ const RIESGO_LIVE_URL = 'https://canuto-riesgo.lenzimartin.workers.dev/';
 let riesgoRaw = [];
 let _riesgoLastLive = null;
 
+// Modo "Presidentes": pinta la curva del riesgo país en segmentos por presidencia.
+// La serie EMBI+ JP Morgan tiene datos desde 1999-01-22, así que arrancamos
+// en Menem 2 y cubrimos todos los mandatos hasta hoy.
+let _riesgoPorPresidente = false;
+const PRESIDENTES_RIESGO = [
+  { key:'cm',  fecha: '1999-01-22', nombre: 'Menem',         color: '#dc2626' }, // rojo (pre-1999-12-10)
+  { key:'fdr', fecha: '1999-12-10', nombre: 'De la Rúa',     color: '#10b981' }, // verde
+  { key:'ed',  fecha: '2002-01-02', nombre: 'Duhalde',       color: '#f97316' }, // naranja
+  { key:'nk',  fecha: '2003-05-25', nombre: 'N. Kirchner',   color: '#60a5fa' }, // azul claro
+  { key:'cfk', fecha: '2007-12-10', nombre: 'CFK',           color: '#7dd3fc' }, // celeste
+  { key:'mm',  fecha: '2015-12-10', nombre: 'Macri',         color: '#fbbf24' }, // amarillo
+  { key:'af',  fecha: '2019-12-10', nombre: 'A. Fernández',  color: '#1e40af' }, // azul oscuro
+  { key:'jm',  fecha: '2023-12-10', nombre: 'Milei',         color: '#a855f7' }, // violeta
+];
+
 async function loadRiesgo() {
   riesgoRaw = await fetchAD('/finanzas/indices/riesgo-pais');
 }
@@ -2881,9 +3026,6 @@ function pctChangeToBpsDelta(pctChange) {
 function renderRiesgo(range) {
   const data = sliceByRange('riesgo', riesgoRaw, 'fecha', range);
   if (!data.length) return;
-  const labels     = data.map(d => fmtDateShort(d.fecha));
-  const values     = data.map(d => d.valor);
-  const fullLabels = data.map(d => fmtDate(d.fecha));
   const s = calcStats(data, d => d.valor);
 
   setText('stat-riesgo-max', s.max.toLocaleString('es-AR'));
@@ -2893,33 +3035,128 @@ function renderRiesgo(range) {
   const varTotal = s.first ? ((s.last - s.first) / s.first * 100) : null;
   setText('stat-riesgo-var', varTotal !== null ? fmtPct(varTotal) : '—');
 
-  // Si hay valor live exacto y es de fecha posterior al último cierre,
-  // agregamos un punto extra destacado al final del gráfico.
+  // Construimos chartPoints uniendo la serie oficial con el posible punto live.
+  // Cada punto lleva su flag _isLive para que tanto el modo normal como el de
+  // presidentes lo puedan resaltar (más grande y en verde).
+  const chartPoints = data.map(d => ({ fecha: d.fecha, valor: d.valor, _isLive: false }));
   const live = _riesgoLastLive;
   const lastFecha = data[data.length - 1].fecha; // YYYY-MM-DD
   const todayISO = new Date().toISOString().slice(0, 10);
-  let liveIdx = -1;
   if (live && typeof live.exactValue === 'number' && todayISO > lastFecha) {
-    labels.push(fmtDateShort(todayISO));
-    values.push(live.exactValue);
-    fullLabels.push(`${fmtDate(todayISO)} · en vivo (BondTerminal)`);
-    liveIdx = values.length - 1;
+    chartPoints.push({ fecha: todayISO, valor: live.exactValue, _isLive: true });
   }
 
-  // Estilo de los puntos: el punto live va más grande y en verde para resaltar
+  const labels     = chartPoints.map(d => fmtDateShort(d.fecha));
+  const values     = chartPoints.map(d => d.valor);
+  const fullLabels = chartPoints.map(d =>
+    d._isLive ? `${fmtDate(d.fecha)} · en vivo (BondTerminal)` : fmtDate(d.fecha)
+  );
   const baseRadius = values.length > 60 ? 0 : 2;
-  const pointBgColor = values.map((_, i) => i === liveIdx ? '#22c55e' : '#f87171');
-  const pointRadius  = values.map((_, i) => i === liveIdx ? 5 : baseRadius);
 
   $('load-riesgo').style.display = 'none';
   $('chart-riesgo').style.display = 'block';
-  makeLineChart('chart-riesgo', labels, values, '#f87171', true, ' pb', false, {
-    dataset: { pointBackgroundColor: pointBgColor, pointRadius },
-    tooltipCallbacks: {
-      title: items => fullLabels[items[0].dataIndex] || items[0].label,
+
+  if (_riesgoPorPresidente) {
+    _renderRiesgoPorPresidente(chartPoints, labels, fullLabels, baseRadius);
+  } else {
+    const pointBgColor = chartPoints.map(d => d._isLive ? '#22c55e' : '#f87171');
+    const pointRadius  = chartPoints.map(d => d._isLive ? 5 : baseRadius);
+    makeLineChart('chart-riesgo', labels, values, '#f87171', true, ' pb', false, {
+      dataset: { pointBackgroundColor: pointBgColor, pointRadius },
+      tooltipCallbacks: {
+        title: items => fullLabels[items[0].dataIndex] || items[0].label,
+      },
+    });
+  }
+  updateRiesgoHeader();
+}
+
+// Render del chart con un dataset por presidente — colorea cada tramo con
+// el color del mandato. El punto live (si está) cae en el período de Milei
+// y se resalta más grande / en verde como en el modo normal.
+function _renderRiesgoPorPresidente(chartPoints, labels, fullLabels, baseRadius) {
+  const ctx = $('chart-riesgo').getContext('2d');
+  const existing = Chart.getChart('chart-riesgo');
+  if (existing) existing.destroy();
+
+  const datasets = [];
+  for (let i = 0; i < PRESIDENTES_RIESGO.length; i++) {
+    const p    = PRESIDENTES_RIESGO[i];
+    const next = PRESIDENTES_RIESGO[i + 1];
+    const dStart = p.fecha;
+    const dEnd   = next ? next.fecha : '9999-99-99';
+    // Cada dataset incluye solo los puntos de su período + el primer punto del
+    // siguiente período como empalme (para que la línea no quede cortada).
+    let primerPostIdx = -1;
+    const segData = chartPoints.map((d, idx) => {
+      if (d.fecha >= dStart && d.fecha < dEnd) return d.valor;
+      if (next && d.fecha >= dEnd && primerPostIdx === -1) {
+        primerPostIdx = idx;
+        return d.valor;
+      }
+      return null;
+    });
+    if (segData.every(v => v === null)) continue;
+    datasets.push({
+      label: p.nombre,
+      data: segData,
+      borderColor: p.color,
+      backgroundColor: p.color + '2e',
+      borderWidth: 2,
+      pointRadius: chartPoints.map(d => {
+        const dentro = d.fecha >= dStart && d.fecha < dEnd;
+        if (!dentro) return 0;
+        if (d._isLive) return 5;
+        return baseRadius;
+      }),
+      pointHoverRadius: 5,
+      pointBackgroundColor: chartPoints.map(d => d._isLive ? '#22c55e' : p.color),
+      fill: true,
+      tension: 0.25,
+      spanGaps: false,
+    });
+  }
+
+  // Si por algún motivo no quedaron segmentos (ej. rango 100% pre-1999),
+  // caemos al render normal con makeLineChart.
+  if (!datasets.length) {
+    const values = chartPoints.map(d => d.valor);
+    const pointBgColor = chartPoints.map(d => d._isLive ? '#22c55e' : '#f87171');
+    const pointRadius  = chartPoints.map(d => d._isLive ? 5 : baseRadius);
+    makeLineChart('chart-riesgo', labels, values, '#f87171', true, ' pb', false, {
+      dataset: { pointBackgroundColor: pointBgColor, pointRadius },
+      tooltipCallbacks: {
+        title: items => fullLabels[items[0].dataIndex] || items[0].label,
+      },
+    });
+    return;
+  }
+
+  new Chart(ctx, {
+    type: 'line',
+    data: { labels, datasets },
+    options: {
+      ...CHART_OPTS_BASE,
+      plugins: {
+        ...CHART_OPTS_BASE.plugins,
+        legend: {
+          display: true, position: 'top', align: 'end',
+          labels: {
+            color: 'rgba(232,234,240,0.75)',
+            font: { size: 11, family: 'IBM Plex Mono' },
+            boxWidth: 14, boxHeight: 2, padding: 10,
+          },
+        },
+        tooltip: {
+          ...CHART_OPTS_BASE.plugins.tooltip,
+          callbacks: {
+            title: items => fullLabels[items[0].dataIndex] || items[0].label,
+            label: ctx => ` ${fmtNum(ctx.parsed.y)} pb · ${ctx.dataset.label}`,
+          },
+        },
+      },
     },
   });
-  updateRiesgoHeader();
 }
 
 // Decide qué mostrar en el header (exacto live > estimación > cierre oficial).
@@ -2994,6 +3231,17 @@ async function initRiesgo() {
     await loadRiesgo();
     renderRiesgo(activeRange('rt-riesgo'));
     attachCustomRange('riesgo', [], renderRiesgo);
+
+    // Toggle "🎨 Presidentes" — repinta la curva por períodos de mandato.
+    const btnPres = $('btn-riesgo-presidentes');
+    if (btnPres) {
+      btnPres.addEventListener('click', () => {
+        _riesgoPorPresidente = !_riesgoPorPresidente;
+        btnPres.classList.toggle('active', _riesgoPorPresidente);
+        renderRiesgo(activeRange('rt-riesgo'));
+      });
+    }
+
     // Arranca el ciclo de live (cada 60s)
     refreshRiesgoLive();
     setInterval(refreshRiesgoLive, 60 * 1000);
