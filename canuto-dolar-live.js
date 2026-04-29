@@ -1,6 +1,11 @@
 /* canuto-dolar-live.js
  * Cotizaciones del dólar en vivo, compartidas entre /dolar-en-vivo y /dolar-historico.
  *
+ * Fuente única: el Cloudflare Worker `canuto-dolar` ya hace el merge server-side y
+ * decide la fuente "correcta" para cada casa (BNA → bna.com.ar/Personas, blue →
+ * bluelytics, MEP/CCL → Ámbito, mayorista → criptoya, etc.). El cliente sólo
+ * consume ese endpoint, así nunca hay saltos entre fuentes en una misma casa.
+ *
  * Diseño:
  * - Una sola fuente de verdad por origen: cache en localStorage compartido entre todas
  *   las pestañas/páginas de canuto.ar. Mientras una cotización está fresca (<25s), todas
@@ -18,13 +23,10 @@
  * - Seed inicial: si el navegador nunca tuvo freeze (primer load) traemos el último
  *   cierre histórico desde argentinadatos.com para que MEP/CCL pre-10:30 tengan algo
  *   coherente desde el primer pintado.
- * - Fuente del minorista BNA: el "oficial" se toma SÓLO de dolarapi.com/v1/dolares
- *   (scraping del Banco Nación). No se mezcla con Ámbito ni con bluelytics, así nunca
- *   se inyecta un valor que no sea del BNA.
  * - Calendario de feriados: argentinadatos.com/v1/feriados + Día del Bancario hardcodeado.
  *
  * API pública (window.CanutoDolar):
- *   fetchLiveCotizaciones()  → Promise<Array> ({casa, _tipo, compra, venta, fechaActualizacion, _frozen?})
+ *   fetchLiveCotizaciones()  → Promise<Array> ({casa, _tipo, compra, venta, fechaActualizacion, _frozen?, _source?})
  *   isHorarioMercado()       → bool  (07:00-17:00 lun-vie no feriado, define _frozen general)
  *   isMercadoBanner()        → bool  (10:30-17:00 lun-vie no feriado, para el banner UI)
  *   esDiaHabilArg(date)      → bool
@@ -32,9 +34,9 @@
 (() => {
   'use strict';
 
-  const API          = 'https://dolarapi.com/v1/dolares';
-  const API_AMBITO   = 'https://dolarapi.com/v1/ambito/dolares';
-  const API_BLY      = 'https://api.bluelytics.com.ar/v2/latest';
+  // Endpoint único — el Worker `canuto-dolar` resuelve fuentes y entrega un array
+  // `cotizaciones` ya mergeado, con un campo `_source` por casa indicando el origen.
+  const API_DOLAR    = 'https://canuto-dolar.lenzimartin.workers.dev/api/dolar';
   const API_FERIADOS = (year) => `https://api.argentinadatos.com/v1/feriados/${year}`;
   const API_HIST     = (key)  => `https://api.argentinadatos.com/v1/cotizaciones/dolares/${key}`;
 
@@ -62,9 +64,11 @@
   const MIN_MEPCCL_INI  = 30;
   const CASAS_MEPCCL = ['bolsa', 'contadoconliqui'];
 
+  // Casas que el cliente reconoce. Si el worker devuelve casas extra (p.ej. 'tarjeta'),
+  // se ignoran porque las páginas no las pintan.
   const CASAS = ['oficial', 'blue', 'bolsa', 'contadoconliqui', 'mayorista'];
 
-  // Mapeo casa→tipo: dolarapi expone "bolsa" y "contadoconliqui" pero las páginas
+  // Mapeo casa→tipo: el worker expone "bolsa" y "contadoconliqui" pero las páginas
   // pintan tarjetas con id "mep" y "ccl", devolvemos las dos propiedades por compat.
   const CASA_TO_TIPO = {
     oficial: 'oficial',
@@ -188,42 +192,22 @@
     return minNow >= minIni;
   }
 
-  function _masReciente(a, b) {
-    if (!a) return b;
-    if (!b) return a;
-    const ta = a.fechaActualizacion ? new Date(a.fechaActualizacion).getTime() : 0;
-    const tb = b.fechaActualizacion ? new Date(b.fechaActualizacion).getTime() : 0;
-    return ta >= tb ? a : b;
-  }
-
-  function _merge(dataPrin, dataAmb, dataBly) {
+  // Filtra y normaliza la respuesta del worker `canuto-dolar`. Sólo nos quedamos con
+  // las casas que las páginas pintan; la `tarjeta` u otras casas nuevas se ignoran.
+  function _normalizarRespuestaWorker(payload) {
+    if (!payload || !Array.isArray(payload.cotizaciones)) return [];
     const out = [];
-    for (const casa of CASAS) {
-      const dPrin = dataPrin?.find(x => x.casa === casa) || null;
-      const dAmb  = dataAmb?.find(x  => x.casa === casa) || null;
-
-      let mejor;
-      if (casa === 'oficial') {
-        // Minorista BNA: SÓLO se actualiza con la cotización del BNA. La fuente
-        // BNA es dolarapi.com/v1/dolares (dataPrin); no mergeamos con Ámbito ni
-        // con bluelytics porque eso podría inyectar un "oficial" que ya no es
-        // del Banco Nación. Si dataPrin falla, oficial queda stale (freeze)
-        // hasta que la fuente vuelva.
-        mejor = dPrin;
-      } else {
-        mejor = _masReciente(dPrin, dAmb);
-        if (!mejor && dataBly && casa === 'blue' && dataBly.blue?.value_sell) {
-          mejor = {
-            casa,
-            compra: dataBly.blue.value_buy,
-            venta:  dataBly.blue.value_sell,
-            fechaActualizacion: dataBly.last_update,
-            nombre: 'Blue',
-            _fuente: 'bluelytics',
-          };
-        }
-      }
-      if (mejor) out.push({ ...mejor, casa, _tipo: CASA_TO_TIPO[casa] || casa });
+    for (const c of payload.cotizaciones) {
+      if (!c || !CASAS.includes(c.casa)) continue;
+      if (c.venta == null) continue;
+      out.push({
+        casa: c.casa,
+        _tipo: CASA_TO_TIPO[c.casa] || c.casa,
+        compra: c.compra,
+        venta:  c.venta,
+        fechaActualizacion: c.fechaActualizacion,
+        _source: c._source || null,
+      });
     }
     return out;
   }
@@ -236,16 +220,16 @@
 
   // Política de freeze:
   //   1) Por casa, sólo aceptamos un valor nuevo si su fechaActualizacion >= la guardada.
-  //      Así una respuesta vieja de la API jamás pisa un dato más reciente.
+  //      Así una respuesta vieja del worker jamás pisa un dato más reciente.
   //   2) MEP/CCL antes de las 10:30 ARG son intocables: no se actualiza el freeze para
-  //      esas casas aunque la API devuelva algo. La idea es que muestren el cierre del
+  //      esas casas aunque el worker devuelva algo. La idea es que muestren el cierre del
   //      último día hábil hasta que abra el mercado bursátil.
   //   3) La salida la armamos siempre desde el freeze (la "máxima fecha vista" por casa),
   //      así las cotizaciones nunca retroceden.
   //   4) _frozen=true en el output significa "este valor está fijo" y aplica:
   //        - para todas las casas cuando isHorarioMercado() es false
   //        - para MEP/CCL cuando aún no son las 10:30 ARG, aunque el freeze general esté abierto
-  function _aplicarFreeze(merged) {
+  function _aplicarFreeze(cotizaciones) {
     const enHorario = isHorarioMercado();
     const mepCclOk  = _mepCclDisponible();
     const freeze = _read(KEY_FREEZE) || { dia: null, cotizaciones: {} };
@@ -253,7 +237,7 @@
       freeze.cotizaciones = {};
     }
 
-    for (const cot of merged) {
+    for (const cot of cotizaciones) {
       // No tocamos MEP/CCL antes de las 10:30: deben quedar pegadas al cierre anterior.
       if (CASAS_MEPCCL.includes(cot.casa) && !mepCclOk) continue;
 
@@ -271,13 +255,13 @@
     freeze.dia = _ahoraArg().ymd;
     _write(KEY_FREEZE, freeze);
 
-    const mergedByCasa = {};
-    for (const cot of merged) mergedByCasa[cot.casa] = cot;
+    const cotByCasa = {};
+    for (const cot of cotizaciones) cotByCasa[cot.casa] = cot;
 
     const out = [];
     for (const casa of CASAS) {
       const f = freeze.cotizaciones[casa];
-      const baseCot = mergedByCasa[casa];
+      const baseCot = cotByCasa[casa];
       if (!f && !baseCot) continue;
       if (!f) {
         // No tenemos histórico en el freeze: usamos lo que vino crudo (puede ser la
@@ -327,7 +311,6 @@
         }
         if (!ultimo) return;
         const fechaIso = `${String(ultimo.fecha).slice(0, 10)}T17:00:00-03:00`;
-        // Releer el freeze ahora: puede que el flujo normal ya haya escrito.
         const cur = _read(KEY_FREEZE) || { cotizaciones: {} };
         if (!cur.cotizaciones) cur.cotizaciones = {};
         if (cur.cotizaciones[casa]) return; // alguien ya escribió, no pisar
@@ -371,21 +354,19 @@
 
     _inflight = (async () => {
       try {
-        const [resPrin, resAmb, resBly] = await Promise.allSettled([
-          fetch(API,        { cache: 'no-store' }).then(r => r.ok ? r.json() : null),
-          fetch(API_AMBITO, { cache: 'no-store' }).then(r => r.ok ? r.json() : null),
-          fetch(API_BLY,    { cache: 'no-store' }).then(r => r.ok ? r.json() : null),
-        ]);
-        const dataPrin = resPrin.status === 'fulfilled' ? resPrin.value : null;
-        const dataAmb  = resAmb.status  === 'fulfilled' ? resAmb.value  : null;
-        const dataBly  = resBly.status  === 'fulfilled' ? resBly.value  : null;
-        if (!dataPrin && !dataAmb && !dataBly) {
+        let payload = null;
+        try {
+          const r = await fetch(API_DOLAR, { cache: 'no-store' });
+          if (r.ok) payload = await r.json();
+        } catch { /* silencioso */ }
+
+        if (!payload) {
           if (shared && Array.isArray(shared.merged)) return shared.merged;
-          throw new Error('Todas las fuentes fallaron');
+          throw new Error('Worker canuto-dolar no respondió');
         }
 
-        const merged = _merge(dataPrin, dataAmb, dataBly);
-        const final = _aplicarFreeze(merged);
+        const cotizaciones = _normalizarRespuestaWorker(payload);
+        const final = _aplicarFreeze(cotizaciones);
 
         _write(KEY_SHARED, { ts: Date.now(), merged: final });
         return final;
