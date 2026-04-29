@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Dólar en Vivo — Canuto.ar</title>
   <meta name="description" content="Cotización del dólar en Argentina en tiempo real. Oficial BNA, Blue, MEP y CCL con variación diaria." />
+  <script src="/canuto-dolar-live.js"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=IBM+Plex+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
 
@@ -1055,32 +1056,11 @@ function renderBrechas(merged) {
 
 async function fetchData() {
   try {
-    // Consultamos ambas fuentes en paralelo; si alguna falla la ignoramos
-    const [resPrin, resAmb, resBly] = await Promise.allSettled([
-      fetch(API,        { cache: 'no-store' }).then(r => r.ok ? r.json() : null),
-      fetch(API_AMBITO, { cache: 'no-store' }).then(r => r.ok ? r.json() : null),
-      fetch('https://api.bluelytics.com.ar/v2/latest', { cache: 'no-store' }).then(r => r.ok ? r.json() : null),
-    ]);
-
-    const dataPrincipal = resPrin.status === 'fulfilled' ? resPrin.value : null;
-    const dataAmbito    = resAmb.status  === 'fulfilled' ? resAmb.value  : null;
-    const dataBlue      = resBly.status  === 'fulfilled' ? resBly.value  : null;
-
-    if (!dataPrincipal && !dataAmbito) throw new Error('Ambas fuentes fallaron');
-
-    // Si dolarapi falla para oficial, completar con bluelytics
-    if (dataBlue && (!dataPrincipal || !dataPrincipal.find(x => x.casa === 'oficial'))) {
-      const blyOficial = {
-        casa: 'oficial',
-        compra: dataBlue.oficial?.value_buy,
-        venta:  dataBlue.oficial?.value_sell,
-        fechaActualizacion: dataBlue.last_update,
-      };
-      if (!dataPrincipal) dataPrincipal = [blyOficial];
-      else dataPrincipal.push(blyOficial);
-    }
-
-    const merged = mergeFuentes(dataPrincipal, dataAmbito);
+    // Cotizaciones de la fuente compartida: cache localStorage + freeze fuera de horario.
+    // Garantiza que /dolar-en-vivo y /dolar-historico siempre muestren los mismos números
+    // y que MEP/CCL/etc. no oscilen post-cierre del mercado.
+    const merged = await window.CanutoDolar.fetchLiveCotizaciones();
+    if (!merged || !merged.length) throw new Error('Sin datos');
 
     renderCard('oficial', merged);
     renderCard('blue',    merged);
@@ -1089,6 +1069,13 @@ async function fetchData() {
     renderCard('mayorista', merged);
     renderBrechas(merged);
     renderTicker(merged);
+
+    // Indicar visualmente si está congelado por horario
+    const frozen = merged.some(c => c._frozen);
+    const refreshStatus = document.getElementById('refresh-status');
+    if (frozen && refreshStatus) {
+      refreshStatus.textContent = 'Mercado cerrado · cotizaciones fijadas';
+    }
 
     const _n = new Date();
     const _ts = `${String(_n.getDate()).padStart(2,'0')}/${String(_n.getMonth()+1).padStart(2,'0')}/${_n.getFullYear()} ${String(_n.getHours()).padStart(2,'0')}:${String(_n.getMinutes()).padStart(2,'0')}`;
