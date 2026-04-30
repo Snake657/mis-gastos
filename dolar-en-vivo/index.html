@@ -892,7 +892,25 @@ async function fetchAyer() {
   _ayerYmd = hoyStr;
 }
 
-function varPct(tipo, cur) {
+// True si la cotización mostrada en la card es el cierre del día anterior (está
+// congelada en una fecha ARG distinta a hoy). En ese caso "vs cierre anterior"
+// debe ser 0% por definición — el valor mostrado ES el cierre anterior. Calcular
+// la variación contra _ayer (que viene de argentinadatos.com) genera falsos
+// diferenciales cuando las fuentes no coinciden al peso: el worker canuto-dolar
+// captura MEP/CCL del cierre vía Ámbito mientras argentinadatos publica un
+// cierre ligeramente distinto.
+function _cardCongeladaEnOtraFecha(d) {
+  if (!d || !d._frozen || !d.fechaActualizacion) return false;
+  const dt = new Date(d.fechaActualizacion);
+  if (isNaN(dt.getTime())) return false;
+  const todayYmd = new Date().toLocaleDateString('sv-SE', { timeZone: 'America/Argentina/Buenos_Aires' });
+  const faYmd    = dt.toLocaleDateString('sv-SE', { timeZone: 'America/Argentina/Buenos_Aires' });
+  return faYmd !== todayYmd;
+}
+
+function varPct(tipo, d) {
+  if (_cardCongeladaEnOtraFecha(d)) return 0;
+  const cur = d && d.venta;
   const b = _ayer[tipo];
   return (b && cur) ? ((cur - b) / b) * 100 : null;
 }
@@ -940,17 +958,22 @@ function renderCard(id, merged) {
   const casaMap = { oficial:'oficial', blue:'blue', mep:'bolsa', ccl:'contadoconliqui', mayorista:'mayorista' };
   const d = merged.find(x => x.casa === casaMap[id] || x._tipo === id);
   if (!d) return;
-  const vp = varPct(id, d.venta);
+  const vp = varPct(id, d);
 
   document.getElementById(`v-${id}-venta`).textContent  = fmt(d.venta);
   document.getElementById(`v-${id}-compra`).textContent = fmt(d.compra);
   document.getElementById(`t-${id}`).textContent        = fmtTime(d.fechaActualizacion);
 
-  // Valor del día hábil anterior — se muestra como "subió $20 vs cierre anterior"
+  // Valor del día hábil anterior — se muestra como "subió $20 vs cierre anterior".
+  // Si la card está congelada en una fecha de otro día (cierre anterior), ese
+  // valor ES el cierre anterior por definición → mostramos "sin cambios" sin
+  // calcular contra _ayer (que es de otra fuente y puede no coincidir al peso).
   const ayerEl  = document.getElementById(`ayer-${id}`);
   const ayerVal = _ayer[id];
   if (ayerEl) {
-    if (ayerVal && d.venta) {
+    if (_cardCongeladaEnOtraFecha(d)) {
+      ayerEl.innerHTML = `sin cambios vs cierre anterior`;
+    } else if (ayerVal && d.venta) {
       const diff  = d.venta - ayerVal;
       if (Math.abs(diff) < 0.005) {
         ayerEl.innerHTML = `sin cambios vs cierre anterior`;
@@ -992,7 +1015,7 @@ function renderTicker(merged) {
   for (const it of items) {
     const d = merged.find(x => x._tipo === it.tipo);
     if (!d) continue;
-    const vp  = varPct(it.tipo, d.venta);
+    const vp  = varPct(it.tipo, d);
     const vs  = vp !== null ? fmtPct(vp) : '—';
     const cls = vp === null ? 'neu' : vp > 0 ? 'pos' : vp < 0 ? 'neg' : 'neu';
     for (const sfx of ['', '2']) {
