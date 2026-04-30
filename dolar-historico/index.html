@@ -776,7 +776,12 @@ function buildChart(data, tipo) {
   const canvas = document.getElementById('mainChart');
   const ctx = canvas.getContext('2d');
   const pts = data.length > 800 ? downsample(data,800) : data;
-  const labels = pts.map(d=>d.fecha.slice(0,10));
+  // Conservamos d.fecha entero (sin slice) para que ISOs con hora del 1D —
+  // p.ej. "2026-04-29T11:30:00-03:00" — lleguen tal cual a fmtDS / fmtD,
+  // que detectan la parte horaria y muestran "HH:mm" en eje X y tooltip.
+  // Para fechas pelades "YYYY-MM-DD" (resto de los rangos), fmtDS / fmtD
+  // ya hacen el slice internamente, así que el comportamiento no cambia.
+  const labels = pts.map(d=>d.fecha);
   const ventas  = pts.map(d=>d.venta);
   const compras = pts.map(d=>d.compra);
   const grad = ctx.createLinearGradient(0,0,0,260);
