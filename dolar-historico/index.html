@@ -742,6 +742,33 @@ const INTRADAY_API = 'https://canuto-intraday.lenzimartin.workers.dev/today';
 let _intradayCache = { ymd: null, body: null, ts: 0 };
 const INTRADAY_TTL_MS = 25 * 1000;
 
+// El KV del Worker almacena bajo `intraday:{ymd}` con ticks cuya `fa` (fechaActualizacion)
+// puede no coincidir con el ymd del KV: por ejemplo, el primer tick del día arrastra
+// la fa del cierre de ayer (17:00 del 29) hasta que la fuente publica algo nuevo, y
+// fuentes 24/7 (criptoya/bluelytics) generan ticks de la madrugada (02:56, 05:56)
+// que no corresponden al horario de mercado. El gráfico "1D" filtra por:
+//   1) la fa debe ser de HOY ARG (descarta el cierre del día anterior).
+//   2) la fa debe estar dentro de 07:00-17:00 ARG (horario de mercado).
+function _esTickIntradayValido(t, todayYmd) {
+  const iso = (t && (t.fa || t.ts)) || null;
+  if (!iso) return false;
+  const dt = new Date(iso);
+  if (isNaN(dt.getTime())) return false;
+  const tickYmd = dt.toLocaleDateString('sv-SE', { timeZone: 'America/Argentina/Buenos_Aires' });
+  if (tickYmd !== todayYmd) return false;
+  const fmt = new Intl.DateTimeFormat('en-GB', {
+    timeZone: 'America/Argentina/Buenos_Aires',
+    hour: '2-digit', minute: '2-digit', hour12: false,
+  });
+  let hh = 0, mm = 0;
+  for (const p of fmt.formatToParts(dt)) {
+    if (p.type === 'hour') hh = parseInt(p.value, 10);
+    if (p.type === 'minute') mm = parseInt(p.value, 10);
+  }
+  const mins = hh * 60 + mm;
+  return mins >= 7 * 60 && mins <= 17 * 60;
+}
+
 async function loadIntraday(tipo) {
   const casa = LIVE_CASA[tipo];
   const now  = Date.now();
@@ -755,12 +782,15 @@ async function loadIntraday(tipo) {
     _intradayCache = { ymd: body.ymd, body, ts: now };
   }
   const ticks = (body.cotizaciones && body.cotizaciones[casa]) || [];
-  return ticks.map(t => ({
-    fecha:  t.fa || t.ts,
-    compra: t.compra,
-    venta:  t.venta,
-    _live:  true,
-  }));
+  const todayYmd = new Date().toLocaleDateString('sv-SE', { timeZone: 'America/Argentina/Buenos_Aires' });
+  return ticks
+    .filter(t => _esTickIntradayValido(t, todayYmd))
+    .map(t => ({
+      fecha:  t.fa || t.ts,
+      compra: t.compra,
+      venta:  t.venta,
+      _live:  true,
+    }));
 }
 
 // ── CHART ────────────────────────────────────────────────
