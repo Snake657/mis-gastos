@@ -9,6 +9,11 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <!-- Adapter de fechas para el time scale del filtro 1D — ~10kb. Permite que el
+       eje X del gráfico intra-día use posiciones temporales reales en vez de
+       categorías, para que las cinco casas compartan exactamente el mismo eje
+       (07:00-17:00 ARG fijo). -->
+  <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns@3.0.0/dist/chartjs-adapter-date-fns.bundle.min.js"></script>
   <style>
     :root {
       --bg: #0d0f14; --surface: #13161e; --surface2: #1a1e28; --border: #232736; --border2: #2d3245;
@@ -801,35 +806,107 @@ function downsample(arr, n) {
   return r;
 }
 
+// Plugin que dibuja una línea vertical y un label "ahora" en el rango 1D
+// mientras el reloj ARG está dentro del horario de mercado. La línea se
+// repinta automáticamente en cada update del chart (refresh cada 30s).
+const nowLinePlugin = {
+  id: 'nowLine',
+  afterDatasetsDraw(chart) {
+    if (currentRange !== '1D') return;
+    const xScale = chart.scales.x;
+    const yScale = chart.scales.y;
+    if (!xScale || !yScale) return;
+
+    const now = new Date();
+    const todayYmd = now.toLocaleDateString('sv-SE', { timeZone: 'America/Argentina/Buenos_Aires' });
+    const xMin = new Date(`${todayYmd}T07:00:00-03:00`);
+    const xMax = new Date(`${todayYmd}T17:00:00-03:00`);
+    if (now < xMin || now > xMax) return;
+
+    const x = xScale.getPixelForValue(now);
+    if (!Number.isFinite(x)) return;
+    const ctx = chart.ctx;
+    ctx.save();
+    ctx.strokeStyle = 'rgba(74,222,128,0.55)';
+    ctx.lineWidth = 1;
+    ctx.setLineDash([4, 4]);
+    ctx.beginPath();
+    ctx.moveTo(x, yScale.top);
+    ctx.lineTo(x, yScale.bottom);
+    ctx.stroke();
+
+    ctx.setLineDash([]);
+    ctx.fillStyle = 'rgba(74,222,128,0.95)';
+    ctx.font = '10px "IBM Plex Mono", monospace';
+    ctx.textAlign = 'center';
+    ctx.fillText('ahora', x, yScale.top - 4);
+    ctx.restore();
+  },
+};
+
 function buildChart(data, tipo) {
   const cfg = TIPOS[tipo];
   const canvas = document.getElementById('mainChart');
   const ctx = canvas.getContext('2d');
   const pts = data.length > 800 ? downsample(data,800) : data;
-  // Conservamos d.fecha entero (sin slice) para que ISOs con hora del 1D —
-  // p.ej. "2026-04-29T11:30:00-03:00" — lleguen tal cual a fmtDS / fmtD,
-  // que detectan la parte horaria y muestran "HH:mm" en eje X y tooltip.
-  // Para fechas pelades "YYYY-MM-DD" (resto de los rangos), fmtDS / fmtD
-  // ya hacen el slice internamente, así que el comportamiento no cambia.
-  const labels = pts.map(d=>d.fecha);
-  const ventas  = pts.map(d=>d.venta);
-  const compras = pts.map(d=>d.compra);
+  const isIntraday = currentRange === '1D';
+
   const grad = ctx.createLinearGradient(0,0,0,260);
   grad.addColorStop(0, cfg.color+'28');
   grad.addColorStop(1, cfg.color+'00');
-  const datasets = [
-    { label:'Venta',  data:ventas,  borderColor:cfg.color, backgroundColor:grad, borderWidth:1.5, pointRadius:0, tension:0.3, fill:true },
-    { label:'Compra', data:compras, borderColor:cfg.color+'60', backgroundColor:'transparent', borderWidth:1, pointRadius:0, tension:0.3, fill:false, borderDash:[4,3] }
-  ];
-  const tickCb = (_,i) => i % Math.max(1,Math.floor(pts.length/8))===0 ? fmtDS(labels[i]) : '';
-  if (chart) {
-    chart.data.labels = labels;
-    chart.data.datasets = datasets;
-    chart.options.scales.x.ticks.callback = tickCb;
-    chart.update('none'); return;
+
+  let datasets, labels, scaleX;
+
+  if (isIntraday) {
+    // Time scale: cada punto vive en su minuto exacto del día. Eje X fijo a
+    // 07:00-17:00 ARG para que las cinco casas compartan exactamente la misma
+    // grilla, sin importar cuántos ticks haya o desde qué hora arranquen.
+    const ventasXY  = pts.map(d => ({ x: d.fecha, y: d.venta }));
+    const comprasXY = pts.map(d => ({ x: d.fecha, y: d.compra }));
+    datasets = [
+      { label:'Venta',  data:ventasXY,  borderColor:cfg.color, backgroundColor:grad, borderWidth:1.5, pointRadius:0, tension:0.3, fill:true,  parsing:false },
+      { label:'Compra', data:comprasXY, borderColor:cfg.color+'60', backgroundColor:'transparent', borderWidth:1,   pointRadius:0, tension:0.3, fill:false, borderDash:[4,3], parsing:false }
+    ];
+    labels = [];
+    const todayYmd = new Date().toLocaleDateString('sv-SE', { timeZone: 'America/Argentina/Buenos_Aires' });
+    scaleX = {
+      type: 'time',
+      min:  `${todayYmd}T07:00:00-03:00`,
+      max:  `${todayYmd}T17:00:00-03:00`,
+      time: {
+        unit: 'hour', stepSize: 1,
+        displayFormats: { hour: 'HH:mm' },
+        tooltipFormat:  'HH:mm',
+      },
+      adapters: { date: { locale: undefined } },
+      grid:   { color:'#232736', drawTicks:false },
+      border: { color:'#232736' },
+      ticks:  { color:'#545870', font:{family:'IBM Plex Mono',size:10}, maxRotation:0, source:'auto' },
+    };
+  } else {
+    // Category scale (rangos diarios y mayores). Comportamiento original.
+    labels = pts.map(d => d.fecha);
+    const ventas  = pts.map(d => d.venta);
+    const compras = pts.map(d => d.compra);
+    datasets = [
+      { label:'Venta',  data:ventas,  borderColor:cfg.color, backgroundColor:grad, borderWidth:1.5, pointRadius:0, tension:0.3, fill:true },
+      { label:'Compra', data:compras, borderColor:cfg.color+'60', backgroundColor:'transparent', borderWidth:1, pointRadius:0, tension:0.3, fill:false, borderDash:[4,3] }
+    ];
+    const tickCb = (_,i) => i % Math.max(1,Math.floor(pts.length/8))===0 ? fmtDS(labels[i]) : '';
+    scaleX = {
+      grid:   { color:'#232736', drawTicks:false },
+      border: { color:'#232736' },
+      ticks:  { color:'#545870', font:{family:'IBM Plex Mono',size:10}, maxRotation:0, callback:tickCb },
+    };
   }
+
+  // Como el cambio de scale.type entre 1D y otros rangos invalida la config
+  // anterior, destruimos y recreamos el chart en cada switch de rango.
+  if (chart) { chart.destroy(); chart = null; }
+
   chart = new Chart(ctx, {
     type:'line', data:{labels, datasets},
+    plugins:[nowLinePlugin],
     options:{
       responsive:true, maintainAspectRatio:false,
       interaction:{intersect:false, mode:'index'},
@@ -841,15 +918,15 @@ function buildChart(data, tipo) {
           titleFont:{family:'IBM Plex Mono',size:11},
           bodyFont:{family:'IBM Plex Mono',size:12}, padding:10,
           callbacks:{
-            title:items=>fmtD(items[0].label),
-            label:item=>` ${item.dataset.label}: ${fmt(item.raw)}`
+            title: items => isIntraday
+              ? new Date(items[0].parsed.x).toLocaleTimeString('es-AR', { timeZone:'America/Argentina/Buenos_Aires', hour:'2-digit', minute:'2-digit', hour12:false })
+              : fmtD(items[0].label),
+            label: item => ` ${item.dataset.label}: ${fmt(isIntraday ? item.parsed.y : item.raw)}`
           }
         }
       },
       scales:{
-        x:{grid:{color:'#232736',drawTicks:false}, border:{color:'#232736'},
-          ticks:{color:'#545870', font:{family:'IBM Plex Mono',size:10}, maxRotation:0, callback:tickCb}
-        },
+        x: scaleX,
         y:{position:'right', grid:{color:'#232736',drawTicks:false}, border:{color:'#232736',dash:[3,3]},
           ticks:{color:'#545870', font:{family:'IBM Plex Mono',size:10},
             callback:v=>'$'+Number(v).toLocaleString('es-AR',{maximumFractionDigits:0})
@@ -1039,7 +1116,6 @@ document.querySelectorAll('.range-tab').forEach(btn=>btn.addEventListener('click
   const cr = document.getElementById('custom-range');
   if (currentRange === 'CUSTOM') {
     cr.classList.add('visible');
-  } else {
     cr.classList.remove('visible');
     customFrom = null; customTo = null;
     render();
