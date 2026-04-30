@@ -1,0 +1,1023 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dólar Histórico — Canuto.ar</title>
+  <meta name="description" content="Cotización histórica del dólar en Argentina: Oficial, Blue, MEP, CCL y Mayorista desde 2003." />
+  <script src="/canuto-dolar-live.js"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <style>
+    :root {
+      --bg: #0d0f14; --surface: #13161e; --surface2: #1a1e28; --border: #232736; --border2: #2d3245;
+      --text: #e8eaf0; --text2: #8b90a4; --text3: #545870;
+      --accent: #4ade80; --accent-dim: rgba(74,222,128,0.12);
+      --blue: #60a5fa; --orange: #fb923c; --purple: #a78bfa; --teal: #2dd4bf;
+      --red: #f87171; --green: #4ade80;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: var(--bg); color: var(--text);
+      font-family: 'IBM Plex Sans', sans-serif;
+      min-height: 100vh; -webkit-font-smoothing: antialiased;
+    }
+
+    /* NAV */
+    nav {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 14px 20px; border-bottom: 1px solid var(--border);
+      position: sticky; top: 0;
+      background: rgba(13,15,20,0.95); backdrop-filter: blur(12px); z-index: 100;
+    }
+    .nav-logo {
+      font-family: 'IBM Plex Mono', monospace; font-weight: 700;
+      font-size: 0.95rem; color: var(--text); text-decoration: none;
+      letter-spacing: -0.03em; flex-shrink: 0;
+    }
+    .nav-logo span { color: var(--accent); }
+    .nav-links {
+      display: flex; gap: 3px; overflow-x: auto;
+      scrollbar-width: none; -webkit-overflow-scrolling: touch;
+    }
+    .nav-links::-webkit-scrollbar { display: none; }
+    .nav-links a {
+      color: var(--text2); text-decoration: none; font-size: 0.72rem;
+      font-family: 'IBM Plex Mono', monospace; padding: 5px 9px;
+      border-radius: 6px; transition: all 0.12s; white-space: nowrap; flex-shrink: 0;
+    }
+    .nav-links a:hover { color: var(--text); background: var(--surface2); }
+    .nav-links a.active { color: var(--bg); background: var(--accent); font-weight: 700; }
+
+    main { max-width: 960px; margin: 0 auto; padding: 36px 20px 80px; }
+
+    /* HEADER */
+    .eyebrow {
+      font-family: 'IBM Plex Mono', monospace; font-size: 0.68rem;
+      letter-spacing: 0.12em; text-transform: uppercase; color: var(--accent); margin-bottom: 8px;
+    }
+    h1 {
+      font-size: clamp(1.6rem, 4vw, 2.2rem); font-weight: 600;
+      letter-spacing: -0.03em; line-height: 1.1; margin-bottom: 8px;
+    }
+    .subtitle { color: var(--text2); font-size: 0.9rem; margin-bottom: 32px; }
+
+    /* TIPO TABS */
+    .tipo-tabs { display: flex; gap: 6px; margin-bottom: 22px; flex-wrap: wrap; }
+    .tipo-tab {
+      display: flex; align-items: center; gap: 7px;
+      padding: 8px 14px; border-radius: 8px;
+      border: 1px solid var(--border); background: var(--surface);
+      color: var(--text2); font-size: 0.82rem;
+      font-family: 'IBM Plex Sans', sans-serif; font-weight: 500;
+      cursor: pointer; transition: all 0.15s;
+    }
+    .tipo-tab:hover { border-color: var(--border2); color: var(--text); }
+    .tipo-tab.active { border-color: transparent; color: var(--bg); font-weight: 700; }
+    .dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
+    .tipo-tab[data-tipo="oficial"] .dot { background: var(--accent); }
+    .tipo-tab[data-tipo="blue"]    .dot { background: var(--blue); }
+    .tipo-tab[data-tipo="mep"]     .dot { background: var(--orange); }
+    .tipo-tab[data-tipo="ccl"]     .dot { background: var(--purple); }
+    .tipo-tab[data-tipo="oficial"].active { background: var(--accent); }
+    .tipo-tab[data-tipo="blue"].active    { background: var(--blue); }
+    .tipo-tab[data-tipo="mep"].active     { background: var(--orange); }
+    .tipo-tab[data-tipo="ccl"].active     { background: var(--purple); }
+    .tipo-tab[data-tipo="mayorista"] .dot { background: var(--teal); }
+    .tipo-tab[data-tipo="mayorista"].active { background: var(--teal); }
+    .tipo-tab.active .dot { background: var(--bg); }
+
+    /* SUMMARY CARDS */
+    .summary-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 10px; margin-bottom: 18px; }
+    .summary-card {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 10px; padding: 13px 15px;
+    }
+    .summary-card .slabel {
+      font-family: 'IBM Plex Mono', monospace; font-size: 0.68rem;
+      color: var(--text3); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 5px;
+    }
+    .summary-card .svalue {
+      font-family: 'IBM Plex Mono', monospace; font-size: clamp(0.95rem,2.5vw,1.25rem);
+      font-weight: 700; line-height: 1;
+    }
+    .summary-card .ssub {
+      font-family: 'IBM Plex Mono', monospace; font-size: 0.65rem; color: var(--text3); margin-top: 3px;
+    }
+    .summary-card.current .svalue { color: var(--accent); }
+    .summary-card.maxc    .svalue { color: var(--red); }
+    .summary-card.minc    .svalue { color: var(--green); }
+
+    /* CHART */
+    .chart-panel {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 12px; padding: 18px; margin-bottom: 14px;
+    }
+    .chart-toolbar {
+      display: flex; justify-content: space-between; align-items: center;
+      margin-bottom: 16px; flex-wrap: wrap; gap: 8px;
+    }
+    .chart-title { font-family: 'IBM Plex Mono', monospace; font-size: 0.75rem; color: var(--text2); letter-spacing: 0.04em; }
+    .range-tabs {
+      display: flex; gap: 2px; background: var(--surface2);
+      border-radius: 7px; padding: 3px;
+    }
+    .range-tab {
+      padding: 5px 10px; border-radius: 5px; border: none;
+      background: transparent; color: var(--text3);
+      font-family: 'IBM Plex Mono', monospace; font-size: 0.72rem;
+      font-weight: 500; cursor: pointer; transition: all 0.12s;
+    }
+    .range-tab:hover { color: var(--text2); }
+    .range-tab.active { background: var(--surface); color: var(--text); box-shadow: 0 1px 4px rgba(0,0,0,0.3); }
+    .chart-wrap { position: relative; height: 260px; }
+    @media (max-width:600px) { .chart-wrap { height: 200px; } }
+
+    /* SEARCH */
+    .search-panel {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 12px; padding: 18px; margin-bottom: 14px;
+    }
+    .search-title {
+      font-family: 'IBM Plex Mono', monospace; font-size: 0.72rem;
+      color: var(--text2); letter-spacing: 0.06em; text-transform: uppercase;
+      margin-bottom: 13px; display: flex; align-items: center; gap: 7px;
+    }
+    .search-title::before {
+      content: ''; width: 6px; height: 6px; border-radius: 50%;
+      background: var(--accent); flex-shrink: 0;
+    }
+    .search-modes {
+      display: flex; gap: 3px; margin-bottom: 13px;
+      background: var(--surface2); border-radius: 7px; padding: 3px; width: fit-content;
+    }
+    .smode-btn {
+      padding: 5px 14px; border-radius: 5px; border: none;
+      background: transparent; color: var(--text3);
+      font-family: 'IBM Plex Mono', monospace; font-size: 0.75rem;
+      font-weight: 500; cursor: pointer; transition: all 0.12s;
+    }
+    .smode-btn:hover { color: var(--text2); }
+    .smode-btn.active { background: var(--surface); color: var(--text); box-shadow: 0 1px 4px rgba(0,0,0,.3); }
+    .sinputs { display: flex; gap: 8px; align-items: flex-end; flex-wrap: wrap; }
+    .igroup { display: flex; flex-direction: column; gap: 4px; }
+    .igroup label {
+      font-family: 'IBM Plex Mono', monospace; font-size: 0.65rem;
+      color: var(--text3); letter-spacing: 0.06em; text-transform: uppercase;
+    }
+    .igroup input[type="date"] {
+      background: var(--surface2); border: 1px solid var(--border2);
+      border-radius: 7px; color: var(--text);
+      font-family: 'IBM Plex Mono', monospace; font-size: 0.82rem;
+      padding: 7px 11px; outline: none; transition: border-color .15s; color-scheme: dark;
+    }
+    .igroup input[type="date"]:focus { border-color: var(--accent); }
+    .sbtn {
+      padding: 8px 18px; border-radius: 7px; border: none;
+      background: var(--accent); color: var(--bg);
+      font-family: 'IBM Plex Mono', monospace; font-size: 0.8rem;
+      font-weight: 700; cursor: pointer; transition: opacity .15s; white-space: nowrap;
+    }
+    .sbtn:hover { opacity: .85; }
+    .clrbtn {
+      padding: 8px 12px; border-radius: 7px;
+      border: 1px solid var(--border2); background: transparent;
+      color: var(--text3); font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.8rem; cursor: pointer; transition: all .12s;
+    }
+    .clrbtn:hover { color: var(--text2); }
+    .sresults { margin-top: 14px; display: none; }
+    .sresults.visible { display: block; }
+    .sresult-head { font-family: 'IBM Plex Mono', monospace; font-size: 0.7rem; color: var(--text3); margin-bottom: 9px; }
+    .sresult-grid { display: grid; grid-template-columns: repeat(2,1fr); gap: 7px; }
+    @media (min-width:560px) { .sresult-grid { grid-template-columns: repeat(4,1fr); } }
+    .src-card {
+      background: var(--surface2); border: 1px solid var(--border);
+      border-radius: 9px; padding: 11px 13px;
+    }
+    .src-lbl {
+      font-family: 'IBM Plex Mono', monospace; font-size: 0.62rem;
+      text-transform: uppercase; letter-spacing: 0.1em; font-weight: 700; margin-bottom: 8px;
+    }
+    .src-lbl.oficial{color:var(--accent)} .src-lbl.blue{color:var(--blue)}
+    .src-lbl.mep{color:var(--orange)}     .src-lbl.ccl{color:var(--purple)}
+    .src-lbl.mayorista{color:var(--teal)}
+    .src-row { display:flex; justify-content:space-between; align-items:center; margin-bottom:3px; }
+    .src-row:last-child { margin-bottom:0; }
+    .src-key { font-family:'IBM Plex Mono',monospace; font-size:.65rem; color:var(--text3); }
+    .src-val { font-family:'IBM Plex Mono',monospace; font-size:.88rem; font-weight:700; color:var(--text); }
+    .src-nodata { font-family:'IBM Plex Mono',monospace; font-size:.75rem; color:var(--text3); }
+    .rng-scroll { max-height:300px; overflow-y:auto; border-radius:8px; border:1px solid var(--border); }
+    .rng-table { width:100%; border-collapse:collapse; }
+    .rng-table th {
+      position:sticky; top:0; background:var(--surface2); color:var(--text3);
+      font-family:'IBM Plex Mono',monospace; font-size:.65rem;
+      padding:8px 11px; text-align:left; border-bottom:1px solid var(--border); letter-spacing:.06em;
+    }
+    .rng-table th.r { text-align:right; }
+    .rng-table td {
+      padding:6px 11px; color:var(--text2); border-bottom:1px solid rgba(35,39,54,.4);
+      font-family:'IBM Plex Mono',monospace; font-size:.78rem;
+    }
+    .rng-table td.r { text-align:right; color:var(--text); }
+    .rng-table tr:last-child td { border-bottom:none; }
+    .rng-table tr:hover td { background:rgba(26,30,40,.6); }
+    .tbadge { display:inline-block; padding:2px 7px; border-radius:4px; font-size:.62rem; font-weight:700; letter-spacing:.06em; }
+    .bo { background:rgba(74,222,128,.15); color:var(--accent); }
+    .bb { background:rgba(96,165,250,.15); color:var(--blue); }
+    .bm { background:rgba(251,146,60,.15); color:var(--orange); }
+    .bc { background:rgba(167,139,250,.15); color:var(--purple); }
+    .bt { background:rgba(45,212,191,.15); color:var(--teal); }
+    .no-results { padding:20px; text-align:center; font-family:'IBM Plex Mono',monospace; font-size:.8rem; color:var(--text3); }
+
+    /* TABLE */
+    .table-panel {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 12px; overflow: hidden;
+    }
+    .table-header {
+      padding: 13px 18px; border-bottom: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .table-header span { font-family:'IBM Plex Mono',monospace; font-size:.75rem; color:var(--text2); letter-spacing:.04em; }
+    .table-count { font-size:.68rem; color:var(--text3); font-family:'IBM Plex Mono',monospace; }
+    .table-scroll { overflow-y:auto; max-height:320px; }
+    table { width:100%; border-collapse:collapse; }
+    th {
+      position:sticky; top:0; background:var(--surface2);
+      padding:9px 18px; text-align:left;
+      font-family:'IBM Plex Mono',monospace; font-size:.68rem;
+      font-weight:600; color:var(--text3); letter-spacing:.06em; text-transform:uppercase;
+      border-bottom:1px solid var(--border);
+    }
+    th:not(:first-child) { text-align:right; }
+    td {
+      padding:8px 18px; font-family:'IBM Plex Mono',monospace;
+      font-size:.8rem; color:var(--text2); border-bottom:1px solid rgba(35,39,54,.5);
+    }
+    td:not(:first-child) { text-align:right; color:var(--text); }
+    tr:last-child td { border-bottom:none; }
+    tr:hover td { background:var(--surface2); }
+    td.fecha { color:var(--text3); }
+
+    /* CUSTOM DATE RANGE */
+    .custom-range {
+      display:none; align-items:flex-end; gap:8px; flex-wrap:wrap;
+      padding:12px; background:var(--surface2); border-radius:9px;
+      border:1px solid var(--border); margin-bottom:12px;
+    }
+    .custom-range.visible { display:flex; }
+    .custom-range label {
+      font-family:'IBM Plex Mono',monospace; font-size:0.65rem;
+      color:var(--text3); letter-spacing:.06em; text-transform:uppercase;
+      display:block; margin-bottom:4px;
+    }
+    .custom-range input[type="date"] {
+      background:var(--surface); border:1px solid var(--border2); border-radius:7px;
+      color:var(--text); font-family:'IBM Plex Mono',monospace; font-size:0.8rem;
+      padding:6px 10px; outline:none; transition:border-color .15s; color-scheme:dark;
+    }
+    .custom-range input[type="date"]:focus { border-color:var(--accent); }
+    .apply-btn {
+      padding:7px 16px; border-radius:7px; border:none;
+      background:var(--accent); color:var(--bg);
+      font-family:'IBM Plex Mono',monospace; font-size:0.78rem; font-weight:700;
+      cursor:pointer; transition:opacity .15s; white-space:nowrap;
+    }
+    .apply-btn:hover { opacity:.85; }
+
+    /* VARIATION PANEL */
+    .var-panel {
+      display:none; background:var(--surface); border:1px solid var(--border);
+      border-radius:12px; padding:16px; margin-bottom:14px;
+    }
+    .var-panel.visible { display:block; }
+    .var-panel-title {
+      font-family:'IBM Plex Mono',monospace; font-size:0.65rem;
+      text-transform:uppercase; letter-spacing:.1em; color:var(--text3); margin-bottom:4px;
+    }
+    .var-period {
+      font-family:'IBM Plex Mono',monospace; font-size:0.62rem; color:var(--text3);
+      margin-bottom:12px;
+    }
+    .var-grid { display:grid; grid-template-columns:repeat(2,1fr); gap:8px; }
+    @media(min-width:560px) { .var-grid { grid-template-columns:repeat(4,1fr); } }
+    .var-card {
+      background:var(--surface2); border:1px solid var(--border);
+      border-radius:9px; padding:12px 13px;
+    }
+    .var-card-label {
+      font-family:'IBM Plex Mono',monospace; font-size:0.6rem;
+      text-transform:uppercase; letter-spacing:.1em; margin-bottom:6px; font-weight:700;
+    }
+    .var-card[data-tipo="oficial"] .var-card-label { color:var(--accent); }
+    .var-card[data-tipo="blue"]    .var-card-label { color:var(--blue); }
+    .var-card[data-tipo="mep"]     .var-card-label { color:var(--orange); }
+    .var-card[data-tipo="ccl"]     .var-card-label { color:var(--purple); }
+    .var-card[data-tipo="mayorista"] .var-card-label { color:var(--teal); }
+    .var-pct { font-family:'IBM Plex Mono',monospace; font-size:1.3rem; font-weight:700; line-height:1; margin-bottom:5px; }
+    .var-pct.pos { color:var(--accent); }
+    .var-pct.neg { color:var(--red); }
+    .var-pct.neu { color:var(--text3); }
+    .var-row { display:flex; justify-content:space-between; font-family:'IBM Plex Mono',monospace; font-size:0.62rem; color:var(--text3); margin-top:3px; }
+    .var-row span:last-child { color:var(--text2); }
+
+    /* LOADING */
+    .state-msg {
+      display:flex; align-items:center; justify-content:center;
+      min-height:180px; font-family:'IBM Plex Mono',monospace;
+      font-size:.82rem; color:var(--text3); flex-direction:column; gap:10px;
+    }
+    .spinner {
+      width:22px; height:22px; border:2px solid var(--border2);
+      border-top-color:var(--accent); border-radius:50%;
+      animation:spin .8s linear infinite;
+    }
+    @keyframes spin { to { transform:rotate(360deg); } }
+
+    /* DATA NOTE */
+    .data-note {
+      margin-top:20px; padding:13px 16px;
+      background:var(--surface); border:1px solid var(--border);
+      border-radius:8px; font-size:.75rem; color:var(--text3); line-height:1.5;
+    }
+    .data-note a { color:var(--text2); text-decoration:underline; text-underline-offset:3px; }
+
+    /* TOOLS NAV */
+    .footer-contact-block { margin-top:18px; padding-top:14px; border-top:1px solid var(--border); text-align:center; }
+    .fcb-line { font-family:'IBM Plex Mono',monospace; font-size:.7rem; color:var(--text2); }
+    .fcb-line a { color:var(--accent,#4ade80); text-decoration:none; font-weight:700; }
+    .fcb-line a:hover { text-decoration:underline; }
+    .tools-nav { margin-top:36px; border-top:1px solid var(--border); padding-top:22px; }
+    .tools-nav-title {
+      font-family:'IBM Plex Mono',monospace; font-size:.65rem;
+      text-transform:uppercase; letter-spacing:.1em; color:var(--text3); margin-bottom:11px;
+    }
+    .tools-nav-grid {
+      display:grid; grid-template-columns:repeat(2,1fr); gap:7px;
+    }
+    @media (min-width:600px) { .tools-nav-grid { grid-template-columns:repeat(4,1fr); } }
+    .tool-link {
+      display:flex; align-items:center; gap:9px; padding:10px 12px;
+      background:var(--surface); border:1px solid var(--border);
+      border-radius:9px; text-decoration:none; color:var(--text2); transition:all .15s;
+    }
+    .tool-link:hover { border-color:var(--border2); color:var(--text); background:var(--surface2); }
+    .tool-link.current { border-color:var(--accent); color:var(--accent); background:var(--accent-dim); }
+    .tl-emoji { font-size:.95rem; flex-shrink:0; }
+    .tl-name { font-family:'IBM Plex Mono',monospace; font-size:.72rem; font-weight:700; }
+    .tl-desc { font-family:'IBM Plex Mono',monospace; font-size:.6rem; color:var(--text3); margin-top:2px; }
+
+    footer {
+      border-top:1px solid var(--border); padding:18px;
+      text-align:center; font-size:.7rem; color:var(--text3);
+    }
+    footer a { color:var(--text2); text-decoration:none; }
+  </style>
+</head>
+<body>
+
+<div id="canuto-nav"></div>
+
+<main>
+  <div class="eyebrow">herramienta</div>
+  <h1>Cotización histórica<br>del dólar</h1>
+  <p class="subtitle">Oficial, Blue, MEP, CCL y Mayorista — datos diarios desde 2003.</p>
+
+  <!-- TIPO TABS -->
+  <div class="tipo-tabs">
+    <button class="tipo-tab active" data-tipo="oficial"><span class="dot"></span>Oficial</button>
+    <button class="tipo-tab" data-tipo="blue"><span class="dot"></span>Blue</button>
+    <button class="tipo-tab" data-tipo="mep"><span class="dot"></span>MEP</button>
+    <button class="tipo-tab" data-tipo="ccl"><span class="dot"></span>CCL</button>
+    <button class="tipo-tab" data-tipo="mayorista"><span class="dot"></span>Mayorista</button>
+  </div>
+
+  <!-- SUMMARY -->
+  <div class="summary-grid">
+    <div class="summary-card current">
+      <div class="slabel">Último valor</div>
+      <div class="svalue" id="card-current">—</div>
+      <div class="ssub"  id="card-current-date">—</div>
+    </div>
+    <div class="summary-card maxc">
+      <div class="slabel">Máximo período</div>
+      <div class="svalue" id="card-max">—</div>
+      <div class="ssub"  id="card-max-date">—</div>
+    </div>
+    <div class="summary-card minc">
+      <div class="slabel">Mínimo período</div>
+      <div class="svalue" id="card-min">—</div>
+      <div class="ssub"  id="card-min-date">—</div>
+    </div>
+  </div>
+
+  <!-- CHART -->
+  <div class="chart-panel">
+    <div class="chart-toolbar">
+      <span class="chart-title" id="chart-title">DÓLAR OFICIAL — VENTA</span>
+      <div class="range-tabs">
+        <button class="range-tab" data-range="1S">1S</button>
+        <button class="range-tab" data-range="1M">1M</button>
+        <button class="range-tab" data-range="3M">3M</button>
+        <button class="range-tab" data-range="6M">6M</button>
+        <button class="range-tab active" data-range="1A">1A</button>
+        <button class="range-tab" data-range="YTD">YTD</button>
+        <button class="range-tab" data-range="2A">2A</button>
+        <button class="range-tab" data-range="5A">5A</button>
+        <button class="range-tab" data-range="TODO">Todo</button>
+        <button class="range-tab" data-range="CUSTOM">📅 Custom</button>
+      </div>
+    </div>
+
+    <!-- Custom date range picker -->
+    <div class="custom-range" id="custom-range">
+      <div><label>Desde</label><input type="date" id="cr-from" /></div>
+      <div><label>Hasta</label><input type="date" id="cr-to" /></div>
+      <button class="apply-btn" id="btn-apply-custom">Aplicar</button>
+    </div>
+
+    <div class="chart-wrap">
+      <div class="state-msg" id="chart-loading"><div class="spinner"></div><span>Cargando…</span></div>
+      <canvas id="mainChart" style="display:none;"></canvas>
+    </div>
+  </div>
+
+  <!-- VARIATION PANEL -->
+  <div class="var-panel" id="var-panel">
+    <div class="var-panel-title">Variación del período</div>
+    <div class="var-period" id="var-period-label">—</div>
+    <div class="var-grid" id="var-grid"></div>
+  </div>
+
+  <!-- SEARCH -->
+  <div class="search-panel">
+    <div class="search-title">Consultar por fecha</div>
+    <div class="search-modes">
+      <button class="smode-btn active" data-mode="exacta">Fecha exacta</button>
+      <button class="smode-btn" data-mode="rango">Entre fechas</button>
+    </div>
+    <div id="mode-exacta" class="sinputs">
+      <div class="igroup"><label>Fecha</label><input type="date" id="s-single" /></div>
+      <button class="sbtn" id="btn-single">Consultar</button>
+      <button class="clrbtn" id="btn-clr-single">Limpiar</button>
+    </div>
+    <div id="mode-rango" class="sinputs" style="display:none;">
+      <div class="igroup"><label>Desde</label><input type="date" id="s-from" /></div>
+      <div class="igroup"><label>Hasta</label><input type="date" id="s-to" /></div>
+      <button class="sbtn" id="btn-range">Consultar</button>
+      <button class="clrbtn" id="btn-clr-range">Limpiar</button>
+    </div>
+    <div class="sresults" id="sresults"></div>
+  </div>
+
+  <!-- TABLE -->
+  <div class="table-panel">
+    <div class="table-header">
+      <span>DATOS DEL PERÍODO</span>
+      <span class="table-count" id="table-count">—</span>
+    </div>
+    <div class="table-scroll">
+      <div class="state-msg" id="table-loading" style="min-height:100px;"><span>Cargando…</span></div>
+      <table id="data-table" style="display:none;">
+        <thead><tr><th>Fecha</th><th>Compra</th><th>Venta</th><th>Spread</th></tr></thead>
+        <tbody id="table-body"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="data-note">
+    📡 Datos: <a href="https://argentinadatos.com" target="_blank">ArgentinaDatos API</a> (MIT, sin API key).
+    Para cotización actual → <a href="/dolar-en-vivo/">Dólar en Vivo</a>.
+  </div>
+
+  <!-- TOOLS NAV -->
+  <div class="tools-nav">
+    <div class="tools-nav-title">Otras herramientas en canuto.ar</div>
+    <div class="tools-nav-grid">
+      <a class="tool-link" href="/retiro/">
+        <span class="tl-emoji">🏖️</span>
+        <div><div class="tl-name">Mi Retiro</div><div class="tl-desc">Tu número para no trabajar más</div></div>
+      </a>
+      <a class="tool-link" href="/gastos/">
+        <span class="tl-emoji">💳</span>
+        <div><div class="tl-name">Mis Gastos</div><div class="tl-desc">Calendario de gastos del mes</div></div>
+      </a>
+      <a class="tool-link" href="/dolar-en-vivo/">
+        <span class="tl-emoji">💵</span>
+        <div><div class="tl-name">Dólar en Vivo</div><div class="tl-desc">Cotización al instante</div></div>
+      </a>
+      <a class="tool-link current" href="/dolar-historico/">
+        <span class="tl-emoji">📈</span>
+        <div><div class="tl-name">Dólar Histórico</div><div class="tl-desc">Estás acá</div></div>
+      </a>
+      <a class="tool-link" href="/inflaciona/">
+        <span class="tl-emoji">🔥</span>
+        <div><div class="tl-name">Inflacioná</div><div class="tl-desc">Cuánto subió un precio</div></div>
+      </a>
+      <a class="tool-link" href="/datos-macro/">
+        <span class="tl-emoji">🏛️</span>
+        <div><div class="tl-name">Datos Macro</div><div class="tl-desc">Indicadores de Argentina</div></div>
+      </a>
+    </div>
+    <div class="footer-contact-block">
+      <span class="fcb-line">¿Comentarios o ideas? Escribinos a <a href="mailto:admin.canuto.ar@gmail.com">admin.canuto.ar@gmail.com</a></span>
+    </div>
+  </div>
+</main>
+
+<footer>
+  <a href="/">canuto.ar</a> · Herramientas financieras para Argentina 🇦🇷 ·
+  <a href="mailto:admin.canuto.ar@gmail.com">admin.canuto.ar@gmail.com</a>
+</footer>
+
+<script>
+// ── CONFIG ──────────────────────────────────────────────
+const TIPOS = {
+  oficial:   { label:'Dólar Oficial',   color:'#4ade80', key:'oficial' },
+  blue:      { label:'Dólar Blue',      color:'#60a5fa', key:'blue' },
+  mep:       { label:'Dólar MEP',       color:'#fb923c', key:'bolsa' },
+  ccl:       { label:'Dólar CCL',       color:'#a78bfa', key:'contadoconliqui' },
+  mayorista: { label:'Dólar Mayorista', color:'#2dd4bf', key:'mayorista' },
+};
+const API_BASE = 'https://api.argentinadatos.com/v1/cotizaciones/dolares/';
+
+let currentTipo = 'oficial', currentRange = '1A';
+let customFrom = null, customTo = null;
+let allData = {}, chart = null, searchMode = 'exacta';
+
+// ── WATERMARK PLUGIN ─────────────────────────────────────
+const watermarkPlugin = {
+  id: 'watermark',
+  afterDraw(chart) {
+    const { ctx, chartArea: { left, right, top, bottom } } = chart;
+    const x = (left + right) / 2;
+    const y = (top + bottom) / 2;
+    ctx.save();
+    ctx.font = 'bold 22px "IBM Plex Mono", monospace';
+    ctx.fillStyle = 'rgba(255,255,255,0.13)';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.letterSpacing = '0.08em';
+    ctx.fillText('canuto.ar', x, y);
+    ctx.restore();
+  }
+};
+Chart.register(watermarkPlugin);
+
+// ── UTILS ────────────────────────────────────────────────
+function fmt(n) {
+  if (n == null || isNaN(n)) return '—';
+  return '$' + Number(n).toLocaleString('es-AR', {minimumFractionDigits:0, maximumFractionDigits:0});
+}
+function fmtD(d) {
+  const s = d.slice(0,10), [y,m,day] = s.split('-');
+  return `${day}/${m}/${y}`;
+}
+function fmtDS(d) {
+  const [y,m] = d.slice(0,10).split('-');
+  return `${m}/${y.slice(2)}`;
+}
+// Parser que evita el "off by one" de zona horaria al usar fechas ISO YYYY-MM-DD.
+// `new Date("2026-04-27")` devuelve medianoche UTC → en Argentina sale el día anterior.
+function _parseFechaDH(str) {
+  if (!str) return null;
+  const m = String(str).slice(0,10).match(/^(\d{4})-(\d{2})-(\d{2})$/);
+  if (m) return new Date(+m[1], +m[2] - 1, +m[3]);
+  return new Date(str);
+}
+function filterRange(data, range, from, to) {
+  if (!data?.length) return [];
+  if (range === 'CUSTOM') {
+    if (!from || !to) return data;
+    return data.filter(d => d.fecha.slice(0,10) >= from && d.fecha.slice(0,10) <= to);
+  }
+  const now = new Date(), cut = new Date(now);
+  if (range==='1S') cut.setDate(now.getDate()-7);
+  else if (range==='1M') cut.setMonth(now.getMonth()-1);
+  else if (range==='3M') cut.setMonth(now.getMonth()-3);
+  else if (range==='6M') cut.setMonth(now.getMonth()-6);
+  else if (range==='1A') cut.setFullYear(now.getFullYear()-1);
+  else if (range==='YTD') { cut.setMonth(0); cut.setDate(1); }
+  else if (range==='2A') cut.setFullYear(now.getFullYear()-2);
+  else if (range==='5A') cut.setFullYear(now.getFullYear()-5);
+  else return data;
+  return data.filter(d => {
+    const f = _parseFechaDH(d.fecha);
+    return f && f >= cut;
+  });
+}
+
+// ── LIVE PATCH ────────────────────────────────────────────
+// El "valor del día" se sobrescribe en background cada LIVE_REFRESH_MS para
+// que la cotización siga al mercado intra-day, sin re-bajar la serie histórica.
+// Las dos páginas (en vivo + histórico) leen del mismo módulo /canuto-dolar-live.js,
+// que ya hace el merge de fuentes + freeze post-cierre.
+const LIVE_CASA = { oficial:'oficial', blue:'blue', mep:'bolsa', ccl:'contadoconliqui', mayorista:'mayorista' };
+const LIVE_CACHE_MS   = 25 * 1000; // TTL del cache del fetch (evita pedir muchas veces si el usuario navega)
+const LIVE_REFRESH_MS = 30 * 1000; // Cada 30 segundos vuelve a buscar precios live
+let _liveCache = null;
+let _liveCacheTs = 0;
+
+async function fetchLive() {
+  // Delegamos al módulo compartido: el merge de fuentes + el freeze post-17:30 vive ahí,
+  // y las dos páginas (en vivo + histórico) leen el mismo cache de localStorage.
+  try {
+    if (window.CanutoDolar && typeof window.CanutoDolar.fetchLiveCotizaciones === 'function') {
+      const merged = await window.CanutoDolar.fetchLiveCotizaciones();
+      _liveCache = merged || null;
+      _liveCacheTs = Date.now();
+      return _liveCache;
+    }
+  } catch { /* fall through */ }
+  return null;
+}
+
+// Devuelve la fecha real del live (en sv-SE / ARG) o, si no hubiera, la fecha actual.
+// Importante usar match.fechaActualizacion en vez de "today": MEP/CCL antes de las
+// 10:30 ARG vienen frizados al cierre del último día hábil con su fecha original,
+// y queremos que ese punto pise el último punto histórico (no que cree uno nuevo
+// del día actual con valor del día anterior).
+function _fechaLive(match) {
+  if (match?.fechaActualizacion) {
+    const d = new Date(match.fechaActualizacion);
+    if (!isNaN(d.getTime())) {
+      return d.toLocaleDateString('sv-SE', { timeZone: 'America/Argentina/Buenos_Aires' });
+    }
+  }
+  return new Date().toLocaleDateString('sv-SE', { timeZone: 'America/Argentina/Buenos_Aires' });
+}
+
+async function injectToday(tipo, data) {
+  const live = await fetchLive();
+  if (!live) return data;
+  const match = live.find(d => d.casa === LIVE_CASA[tipo]);
+  if (!match?.venta) return data;
+  const liveDate  = _fechaLive(match);
+  const lastFecha = data.length ? data[data.length-1].fecha.slice(0,10) : '';
+  // Propagamos match._frozen al punto: _live indica "vino del módulo CanutoDolar",
+  // _frozen indica "esa cotización está fija (post-cierre, fin de semana, MEP/CCL pre-10:30)".
+  // updateCards usa ambos flags para decidir si mostrar "hoy · en vivo ⚡" o la fecha.
+  const frozen = !!match._frozen;
+  if (lastFecha === liveDate) {
+    data[data.length-1] = { ...data[data.length-1], compra:match.compra, venta:match.venta, _live:true, _frozen:frozen };
+  } else if (liveDate > lastFecha) {
+    data = [...data, { fecha:liveDate, compra:match.compra, venta:match.venta, _live:true, _frozen:frozen }];
+  }
+  return data;
+}
+
+// Pisa el último punto del día con la cotización actual del módulo live.
+// Devuelve true si cambió algo del tipo actualmente visible (para decidir si
+// vale la pena re-renderizar).
+async function refreshLiveData() {
+  _liveCacheTs = 0; // forzar refetch
+  const live = await fetchLive();
+  if (!live) return false;
+  let currentChanged = false;
+  for (const tipo of Object.keys(TIPOS)) {
+    if (!allData[tipo]) continue;
+    const match = live.find(d => d.casa === LIVE_CASA[tipo]);
+    if (!match?.venta) continue;
+    const liveDate = _fechaLive(match);
+    const frozen   = !!match._frozen;
+    const arr  = allData[tipo];
+    const last = arr[arr.length - 1];
+    const lastFecha = last?.fecha?.slice(0,10);
+    if (lastFecha === liveDate) {
+      // Siempre sobrescribir el punto del día con el live (sin importar si tenía
+      // el flag _live previo). Así si argentinadatos publica un "cierre" distinto
+      // al live, igual mostramos el live. Solo re-renderizamos si cambió algo
+      // visible (incluyendo el flag _frozen, que afecta el cartel "en vivo ⚡").
+      if (last.venta !== match.venta || last.compra !== match.compra || !last._live || last._frozen !== frozen) {
+        arr[arr.length - 1] = { ...last, compra: match.compra, venta: match.venta, _live: true, _frozen: frozen };
+        if (tipo === currentTipo) currentChanged = true;
+      }
+    } else if (lastFecha && lastFecha < liveDate) {
+      // El live ya tiene un día más nuevo que el último punto histórico:
+      // agregamos ese día al gráfico. (No se ejecuta para MEP/CCL pre-10:30
+      // porque su liveDate es el cierre del último día hábil = lastFecha.)
+      arr.push({ fecha: liveDate, compra: match.compra, venta: match.venta, _live: true, _frozen: frozen });
+      if (tipo === currentTipo) currentChanged = true;
+    }
+  }
+  return currentChanged;
+}
+
+// ── DATA ─────────────────────────────────────────────────
+async function loadData(tipo) {
+  if (allData[tipo]) return allData[tipo];
+  const res = await fetch(API_BASE + TIPOS[tipo].key);
+  if (!res.ok) throw new Error(`HTTP ${res.status}`);
+  let data = await res.json();
+  data = await injectToday(tipo, data);
+  allData[tipo] = data;
+  return allData[tipo];
+}
+
+// ── CHART ────────────────────────────────────────────────
+function downsample(arr, n) {
+  if (arr.length <= n) return arr;
+  const r = [], step = arr.length/n;
+  for (let i=0;i<n;i++) r.push(arr[Math.floor(i*step)]);
+  return r;
+}
+
+function buildChart(data, tipo) {
+  const cfg = TIPOS[tipo];
+  const canvas = document.getElementById('mainChart');
+  const ctx = canvas.getContext('2d');
+  const pts = data.length > 800 ? downsample(data,800) : data;
+
+  const grad = ctx.createLinearGradient(0,0,0,260);
+  grad.addColorStop(0, cfg.color+'28');
+  grad.addColorStop(1, cfg.color+'00');
+
+  // Category scale (rangos diarios y mayores).
+  const labels  = pts.map(d => d.fecha);
+  const ventas  = pts.map(d => d.venta);
+  const compras = pts.map(d => d.compra);
+  const datasets = [
+    { label:'Venta',  data:ventas,  borderColor:cfg.color, backgroundColor:grad, borderWidth:1.5, pointRadius:0, tension:0.3, fill:true },
+    { label:'Compra', data:compras, borderColor:cfg.color+'60', backgroundColor:'transparent', borderWidth:1, pointRadius:0, tension:0.3, fill:false, borderDash:[4,3] }
+  ];
+  const tickCb = (_,i) => i % Math.max(1,Math.floor(pts.length/8))===0 ? fmtDS(labels[i]) : '';
+  const scaleX = {
+    grid:   { color:'#232736', drawTicks:false },
+    border: { color:'#232736' },
+    ticks:  { color:'#545870', font:{family:'IBM Plex Mono',size:10}, maxRotation:0, callback:tickCb },
+  };
+
+  // Destruimos y recreamos el chart en cada switch de rango/tipo.
+  if (chart) { chart.destroy(); chart = null; }
+
+  chart = new Chart(ctx, {
+    type:'line', data:{labels, datasets},
+    options:{
+      responsive:true, maintainAspectRatio:false,
+      interaction:{intersect:false, mode:'index'},
+      plugins:{
+        legend:{display:false},
+        tooltip:{
+          backgroundColor:'#1a1e28', borderColor:'#232736', borderWidth:1,
+          titleColor:'#8b90a4', bodyColor:'#e8eaf0',
+          titleFont:{family:'IBM Plex Mono',size:11},
+          bodyFont:{family:'IBM Plex Mono',size:12}, padding:10,
+          callbacks:{
+            title: items => fmtD(items[0].label),
+            label: item => ` ${item.dataset.label}: ${fmt(item.raw)}`
+          }
+        }
+      },
+      scales:{
+        x: scaleX,
+        y:{position:'right', grid:{color:'#232736',drawTicks:false}, border:{color:'#232736',dash:[3,3]},
+          ticks:{color:'#545870', font:{family:'IBM Plex Mono',size:10},
+            callback:v=>'$'+Number(v).toLocaleString('es-AR',{maximumFractionDigits:0})
+          }
+        }
+      },
+      animation:{duration:200}
+    }
+  });
+}
+
+// ── VARIATION PANEL ──────────────────────────────────────
+function updateVarPanel(data) {
+  const panel = document.getElementById('var-panel');
+  const grid  = document.getElementById('var-grid');
+  const label = document.getElementById('var-period-label');
+  if (!data?.length) { panel.classList.remove('visible'); return; }
+  const first = data.find(d=>d.venta>0);
+  const last  = [...data].reverse().find(d=>d.venta>0);
+  if (!first || !last || first === last) { panel.classList.remove('visible'); return; }
+  label.textContent = `${fmtD(first.fecha)} → ${fmtD(last.fecha)}`;
+  const pct = ((last.venta - first.venta) / first.venta) * 100;
+  const cls = pct > 0 ? 'pos' : pct < 0 ? 'neg' : 'neu';
+  const sign = pct >= 0 ? '+' : '';
+  const tipo = currentTipo;
+  grid.innerHTML = `<div class="var-card" data-tipo="${tipo}">
+    <div class="var-card-label">${TIPOS[tipo].label}</div>
+    <div class="var-pct ${cls}">${sign}${pct.toFixed(1)}%</div>
+    <div class="var-row"><span>Inicio</span><span>${fmt(first.venta)}</span></div>
+    <div class="var-row"><span>Fin</span><span>${fmt(last.venta)}</span></div>
+    <div class="var-row"><span>Variación</span><span style="color:${pct>0?'var(--accent)':pct<0?'var(--red)':'var(--text3)'}">
+      ${sign}${fmt(Math.abs(last.venta-first.venta))}</span></div>
+  </div>`;
+  panel.classList.add('visible');
+}
+
+// ── CARDS ────────────────────────────────────────────────
+function updateCards(data) {
+  if (!data?.length) return;
+  const last = data[data.length-1];
+  const vs = data.map(d=>d.venta).filter(v=>v>0);
+  const maxV = Math.max(...vs), minV = Math.min(...vs);
+  document.getElementById('card-current').textContent = fmt(last.venta);
+  // "hoy · en vivo ⚡" sólo si el módulo lo está sirviendo SIN _frozen, o sea
+  // cuando la cotización está realmente moviéndose (07:00-17:00 lun-vie no feriado
+  // para oficial/blue/mayorista, 10:30-17:00 para MEP/CCL). En cualquier otro
+  // momento mostramos la fecha del último cierre disponible.
+  const enVivoReal = last._live && !last._frozen;
+  document.getElementById('card-current-date').textContent = enVivoReal ? 'hoy · en vivo ⚡' : fmtD(last.fecha);
+  document.getElementById('card-max').textContent = fmt(maxV);
+  document.getElementById('card-max-date').textContent = fmtD(data.find(d=>d.venta===maxV)?.fecha||'');
+  document.getElementById('card-min').textContent = fmt(minV);
+  document.getElementById('card-min-date').textContent = fmtD(data.find(d=>d.venta===minV)?.fecha||'');
+}
+
+// ── TABLE ────────────────────────────────────────────────
+function updateTable(data) {
+  document.getElementById('table-count').textContent = `${data.length} registros`;
+  const rows = [...data].reverse().slice(0,200);
+  document.getElementById('table-body').innerHTML = rows.map(d=>{
+    const sp = d.venta&&d.compra ? d.venta-d.compra : null;
+    return `<tr><td class="fecha">${fmtD(d.fecha)}</td><td>${fmt(d.compra)}</td><td>${fmt(d.venta)}</td><td>${sp!=null?fmt(sp):'—'}</td></tr>`;
+  }).join('');
+  document.getElementById('table-loading').style.display='none';
+  document.getElementById('data-table').style.display='table';
+}
+
+// ── RENDER ───────────────────────────────────────────────
+async function render() {
+  const loadingEl = document.getElementById('chart-loading');
+  const chartEl   = document.getElementById('mainChart');
+  loadingEl.style.display='flex';
+  loadingEl.innerHTML = '<div class="loader"></div>';
+  chartEl.style.display='none';
+  try {
+    const raw = await loadData(currentTipo);
+    const data = filterRange(raw, currentRange, customFrom, customTo);
+    loadingEl.style.display='none';
+    chartEl.style.display='block';
+    buildChart(data, currentTipo);
+    updateCards(data);
+    updateTable(data);
+    updateVarPanel(data);
+    document.getElementById('chart-title').textContent = TIPOS[currentTipo].label.toUpperCase()+' — VENTA';
+  } catch(err) {
+    loadingEl.innerHTML = `<span style="color:#f87171">Error: ${err.message}</span>`;
+  }
+}
+
+// ── SEARCH ───────────────────────────────────────────────
+async function ensureAll() {
+  await Promise.all(Object.keys(TIPOS).map(t=>loadData(t).catch(()=>null)));
+}
+function hideResults() {
+  const el = document.getElementById('sresults');
+  el.classList.remove('visible'); el.innerHTML='';
+}
+function findClosest(data, dateStr) {
+  if (!data?.length) return null;
+  const exact = data.find(d=>d.fecha.slice(0,10)===dateStr);
+  if (exact) return {...exact, exact:true};
+  const prev = [...data].sort((a,b)=>b.fecha.localeCompare(a.fecha)).find(d=>d.fecha.slice(0,10)<dateStr);
+  return prev ? {...prev, exact:false} : null;
+}
+function renderExact(dateStr) {
+  const el = document.getElementById('sresults');
+  const tipos = [{id:'oficial',l:'Oficial'},{id:'blue',l:'Blue'},{id:'mep',l:'MEP'},{id:'ccl',l:'CCL'},{id:'mayorista',l:'Mayorista'}];
+  const results = tipos.map(t=>({...t, r:findClosest(allData[t.id]||[], dateStr)}));
+  if (!results.some(r=>r.r)) {
+    el.innerHTML='<div class="no-results">No hay datos para esa fecha.</div>';
+    el.classList.add('visible'); return;
+  }
+  const first = results.find(r=>r.r)?.r;
+  const headline = first?.exact
+    ? `Cotizaciones del ${fmtD(dateStr)}`
+    : `${fmtD(dateStr)} es día no hábil — mostrando el anterior: ${fmtD(first.fecha)}`;
+  el.innerHTML = `
+    <div class="sresult-head">${headline}</div>
+    <div class="sresult-grid">${results.map(t=>{
+      const r=t.r;
+      if (!r) return `<div class="src-card"><div class="src-lbl ${t.id}">${t.l}</div><div class="src-nodata">Sin datos</div></div>`;
+      return `<div class="src-card">
+        <div class="src-lbl ${t.id}">${t.l}</div>
+        <div class="src-row"><span class="src-key">Compra</span><span class="src-val">${fmt(r.compra)}</span></div>
+        <div class="src-row"><span class="src-key">Venta</span><span class="src-val">${fmt(r.venta)}</span></div>
+      </div>`;
+    }).join('')}</div>`;
+  el.classList.add('visible');
+}
+function renderRange(from, to) {
+  const el = document.getElementById('sresults');
+  const tipos = [{id:'oficial',l:'Oficial',b:'bo'},{id:'blue',l:'Blue',b:'bb'},{id:'mep',l:'MEP',b:'bm'},{id:'ccl',l:'CCL',b:'bc'},{id:'mayorista',l:'Mayorista',b:'bt'}];
+  const dateMap = new Map();
+  for (const t of tipos) {
+    for (const d of (allData[t.id]||[])) {
+      const k = d.fecha.slice(0,10);
+      if (k>=from && k<=to) {
+        if (!dateMap.has(k)) dateMap.set(k,{fecha:k});
+        dateMap.get(k)[t.id]=d;
+      }
+    }
+  }
+  const rows = Array.from(dateMap.values()).sort((a,b)=>b.fecha.localeCompare(a.fecha));
+  if (!rows.length) {
+    el.innerHTML='<div class="no-results">No hay datos en ese rango.</div>';
+    el.classList.add('visible'); return;
+  }
+  el.innerHTML = `
+    <div class="sresult-head">${rows.length} días entre ${fmtD(from)} y ${fmtD(to)}</div>
+    <div class="rng-scroll">
+      <table class="rng-table">
+        <thead><tr><th>Fecha</th><th>Tipo</th><th class="r">Compra</th><th class="r">Venta</th></tr></thead>
+        <tbody>${rows.flatMap(row=>tipos.map(t=>{
+          const d=row[t.id]; if(!d) return '';
+          return `<tr><td>${fmtD(row.fecha)}</td><td><span class="tbadge ${t.b}">${t.l}</span></td><td class="r">${fmt(d.compra)}</td><td class="r">${fmt(d.venta)}</td></tr>`;
+        })).join('')}</tbody>
+      </table>
+    </div>`;
+  el.classList.add('visible');
+}
+
+// ── EVENTS ───────────────────────────────────────────────
+document.querySelectorAll('.tipo-tab').forEach(btn=>btn.addEventListener('click',()=>{
+  document.querySelectorAll('.tipo-tab').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  currentTipo = btn.dataset.tipo;
+  if (chart) { chart.destroy(); chart=null; }
+  render();
+}));
+
+document.querySelectorAll('.range-tab').forEach(btn=>btn.addEventListener('click',()=>{
+  document.querySelectorAll('.range-tab').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  currentRange = btn.dataset.range;
+  const cr = document.getElementById('custom-range');
+  if (currentRange === 'CUSTOM') {
+    cr.classList.add('visible');
+  } else {
+    cr.classList.remove('visible');
+  }
+  customFrom = null; customTo = null;
+  render();
+}));
+
+document.getElementById('btn-apply-custom').addEventListener('click', ()=>{
+  const f = document.getElementById('cr-from').value;
+  const t = document.getElementById('cr-to').value;
+  if (!f || !t) { alert('Completá ambas fechas.'); return; }
+  if (f > t) { alert('La fecha de inicio debe ser anterior.'); return; }
+  customFrom = f; customTo = t;
+  render();
+});
+
+document.querySelectorAll('.smode-btn').forEach(btn=>btn.addEventListener('click',()=>{
+  document.querySelectorAll('.smode-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active'); searchMode=btn.dataset.mode;
+  document.getElementById('mode-exacta').style.display=searchMode==='exacta'?'flex':'none';
+  document.getElementById('mode-rango').style.display=searchMode==='rango'?'flex':'none';
+  hideResults();
+}));
+document.getElementById('btn-single').addEventListener('click', async()=>{
+  const v=document.getElementById('s-single').value; if(!v) return;
+  await ensureAll(); renderExact(v);
+});
+document.getElementById('s-single').addEventListener('keydown', async e=>{
+  if(e.key==='Enter'){await ensureAll();renderExact(document.getElementById('s-single').value);}
+});
+document.getElementById('btn-clr-single').addEventListener('click',()=>{
+  document.getElementById('s-single').value=''; hideResults();
+});
+document.getElementById('btn-range').addEventListener('click', async()=>{
+  const f=document.getElementById('s-from').value, t=document.getElementById('s-to').value;
+  if(!f||!t) return;
+  if(f>t){alert('La fecha de inicio debe ser anterior.');return;}
+  await ensureAll(); renderRange(f,t);
+});
+document.getElementById('btn-clr-range').addEventListener('click',()=>{
+  document.getElementById('s-from').value='';
+  document.getElementById('s-to').value=''; hideResults();
+});
+
+// ── INIT ─────────────────────────────────────────────────
+// Leer parámetro ?tipo= de la URL para pre-seleccionar el tipo de dólar
+(function applyURLParam() {
+  const params = new URLSearchParams(window.location.search);
+  const tipoParam = params.get('tipo');
+  if (tipoParam && ['oficial','blue','mep','ccl','mayorista'].includes(tipoParam)) {
+    currentTipo = tipoParam;
+    document.querySelectorAll('.tipo-tab').forEach(btn => {
+      btn.classList.toggle('active', btn.dataset.tipo === tipoParam);
+    });
+  }
+})();
+
+render();
+
+// Auto-refresh: cada 30s pedimos el live y, si cambió el último punto del día
+// visible, re-renderizamos. El re-render reusa allData[tipo].
+setInterval(async () => {
+  try {
+    const changed = await refreshLiveData();
+    if (changed) await render();
+  } catch (e) { /* silencioso */ }
+}, 30 * 1000);
+</script>
+
+<script src="/canuto-nav.js"></script>
+</body>
+</html>
