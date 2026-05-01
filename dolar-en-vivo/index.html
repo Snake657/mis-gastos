@@ -344,7 +344,7 @@
     /* Cards clickeables */
     .dolar-card { cursor: pointer; }
 
-    /* Modal navegar al histórico */
+    /* Modal navegar al histórico / intra-día */
     .hist-modal-overlay {
       display: none;
       position: fixed;
@@ -381,21 +381,45 @@
       line-height: 1.55;
       margin-bottom: 20px;
     }
-    .hist-modal-btns { display: flex; gap: 10px; }
+    .hist-modal-actions {
+      display: flex; flex-direction: column; gap: 9px; margin-bottom: 12px;
+    }
     .hist-modal-ok {
-      flex: 1; background: var(--green); color: #0a0c10;
-      border: none; border-radius: 9px; padding: 12px;
-      font-family: 'IBM Plex Mono', monospace; font-size: 0.8rem;
-      font-weight: 700; cursor: pointer; transition: opacity .15s;
+      display: flex; align-items: center; gap: 12px;
+      background: var(--surface3); color: var(--text);
+      border: 1px solid var(--border2); border-radius: 11px;
+      padding: 12px 14px;
+      font-family: 'IBM Plex Mono', monospace;
+      cursor: pointer; transition: all .15s;
+      text-align: left; width: 100%;
     }
-    .hist-modal-ok:hover { opacity: .85; }
+    .hist-modal-ok:hover {
+      background: var(--surface2);
+      transform: translateY(-1px);
+    }
+    .hist-modal-action-intradia { border-color: rgba(245,166,35,0.35); }
+    .hist-modal-action-intradia:hover { border-color: rgba(245,166,35,0.7); background: rgba(245,166,35,0.08); }
+    .hist-modal-action-historico { border-color: rgba(34,214,95,0.35); }
+    .hist-modal-action-historico:hover { border-color: rgba(34,214,95,0.7); background: rgba(34,214,95,0.08); }
+    .hist-modal-action-emoji {
+      font-size: 1.4rem; line-height: 1; flex-shrink: 0;
+    }
+    .hist-modal-action-text {
+      display: flex; flex-direction: column; gap: 2px; flex: 1; min-width: 0;
+    }
+    .hist-modal-action-text strong {
+      font-size: 0.84rem; font-weight: 700; color: var(--text); line-height: 1.2;
+    }
+    .hist-modal-action-text em {
+      font-style: normal; font-size: 0.66rem; color: var(--text2); line-height: 1.3;
+    }
     .hist-modal-cancel {
-      flex: 1; background: transparent; color: var(--text2);
-      border: 1px solid var(--border2); border-radius: 9px; padding: 12px;
-      font-family: 'IBM Plex Mono', monospace; font-size: 0.8rem;
-      font-weight: 600; cursor: pointer; transition: all .15s;
+      width: 100%; background: transparent; color: var(--text3);
+      border: none; border-radius: 9px; padding: 8px;
+      font-family: 'IBM Plex Mono', monospace; font-size: 0.74rem;
+      font-weight: 500; cursor: pointer; transition: color .15s;
     }
-    .hist-modal-cancel:hover { background: var(--surface3); color: var(--text); }
+    .hist-modal-cancel:hover { color: var(--text); }
 
     /* shimmer */
     .shimmer {
@@ -809,16 +833,29 @@
 
 </main>
 
-<!-- Modal navegar al histórico -->
+<!-- Modal navegar al histórico / intra-día -->
 <div class="hist-modal-overlay" id="hist-overlay" onclick="if(event.target===this)cerrarModal()">
   <div class="hist-modal">
-    <div class="hist-modal-icon">📈</div>
-    <div class="hist-modal-title" id="hist-modal-title">Ver histórico</div>
-    <div class="hist-modal-sub" id="hist-modal-sub">¿Querés ver el gráfico histórico de este dólar?</div>
-    <div class="hist-modal-btns">
-      <button class="hist-modal-ok" onclick="irHistorico()">Ver histórico</button>
-      <button class="hist-modal-cancel" onclick="cerrarModal()">Cancelar</button>
+    <div class="hist-modal-icon">📊</div>
+    <div class="hist-modal-title" id="hist-modal-title">Ver gráfico</div>
+    <div class="hist-modal-sub" id="hist-modal-sub">¿Qué gráfico querés ver?</div>
+    <div class="hist-modal-actions">
+      <button class="hist-modal-ok hist-modal-action-intradia" onclick="irIntradia()">
+        <span class="hist-modal-action-emoji">⏱️</span>
+        <span class="hist-modal-action-text">
+          <strong>Intra-día</strong>
+          <em>Cómo se movió hoy minuto a minuto</em>
+        </span>
+      </button>
+      <button class="hist-modal-ok hist-modal-action-historico" onclick="irHistorico()">
+        <span class="hist-modal-action-emoji">📈</span>
+        <span class="hist-modal-action-text">
+          <strong>Histórico</strong>
+          <em>Serie completa desde 2003</em>
+        </span>
+      </button>
     </div>
+    <button class="hist-modal-cancel" onclick="cerrarModal()">Cancelar</button>
   </div>
 </div>
 
@@ -1093,12 +1130,21 @@ async function fetchData() {
   }
 }
 
-// ── Modal histórico ──────────────────────────────────────────────────────────
+// ── Modal histórico / intra-día ──────────────────────────────────────────────
+// Mapeo entre el id de tipo usado en /dolar-en-vivo/ y el id que usa la grilla
+// de /dolar-intradia/ (que tiene una nomenclatura distinta para MEP y CCL).
+const _MAP_INTRADIA = {
+  oficial:   'oficial',
+  blue:      'blue',
+  mep:       'bolsa',
+  ccl:       'contadoconliqui',
+  mayorista: 'mayorista',
+};
 let _modalTipo = null;
 function abrirModal(tipo, nombre) {
   _modalTipo = tipo;
-  document.getElementById('hist-modal-title').textContent = nombre + ' — Histórico';
-  document.getElementById('hist-modal-sub').textContent   = `¿Querés ver el gráfico histórico del dólar ${nombre}?`;
+  document.getElementById('hist-modal-title').textContent = nombre;
+  document.getElementById('hist-modal-sub').textContent   = `¿Qué gráfico del dólar ${nombre} querés ver?`;
   document.getElementById('hist-overlay').classList.add('show');
 }
 function cerrarModal() {
@@ -1107,6 +1153,11 @@ function cerrarModal() {
 }
 function irHistorico() {
   if (_modalTipo) window.location.href = `/dolar-historico/?tipo=${_modalTipo}`;
+}
+function irIntradia() {
+  if (!_modalTipo) return;
+  const idIntra = _MAP_INTRADIA[_modalTipo] || _modalTipo;
+  window.location.href = `/dolar-intradia/#card-${idIntra}`;
 }
 document.addEventListener('keydown', e => { if (e.key === 'Escape') cerrarModal(); });
 
