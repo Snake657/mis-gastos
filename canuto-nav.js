@@ -34,7 +34,7 @@
       .cnav-inner {
         max-width: 1100px;
         margin: 0 auto;
-        padding: 0 16px;
+        padding: 0 14px;
         display: flex;
         align-items: center;
         gap: 0;
@@ -46,31 +46,46 @@
         color: #e8eaf0;
         text-decoration: none;
         letter-spacing: -0.03em;
-        margin-right: 22px;
+        margin-right: 14px;
         white-space: nowrap;
         flex-shrink: 0;
       }
       .cnav-logo span { color: #4ade80; }
+      /* Wrapper para poder pintar un fade-out a la derecha cuando hay scroll */
+      .cnav-tools-wrap {
+        position: relative;
+        flex: 1;
+        min-width: 0;
+      }
+      .cnav-tools-wrap::after {
+        content: '';
+        position: absolute;
+        top: 0; right: 0; bottom: 0;
+        width: 28px;
+        pointer-events: none;
+        background: linear-gradient(to right, transparent, rgba(13,15,20,0.95));
+        opacity: 0;
+        transition: opacity 0.15s;
+      }
+      .cnav-tools-wrap.has-overflow::after { opacity: 1; }
       .cnav-tools {
         display: flex;
         align-items: center;
-        gap: 2px;
+        gap: 1px;
         overflow-x: auto;
         scrollbar-width: none;
         -webkit-overflow-scrolling: touch;
-        flex: 1;
-        min-width: 0;
       }
       .cnav-tools::-webkit-scrollbar { display: none; }
       .cnav-tool {
         display: flex;
         align-items: center;
-        gap: 6px;
-        padding: 6px 12px;
+        gap: 5px;
+        padding: 6px 9px;
         border-radius: 7px;
         text-decoration: none;
         color: #8b90a4;
-        font-size: 0.78rem;
+        font-size: 0.76rem;
         font-weight: 500;
         white-space: nowrap;
         transition: all 0.15s;
@@ -94,17 +109,17 @@
       }
       .cnav-contact {
         flex-shrink: 0;
-        margin-left: 10px;
+        margin-left: 6px;
         display: flex;
         align-items: center;
         gap: 5px;
-        padding: 6px 11px;
+        padding: 6px 9px;
         border-radius: 7px;
         background: rgba(45,212,191,0.10);
         border: 1px solid rgba(45,212,191,0.25);
         color: #2dd4bf;
         text-decoration: none;
-        font-size: 0.74rem;
+        font-size: 0.72rem;
         font-weight: 600;
         white-space: nowrap;
         transition: all 0.15s;
@@ -138,16 +153,18 @@
       <a class="cnav-logo" href="/" aria-label="Canuto.ar inicio">
         <span>canuto</span>.ar
       </a>
-      <div class="cnav-tools" role="list">
-        ${TOOLS.map(t => `
-          <a class="cnav-tool${isActive(t.href) ? ' active' : ''}"
-             href="${t.href}"
-             title="${t.desc}"
-             role="listitem">
-            <span class="cnav-emoji" aria-hidden="true">${t.emoji}</span>
-            <span class="cnav-label">${t.label}</span>
-          </a>
-        `).join('')}
+      <div class="cnav-tools-wrap">
+        <div class="cnav-tools" role="list">
+          ${TOOLS.map(t => `
+            <a class="cnav-tool${isActive(t.href) ? ' active' : ''}"
+               href="${t.href}"
+               title="${t.desc}"
+               role="listitem">
+              <span class="cnav-emoji" aria-hidden="true">${t.emoji}</span>
+              <span class="cnav-label">${t.label}</span>
+            </a>
+          `).join('')}
+        </div>
       </div>
       <a class="cnav-contact" href="mailto:${CONTACT_EMAIL}" title="Escribinos">
         <span class="cnav-emoji" aria-hidden="true">✉️</span>
@@ -163,4 +180,21 @@
     // Si no hay div#canuto-nav, insertamos al inicio del body
     document.body.insertAdjacentHTML('afterbegin', `<div id="canuto-nav">${html}</div>`);
   }
+
+  // Mostrar fade-out a la derecha cuando hay overflow horizontal y todavía no se
+  // llegó al final del scroll. Permite que el usuario perciba que hay más tools
+  // a las que se puede llegar haciendo scroll horizontal (típico en laptops <1100px).
+  function syncOverflowIndicator() {
+    const wrap = document.querySelector('.cnav-tools-wrap');
+    const list = wrap && wrap.querySelector('.cnav-tools');
+    if (!wrap || !list) return;
+    const slack = list.scrollWidth - list.clientWidth - list.scrollLeft;
+    if (slack > 4) wrap.classList.add('has-overflow');
+    else wrap.classList.remove('has-overflow');
+  }
+  // Inicial + reactivo a resize/scroll
+  requestAnimationFrame(syncOverflowIndicator);
+  window.addEventListener('resize', syncOverflowIndicator);
+  const _list = document.querySelector('.cnav-tools');
+  if (_list) _list.addEventListener('scroll', syncOverflowIndicator, { passive: true });
 })();
