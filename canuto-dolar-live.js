@@ -410,10 +410,49 @@
     }));
   }
 
+  // Devuelve la fecha ARG (YYYY-MM-DD) de un timestamp ISO. Sirve para detectar
+  // si una cotización del freeze quedó pegada a un día anterior.
+  function _faToYmdArg(iso) {
+    if (!iso) return null;
+    const d = new Date(iso);
+    if (isNaN(d.getTime())) return null;
+    return d.toLocaleDateString('sv-SE', { timeZone: 'America/Argentina/Buenos_Aires' });
+  }
+
   function _kickoffSeed() {
     if (_seedPromise) return _seedPromise;
     const freeze = _read(KEY_FREEZE) || { cotizaciones: {} };
-    const cot = freeze.cotizaciones || {};
+    if (!freeze.cotizaciones || typeof freeze.cotizaciones !== 'object') {
+      freeze.cotizaciones = {};
+    }
+    const ymdActual = _ahoraArg().ymd;
+
+    // Si el freeze quedó pegado a un día anterior (caso típico: el navegador se
+    // dejó abierto el 29 post-cierre y se vuelve a abrir el 30 post-cierre — la
+    // regla "no actualizar fuera de horario" de _aplicarFreeze nunca se libera
+    // porque enHorario=false), descartamos las cotizaciones cuya fechaActualizacion
+    // sea de un día ARG anterior al actual. _seedFreezeFromHistorico repuebla con
+    // los datos del día actual (canuto-intraday/today + fallback argentinadatos).
+    if (freeze.dia && freeze.dia !== ymdActual) {
+      let cambio = false;
+      for (const casa of Object.keys(freeze.cotizaciones)) {
+        const c = freeze.cotizaciones[casa];
+        const faYmd = _faToYmdArg(c && c.fechaActualizacion);
+        if (!faYmd || faYmd < ymdActual) {
+          delete freeze.cotizaciones[casa];
+          cambio = true;
+        }
+      }
+      if (cambio) {
+        freeze.dia = ymdActual;
+        _write(KEY_FREEZE, freeze);
+        // Como cambiamos el freeze, también invalidamos el shared cache (TTL 25s):
+        // si quedó un snapshot viejo cacheado, se va a regenerar en el próximo fetch.
+        try { localStorage.removeItem(KEY_SHARED); } catch {}
+      }
+    }
+
+    const cot = freeze.cotizaciones;
     const hayFaltantes = CASAS.some(c => !cot[c]);
     if (!hayFaltantes) {
       _seedPromise = Promise.resolve();
@@ -427,8 +466,6 @@
 
   async function fetchLiveCotizaciones() {
     _kickoffFeriados();
-    // Si el freeze no tiene todas las casas, traemos el seed (intraday + argentinadatos)
-    // antes de hacer el fetch live. Sólo bloquea la primera carga del navegador.
     await _kickoffSeed();
 
     const shared = _read(KEY_SHARED);
