@@ -1,0 +1,542 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dólar Intra-día — Canuto.ar</title>
+  <meta name="description" content="Seguimiento minuto a minuto de las cotizaciones del dólar en Argentina: oficial BNA, blue, mayorista, MEP y CCL." />
+  <script src="/canuto-dolar-live.js"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns@3.0.0/dist/chartjs-adapter-date-fns.bundle.min.js"></script>
+  <style>
+    :root {
+      --bg: #0d0f14; --surface: #13161e; --surface2: #1a1e28; --border: #232736; --border2: #2d3245;
+      --text: #e8eaf0; --text2: #8b90a4; --text3: #545870;
+      --accent: #4ade80; --accent-dim: rgba(74,222,128,0.12);
+      --blue: #60a5fa; --orange: #fb923c; --purple: #a78bfa; --teal: #2dd4bf;
+      --red: #f87171; --green: #4ade80;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: var(--bg); color: var(--text);
+      font-family: 'IBM Plex Sans', sans-serif;
+      min-height: 100vh; -webkit-font-smoothing: antialiased;
+    }
+    main { max-width:1100px; margin:0 auto; padding:36px 20px 80px; }
+    .eyebrow {
+      font-family:'IBM Plex Mono',monospace; font-size:0.68rem;
+      letter-spacing:0.12em; text-transform:uppercase; color:var(--accent);
+      margin-bottom:8px;
+    }
+    h1 {
+      font-size:clamp(1.6rem, 4vw, 2.2rem); font-weight:600;
+      letter-spacing:-0.03em; line-height:1.1; margin-bottom:8px;
+    }
+    .subtitle { color:var(--text2); font-size:0.9rem; margin-bottom:24px; max-width:640px; }
+
+    .cartel {
+      background:linear-gradient(135deg, rgba(251,146,60,0.08), rgba(251,146,60,0.02));
+      border:1px solid rgba(251,146,60,0.25);
+      border-radius:10px;
+      padding:12px 16px;
+      margin-bottom:20px;
+      font-size:0.85rem;
+      color:var(--text2);
+      display:flex; align-items:center; gap:10px;
+    }
+    .cartel::before {
+      content:''; width:6px; height:6px; border-radius:50%;
+      background:var(--orange); flex-shrink:0;
+    }
+    .cartel strong { color:var(--text); font-weight:600; }
+
+    .grid {
+      display:grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap:14px;
+    }
+    /* Mayorista arriba de todo, centrado, mismo ancho que las cards de abajo
+       (la mitad de la grilla menos la mitad del gap). El resto sigue en 2 cols:
+       fila 2 = oficial + blue, fila 3 = mep + ccl. */
+    .card[data-casa="mayorista"] {
+      grid-column: 1 / -1;
+      justify-self: center;
+      width: calc(50% - 7px);
+    }
+    .card {
+      background:var(--surface);
+      border:1px solid var(--border);
+      border-radius:12px;
+      padding:14px 16px;
+      display:flex; flex-direction:column; gap:8px;
+      transition: box-shadow 0.4s, border-color 0.4s;
+    }
+    /* Pulso breve cuando se llega desde un hash #card-X */
+    .card.card-highlight {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 4px rgba(74,222,128,0.25);
+    }
+    .card-head { display:flex; align-items:baseline; justify-content:space-between; gap:8px; }
+    .card-name {
+      display:flex; align-items:center; gap:7px;
+      font-family:'IBM Plex Mono',monospace; font-size:0.78rem;
+      color:var(--text2); letter-spacing:0.04em; text-transform:uppercase;
+    }
+    .card-name .dot { width:7px; height:7px; border-radius:50%; flex-shrink:0; }
+    .card-var {
+      font-family:'IBM Plex Mono',monospace; font-size:0.7rem;
+      padding:3px 7px; border-radius:5px; font-weight:600;
+    }
+    .var-pos { background:rgba(74,222,128,0.12); color:var(--green); }
+    .var-neg { background:rgba(248,113,113,0.12); color:var(--red); }
+    .var-neu { background:var(--surface2); color:var(--text3); }
+
+    .card-val {
+      font-family:'IBM Plex Mono',monospace;
+      font-size:1.6rem; font-weight:700; line-height:1;
+      letter-spacing:-0.01em;
+    }
+    .card-val-sub {
+      font-family:'IBM Plex Mono',monospace; font-size:0.7rem;
+      color:var(--text3);
+    }
+    .card-chart-wrap { position:relative; height:180px; flex:none; }
+
+    .card-stats {
+      display:grid; grid-template-columns: repeat(3, 1fr);
+      gap:8px;
+      padding-top:10px;
+      border-top:1px dashed var(--border);
+      font-family:'IBM Plex Mono',monospace; font-size:0.65rem;
+    }
+    .card-stat { display:flex; flex-direction:column; gap:2px; min-width:0; }
+    .card-stat-label { color:var(--text3); text-transform:uppercase; letter-spacing:0.05em; font-size:0.6rem; }
+    .card-stat-value { color:var(--text); font-weight:600; font-size:0.78rem; line-height:1.2; }
+    .card-stat-when { color:var(--text3); font-size:0.62rem; font-weight:400; }
+
+    /* Colores por casa (dot) */
+    .card[data-casa="oficial"]         .dot { background:var(--accent); }
+    .card[data-casa="blue"]            .dot { background:var(--blue); }
+    .card[data-casa="mayorista"]       .dot { background:var(--teal); }
+    .card[data-casa="bolsa"]           .dot { background:var(--orange); }
+    .card[data-casa="contadoconliqui"] .dot { background:var(--purple); }
+
+    footer {
+      max-width:1100px; margin:40px auto 0; padding:20px;
+      border-top:1px solid var(--border);
+      color:var(--text3); font-size:0.78rem; text-align:center;
+    }
+    footer a { color:var(--text2); text-decoration:none; }
+    footer a:hover { color:var(--accent); }
+    footer code { font-family:'IBM Plex Mono', monospace; color:var(--text2); }
+
+    @media (max-width:600px) {
+      main { padding:24px 14px 60px; }
+      .grid { grid-template-columns:1fr; }
+      .card[data-casa="mayorista"] { grid-column: 1; width: 100%; }
+      .card-val { font-size:1.4rem; }
+      .card-chart-wrap { height:140px; }
+    }
+  </style>
+</head>
+<body>
+<div id="canuto-nav"></div>
+
+<main>
+  <div class="eyebrow">HERRAMIENTA</div>
+  <h1>Dólar Intra-día</h1>
+  <p class="subtitle">Seguimiento minuto a minuto de las cinco cotizaciones del día — oficial, blue, mayorista, MEP y CCL — entre las 10:00 y las 17:00 (hora ARG). Forward-fill: si no hay tick nuevo, se mantiene el último valor conocido.</p>
+
+  <div class="cartel" id="cartel-dia" style="display:none"></div>
+
+  <div class="grid" id="grid"></div>
+</main>
+
+<footer>
+  <a href="/">canuto.ar</a> · Datos del Worker <code>canuto-intraday</code> · Eje 10:00–17:00 ARG · Cierre del día anterior desde argentinadatos.com
+</footer>
+
+<script>
+// ── CONFIG ──────────────────────────────────────────────────────────────
+// Orden de aparición en la grilla:
+//   fila 1 (centro):    mayorista
+//   fila 2 (2 cols):    minorista BNA · blue
+//   fila 3 (2 cols):    MEP · CCL
+const CASAS = [
+  { id:'mayorista',       label:'Mayorista',        color:'#2dd4bf', sub:'Mercado mayorista',  histKey:'mayorista' },
+  { id:'oficial',         label:'Minorista BNA',    color:'#4ade80', sub:'Fuente: BNA',        histKey:'oficial' },
+  { id:'blue',            label:'Blue',             color:'#60a5fa', sub:'Mercado informal',   histKey:'blue' },
+  { id:'bolsa',           label:'MEP / Bolsa',      color:'#fb923c', sub:'Mercado bursátil',   histKey:'bolsa' },
+  { id:'contadoconliqui', label:'CCL',              color:'#a78bfa', sub:'Contado con liqui',  histKey:'contadoconliqui' },
+];
+const INTRADAY_API_BASE = 'https://canuto-intraday.lenzimartin.workers.dev/';
+const HIST_API_BASE     = 'https://api.argentinadatos.com/v1/cotizaciones/dolares/';
+
+// Eje X fijo del día.
+const HORA_INI = 10;
+const HORA_FIN = 17;
+
+// ── ESTADO ──────────────────────────────────────────────────────────────
+let _ticksByCasa = {};       // { casa: [ticks ASC por fa] }
+let _cierreAyer  = {};       // { casa: number }  cotización del último día hábil anterior
+let _mostrandoYmd = null;
+const _charts = {};
+
+// ── HELPERS DE TIEMPO ───────────────────────────────────────────────────
+function _hoyArgYmd() {
+  return new Date().toLocaleDateString('sv-SE', { timeZone: 'America/Argentina/Buenos_Aires' });
+}
+function _ymdToDate(ymd, hh, mm = 0) {
+  const h = String(hh).padStart(2,'0');
+  const m = String(mm).padStart(2,'0');
+  return new Date(`${ymd}T${h}:${m}:00-03:00`);
+}
+function _dowArg(ymd) {
+  return new Date(`${ymd}T12:00:00`).getDay();
+}
+
+// Determina qué día mostrar: hoy si es hábil, último día hábil en caso contrario.
+function _calcularYmdAMostrar() {
+  const cd = window.CanutoDolar;
+  let probe = new Date();
+  for (let i = 0; i < 10; i++) {
+    const ymd = probe.toLocaleDateString('sv-SE', { timeZone: 'America/Argentina/Buenos_Aires' });
+    const ctx = { ymd, dow: _dowArg(ymd) };
+    const habil = cd && typeof cd.esDiaHabilArg === 'function'
+      ? cd.esDiaHabilArg(ctx)
+      : (ctx.dow !== 0 && ctx.dow !== 6);
+    if (habil) return ymd;
+    probe = new Date(probe.getTime() - 86400000);
+  }
+  return _hoyArgYmd();
+}
+
+async function _esperarFeriados() {
+  const cd = window.CanutoDolar;
+  if (!cd) return;
+  const t0 = Date.now();
+  while (Date.now() - t0 < 800) {
+    const ctx = { ymd: '2026-05-01', dow: _dowArg('2026-05-01') };
+    if (!cd.esDiaHabilArg(ctx)) return;
+    await new Promise(r => setTimeout(r, 60));
+  }
+}
+
+function _formatYmdLargo(ymd) {
+  const d = new Date(`${ymd}T12:00:00`);
+  const dia = d.toLocaleDateString('es-AR', { weekday:'long', timeZone:'America/Argentina/Buenos_Aires' });
+  const [y, m, day] = ymd.split('-');
+  return `${dia} ${day}/${m}/${y}`;
+}
+
+// "HH:mm" en ARG para un timestamp ms.
+function _hhmm(ts) {
+  return new Date(ts).toLocaleTimeString('es-AR', {
+    timeZone: 'America/Argentina/Buenos_Aires',
+    hour: '2-digit', minute: '2-digit', hour12: false,
+  });
+}
+
+// ── FETCH DE TICKS Y CIERRE AYER ────────────────────────────────────────
+async function cargarDia(ymd) {
+  const todayYmd = _hoyArgYmd();
+  const path = ymd === todayYmd ? 'today' : ymd;
+  const res = await fetch(INTRADAY_API_BASE + path, { cache: 'no-store' });
+  if (!res.ok) throw new Error(`canuto-intraday HTTP ${res.status}`);
+  const body = await res.json();
+  _ticksByCasa = (body && body.cotizaciones && typeof body.cotizaciones === 'object') ? body.cotizaciones : {};
+  return _ticksByCasa;
+}
+
+// Para el día mostrado, traemos el cierre publicado del último día hábil anterior.
+// Patrón replicado del fetchAyer de /dolar-en-vivo: pedimos el endpoint de fecha
+// específica primero; si falla (día no hábil, fecha inexistente), bajamos la
+// serie completa y tomamos el último cierre con fecha < ymdMostrado.
+async function cargarCierreAyer(ymdMostrado) {
+  const arg = new Date(`${ymdMostrado}T12:00:00`);
+  arg.setDate(arg.getDate() - 1);
+  const yyyy = arg.getFullYear();
+  const mm   = String(arg.getMonth() + 1).padStart(2, '0');
+  const dd   = String(arg.getDate()).padStart(2, '0');
+  const fecha = `${yyyy}-${mm}-${dd}`;
+
+  _cierreAyer = {};
+  await Promise.all(CASAS.map(async casa => {
+    try {
+      let res = await fetch(`${HIST_API_BASE}${casa.histKey}/${fecha}`, { cache: 'no-store' });
+      if (res.ok) {
+        const d = await res.json();
+        if (d && d.venta) { _cierreAyer[casa.id] = d.venta; return; }
+      }
+      // Fallback: serie completa, último < ymdMostrado.
+      res = await fetch(`${HIST_API_BASE}${casa.histKey}`, { cache: 'no-store' });
+      if (!res.ok) return;
+      const serie = await res.json();
+      if (!Array.isArray(serie)) return;
+      const previos = serie.filter(d => d && d.fecha && d.fecha.slice(0,10) < ymdMostrado && d.venta > 0);
+      if (previos.length) _cierreAyer[casa.id] = previos[previos.length - 1].venta;
+    } catch { /* silencioso */ }
+  }));
+}
+
+// ── FORWARD-FILL ────────────────────────────────────────────────────────
+// Genera un punto por minuto desde fromTs hasta toTs. Para cada minuto, repite
+// el último tick cuya fa <= ese minuto. Devuelve también min/max con su hora.
+function forwardFill(ticks, fromTs, toTs) {
+  const orden = (Array.isArray(ticks) ? ticks : []).slice()
+    .filter(t => t && t.fa && t.venta != null);
+  orden.sort((a, b) => new Date(a.fa).getTime() - new Date(b.fa).getTime());
+
+  const out = [];
+  let i = 0, ultimo = null;
+  let minY = null, minTs = null;
+  let maxY = null, maxTs = null;
+  for (let t = fromTs; t <= toTs; t += 60000) {
+    while (i < orden.length && new Date(orden[i].fa).getTime() <= t) {
+      ultimo = orden[i];
+      i++;
+    }
+    const y = ultimo ? ultimo.venta : null;
+    out.push({ x: t, y });
+    if (y != null) {
+      if (minY == null || y < minY) { minY = y; minTs = t; }
+      if (maxY == null || y > maxY) { maxY = y; maxTs = t; }
+    }
+  }
+  return { points: out, minY, minTs, maxY, maxTs };
+}
+
+// ── RENDER ──────────────────────────────────────────────────────────────
+const watermarkPlugin = {
+  id: 'wm',
+  afterDraw(chart) {
+    const { ctx, chartArea } = chart;
+    if (!chartArea) return;
+    ctx.save();
+    ctx.font = '500 11px "IBM Plex Mono", monospace';
+    ctx.fillStyle = 'rgba(139,144,164,0.12)';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText('canuto.ar', (chartArea.left + chartArea.right)/2, (chartArea.top + chartArea.bottom)/2);
+    ctx.restore();
+  },
+};
+
+function _fmt$(n) {
+  if (n == null || isNaN(n)) return '—';
+  return '$' + Number(n).toLocaleString('es-AR', { minimumFractionDigits:0, maximumFractionDigits:2 });
+}
+function _fmtPct(n) {
+  if (n == null || isNaN(n)) return '—';
+  const sign = n > 0 ? '+' : '';
+  return `${sign}${n.toFixed(2)}%`;
+}
+
+function buildGrid() {
+  const grid = document.getElementById('grid');
+  grid.innerHTML = '';
+  for (const casa of CASAS) {
+    const card = document.createElement('article');
+    card.className = 'card';
+    card.id = `card-${casa.id}`;
+    card.dataset.casa = casa.id;
+    card.innerHTML = `
+      <header class="card-head">
+        <div class="card-name"><span class="dot"></span> ${casa.label}</div>
+        <span class="card-var var-neu" id="var-${casa.id}">—</span>
+      </header>
+      <div class="card-val" id="val-${casa.id}">—</div>
+      <div class="card-val-sub">${casa.sub}</div>
+      <div class="card-chart-wrap"><canvas id="chart-${casa.id}"></canvas></div>
+      <div class="card-stats">
+        <div class="card-stat">
+          <span class="card-stat-label">Ayer</span>
+          <span class="card-stat-value" id="ayer-${casa.id}">—</span>
+        </div>
+        <div class="card-stat">
+          <span class="card-stat-label">Mín hoy</span>
+          <span class="card-stat-value" id="min-${casa.id}">—</span>
+        </div>
+        <div class="card-stat">
+          <span class="card-stat-label">Máx hoy</span>
+          <span class="card-stat-value" id="max-${casa.id}">—</span>
+        </div>
+      </div>
+    `;
+    grid.appendChild(card);
+  }
+}
+
+function renderCard(casa) {
+  const ticks = _ticksByCasa[casa.id] || [];
+  const from = _ymdToDate(_mostrandoYmd, HORA_INI, 0).getTime();
+  const to   = _ymdToDate(_mostrandoYmd, HORA_FIN, 0).getTime();
+  const { points, minY, minTs, maxY, maxTs } = forwardFill(ticks, from, to);
+
+  const validos = points.filter(p => p.y != null);
+  const valorActual  = validos.length ? validos[validos.length - 1].y : null;
+
+  // Variación del día = vs cierre del día anterior (no vs primer punto del rango).
+  const ayer = _cierreAyer[casa.id];
+  const variacion = (valorActual != null && ayer && ayer !== 0)
+    ? ((valorActual - ayer) / ayer) * 100
+    : null;
+
+  document.getElementById(`val-${casa.id}`).textContent = _fmt$(valorActual);
+  const varEl = document.getElementById(`var-${casa.id}`);
+  varEl.textContent = _fmtPct(variacion);
+  varEl.className = 'card-var ' + (variacion == null ? 'var-neu' : variacion > 0.005 ? 'var-pos' : variacion < -0.005 ? 'var-neg' : 'var-neu');
+
+  document.getElementById(`ayer-${casa.id}`).innerHTML = ayer
+    ? `${_fmt$(ayer)}`
+    : '—';
+  document.getElementById(`min-${casa.id}`).innerHTML = (minY != null)
+    ? `${_fmt$(minY)} <span class="card-stat-when">${_hhmm(minTs)}</span>`
+    : '—';
+  document.getElementById(`max-${casa.id}`).innerHTML = (maxY != null)
+    ? `${_fmt$(maxY)} <span class="card-stat-when">${_hhmm(maxTs)}</span>`
+    : '—';
+
+  const canvas = document.getElementById(`chart-${casa.id}`);
+  const ctx = canvas.getContext('2d');
+  const grad = ctx.createLinearGradient(0, 0, 0, 110);
+  grad.addColorStop(0, casa.color + '30');
+  grad.addColorStop(1, casa.color + '00');
+
+  if (_charts[casa.id]) { _charts[casa.id].destroy(); _charts[casa.id] = null; }
+  _charts[casa.id] = new Chart(ctx, {
+    type: 'line',
+    data: {
+      datasets: [{
+        data: points,
+        borderColor: casa.color,
+        backgroundColor: grad,
+        borderWidth: 1.4,
+        pointRadius: 0,
+        tension: 0.25,
+        fill: true,
+        spanGaps: false,
+        parsing: false,
+      }],
+    },
+    plugins: [watermarkPlugin],
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      interaction: { intersect:false, mode:'index' },
+      plugins: {
+        legend: { display:false },
+        tooltip: {
+          backgroundColor: '#1a1e28',
+          borderColor: '#232736',
+          borderWidth: 1,
+          titleColor: '#8b90a4',
+          bodyColor: '#e8eaf0',
+          titleFont: { family:'IBM Plex Mono', size:10 },
+          bodyFont:  { family:'IBM Plex Mono', size:11 },
+          padding: 8,
+          callbacks: {
+            title: items => _hhmm(items[0].parsed.x),
+            label: item => item.parsed.y == null ? ' Sin dato' : ' ' + _fmt$(item.parsed.y),
+          },
+        },
+      },
+      scales: {
+        x: {
+          type: 'time',
+          min: from,
+          max: to,
+          time: { unit: 'hour', stepSize: 1, displayFormats: { hour: 'HH' }, tooltipFormat: 'HH:mm' },
+          grid:   { color: '#1e2230', drawTicks: false },
+          border: { color: '#1e2230' },
+          ticks:  { color: '#545870', font: { family:'IBM Plex Mono', size:9 }, maxRotation: 0, source: 'auto' },
+        },
+        y: {
+          position: 'right',
+          grid:   { color: '#1e2230', drawTicks: false },
+          border: { color: '#1e2230', dash:[3,3] },
+          ticks:  {
+            color: '#545870', font: { family:'IBM Plex Mono', size:9 },
+            maxTicksLimit: 4,
+            callback: v => '$' + Number(v).toLocaleString('es-AR', { maximumFractionDigits:0 }),
+          },
+        },
+      },
+      animation: { duration: 150 },
+    },
+  });
+}
+
+function renderTodo() {
+  for (const casa of CASAS) renderCard(casa);
+}
+
+function actualizarCartel() {
+  const cartel = document.getElementById('cartel-dia');
+  const todayYmd = _hoyArgYmd();
+  if (_mostrandoYmd === todayYmd) {
+    cartel.style.display = 'none';
+    return;
+  }
+  const dowHoy = _dowArg(todayYmd);
+  const motivo = (dowHoy === 0) ? 'domingo' : (dowHoy === 6) ? 'sábado' : 'feriado';
+  cartel.innerHTML = `Mostrando intradía del <strong>${_formatYmdLargo(_mostrandoYmd)}</strong> — mercado cerrado hoy (${motivo}).`;
+  cartel.style.display = 'flex';
+}
+
+// ── INIT ────────────────────────────────────────────────────────────────
+async function recargar() {
+  try {
+    await Promise.all([
+      cargarDia(_mostrandoYmd),
+      cargarCierreAyer(_mostrandoYmd),
+    ]);
+    renderTodo();
+  } catch (e) {
+    console.error('recargar() falló:', e.message);
+  }
+}
+
+// Si llegamos con un hash #card-<id> (ej. desde /dolar-en-vivo/), scroll suave a
+// esa card y pulso visual breve para que el usuario ubique la que estaba mirando.
+function _scrollToCardFromHash() {
+  const m = (location.hash || '').match(/^#card-([a-z0-9-]+)$/i);
+  if (!m) return;
+  const target = document.getElementById('card-' + m[1]);
+  if (!target) return;
+  // delay corto para que el sticky nav y los charts terminen de armarse
+  setTimeout(() => {
+    target.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    target.classList.add('card-highlight');
+    setTimeout(() => target.classList.remove('card-highlight'), 1800);
+  }, 80);
+}
+
+(async () => {
+  buildGrid();
+  _scrollToCardFromHash();
+  await _esperarFeriados();
+  _mostrandoYmd = _calcularYmdAMostrar();
+  actualizarCartel();
+  await recargar();
+  setInterval(() => {
+    const todayYmd = _hoyArgYmd();
+    if (_mostrandoYmd !== todayYmd) {
+      const nuevoYmd = _calcularYmdAMostrar();
+      if (nuevoYmd !== _mostrandoYmd) {
+        _mostrandoYmd = nuevoYmd;
+        actualizarCartel();
+        recargar();
+      }
+      return;
+    }
+    cargarDia(_mostrandoYmd).then(renderTodo).catch(() => {});
+  }, 60 * 1000);
+})();
+</script>
+
+<script src="/canuto-nav.js"></script>
+</body>
+</html>
