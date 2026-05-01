@@ -1,1 +1,518 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dólar Intra-día — Canuto.ar</title>
+  <meta name="description" content="Seguimiento minuto a minuto de las cotizaciones del dólar en Argentina: oficial BNA, blue, mayorista, MEP y CCL." />
+  <script src="/canuto-dolar-live.js"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns@3.0.0/dist/chartjs-adapter-date-fns.bundle.min.js"></script>
+  <style>
+    :root {
+      --bg: #0d0f14; --surface: #13161e; --surface2: #1a1e28; --border: #232736; --border2: #2d3245;
+      --text: #e8eaf0; --text2: #8b90a4; --text3: #545870;
+      --accent: #4ade80; --accent-dim: rgba(74,222,128,0.12);
+      --blue: #60a5fa; --orange: #fb923c; --purple: #a78bfa; --teal: #2dd4bf;
+      --red: #f87171; --green: #4ade80;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: var(--bg); color: var(--text);
+      font-family: 'IBM Plex Sans', sans-serif;
+      min-height: 100vh; -webkit-font-smoothing: antialiased;
+    }
+    nav {
+      display:flex; align-items:center; justify-content:space-between;
+      padding:14px 20px; border-bottom:1px solid var(--border);
+      position:sticky; top:0; z-index:100;
+      background:rgba(13,15,20,0.95); backdrop-filter:blur(12px);
+    }
+    .nav-logo { font-family:'IBM Plex Mono',monospace; font-weight:700; font-size:0.95rem; color:var(--text); text-decoration:none; letter-spacing:-0.03em; }
+    .nav-logo span { color:var(--accent); }
+    .nav-links { display:flex; gap:3px; overflow-x:auto; scrollbar-width:none; }
+    .nav-links::-webkit-scrollbar { display:none; }
+    .nav-links a {
+      color:var(--text2); text-decoration:none; font-size:0.72rem;
+      font-family:'IBM Plex Mono',monospace; padding:5px 9px;
+      border-radius:6px; transition:all 0.12s; white-space:nowrap;
+    }
+    .nav-links a:hover { color:var(--text); background:var(--surface2); }
+    .nav-links a.active { color:var(--bg); background:var(--accent); font-weight:700; }
 
+    main { max-width:1100px; margin:0 auto; padding:36px 20px 80px; }
+    .eyebrow {
+      font-family:'IBM Plex Mono',monospace; font-size:0.68rem;
+      letter-spacing:0.12em; text-transform:uppercase; color:var(--accent);
+      margin-bottom:8px;
+    }
+    h1 {
+      font-size:clamp(1.6rem, 4vw, 2.2rem); font-weight:600;
+      letter-spacing:-0.03em; line-height:1.1; margin-bottom:8px;
+    }
+    .subtitle { color:var(--text2); font-size:0.9rem; margin-bottom:24px; max-width:640px; }
+
+    .cartel {
+      background:linear-gradient(135deg, rgba(251,146,60,0.08), rgba(251,146,60,0.02));
+      border:1px solid rgba(251,146,60,0.25);
+      border-radius:10px;
+      padding:12px 16px;
+      margin-bottom:20px;
+      font-size:0.85rem;
+      color:var(--text2);
+      display:flex; align-items:center; gap:10px;
+    }
+    .cartel::before {
+      content:''; width:6px; height:6px; border-radius:50%;
+      background:var(--orange); flex-shrink:0;
+    }
+    .cartel strong { color:var(--text); font-weight:600; }
+
+    .tabs { display:flex; gap:2px; background:var(--surface2); border-radius:8px; padding:3px; margin-bottom:18px; width:fit-content; }
+    .tab {
+      padding:7px 14px; border-radius:6px; border:none;
+      background:transparent; color:var(--text3);
+      font-family:'IBM Plex Mono',monospace; font-size:0.78rem;
+      font-weight:500; cursor:pointer; transition:all 0.12s;
+    }
+    .tab:hover { color:var(--text2); }
+    .tab.active { background:var(--surface); color:var(--text); box-shadow:0 1px 4px rgba(0,0,0,0.3); }
+
+    .grid {
+      display:grid;
+      grid-template-columns: repeat(auto-fit, minmax(310px, 1fr));
+      gap:14px;
+    }
+    .card {
+      background:var(--surface);
+      border:1px solid var(--border);
+      border-radius:12px;
+      padding:14px 16px;
+      display:flex; flex-direction:column; gap:8px;
+      min-height:240px;
+    }
+    .card-head { display:flex; align-items:baseline; justify-content:space-between; gap:8px; }
+    .card-name {
+      display:flex; align-items:center; gap:7px;
+      font-family:'IBM Plex Mono',monospace; font-size:0.78rem;
+      color:var(--text2); letter-spacing:0.04em; text-transform:uppercase;
+    }
+    .card-name .dot { width:7px; height:7px; border-radius:50%; flex-shrink:0; }
+    .card-var {
+      font-family:'IBM Plex Mono',monospace; font-size:0.7rem;
+      padding:3px 7px; border-radius:5px; font-weight:600;
+    }
+    .var-pos { background:rgba(74,222,128,0.12); color:var(--green); }
+    .var-neg { background:rgba(248,113,113,0.12); color:var(--red); }
+    .var-neu { background:var(--surface2); color:var(--text3); }
+
+    .card-val {
+      font-family:'IBM Plex Mono',monospace;
+      font-size:1.6rem; font-weight:700; line-height:1;
+      letter-spacing:-0.01em;
+    }
+    .card-val-sub {
+      font-family:'IBM Plex Mono',monospace; font-size:0.7rem;
+      color:var(--text3);
+    }
+    .card-chart-wrap { position:relative; height:110px; flex:none; }
+    .card-foot {
+      display:flex; justify-content:space-between;
+      font-family:'IBM Plex Mono',monospace; font-size:0.65rem;
+      color:var(--text3); padding-top:4px; border-top:1px dashed var(--border);
+    }
+    .card-foot span b { color:var(--text2); font-weight:600; }
+    .card-empty {
+      flex:1; display:flex; align-items:center; justify-content:center;
+      color:var(--text3); font-size:0.78rem; text-align:center;
+      font-family:'IBM Plex Mono',monospace;
+    }
+
+    /* Colores por casa (dot) */
+    .card[data-casa="oficial"]         .dot { background:var(--accent); }
+    .card[data-casa="blue"]            .dot { background:var(--blue); }
+    .card[data-casa="mayorista"]       .dot { background:var(--teal); }
+    .card[data-casa="bolsa"]           .dot { background:var(--orange); }
+    .card[data-casa="contadoconliqui"] .dot { background:var(--purple); }
+
+    footer {
+      max-width:1100px; margin:40px auto 0; padding:20px;
+      border-top:1px solid var(--border);
+      color:var(--text3); font-size:0.78rem; text-align:center;
+    }
+    footer a { color:var(--text2); text-decoration:none; }
+    footer a:hover { color:var(--accent); }
+
+    @media (max-width:600px) {
+      main { padding:24px 14px 60px; }
+      .grid { grid-template-columns:1fr; }
+      .card-val { font-size:1.4rem; }
+    }
+  </style>
+</head>
+<body>
+<nav>
+  <a href="/" class="nav-logo">canuto<span>.ar</span></a>
+  <div class="nav-links" id="nav-links"></div>
+</nav>
+
+<main>
+  <div class="eyebrow">HERRAMIENTA</div>
+  <h1>Dólar Intra-día</h1>
+  <p class="subtitle">Seguimiento minuto a minuto de las cinco cotizaciones — oficial, blue, mayorista, MEP y CCL — con forward-fill: si no hay tick nuevo, se mantiene el último valor conocido.</p>
+
+  <div class="cartel" id="cartel-dia" style="display:none"></div>
+
+  <div class="tabs" id="tabs-window">
+    <button class="tab" data-window="1">1h</button>
+    <button class="tab" data-window="2">2h</button>
+    <button class="tab" data-window="3">3h</button>
+    <button class="tab" data-window="4">4h</button>
+    <button class="tab active" data-window="todo">Día</button>
+  </div>
+
+  <div class="grid" id="grid"></div>
+</main>
+
+<footer>
+  <a href="/">canuto.ar</a> · Datos del Worker <code>canuto-intraday</code> que captura ticks por minuto desde <code>canuto-dolar</code> · Eje 08:00–17:00 ARG
+</footer>
+
+<script>
+// ── CONFIG ──────────────────────────────────────────────────────────────
+const CASAS = [
+  { id:'oficial',         label:'Minorista BNA',    color:'#4ade80', sub:'Fuente: BNA' },
+  { id:'blue',            label:'Blue',             color:'#60a5fa', sub:'Mercado informal' },
+  { id:'mayorista',       label:'Mayorista',        color:'#2dd4bf', sub:'Mercado mayorista' },
+  { id:'bolsa',           label:'MEP / Bolsa',      color:'#fb923c', sub:'Mercado bursátil' },
+  { id:'contadoconliqui', label:'CCL',              color:'#a78bfa', sub:'Contado con liqui' },
+];
+const INTRADAY_API_BASE = 'https://canuto-intraday.lenzimartin.workers.dev/';
+
+// Ventana del día — coherente con la decisión del usuario.
+const HORA_INI = 8;
+const HORA_FIN = 17;
+
+// ── ESTADO ──────────────────────────────────────────────────────────────
+let _ticksByCasa = {};      // { casa: [ticks ASC por fa] }
+let _currentWindow = 'todo';
+let _mostrandoYmd = null;
+const _charts = {};          // { casa: Chart instance }
+
+// ── HELPERS DE TIEMPO ───────────────────────────────────────────────────
+function _hoyArgYmd() {
+  return new Date().toLocaleDateString('sv-SE', { timeZone: 'America/Argentina/Buenos_Aires' });
+}
+
+function _ymdToDate(ymd, hh, mm = 0) {
+  // "2026-04-30" + 14:30 → ISO ARG → Date
+  const h = String(hh).padStart(2,'0');
+  const m = String(mm).padStart(2,'0');
+  return new Date(`${ymd}T${h}:${m}:00-03:00`);
+}
+
+// Devuelve el day-of-week 0..6 para un ymd ARG
+function _dowArg(ymd) {
+  return new Date(`${ymd}T12:00:00`).getDay();
+}
+
+// Determina qué día mostrar: hoy si es hábil, último día hábil en caso contrario.
+// Si CanutoDolar todavía no terminó de cargar feriados, usamos solo dow (sábado/domingo).
+function _calcularYmdAMostrar() {
+  const cd = window.CanutoDolar;
+  let probe = new Date();
+  for (let i = 0; i < 10; i++) {
+    const ymd = probe.toLocaleDateString('sv-SE', { timeZone: 'America/Argentina/Buenos_Aires' });
+    const ctx = { ymd, dow: _dowArg(ymd) };
+    const habil = cd && typeof cd.esDiaHabilArg === 'function'
+      ? cd.esDiaHabilArg(ctx)
+      : (ctx.dow !== 0 && ctx.dow !== 6);
+    if (habil) return ymd;
+    probe = new Date(probe.getTime() - 86400000);
+  }
+  return _hoyArgYmd();
+}
+
+// Espera a que CanutoDolar haya terminado de cargar feriados (max 800ms).
+async function _esperarFeriados() {
+  const cd = window.CanutoDolar;
+  if (!cd) return;
+  // Truco: la API no expone una promesa pública. Probamos esDiaHabilArg con
+  // un día conocido feriado (1° mayo). Si en algún momento devuelve false, ya
+  // están cargados. Salimos antes si pasaron 800ms.
+  const t0 = Date.now();
+  while (Date.now() - t0 < 800) {
+    const ctx = { ymd: '2026-05-01', dow: _dowArg('2026-05-01') };
+    if (!cd.esDiaHabilArg(ctx)) return; // feriados cargados
+    await new Promise(r => setTimeout(r, 60));
+  }
+}
+
+// Formatea ymd para el cartel: "viernes 25/04/2026"
+function _formatYmdLargo(ymd) {
+  const d = new Date(`${ymd}T12:00:00`);
+  const dia = d.toLocaleDateString('es-AR', { weekday:'long', timeZone:'America/Argentina/Buenos_Aires' });
+  const [y, m, day] = ymd.split('-');
+  return `${dia} ${day}/${m}/${y}`;
+}
+
+// ── FETCH DE TICKS ──────────────────────────────────────────────────────
+async function cargarDia(ymd) {
+  const todayYmd = _hoyArgYmd();
+  const path = ymd === todayYmd ? 'today' : ymd;
+  const res = await fetch(INTRADAY_API_BASE + path, { cache: 'no-store' });
+  if (!res.ok) throw new Error(`canuto-intraday HTTP ${res.status}`);
+  const body = await res.json();
+  _ticksByCasa = (body && body.cotizaciones && typeof body.cotizaciones === 'object') ? body.cotizaciones : {};
+  return _ticksByCasa;
+}
+
+// ── FORWARD-FILL ────────────────────────────────────────────────────────
+// Genera un punto por minuto desde fromTs hasta toTs. Para cada minuto, repite
+// el último tick cuya fa <= ese minuto. Los minutos previos al primer tick
+// quedan con y=null (se grafican como gap al inicio del rango).
+function forwardFill(ticks, fromTs, toTs) {
+  if (!Array.isArray(ticks)) ticks = [];
+  // Aseguramos orden ASC por fa.
+  const orden = ticks.slice().filter(t => t && t.fa && t.venta != null);
+  orden.sort((a, b) => new Date(a.fa).getTime() - new Date(b.fa).getTime());
+
+  const out = [];
+  let i = 0, ultimo = null;
+  for (let t = fromTs; t <= toTs; t += 60000) {
+    while (i < orden.length && new Date(orden[i].fa).getTime() <= t) {
+      ultimo = orden[i];
+      i++;
+    }
+    out.push({ x: t, y: ultimo ? ultimo.venta : null });
+  }
+  return out;
+}
+
+// ── VENTANA VISIBLE ─────────────────────────────────────────────────────
+function calcularVentana(windowKey, ymd) {
+  const inicioDia = _ymdToDate(ymd, HORA_INI, 0).getTime();
+  const finDia    = _ymdToDate(ymd, HORA_FIN, 0).getTime();
+  const todayYmd = _hoyArgYmd();
+  const ahora = ymd === todayYmd ? Date.now() : finDia;
+  const limiteSup = Math.min(ahora, finDia);
+  if (windowKey === 'todo') {
+    return { from: inicioDia, to: finDia };
+  }
+  const horas = parseInt(windowKey, 10);
+  if (!Number.isFinite(horas) || horas <= 0) return { from: inicioDia, to: finDia };
+  const from = Math.max(inicioDia, limiteSup - horas * 3600 * 1000);
+  return { from, to: limiteSup };
+}
+
+// ── RENDER ──────────────────────────────────────────────────────────────
+const watermarkPlugin = {
+  id: 'wm',
+  afterDraw(chart) {
+    const { ctx, chartArea } = chart;
+    if (!chartArea) return;
+    ctx.save();
+    ctx.font = '500 11px "IBM Plex Mono", monospace';
+    ctx.fillStyle = 'rgba(139,144,164,0.12)';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText('canuto.ar', (chartArea.left + chartArea.right)/2, (chartArea.top + chartArea.bottom)/2);
+    ctx.restore();
+  },
+};
+
+function _fmt$(n) {
+  if (n == null || isNaN(n)) return '—';
+  return '$' + Number(n).toLocaleString('es-AR', { minimumFractionDigits:0, maximumFractionDigits:2 });
+}
+function _fmtPct(n) {
+  if (n == null || isNaN(n)) return '—';
+  const sign = n > 0 ? '+' : '';
+  return `${sign}${n.toFixed(2)}%`;
+}
+
+function buildGrid() {
+  const grid = document.getElementById('grid');
+  grid.innerHTML = '';
+  for (const casa of CASAS) {
+    const card = document.createElement('article');
+    card.className = 'card';
+    card.dataset.casa = casa.id;
+    card.innerHTML = `
+      <header class="card-head">
+        <div class="card-name"><span class="dot"></span> ${casa.label}</div>
+        <span class="card-var var-neu" id="var-${casa.id}">—</span>
+      </header>
+      <div class="card-val" id="val-${casa.id}">—</div>
+      <div class="card-val-sub" id="sub-${casa.id}">${casa.sub}</div>
+      <div class="card-chart-wrap"><canvas id="chart-${casa.id}"></canvas></div>
+      <footer class="card-foot">
+        <span>Máx <b id="max-${casa.id}">—</b></span>
+        <span>Mín <b id="min-${casa.id}">—</b></span>
+      </footer>
+    `;
+    grid.appendChild(card);
+  }
+}
+
+function renderCard(casa) {
+  const ticks = _ticksByCasa[casa.id] || [];
+  const { from, to } = calcularVentana(_currentWindow, _mostrandoYmd);
+  const puntos = forwardFill(ticks, from, to);
+
+  // Chart sólo grafica puntos con y != null (Chart.js maneja nulls como gaps).
+  const validos = puntos.filter(p => p.y != null);
+  const valorActual  = validos.length ? validos[validos.length - 1].y : null;
+  const valorInicial = validos.length ? validos[0].y : null;
+  const variacion = (valorActual != null && valorInicial != null && valorInicial !== 0)
+    ? ((valorActual - valorInicial) / valorInicial) * 100
+    : null;
+
+  const ys = validos.map(p => p.y);
+  const maxY = ys.length ? Math.max(...ys) : null;
+  const minY = ys.length ? Math.min(...ys) : null;
+
+  document.getElementById(`val-${casa.id}`).textContent = _fmt$(valorActual);
+  const varEl = document.getElementById(`var-${casa.id}`);
+  varEl.textContent = _fmtPct(variacion);
+  varEl.className = 'card-var ' + (variacion == null ? 'var-neu' : variacion > 0.005 ? 'var-pos' : variacion < -0.005 ? 'var-neg' : 'var-neu');
+  document.getElementById(`max-${casa.id}`).textContent = _fmt$(maxY);
+  document.getElementById(`min-${casa.id}`).textContent = _fmt$(minY);
+
+  // Construir o actualizar chart.
+  const canvas = document.getElementById(`chart-${casa.id}`);
+  const ctx = canvas.getContext('2d');
+  const grad = ctx.createLinearGradient(0, 0, 0, 110);
+  grad.addColorStop(0, casa.color + '30');
+  grad.addColorStop(1, casa.color + '00');
+
+  if (_charts[casa.id]) { _charts[casa.id].destroy(); _charts[casa.id] = null; }
+  _charts[casa.id] = new Chart(ctx, {
+    type: 'line',
+    data: {
+      datasets: [{
+        data: puntos,
+        borderColor: casa.color,
+        backgroundColor: grad,
+        borderWidth: 1.4,
+        pointRadius: 0,
+        tension: 0.25,
+        fill: true,
+        spanGaps: false,
+        parsing: false,
+      }],
+    },
+    plugins: [watermarkPlugin],
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      interaction: { intersect:false, mode:'index' },
+      plugins: {
+        legend: { display:false },
+        tooltip: {
+          backgroundColor: '#1a1e28',
+          borderColor: '#232736',
+          borderWidth: 1,
+          titleColor: '#8b90a4',
+          bodyColor: '#e8eaf0',
+          titleFont: { family:'IBM Plex Mono', size:10 },
+          bodyFont:  { family:'IBM Plex Mono', size:11 },
+          padding: 8,
+          callbacks: {
+            title: items => new Date(items[0].parsed.x).toLocaleTimeString('es-AR', { timeZone:'America/Argentina/Buenos_Aires', hour:'2-digit', minute:'2-digit', hour12:false }),
+            label: item => item.parsed.y == null ? ' Sin dato' : ' ' + _fmt$(item.parsed.y),
+          },
+        },
+      },
+      scales: {
+        x: {
+          type: 'time',
+          min: from,
+          max: to,
+          time: { unit: 'hour', stepSize: 1, displayFormats: { hour: 'HH' }, tooltipFormat: 'HH:mm' },
+          grid:   { color: '#1e2230', drawTicks: false },
+          border: { color: '#1e2230' },
+          ticks:  { color: '#545870', font: { family:'IBM Plex Mono', size:9 }, maxRotation: 0, source: 'auto' },
+        },
+        y: {
+          position: 'right',
+          grid:   { color: '#1e2230', drawTicks: false },
+          border: { color: '#1e2230', dash:[3,3] },
+          ticks:  {
+            color: '#545870', font: { family:'IBM Plex Mono', size:9 },
+            maxTicksLimit: 4,
+            callback: v => '$' + Number(v).toLocaleString('es-AR', { maximumFractionDigits:0 }),
+          },
+        },
+      },
+      animation: { duration: 150 },
+    },
+  });
+}
+
+function renderTodo() {
+  for (const casa of CASAS) renderCard(casa);
+}
+
+// Cartel dinámico: sólo aparece cuando _mostrandoYmd != hoy
+function actualizarCartel() {
+  const cartel = document.getElementById('cartel-dia');
+  const todayYmd = _hoyArgYmd();
+  if (_mostrandoYmd === todayYmd) {
+    cartel.style.display = 'none';
+    return;
+  }
+  const dowHoy = _dowArg(todayYmd);
+  const motivo = (dowHoy === 0) ? 'domingo' : (dowHoy === 6) ? 'sábado' : 'feriado';
+  cartel.innerHTML = `Mostrando intradía del <strong>${_formatYmdLargo(_mostrandoYmd)}</strong> — mercado cerrado hoy (${motivo}).`;
+  cartel.style.display = 'flex';
+}
+
+// ── INIT ────────────────────────────────────────────────────────────────
+async function recargar() {
+  try {
+    await cargarDia(_mostrandoYmd);
+    renderTodo();
+  } catch (e) {
+    console.error('recargar() falló:', e.message);
+  }
+}
+
+document.querySelectorAll('#tabs-window .tab').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('#tabs-window .tab').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    _currentWindow = btn.dataset.window;
+    renderTodo(); // sin re-fetch, sólo recalcular ventana
+  });
+});
+
+(async () => {
+  buildGrid();
+  await _esperarFeriados();
+  _mostrandoYmd = _calcularYmdAMostrar();
+  actualizarCartel();
+  await recargar();
+  // Auto-refresh cada 60s sólo si estamos mostrando hoy.
+  setInterval(() => {
+    const todayYmd = _hoyArgYmd();
+    if (_mostrandoYmd !== todayYmd) {
+      // Cruzamos de día (p.ej. domingo 23:59 → lunes 00:00). Recalcular.
+      const nuevoYmd = _calcularYmdAMostrar();
+      if (nuevoYmd !== _mostrandoYmd) {
+        _mostrandoYmd = nuevoYmd;
+        actualizarCartel();
+        recargar();
+      }
+      return;
+    }
+    recargar();
+  }, 60 * 1000);
+})();
+</script>
+
+<script src="/canuto-nav.js"></script>
+</body>
+</html>
