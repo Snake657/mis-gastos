@@ -329,15 +329,25 @@
   }
 
   // Para una serie de ticks `[{ts, fa, compra, venta, ...}, ...]` ordenada
-  // ascendentemente, devuelve el último tick cuya fechaActualizacion (`fa`) cae
-  // dentro del horario de mercado (07:00-17:00 ARG). Devuelve null si no hay
-  // ningún tick válido (p.ej. todos son post-cierre, o el array está vacío).
+  // ascendentemente, devuelve el último tick cuya fechaActualizacion (`fa`):
+  //   1) cae dentro del horario de mercado (07:00-17:00 ARG), Y
+  //   2) corresponde al día ARG actual.
+  // Devuelve null si no hay ningún tick válido (p.ej. todos son post-cierre,
+  // o todos arrastran fa de un día anterior, o el array está vacío). En esos
+  // casos el seed cae al fallback de argentinadatos.
   function _ultimoTickIntraHorario(ticks) {
     if (!Array.isArray(ticks)) return null;
+    const ymdActual = _ahoraArg().ymd;
     for (let i = ticks.length - 1; i >= 0; i--) {
       const t = ticks[i];
       if (!t || t.venta == null) continue;
-      if (_isFaIntraHorario(t.fa || t.ts)) return t;
+      const iso = t.fa || t.ts;
+      if (!_isFaIntraHorario(iso)) continue;
+      const dt = new Date(iso);
+      if (isNaN(dt.getTime())) continue;
+      const tickYmd = dt.toLocaleDateString('sv-SE', { timeZone: 'America/Argentina/Buenos_Aires' });
+      if (tickYmd !== ymdActual) continue;
+      return t;
     }
     return null;
   }
