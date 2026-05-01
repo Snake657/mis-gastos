@@ -18,26 +18,43 @@
  *   Una sola clave por día → intraday:{YYYY-MM-DD}
  *   Valor: { oficial:[ticks], blue:[ticks], bolsa:[ticks], contadoconliqui:[ticks], mayorista:[ticks] }
  *   Tick: { ts, fa, compra, venta, _source }
- *     ts = momento del registro (server-side ISO, UTC)
+ *     ts = momento del registro (server-side ISO, UTC) — usado para el filtro de prioridad
  *     fa = fechaActualizacion que reportó la fuente
  *   TTL: 30 días.
  *
  * Cron: * * * * *  (cada minuto)  — pero la lógica `scheduled` corta temprano
  *   fuera del horario hábil ARG para no consumir cuota de KV inútilmente.
  *   Ventana activa: lun-vie 09:00–17:30 ARG (UTC-3, sin DST).
- *   Esto reduce las invocaciones efectivas de 1440/día a ~450/día y baja
- *   los writes a KV de ~600/día a ~400/día (free tier permite 1000/día).
+ *
+ * Filtro de prioridad de fuente (read-time):
+ *   Para `bolsa` (MEP) y `contadoconliqui` (CCL), se prioriza `criptoya` por ser la
+ *   fuente con mayor granularidad (~1-3 min). Si pasan más de 8 min sin tick de
+ *   criptoya, se aceptan ticks de las otras fuentes (ej. ámbito) hasta que criptoya
+ *   se reestablezca, momento en el que el reloj se resetea.
+ *   El KV guarda todos los ticks crudos — el filtro se aplica al servir.
  *
  * HTTP:
  *   GET /            → metadatos
- *   GET /today       → serie del día ARG actual
- *   GET /YYYY-MM-DD  → serie de ese día
+ *   GET /today       → serie del día ARG actual (filtrada)
+ *   GET /YYYY-MM-DD  → serie de ese día (filtrada)
+ *   GET /raw/today        → serie cruda sin filtro (debug)
+ *   GET /raw/YYYY-MM-DD   → serie cruda sin filtro (debug)
  *   CORS: Access-Control-Allow-Origin: *
  */
 
 const CASAS = ['oficial', 'blue', 'bolsa', 'contadoconliqui', 'mayorista'];
 const TTL_DIAS = 30;
 const TTL_SECONDS = TTL_DIAS * 24 * 3600;
+
+// Por casa, qué fuente tiene prioridad. Si hay tick de la fuente primaria reciente
+// (gap ≤ FALLBACK_GAP_MIN), las demás se descartan en el filtro de salida.
+// Casas no listadas acá no se filtran.
+const FUENTE_PRIMARIA = {
+  bolsa:           'criptoya',
+  contadoconliqui: 'criptoya',
+};
+const FALLBACK_GAP_MIN = 8;
+const FALLBACK_GAP_MS  = FALLBACK_GAP_MIN * 60 * 1000;
 
 const CORS_HEADERS = {
   'Access-Control-Allow-Origin': '*',
@@ -61,11 +78,7 @@ function ymdArg(date = new Date()) {
 }
 
 // Hora ARG (UTC-3, sin DST en Argentina). Devuelve { dow, hh, mm }.
-//   dow: 0=domingo, 1=lunes, ..., 6=sábado
-//   hh:  0..23
-//   mm:  0..59
 function _ahoraArg(now = new Date()) {
-  // ARG = UTC - 3h. Restamos al ms y leemos los componentes vía getUTC*.
   const ms = now.getTime() - 3 * 3600 * 1000;
   const d = new Date(ms);
   return {
@@ -75,25 +88,51 @@ function _ahoraArg(now = new Date()) {
   };
 }
 
-// True si estamos dentro de la ventana de captura de ticks: lun-vie 09:00–17:30 ARG.
-// Nota: NO contempla feriados — en feriados el cron va a correr y la fuente
-// (canuto-dolar) probablemente devuelva el último tick del día hábil anterior, lo
-// que igual filtra el "if (last && last.fa === cot.fechaActualizacion) continue"
-// porque ese fa no cambia. O sea, en feriados el costo es ~5 reads/min sin
-// writes — tolerable. Si más adelante queremos agregar la guarda de feriados,
-// se puede consultar argentinadatos.com/v1/feriados/{year} con cache.
+// True si estamos dentro de la ventana de captura: lun-vie 09:00–17:30 ARG.
+// (No contempla feriados; en feriados corre y no escribe porque la fuente devuelve
+// el mismo `fa` que el día hábil anterior y el guard de dedupe lo filtra.)
 function _enHorarioCapturaArg() {
   const { dow, hh, mm } = _ahoraArg();
-  if (dow === 0 || dow === 6) return false;     // sáb/dom
+  if (dow === 0 || dow === 6) return false;
   const t = hh * 60 + mm;
-  const ini = 9 * 60;          // 09:00
-  const fin = 17 * 60 + 30;    // 17:30
-  return t >= ini && t <= fin;
+  return t >= 9 * 60 && t <= 17 * 60 + 30;
+}
+
+// Aplica el filtro de prioridad de fuente para una casa.
+// Recibe el array crudo de ticks (insertados en orden de ts ascendente) y devuelve
+// un array filtrado con la regla "primaria gana, fallback sólo si hay >8 min sin
+// tick primario o si todavía no llegó ningún tick primario".
+function _filtrarPorPrioridad(casa, ticks) {
+  const primaria = FUENTE_PRIMARIA[casa];
+  if (!primaria || !Array.isArray(ticks) || ticks.length === 0) return ticks || [];
+  // Asegurar orden por ts ASC (debería estarlo, pero no cuesta nada).
+  const ordenados = [...ticks].sort(
+    (a, b) => new Date(a.ts).getTime() - new Date(b.ts).getTime()
+  );
+  const out = [];
+  let ultimaPrimariaTs = null;
+  for (const t of ordenados) {
+    const ts = new Date(t.ts).getTime();
+    if (t._source === primaria) {
+      out.push(t);
+      ultimaPrimariaTs = ts;
+    } else if (ultimaPrimariaTs == null || (ts - ultimaPrimariaTs) > FALLBACK_GAP_MS) {
+      out.push(t);
+    }
+    // else: descartado (la primaria está activa hace ≤8 min)
+  }
+  return out;
+}
+
+function aplicarFiltrosATodas(stored) {
+  const out = {};
+  for (const casa of Object.keys(stored || {})) {
+    out[casa] = _filtrarPorPrioridad(casa, stored[casa]);
+  }
+  return out;
 }
 
 async function fetchSnapshot(env) {
-  // Llamada interna al Worker canuto-dolar via Service Binding.
-  // El host es ignorado por Cloudflare; sólo importa el path.
   const req = new Request('https://canuto-dolar.internal/api/dolar');
   const res = await env.DOLAR.fetch(req);
   if (!res.ok) throw new Error('canuto-dolar HTTP ' + res.status);
@@ -138,8 +177,6 @@ async function recordTick(env) {
 
 export default {
   async scheduled(event, env, ctx) {
-    // Cortocircuito fuera del horario hábil ARG — no hace ni un solo KV op
-    // si estamos en sábado/domingo o fuera de 09:00–17:30 ARG.
     if (!_enHorarioCapturaArg()) return;
     ctx.waitUntil(recordTick(env));
   },
@@ -158,17 +195,30 @@ export default {
     if (path === '/') {
       return jsonResponse({
         service: 'canuto-intraday',
-        version: '1.2',
-        endpoints: ['/today', '/{YYYY-MM-DD}'],
+        version: '1.3',
+        endpoints: ['/today', '/{YYYY-MM-DD}', '/raw/today', '/raw/{YYYY-MM-DD}'],
+        filter: {
+          casas: Object.keys(FUENTE_PRIMARIA),
+          fuentePrimaria: FUENTE_PRIMARIA,
+          fallbackGapMin: FALLBACK_GAP_MIN,
+        },
         docs: 'https://canuto.ar',
       });
     }
 
+    // /raw/* devuelve la data sin filtrar (para debug / análisis manual).
+    let raw = false;
+    let pathSinRaw = path;
+    if (path.startsWith('/raw/')) {
+      raw = true;
+      pathSinRaw = path.slice(4); // queda "/today" o "/YYYY-MM-DD"
+    }
+
     let ymd;
-    if (path === '/today') {
+    if (pathSinRaw === '/today') {
       ymd = ymdArg();
     } else {
-      const m = path.match(/^\/(\d{4}-\d{2}-\d{2})$/);
+      const m = pathSinRaw.match(/^\/(\d{4}-\d{2}-\d{2})$/);
       if (!m) {
         return jsonResponse({ error: 'Invalid path. Use /today or /YYYY-MM-DD' }, 400);
       }
@@ -177,10 +227,12 @@ export default {
 
     const key = `intraday:${ymd}`;
     const stored = (await env.INTRADAY.get(key, 'json')) || {};
+    const cotizaciones = raw ? stored : aplicarFiltrosATodas(stored);
 
     return jsonResponse({
       ymd,
-      cotizaciones: stored,
+      cotizaciones,
+      ...(raw ? { raw: true } : {}),
     });
   },
 };
