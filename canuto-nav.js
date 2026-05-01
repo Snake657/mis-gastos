@@ -9,6 +9,7 @@
     { id: 'retiro',          label: 'Mi Retiro',       emoji: '🏖️', href: '/retiro/',          desc: 'Tu número para no trabajar más' },
     { id: 'gastos',          label: 'Mis Gastos',      emoji: '💳', href: '/gastos/',          desc: 'Calendario de gastos fijos del mes' },
     { id: 'dolar-en-vivo',   label: 'Dólar en Vivo',   emoji: '💵', href: '/dolar-en-vivo/',   desc: 'Cotizaciones del dólar al instante' },
+    { id: 'dolar-intradia',  label: 'Dólar Intra-día', emoji: '⏱️', href: '/dolar-intradia/',  desc: 'Seguimiento minuto a minuto del día' },
     { id: 'dolar-historico', label: 'Dólar Histórico', emoji: '📈', href: '/dolar-historico/', desc: 'Serie histórica del dólar desde 2003' },
     { id: 'inflaciona',      label: 'Inflacioná',      emoji: '🔥', href: '/inflaciona/',      desc: 'Cuánto subió un precio (AR/USA)' },
     { id: 'datos-macro',     label: 'Datos Macro',     emoji: '🏛️', href: '/datos-macro/',     desc: 'Indicadores macro de Argentina' },
