@@ -132,12 +132,58 @@
     footer a:hover { color:var(--accent); }
     footer code { font-family:'IBM Plex Mono', monospace; color:var(--text2); }
 
+    /* Indicador de auto-refresh (barrita arriba a la derecha) */
+    .page-top {
+      display:flex; align-items:center; justify-content:space-between;
+      gap:12px; margin-bottom:8px;
+    }
+    .page-top .eyebrow { margin-bottom:0; }
+    .autorefresh {
+      display:flex; align-items:center; gap:8px;
+      font-family:'IBM Plex Mono', monospace;
+      font-size:0.62rem; letter-spacing:0.06em;
+      text-transform:uppercase; color:var(--text3);
+      user-select:none; flex-shrink:0;
+    }
+    .autorefresh-label { white-space:nowrap; transition:color 0.2s; }
+    .autorefresh.busy .autorefresh-label { color:var(--accent); }
+    .autorefresh-bar {
+      width:64px; height:4px;
+      background:var(--surface2);
+      border-radius:3px; overflow:hidden;
+      position:relative;
+    }
+    .autorefresh-bar-fill {
+      position:absolute; top:0; bottom:0; left:0;
+      width:0%;
+      background:var(--accent);
+      box-shadow:0 0 6px rgba(74,222,128,0.5);
+      border-radius:3px;
+    }
+    .autorefresh-bar-fill.running {
+      animation: ar-fill 60s linear forwards;
+    }
+    @keyframes ar-fill {
+      from { width:0%; }
+      to   { width:100%; }
+    }
+    .autorefresh.busy .autorefresh-bar-fill {
+      animation: ar-pulse 0.8s ease-in-out infinite !important;
+      width:100% !important;
+    }
+    @keyframes ar-pulse {
+      0%,100% { opacity:1; }
+      50%     { opacity:0.35; }
+    }
+
     @media (max-width:600px) {
       main { padding:24px 14px 60px; }
       .grid { grid-template-columns:1fr; }
       .card[data-casa="mayorista"] { grid-column: 1; width: 100%; }
       .card-val { font-size:1.4rem; }
       .card-chart-wrap { height:140px; }
+      .autorefresh-bar { width:44px; }
+      .autorefresh-label { font-size:0.58rem; }
     }
   </style>
 </head>
@@ -145,7 +191,13 @@
 <div id="canuto-nav"></div>
 
 <main>
-  <div class="eyebrow">HERRAMIENTA</div>
+  <div class="page-top">
+    <div class="eyebrow">HERRAMIENTA</div>
+    <div class="autorefresh" id="autorefresh" title="Los gráficos se actualizan automáticamente cada 60 segundos">
+      <span class="autorefresh-label" id="ar-label">Auto · 60s</span>
+      <div class="autorefresh-bar"><div class="autorefresh-bar-fill" id="ar-fill"></div></div>
+    </div>
+  </div>
   <h1>Dólar Intra-día</h1>
   <p class="subtitle">Seguimiento minuto a minuto de las cinco cotizaciones del día — oficial, blue, mayorista, MEP y CCL — entre las 10:00 y las 17:00 (hora ARG). Forward-fill: si no hay tick nuevo, se mantiene el último valor conocido.</p>
 
@@ -486,6 +538,46 @@ function actualizarCartel() {
   cartel.style.display = 'flex';
 }
 
+// ── AUTO-REFRESH BAR ────────────────────────────────────────────────────
+const AUTO_REFRESH_MS = 60 * 1000;
+function startAutoRefreshBar() {
+  const fill = document.getElementById('ar-fill');
+  if (!fill) return;
+  fill.classList.remove('running');
+  // force reflow para reiniciar la animación desde 0%
+  void fill.offsetWidth;
+  fill.classList.add('running');
+}
+function setAutoRefreshBusy(busy) {
+  const el = document.getElementById('autorefresh');
+  if (!el) return;
+  el.classList.toggle('busy', busy);
+  const lab = document.getElementById('ar-label');
+  if (lab) lab.textContent = busy ? 'Actualizando…' : 'Auto · 60s';
+}
+async function _tickAutoRefresh() {
+  setAutoRefreshBusy(true);
+  try {
+    const todayYmd = _hoyArgYmd();
+    if (_mostrandoYmd !== todayYmd) {
+      const nuevoYmd = _calcularYmdAMostrar();
+      if (nuevoYmd !== _mostrandoYmd) {
+        _mostrandoYmd = nuevoYmd;
+        actualizarCartel();
+        await recargar();
+      }
+    } else {
+      await cargarDia(_mostrandoYmd);
+      renderTodo();
+    }
+  } catch (e) {
+    console.error('autorefresh tick falló:', e && e.message ? e.message : e);
+  } finally {
+    setAutoRefreshBusy(false);
+    startAutoRefreshBar();
+  }
+}
+
 // ── INIT ────────────────────────────────────────────────────────────────
 async function recargar() {
   try {
@@ -521,19 +613,8 @@ function _scrollToCardFromHash() {
   _mostrandoYmd = _calcularYmdAMostrar();
   actualizarCartel();
   await recargar();
-  setInterval(() => {
-    const todayYmd = _hoyArgYmd();
-    if (_mostrandoYmd !== todayYmd) {
-      const nuevoYmd = _calcularYmdAMostrar();
-      if (nuevoYmd !== _mostrandoYmd) {
-        _mostrandoYmd = nuevoYmd;
-        actualizarCartel();
-        recargar();
-      }
-      return;
-    }
-    cargarDia(_mostrandoYmd).then(renderTodo).catch(() => {});
-  }, 60 * 1000);
+  startAutoRefreshBar();
+  setInterval(_tickAutoRefresh, AUTO_REFRESH_MS);
 })();
 </script>
 
