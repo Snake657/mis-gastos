@@ -118,6 +118,16 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:14px 2
 .balance-val.negativo{color:var(--red);}
 .balance-val.neutro{color:var(--muted);}
 .balance-hint{font-size:11px;color:var(--muted2);margin-top:3px;}
+.balance-block{display:flex;flex-direction:column;gap:6px;}
+.balance-row-eq{padding-top:6px;border-top:1px dashed var(--border);margin-top:2px;}
+.balance-label-sec{font-size:11px;font-weight:600;color:var(--muted2);text-transform:uppercase;letter-spacing:.05em;}
+.balance-val-eq{font-family:'DM Mono',monospace;font-size:14px;font-weight:600;}
+.balance-val-eq.positivo{color:var(--green);}
+.balance-val-eq.negativo{color:var(--red);}
+.balance-val-eq.neutro{color:var(--muted);}
+.fr-val-bi{display:flex;align-items:center;gap:6px;flex-wrap:wrap;justify-content:flex-end;}
+.fr-amt{font-family:'DM Mono',monospace;font-weight:600;font-size:13px;}
+.fr-sep{opacity:.4;font-weight:400;}
 
 /* Agregar / Sort */
 .btn-agregar-grande{display:flex;align-items:center;justify-content:center;gap:8px;width:calc(100% - 32px);margin:14px 16px 0;background:var(--violet);color:#fff;border:none;border-radius:var(--radius);padding:15px 20px;font-size:16px;font-weight:700;cursor:pointer;font-family:inherit;transition:background .15s;box-shadow:0 4px 20px rgba(124,92,252,.3);}
@@ -477,9 +487,19 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:14px 2
   </div>
   <div class="finance-rows" id="finance-rows"></div>
   <div class="finance-sep" id="finance-sep" style="display:none"></div>
-  <div class="balance-row" id="balance-row" style="display:none">
-    <div><div class="balance-label">Balance disponible</div><div class="balance-hint" id="balance-hint"></div></div>
-    <div class="balance-val" id="balance-val">—</div>
+  <div class="balance-block" id="balance-row" style="display:none">
+    <div class="balance-row">
+      <div class="balance-label">Balance disponible $</div>
+      <div class="balance-val" id="balance-val-ars">—</div>
+    </div>
+    <div class="balance-row">
+      <div class="balance-label">Balance disponible USD</div>
+      <div class="balance-val" id="balance-val-usd">—</div>
+    </div>
+    <div class="balance-row balance-row-eq" id="balance-row-eq" style="display:none">
+      <div><div class="balance-label-sec">Equivalente al BNA</div><div class="balance-hint" id="balance-hint"></div></div>
+      <div class="balance-val-eq" id="balance-val-eq">—</div>
+    </div>
   </div>
 </div>
 
@@ -892,27 +912,62 @@ function getIngresoARS(){const k=mesStr(mesActual.y,mesActual.m);const i=ingreso
 function cargarCamposIngreso(){const k=mesStr(mesActual.y,mesActual.m);const i=ingresos[k]||{};document.getElementById("ing-ars").value=i.ars||"";document.getElementById("ing-usd").value=i.usd||"";}
 
 // ── Balance ───────────────────────────────────────────────────────────────────
+// Devuelve los componentes ARS y USD del monto pagado (o lo que correspondería pagar)
+function getMontoPagadoComp(g,y,m){
+  const p=getPago(g.id,y,m);if(!p)return{ars:0,usd:0};
+  // Pago parcial moderno: tiene montoARS/montoUSD desglosados
+  if(p.montoARS!==undefined||p.montoUSD!==undefined){
+    return{ars:parseNum(p.montoARS||0),usd:parseNum(p.montoUSD||0)};
+  }
+  // Legado o pago total: usar los montos del gasto
+  return{ars:parseNum(g.ars),usd:parseNum(g.usd)};
+}
+
 function renderBalance(){
   const{y,m}=mesActual;
   const del=gastos.filter(g=>aplicaEnMes(g,y,m));
-  const convARS=g=>parseNum(g.ars)+(parseNum(g.usd)*dolarBNA);
-  const efectivoARS=del.filter(g=>getPago(g.id,y,m)?.tipo==="efectivo").reduce((s,g)=>s+getMontoPagadoARS(g,y,m),0);
-  const tarjetaARS=del.filter(g=>getPago(g.id,y,m)?.tipo==="tarjeta").reduce((s,g)=>s+getMontoPagadoARS(g,y,m),0);
-  const pendienteARS=del.filter(g=>!getPago(g.id,y,m)).reduce((s,g)=>s+convARS(g),0);
-  const hayMovimientos=efectivoARS>0||tarjetaARS>0;
+  let efARS=0,efUSD=0,tjARS=0,tjUSD=0,peARS=0,peUSD=0;
+  del.forEach(g=>{
+    const p=getPago(g.id,y,m);
+    if(!p){peARS+=parseNum(g.ars);peUSD+=parseNum(g.usd);}
+    else if(p.tipo==="efectivo"){const c=getMontoPagadoComp(g,y,m);efARS+=c.ars;efUSD+=c.usd;}
+    else if(p.tipo==="tarjeta"){const c=getMontoPagadoComp(g,y,m);tjARS+=c.ars;tjUSD+=c.usd;}
+  });
+  const showEf=efARS>0||efUSD>0,showTj=tjARS>0||tjUSD>0,showPe=peARS>0||peUSD>0;
+  const fmtBi=(a,u,col)=>'<span class="fr-val-bi">'+
+    '<span class="fr-amt" style="color:'+col+'">- '+fmtARS(a)+'</span>'+
+    '<span class="fr-sep">·</span>'+
+    '<span class="fr-amt" style="color:'+col+'">- '+fmtUSD(u)+'</span></span>';
   document.getElementById("finance-rows").innerHTML=
-    (hayMovimientos?'<div class="finance-row"><span class="fr-label"><span class="dot dot-green"></span>Pagado (efectivo/débito)</span><span class="fr-val" style="color:var(--green)">- '+fmtARS(efectivoARS)+'</span></div>':'')
-    +(tarjetaARS>0?'<div class="finance-row"><span class="fr-label"><span class="dot dot-violet"></span>Tarjeteado (próximo mes)</span><span class="fr-val" style="color:#a78bfa">- '+fmtARS(tarjetaARS)+'</span></div>':'')
-    +(pendienteARS>0?'<div class="finance-row"><span class="fr-label"><span class="dot dot-orange"></span>Pendiente de pago</span><span class="fr-val" style="color:var(--orange)">- '+fmtARS(pendienteARS)+'</span></div>':'');
-  const ing=getIngresoARS();
+    (showEf?'<div class="finance-row"><span class="fr-label"><span class="dot dot-green"></span>Pagado (efectivo/débito)</span>'+fmtBi(efARS,efUSD,"var(--green)")+'</div>':'')
+    +(showTj?'<div class="finance-row"><span class="fr-label"><span class="dot dot-violet"></span>Tarjeteado (próximo mes)</span>'+fmtBi(tjARS,tjUSD,"#a78bfa")+'</div>':'')
+    +(showPe?'<div class="finance-row"><span class="fr-label"><span class="dot dot-orange"></span>Pendiente de pago</span>'+fmtBi(peARS,peUSD,"var(--orange)")+'</div>':'');
+  const k=mesStr(y,m),ig=ingresos[k]||{};
+  const ingARS=parseNum(ig.ars||0),ingUSD=parseNum(ig.usd||0);
   const sep=document.getElementById("finance-sep"),br=document.getElementById("balance-row");
-  if(ing>0){
+  if(ingARS>0||ingUSD>0){
     sep.style.display="block";br.style.display="flex";
-    const bal=ing-efectivoARS-pendienteARS;
-    const bv=document.getElementById("balance-val"),bh=document.getElementById("balance-hint");
-    if(bal>0){bv.textContent=fmtARS(bal);bv.className="balance-val positivo";bh.textContent="Te sobra después de cubrir todo";}
-    else if(bal<0){bv.textContent="- "+fmtARS(Math.abs(bal));bv.className="balance-val negativo";bh.textContent="Te falta para cubrir los gastos pendientes";}
-    else{bv.textContent=fmtARS(0);bv.className="balance-val neutro";bh.textContent="Justo alcanza";}
+    const balARS=ingARS-efARS-peARS;
+    const balUSD=ingUSD-efUSD-peUSD;
+    const setBal=(elId,bal,fmt)=>{
+      const bv=document.getElementById(elId);
+      if(bal>0){bv.textContent=fmt(bal);bv.className="balance-val positivo";}
+      else if(bal<0){bv.textContent="- "+fmt(Math.abs(bal));bv.className="balance-val negativo";}
+      else{bv.textContent=fmt(0);bv.className="balance-val neutro";}
+    };
+    setBal("balance-val-ars",balARS,fmtARS);
+    setBal("balance-val-usd",balUSD,fmtUSD);
+    const eq=document.getElementById("balance-row-eq"),eqVal=document.getElementById("balance-val-eq"),eqHint=document.getElementById("balance-hint");
+    const hayUSD=ingUSD>0||efUSD>0||peUSD>0||tjUSD>0;
+    if(dolarBNA>0&&hayUSD){
+      eq.style.display="flex";
+      const balTotal=balARS+balUSD*dolarBNA;
+      let cls,txt,hint;
+      if(balTotal>0){cls="positivo";txt="≈ "+fmtARS(balTotal);hint="Te sobra después de cubrir todo";}
+      else if(balTotal<0){cls="negativo";txt="≈ - "+fmtARS(Math.abs(balTotal));hint="Te falta para cubrir los gastos pendientes";}
+      else{cls="neutro";txt="≈ "+fmtARS(0);hint="Justo alcanza";}
+      eqVal.textContent=txt;eqVal.className="balance-val-eq "+cls;eqHint.textContent=hint;
+    }else{eq.style.display="none";}
   }else{sep.style.display="none";br.style.display="none";}
 }
 
