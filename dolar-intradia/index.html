@@ -52,33 +52,52 @@
     }
     .cartel strong { color:var(--text); font-weight:600; }
 
+    /* Grilla nueva: 6 columnas.
+       Fila 1: mayorista (span 3) + minorista (span 3)  → un poco más grandes
+       Fila 2: blue (span 2) + MEP (span 2) + CCL (span 2) */
     .grid {
       display:grid;
-      grid-template-columns: repeat(2, 1fr);
+      grid-template-columns: repeat(6, 1fr);
       gap:14px;
     }
-    /* Mayorista arriba de todo, centrado, mismo ancho que las cards de abajo
-       (la mitad de la grilla menos la mitad del gap). El resto sigue en 2 cols:
-       fila 2 = oficial + blue, fila 3 = mep + ccl. */
-    .card[data-casa="mayorista"] {
-      grid-column: 1 / -1;
-      justify-self: center;
-      width: calc(50% - 7px);
-    }
+    .card[data-casa="mayorista"],
+    .card[data-casa="oficial"] { grid-column: span 3; }
+    .card[data-casa="blue"],
+    .card[data-casa="bolsa"],
+    .card[data-casa="contadoconliqui"] { grid-column: span 2; }
+
     .card {
       background:var(--surface);
       border:1px solid var(--border);
       border-radius:12px;
       padding:14px 16px;
       display:flex; flex-direction:column; gap:8px;
-      transition: box-shadow 0.4s, border-color 0.4s;
+      transition: box-shadow 0.25s, border-color 0.25s, transform 0.15s;
+      cursor: pointer;
+      position: relative;
     }
-    /* Pulso breve cuando se llega desde un hash #card-X */
+    .card:hover {
+      border-color: var(--border2);
+      box-shadow: 0 6px 22px -10px rgba(0,0,0,0.6);
+    }
+    .card:hover .card-expand-hint { opacity: 0.9; }
+    .card:active { transform: translateY(1px); }
     .card.card-highlight {
       border-color: var(--accent);
       box-shadow: 0 0 0 4px rgba(74,222,128,0.25);
     }
-    .card-head { display:flex; align-items:baseline; justify-content:space-between; gap:8px; }
+    .card-expand-hint {
+      position:absolute; top:10px; right:10px;
+      width:22px; height:22px; border-radius:6px;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid var(--border);
+      color: var(--text3);
+      display:flex; align-items:center; justify-content:center;
+      font-size: 12px; line-height: 1;
+      opacity: 0; transition: opacity 0.2s;
+      pointer-events: none;
+    }
+    .card-head { display:flex; align-items:baseline; justify-content:space-between; gap:8px; padding-right: 28px; }
     .card-name {
       display:flex; align-items:center; gap:7px;
       font-family:'IBM Plex Mono',monospace; font-size:0.78rem;
@@ -98,17 +117,34 @@
       font-size:1.6rem; font-weight:700; line-height:1;
       letter-spacing:-0.01em;
     }
+    .card[data-casa="mayorista"] .card-val,
+    .card[data-casa="oficial"]   .card-val { font-size:1.85rem; }
+
     .card-val-sub {
       font-family:'IBM Plex Mono',monospace; font-size:0.7rem;
       color:var(--text3);
     }
+
+    .card-delta {
+      font-family:'IBM Plex Mono',monospace;
+      font-size:0.74rem; font-weight:500;
+      line-height:1.2;
+      margin-top:-2px;
+    }
+    .card-delta.up   { color: var(--green); }
+    .card-delta.down { color: var(--red); }
+    .card-delta.neu  { color: var(--text3); }
+
     .card-chart-wrap { position:relative; height:180px; flex:none; }
+    .card[data-casa="mayorista"] .card-chart-wrap,
+    .card[data-casa="oficial"]   .card-chart-wrap { height:210px; }
 
     .card-stats {
       display:grid; grid-template-columns: repeat(3, 1fr);
       gap:8px;
-      padding-top:10px;
-      border-top:1px dashed var(--border);
+      padding:8px 0 10px;
+      border-bottom:1px dashed var(--border);
+      margin-bottom:4px;
       font-family:'IBM Plex Mono',monospace; font-size:0.65rem;
     }
     .card-stat { display:flex; flex-direction:column; gap:2px; min-width:0; }
@@ -116,12 +152,96 @@
     .card-stat-value { color:var(--text); font-weight:600; font-size:0.78rem; line-height:1.2; }
     .card-stat-when { color:var(--text3); font-size:0.62rem; font-weight:400; }
 
-    /* Colores por casa (dot) */
     .card[data-casa="oficial"]         .dot { background:var(--accent); }
     .card[data-casa="blue"]            .dot { background:var(--blue); }
     .card[data-casa="mayorista"]       .dot { background:var(--teal); }
     .card[data-casa="bolsa"]           .dot { background:var(--orange); }
     .card[data-casa="contadoconliqui"] .dot { background:var(--purple); }
+
+    /* ── MODAL DE VISTA AMPLIADA ─────────────────────────────────────── */
+    .modal {
+      position: fixed; inset: 0;
+      display: none;
+      z-index: 1000;
+      align-items: center; justify-content: center;
+      padding: 24px;
+    }
+    .modal.open { display: flex; }
+    .modal-backdrop {
+      position: absolute; inset: 0;
+      background: rgba(5,7,12,0.72);
+      backdrop-filter: blur(4px);
+      -webkit-backdrop-filter: blur(4px);
+    }
+    .modal-box {
+      position: relative;
+      background: var(--surface);
+      border: 1px solid var(--border2);
+      border-radius: 14px;
+      padding: 22px 24px 24px;
+      width: 100%;
+      max-width: 1000px;
+      max-height: calc(100vh - 48px);
+      overflow: auto;
+      display: flex; flex-direction: column; gap: 10px;
+      cursor: default;
+      box-shadow: 0 30px 60px -20px rgba(0,0,0,0.7);
+    }
+    .modal-close {
+      position: absolute; top: 12px; right: 14px;
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--text2);
+      cursor: pointer;
+      width: 32px; height: 32px;
+      border-radius: 50%;
+      font-size: 20px; line-height: 1;
+      display: flex; align-items: center; justify-content: center;
+      transition: color 0.2s, border-color 0.2s, background 0.2s;
+      z-index: 2;
+    }
+    .modal-close:hover { color: var(--text); border-color: var(--accent); background: rgba(74,222,128,0.08); }
+    .modal-head { display:flex; align-items:baseline; justify-content:space-between; gap:12px; padding-right: 40px; }
+    .modal-title {
+      display:flex; align-items:center; gap:8px;
+      font-family:'IBM Plex Mono',monospace; font-size:0.95rem; font-weight:600;
+      color:var(--text); letter-spacing:0.04em; text-transform:uppercase;
+    }
+    .modal-title .dot { width:9px; height:9px; border-radius:50%; }
+    .modal-val {
+      font-family:'IBM Plex Mono',monospace;
+      font-size: 2.4rem; font-weight: 700; line-height: 1;
+      letter-spacing:-0.01em;
+    }
+    .modal-delta {
+      font-family:'IBM Plex Mono',monospace;
+      font-size: 0.85rem; font-weight: 500;
+    }
+    .modal-delta.up   { color: var(--green); }
+    .modal-delta.down { color: var(--red); }
+    .modal-delta.neu  { color: var(--text3); }
+    .modal-stats {
+      display:grid; grid-template-columns: repeat(3, 1fr);
+      gap:12px;
+      padding: 12px 0;
+      border-top: 1px dashed var(--border);
+      border-bottom: 1px dashed var(--border);
+      font-family:'IBM Plex Mono',monospace;
+    }
+    .modal-stats .card-stat-label { font-size:0.65rem; }
+    .modal-stats .card-stat-value { font-size:1rem; }
+    .modal-stats .card-stat-when  { font-size:0.7rem; }
+    .modal-chart-wrap {
+      position: relative;
+      height: min(58vh, 520px);
+      min-height: 280px;
+    }
+    .modal-foot {
+      font-family:'IBM Plex Mono',monospace;
+      font-size:0.7rem; color: var(--text3);
+      text-align: center;
+      padding-top: 4px;
+    }
 
     footer {
       max-width:1100px; margin:40px auto 0; padding:20px;
@@ -132,7 +252,6 @@
     footer a:hover { color:var(--accent); }
     footer code { font-family:'IBM Plex Mono', monospace; color:var(--text2); }
 
-    /* Indicador de auto-refresh (barrita arriba a la derecha) */
     .page-top {
       display:flex; align-items:center; justify-content:space-between;
       gap:12px; margin-bottom:8px;
@@ -176,14 +295,35 @@
       50%     { opacity:0.35; }
     }
 
+    @media (max-width: 880px) {
+      .grid { grid-template-columns: repeat(2, 1fr); }
+      .card[data-casa="mayorista"],
+      .card[data-casa="oficial"] { grid-column: span 2; }
+      .card[data-casa="blue"],
+      .card[data-casa="bolsa"],
+      .card[data-casa="contadoconliqui"] { grid-column: span 1; }
+      .card[data-casa="contadoconliqui"] { grid-column: span 2; }
+    }
     @media (max-width:600px) {
       main { padding:24px 14px 60px; }
-      .grid { grid-template-columns:1fr; }
-      .card[data-casa="mayorista"] { grid-column: 1; width: 100%; }
+      .grid { grid-template-columns:1fr; gap:12px; }
+      .card[data-casa="mayorista"],
+      .card[data-casa="oficial"],
+      .card[data-casa="blue"],
+      .card[data-casa="bolsa"],
+      .card[data-casa="contadoconliqui"] { grid-column: 1; }
       .card-val { font-size:1.4rem; }
-      .card-chart-wrap { height:140px; }
+      .card[data-casa="mayorista"] .card-val,
+      .card[data-casa="oficial"]   .card-val { font-size:1.55rem; }
+      .card-chart-wrap,
+      .card[data-casa="mayorista"] .card-chart-wrap,
+      .card[data-casa="oficial"]   .card-chart-wrap { height:140px; }
       .autorefresh-bar { width:44px; }
       .autorefresh-label { font-size:0.58rem; }
+      .modal { padding: 12px; }
+      .modal-box { padding: 18px 16px 16px; }
+      .modal-val { font-size: 1.9rem; }
+      .modal-chart-wrap { height: 50vh; min-height: 240px; }
     }
   </style>
 </head>
@@ -199,23 +339,47 @@
     </div>
   </div>
   <h1>Dólar Intra-día</h1>
-  <p class="subtitle">Seguimiento minuto a minuto de las cinco cotizaciones del día — oficial, blue, mayorista, MEP y CCL — entre las 10:00 y las 17:00 (hora ARG). Forward-fill: si no hay tick nuevo, se mantiene el último valor conocido.</p>
+  <p class="subtitle">Seguimiento minuto a minuto de las cinco cotizaciones del día — oficial, blue, mayorista, MEP y CCL — entre las 10:00 y las 17:00 (hora ARG). Forward-fill: si no hay tick nuevo, se mantiene el último valor conocido. Click en cualquier tarjeta para ampliar.</p>
 
   <div class="cartel" id="cartel-dia" style="display:none"></div>
 
   <div class="grid" id="grid"></div>
 </main>
 
+<div class="modal" id="modal" role="dialog" aria-modal="true" aria-hidden="true">
+  <div class="modal-backdrop" id="modal-backdrop"></div>
+  <div class="modal-box" id="modal-box">
+    <button class="modal-close" id="modal-close" aria-label="Cerrar">×</button>
+    <header class="modal-head">
+      <div class="modal-title" id="modal-title"><span class="dot"></span><span id="modal-name">—</span></div>
+      <span class="card-var var-neu" id="modal-var">—</span>
+    </header>
+    <div class="modal-val" id="modal-val">—</div>
+    <div class="modal-delta neu" id="modal-delta"></div>
+    <div class="modal-stats">
+      <div class="card-stat">
+        <span class="card-stat-label">Cierre día anterior</span>
+        <span class="card-stat-value" id="modal-ayer">—</span>
+      </div>
+      <div class="card-stat">
+        <span class="card-stat-label">Mín hoy</span>
+        <span class="card-stat-value" id="modal-min">—</span>
+      </div>
+      <div class="card-stat">
+        <span class="card-stat-label">Máx hoy</span>
+        <span class="card-stat-value" id="modal-max">—</span>
+      </div>
+    </div>
+    <div class="modal-chart-wrap"><canvas id="modal-chart"></canvas></div>
+    <div class="modal-foot" id="modal-foot">10:00 – 17:00 ARG · forward-fill</div>
+  </div>
+</div>
+
 <footer>
   <a href="/">canuto.ar</a> · Datos del Worker <code>canuto-intraday</code> · Eje 10:00–17:00 ARG · Cierre del día anterior desde argentinadatos.com
 </footer>
 
 <script>
-// ── CONFIG ──────────────────────────────────────────────────────────────
-// Orden de aparición en la grilla:
-//   fila 1 (centro):    mayorista
-//   fila 2 (2 cols):    minorista BNA · blue
-//   fila 3 (2 cols):    MEP · CCL
 const CASAS = [
   { id:'mayorista',       label:'Mayorista',        color:'#2dd4bf', sub:'Mercado mayorista',  histKey:'mayorista' },
   { id:'oficial',         label:'Minorista BNA',    color:'#4ade80', sub:'Fuente: BNA',        histKey:'oficial' },
@@ -226,17 +390,16 @@ const CASAS = [
 const INTRADAY_API_BASE = 'https://canuto-intraday.lenzimartin.workers.dev/';
 const HIST_API_BASE     = 'https://api.argentinadatos.com/v1/cotizaciones/dolares/';
 
-// Eje X fijo del día.
 const HORA_INI = 10;
 const HORA_FIN = 17;
 
-// ── ESTADO ──────────────────────────────────────────────────────────────
-let _ticksByCasa = {};       // { casa: [ticks ASC por fa] }
-let _cierreAyer  = {};       // { casa: number }  cotización del último día hábil anterior
+let _ticksByCasa = {};
+let _cierreAyer  = {};
 let _mostrandoYmd = null;
 const _charts = {};
+let _modalChart = null;
+let _modalCasaId = null;
 
-// ── HELPERS DE TIEMPO ───────────────────────────────────────────────────
 function _hoyArgYmd() {
   return new Date().toLocaleDateString('sv-SE', { timeZone: 'America/Argentina/Buenos_Aires' });
 }
@@ -249,7 +412,6 @@ function _dowArg(ymd) {
   return new Date(`${ymd}T12:00:00`).getDay();
 }
 
-// Determina qué día mostrar: hoy si es hábil, último día hábil en caso contrario.
 function _calcularYmdAMostrar() {
   const cd = window.CanutoDolar;
   let probe = new Date();
@@ -283,7 +445,6 @@ function _formatYmdLargo(ymd) {
   return `${dia} ${day}/${m}/${y}`;
 }
 
-// "HH:mm" en ARG para un timestamp ms.
 function _hhmm(ts) {
   return new Date(ts).toLocaleTimeString('es-AR', {
     timeZone: 'America/Argentina/Buenos_Aires',
@@ -291,7 +452,6 @@ function _hhmm(ts) {
   });
 }
 
-// ── FETCH DE TICKS Y CIERRE AYER ────────────────────────────────────────
 async function cargarDia(ymd) {
   const todayYmd = _hoyArgYmd();
   const path = ymd === todayYmd ? 'today' : ymd;
@@ -302,10 +462,6 @@ async function cargarDia(ymd) {
   return _ticksByCasa;
 }
 
-// Para el día mostrado, traemos el cierre publicado del último día hábil anterior.
-// Patrón replicado del fetchAyer de /dolar-en-vivo: pedimos el endpoint de fecha
-// específica primero; si falla (día no hábil, fecha inexistente), bajamos la
-// serie completa y tomamos el último cierre con fecha < ymdMostrado.
 async function cargarCierreAyer(ymdMostrado) {
   const arg = new Date(`${ymdMostrado}T12:00:00`);
   arg.setDate(arg.getDate() - 1);
@@ -322,7 +478,6 @@ async function cargarCierreAyer(ymdMostrado) {
         const d = await res.json();
         if (d && d.venta) { _cierreAyer[casa.id] = d.venta; return; }
       }
-      // Fallback: serie completa, último < ymdMostrado.
       res = await fetch(`${HIST_API_BASE}${casa.histKey}`, { cache: 'no-store' });
       if (!res.ok) return;
       const serie = await res.json();
@@ -333,9 +488,6 @@ async function cargarCierreAyer(ymdMostrado) {
   }));
 }
 
-// ── FORWARD-FILL ────────────────────────────────────────────────────────
-// Genera un punto por minuto desde fromTs hasta toTs. Para cada minuto, repite
-// el último tick cuya fa <= ese minuto. Devuelve también min/max con su hora.
 function forwardFill(ticks, fromTs, toTs) {
   const orden = (Array.isArray(ticks) ? ticks : []).slice()
     .filter(t => t && t.fa && t.venta != null);
@@ -360,7 +512,6 @@ function forwardFill(ticks, fromTs, toTs) {
   return { points: out, minY, minTs, maxY, maxTs };
 }
 
-// ── RENDER ──────────────────────────────────────────────────────────────
 const watermarkPlugin = {
   id: 'wm',
   afterDraw(chart) {
@@ -385,6 +536,35 @@ function _fmtPct(n) {
   const sign = n > 0 ? '+' : '';
   return `${sign}${n.toFixed(2)}%`;
 }
+function _fmtDelta(delta) {
+  if (delta == null || isNaN(delta)) return { text: '', cls: 'neu' };
+  if (Math.abs(delta) < 0.005)        return { text: 'Sin cambios vs cierre anterior', cls: 'neu' };
+  const dir = delta > 0 ? 'Subió' : 'Bajó';
+  const cls = delta > 0 ? 'up' : 'down';
+  return { text: `${dir} ${_fmt$(Math.abs(delta))} vs cierre anterior`, cls };
+}
+
+function _computarVista(casa) {
+  const ticks = _ticksByCasa[casa.id] || [];
+  const from = _ymdToDate(_mostrandoYmd, HORA_INI, 0).getTime();
+  const to   = _ymdToDate(_mostrandoYmd, HORA_FIN, 0).getTime();
+  const { points, minY, minTs, maxY, maxTs } = forwardFill(ticks, from, to);
+  const validos = points.filter(p => p.y != null);
+  const valorActual = validos.length ? validos[validos.length - 1].y : null;
+  const ayer = _cierreAyer[casa.id];
+  const variacion = (valorActual != null && ayer && ayer !== 0)
+    ? ((valorActual - ayer) / ayer) * 100
+    : null;
+  const deltaAbs = (valorActual != null && ayer != null) ? (valorActual - ayer) : null;
+  return { points, minY, minTs, maxY, maxTs, valorActual, ayer, variacion, deltaAbs, from, to };
+}
+
+function _varClass(variacion) {
+  return variacion == null ? 'var-neu'
+       : variacion >  0.005 ? 'var-pos'
+       : variacion < -0.005 ? 'var-neg'
+       : 'var-neu';
+}
 
 function buildGrid() {
   const grid = document.getElementById('grid');
@@ -394,14 +574,18 @@ function buildGrid() {
     card.className = 'card';
     card.id = `card-${casa.id}`;
     card.dataset.casa = casa.id;
+    card.tabIndex = 0;
+    card.setAttribute('role', 'button');
+    card.setAttribute('aria-label', `Ampliar ${casa.label}`);
     card.innerHTML = `
+      <div class="card-expand-hint" aria-hidden="true">⤢</div>
       <header class="card-head">
         <div class="card-name"><span class="dot"></span> ${casa.label}</div>
         <span class="card-var var-neu" id="var-${casa.id}">—</span>
       </header>
       <div class="card-val" id="val-${casa.id}">—</div>
+      <div class="card-delta neu" id="delta-${casa.id}"></div>
       <div class="card-val-sub">${casa.sub}</div>
-      <div class="card-chart-wrap"><canvas id="chart-${casa.id}"></canvas></div>
       <div class="card-stats">
         <div class="card-stat">
           <span class="card-stat-label">Ayer</span>
@@ -416,40 +600,35 @@ function buildGrid() {
           <span class="card-stat-value" id="max-${casa.id}">—</span>
         </div>
       </div>
+      <div class="card-chart-wrap"><canvas id="chart-${casa.id}"></canvas></div>
     `;
+    card.addEventListener('click', () => openModal(casa.id));
+    card.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openModal(casa.id); }
+    });
     grid.appendChild(card);
   }
 }
 
 function renderCard(casa) {
-  const ticks = _ticksByCasa[casa.id] || [];
-  const from = _ymdToDate(_mostrandoYmd, HORA_INI, 0).getTime();
-  const to   = _ymdToDate(_mostrandoYmd, HORA_FIN, 0).getTime();
-  const { points, minY, minTs, maxY, maxTs } = forwardFill(ticks, from, to);
+  const v = _computarVista(casa);
 
-  const validos = points.filter(p => p.y != null);
-  const valorActual  = validos.length ? validos[validos.length - 1].y : null;
+  document.getElementById(`val-${casa.id}`).textContent = _fmt$(v.valorActual);
 
-  // Variación del día = vs cierre del día anterior (no vs primer punto del rango).
-  const ayer = _cierreAyer[casa.id];
-  const variacion = (valorActual != null && ayer && ayer !== 0)
-    ? ((valorActual - ayer) / ayer) * 100
-    : null;
-
-  document.getElementById(`val-${casa.id}`).textContent = _fmt$(valorActual);
   const varEl = document.getElementById(`var-${casa.id}`);
-  varEl.textContent = _fmtPct(variacion);
-  varEl.className = 'card-var ' + (variacion == null ? 'var-neu' : variacion > 0.005 ? 'var-pos' : variacion < -0.005 ? 'var-neg' : 'var-neu');
+  varEl.textContent = _fmtPct(v.variacion);
+  varEl.className = 'card-var ' + _varClass(v.variacion);
 
-  document.getElementById(`ayer-${casa.id}`).innerHTML = ayer
-    ? `${_fmt$(ayer)}`
-    : '—';
-  document.getElementById(`min-${casa.id}`).innerHTML = (minY != null)
-    ? `${_fmt$(minY)} <span class="card-stat-when">${_hhmm(minTs)}</span>`
-    : '—';
-  document.getElementById(`max-${casa.id}`).innerHTML = (maxY != null)
-    ? `${_fmt$(maxY)} <span class="card-stat-when">${_hhmm(maxTs)}</span>`
-    : '—';
+  const dInfo = _fmtDelta(v.deltaAbs);
+  const deltaEl = document.getElementById(`delta-${casa.id}`);
+  deltaEl.textContent = dInfo.text;
+  deltaEl.className = 'card-delta ' + dInfo.cls;
+
+  document.getElementById(`ayer-${casa.id}`).innerHTML = v.ayer ? _fmt$(v.ayer) : '—';
+  document.getElementById(`min-${casa.id}`).innerHTML = (v.minY != null)
+    ? `${_fmt$(v.minY)} <span class="card-stat-when">${_hhmm(v.minTs)}</span>` : '—';
+  document.getElementById(`max-${casa.id}`).innerHTML = (v.maxY != null)
+    ? `${_fmt$(v.maxY)} <span class="card-stat-when">${_hhmm(v.maxTs)}</span>` : '—';
 
   const canvas = document.getElementById(`chart-${casa.id}`);
   const ctx = canvas.getContext('2d');
@@ -462,7 +641,7 @@ function renderCard(casa) {
     type: 'line',
     data: {
       datasets: [{
-        data: points,
+        data: v.points,
         borderColor: casa.color,
         backgroundColor: grad,
         borderWidth: 1.4,
@@ -498,8 +677,8 @@ function renderCard(casa) {
       scales: {
         x: {
           type: 'time',
-          min: from,
-          max: to,
+          min: v.from,
+          max: v.to,
           time: { unit: 'hour', stepSize: 1, displayFormats: { hour: 'HH' }, tooltipFormat: 'HH:mm' },
           grid:   { color: '#1e2230', drawTicks: false },
           border: { color: '#1e2230' },
@@ -512,7 +691,7 @@ function renderCard(casa) {
           ticks:  {
             color: '#545870', font: { family:'IBM Plex Mono', size:9 },
             maxTicksLimit: 4,
-            callback: v => '$' + Number(v).toLocaleString('es-AR', { maximumFractionDigits:0 }),
+            callback: val => '$' + Number(val).toLocaleString('es-AR', { maximumFractionDigits:0 }),
           },
         },
       },
@@ -523,6 +702,135 @@ function renderCard(casa) {
 
 function renderTodo() {
   for (const casa of CASAS) renderCard(casa);
+  if (_modalCasaId) renderModalContent(_modalCasaId);
+}
+
+function renderModalContent(casaId) {
+  const casa = CASAS.find(c => c.id === casaId);
+  if (!casa) return;
+  const v = _computarVista(casa);
+
+  const titleDot = document.querySelector('#modal-title .dot');
+  if (titleDot) titleDot.style.background = casa.color;
+  document.getElementById('modal-name').textContent = casa.label + ' · ' + casa.sub;
+
+  document.getElementById('modal-val').textContent = _fmt$(v.valorActual);
+
+  const mVar = document.getElementById('modal-var');
+  mVar.textContent = _fmtPct(v.variacion);
+  mVar.className = 'card-var ' + _varClass(v.variacion);
+
+  const dInfo = _fmtDelta(v.deltaAbs);
+  const mDelta = document.getElementById('modal-delta');
+  mDelta.textContent = dInfo.text;
+  mDelta.className = 'modal-delta ' + dInfo.cls;
+
+  document.getElementById('modal-ayer').innerHTML = v.ayer ? _fmt$(v.ayer) : '—';
+  document.getElementById('modal-min').innerHTML = (v.minY != null)
+    ? `${_fmt$(v.minY)} <span class="card-stat-when">${_hhmm(v.minTs)}</span>` : '—';
+  document.getElementById('modal-max').innerHTML = (v.maxY != null)
+    ? `${_fmt$(v.maxY)} <span class="card-stat-when">${_hhmm(v.maxTs)}</span>` : '—';
+  document.getElementById('modal-foot').textContent =
+    `${_formatYmdLargo(_mostrandoYmd)} · 10:00 – 17:00 ARG · forward-fill`;
+
+  const canvas = document.getElementById('modal-chart');
+  if (_modalChart) { _modalChart.destroy(); _modalChart = null; }
+  const ctx = canvas.getContext('2d');
+  const grad = ctx.createLinearGradient(0, 0, 0, 400);
+  grad.addColorStop(0, casa.color + '40');
+  grad.addColorStop(1, casa.color + '00');
+
+  _modalChart = new Chart(ctx, {
+    type: 'line',
+    data: {
+      datasets: [{
+        data: v.points,
+        borderColor: casa.color,
+        backgroundColor: grad,
+        borderWidth: 2,
+        pointRadius: 0,
+        pointHoverRadius: 4,
+        pointHoverBackgroundColor: casa.color,
+        pointHoverBorderColor: '#0d0f14',
+        pointHoverBorderWidth: 2,
+        tension: 0.25,
+        fill: true,
+        spanGaps: false,
+        parsing: false,
+      }],
+    },
+    plugins: [watermarkPlugin],
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      interaction: { intersect:false, mode:'index' },
+      plugins: {
+        legend: { display:false },
+        tooltip: {
+          backgroundColor: '#1a1e28',
+          borderColor: '#232736',
+          borderWidth: 1,
+          titleColor: '#8b90a4',
+          bodyColor: '#e8eaf0',
+          titleFont: { family:'IBM Plex Mono', size:11 },
+          bodyFont:  { family:'IBM Plex Mono', size:13, weight:'600' },
+          padding: 10,
+          callbacks: {
+            title: items => _hhmm(items[0].parsed.x),
+            label: item => item.parsed.y == null ? ' Sin dato' : ' ' + _fmt$(item.parsed.y),
+          },
+        },
+      },
+      scales: {
+        x: {
+          type: 'time',
+          min: v.from,
+          max: v.to,
+          time: { unit: 'hour', stepSize: 1, displayFormats: { hour: 'HH:mm' }, tooltipFormat: 'HH:mm' },
+          grid:   { color: '#1e2230', drawTicks: false },
+          border: { color: '#1e2230' },
+          ticks:  { color: '#8b90a4', font: { family:'IBM Plex Mono', size:11 }, maxRotation: 0, source: 'auto' },
+        },
+        y: {
+          position: 'right',
+          grid:   { color: '#1e2230', drawTicks: false },
+          border: { color: '#1e2230', dash:[3,3] },
+          ticks:  {
+            color: '#8b90a4', font: { family:'IBM Plex Mono', size:11 },
+            maxTicksLimit: 6,
+            callback: val => '$' + Number(val).toLocaleString('es-AR', { maximumFractionDigits:0 }),
+          },
+        },
+      },
+      animation: { duration: 200 },
+    },
+  });
+}
+
+function openModal(casaId) {
+  _modalCasaId = casaId;
+  const overlay = document.getElementById('modal');
+  overlay.classList.add('open');
+  overlay.setAttribute('aria-hidden', 'false');
+  document.body.style.overflow = 'hidden';
+  requestAnimationFrame(() => requestAnimationFrame(() => renderModalContent(casaId)));
+}
+
+function closeModal() {
+  const overlay = document.getElementById('modal');
+  overlay.classList.remove('open');
+  overlay.setAttribute('aria-hidden', 'true');
+  document.body.style.overflow = '';
+  if (_modalChart) { _modalChart.destroy(); _modalChart = null; }
+  _modalCasaId = null;
+}
+
+function _wireModal() {
+  document.getElementById('modal-close').addEventListener('click', closeModal);
+  document.getElementById('modal-backdrop').addEventListener('click', closeModal);
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && document.getElementById('modal').classList.contains('open')) closeModal();
+  });
 }
 
 function actualizarCartel() {
@@ -538,13 +846,11 @@ function actualizarCartel() {
   cartel.style.display = 'flex';
 }
 
-// ── AUTO-REFRESH BAR ────────────────────────────────────────────────────
 const AUTO_REFRESH_MS = 60 * 1000;
 function startAutoRefreshBar() {
   const fill = document.getElementById('ar-fill');
   if (!fill) return;
   fill.classList.remove('running');
-  // force reflow para reiniciar la animación desde 0%
   void fill.offsetWidth;
   fill.classList.add('running');
 }
@@ -578,7 +884,6 @@ async function _tickAutoRefresh() {
   }
 }
 
-// ── INIT ────────────────────────────────────────────────────────────────
 async function recargar() {
   try {
     await Promise.all([
@@ -591,14 +896,11 @@ async function recargar() {
   }
 }
 
-// Si llegamos con un hash #card-<id> (ej. desde /dolar-en-vivo/), scroll suave a
-// esa card y pulso visual breve para que el usuario ubique la que estaba mirando.
 function _scrollToCardFromHash() {
   const m = (location.hash || '').match(/^#card-([a-z0-9-]+)$/i);
   if (!m) return;
   const target = document.getElementById('card-' + m[1]);
   if (!target) return;
-  // delay corto para que el sticky nav y los charts terminen de armarse
   setTimeout(() => {
     target.scrollIntoView({ behavior: 'smooth', block: 'center' });
     target.classList.add('card-highlight');
@@ -608,6 +910,7 @@ function _scrollToCardFromHash() {
 
 (async () => {
   buildGrid();
+  _wireModal();
   _scrollToCardFromHash();
   await _esperarFeriados();
   _mostrandoYmd = _calcularYmdAMostrar();
