@@ -294,6 +294,102 @@
       0%,100% { opacity:1; }
       50%     { opacity:0.35; }
     }
+    .autorefresh.paused .autorefresh-label { color:var(--text3); }
+    .autorefresh.paused .autorefresh-bar { opacity:0.4; }
+    .autorefresh.paused .autorefresh-bar-fill {
+      animation:none !important; width:0 !important;
+    }
+
+    /* ── DAY PICKER ──────────────────────────────────────────────── */
+    .page-top-left {
+      display:flex; align-items:center; gap:10px; flex-wrap:wrap;
+    }
+    .day-picker-wrap { position:relative; display:inline-block; }
+    .day-picker {
+      display:inline-flex; align-items:center; gap:8px;
+      padding:5px 12px;
+      background:var(--surface);
+      border:1px solid var(--border2);
+      border-radius:6px;
+      font-family:'IBM Plex Mono', monospace;
+      font-size:0.7rem; color:var(--text);
+      cursor:pointer; user-select:none;
+      transition:border-color 0.15s, background 0.15s;
+    }
+    .day-picker::before {
+      content:''; width:6px; height:6px; border-radius:50%;
+      background:var(--accent); flex-shrink:0;
+      transition:background 0.15s;
+    }
+    .day-picker.past::before { background:var(--orange); }
+    .day-picker:hover { border-color:var(--text3); background:var(--surface2); }
+    .day-picker.open { border-color:var(--accent); }
+    .day-picker.past.open { border-color:var(--orange); }
+    .day-picker .dp-label { color:var(--text2); }
+    .day-picker .dp-val { color:var(--accent); font-weight:500; }
+    .day-picker.past .dp-val { color:var(--orange); }
+    .day-picker .dp-chev {
+      color:var(--text2); font-size:0.7rem; line-height:1;
+      transition:transform 0.2s;
+    }
+    .day-picker.open .dp-chev { transform:rotate(180deg); }
+
+    .day-picker-dropdown {
+      position:absolute; top:calc(100% + 6px); left:0;
+      width:260px; max-width:92vw;
+      background:var(--surface);
+      border:1px solid var(--border2);
+      border-radius:8px;
+      padding:6px;
+      box-shadow:0 8px 24px rgba(0,0,0,0.45);
+      z-index:50;
+      display:none;
+      font-family:'IBM Plex Mono', monospace;
+      font-size:0.7rem;
+    }
+    .day-picker-dropdown.open { display:block; }
+    .day-picker-dropdown .dp-head {
+      padding:6px 10px 4px;
+      color:var(--text3); font-size:0.55rem; letter-spacing:0.1em;
+    }
+    .day-picker-row {
+      display:flex; justify-content:space-between; align-items:center;
+      padding:7px 10px; border-radius:4px;
+      color:var(--text); cursor:pointer;
+      transition:background 0.12s;
+    }
+    .day-picker-row:hover { background:var(--surface2); }
+    .day-picker-row.active {
+      background:rgba(74,222,128,0.10);
+      color:var(--accent);
+    }
+    .day-picker-row.active .dp-row-label::before {
+      content:'● '; font-size:0.55rem;
+    }
+    .dp-row-status { color:var(--text3); font-size:0.6rem; }
+    .day-picker-row.active .dp-row-status { color:var(--accent); }
+    .day-picker-sep { border-top:1px solid var(--border); margin:4px 0; }
+    .day-picker-foot {
+      padding:6px 10px 4px;
+      color:var(--text3); font-size:0.55rem; line-height:1.5;
+    }
+    .day-picker-foot a { color:var(--text2); text-decoration:none; }
+    .day-picker-foot a:hover { color:var(--accent); }
+
+    .cartel-volver {
+      display:inline-flex; align-items:center; gap:4px;
+      padding:4px 10px;
+      background:transparent;
+      border:1px solid var(--border2);
+      border-radius:6px;
+      font-family:'IBM Plex Mono', monospace;
+      font-size:0.62rem; color:var(--text2);
+      cursor:pointer; user-select:none;
+      transition:color 0.15s, border-color 0.15s, background 0.15s;
+    }
+    .cartel-volver:hover {
+      color:var(--text); border-color:var(--text3); background:var(--surface);
+    }
 
     @media (max-width: 880px) {
       .grid { grid-template-columns: repeat(2, 1fr); }
@@ -515,7 +611,18 @@
 
 <main>
   <div class="page-top">
-    <div class="eyebrow">HERRAMIENTA</div>
+    <div class="page-top-left">
+      <div class="eyebrow">HERRAMIENTA</div>
+      <div class="day-picker-wrap">
+        <button class="day-picker" id="day-picker-btn" type="button" aria-haspopup="listbox" aria-expanded="false">
+          <span class="dp-label">Día:</span>
+          <span class="dp-val" id="dp-val">hoy</span>
+          <span class="dp-chev" aria-hidden="true">▾</span>
+        </button>
+        <div class="day-picker-dropdown" id="day-picker-dropdown" role="listbox" aria-label="Seleccionar día"></div>
+      </div>
+      <button class="cartel-volver" id="btn-volver-hoy" type="button" style="display:none">← Volver a hoy</button>
+    </div>
     <div class="autorefresh" id="autorefresh" title="Los gráficos se actualizan automáticamente cada 60 segundos">
       <span class="autorefresh-label" id="ar-label">Auto · 60s</span>
       <div class="autorefresh-bar"><div class="autorefresh-bar-fill" id="ar-fill"></div></div>
@@ -606,6 +713,7 @@ const HORA_FIN = 17;
 let _ticksByCasa = {};
 let _cierreAyer  = {};
 let _mostrandoYmd = null;
+let _userPickedYmd = null;   // YMD elegido manualmente por el usuario, o null si auto-managed
 const _charts = {};
 let _modalChart = null;
 let _modalCasaId = null;
@@ -1263,10 +1371,49 @@ function actualizarCartel() {
     cartel.style.display = 'none';
     return;
   }
-  const dowHoy = _dowArg(todayYmd);
-  const motivo = (dowHoy === 0) ? 'domingo' : (dowHoy === 6) ? 'sábado' : 'feriado';
-  cartel.innerHTML = `Mostrando intradía del <strong>${_formatYmdLargo(_mostrandoYmd)}</strong> — mercado cerrado hoy (${motivo}).`;
+  if (_userPickedYmd) {
+    // Selección manual de un día pasado
+    cartel.innerHTML = `Mostrando intradía del <strong>${_formatYmdLargo(_mostrandoYmd)}</strong> — datos congelados (no es hoy).`;
+  } else {
+    // Auto-fallback (mercado cerrado hoy)
+    const dowHoy = _dowArg(todayYmd);
+    const motivo = (dowHoy === 0) ? 'domingo' : (dowHoy === 6) ? 'sábado' : 'feriado';
+    cartel.innerHTML = `Mostrando intradía del <strong>${_formatYmdLargo(_mostrandoYmd)}</strong> — mercado cerrado hoy (${motivo}).`;
+  }
   cartel.style.display = 'flex';
+}
+
+function actualizarDayPicker() {
+  const todayYmd = _hoyArgYmd();
+  const btn = document.getElementById('day-picker-btn');
+  const valEl = document.getElementById('dp-val');
+  const volver = document.getElementById('btn-volver-hoy');
+  if (!btn || !valEl) return;
+  if (_mostrandoYmd === todayYmd) {
+    btn.classList.remove('past');
+    valEl.textContent = 'hoy';
+  } else {
+    btn.classList.add('past');
+    // formato corto: "mié 06/05"
+    const d = new Date(`${_mostrandoYmd}T12:00:00`);
+    const dia = d.toLocaleDateString('es-AR', { weekday:'short', timeZone:'America/Argentina/Buenos_Aires' }).replace('.','');
+    const [, m, day] = _mostrandoYmd.split('-');
+    valEl.textContent = `${dia} ${day}/${m}`;
+  }
+  // "Volver a hoy" solo cuando el usuario eligió manualmente
+  if (volver) volver.style.display = _userPickedYmd ? 'inline-flex' : 'none';
+  // Auto-refresh: pausa visual cuando estamos en un día pasado
+  const ar = document.getElementById('autorefresh');
+  const arLabel = document.getElementById('ar-label');
+  if (ar && arLabel) {
+    if (_mostrandoYmd !== todayYmd) {
+      ar.classList.add('paused');
+      arLabel.textContent = 'Auto en pausa';
+    } else {
+      ar.classList.remove('paused');
+      arLabel.textContent = 'Auto · 60s';
+    }
+  }
 }
 
 const AUTO_REFRESH_MS = 60 * 1000;
@@ -1288,11 +1435,16 @@ async function _tickAutoRefresh() {
   setAutoRefreshBusy(true);
   try {
     const todayYmd = _hoyArgYmd();
+    // Si el usuario eligió un día pasado manualmente, no refrescamos nada (datos congelados)
+    if (_userPickedYmd) {
+      return;
+    }
     if (_mostrandoYmd !== todayYmd) {
       const nuevoYmd = _calcularYmdAMostrar();
       if (nuevoYmd !== _mostrandoYmd) {
         _mostrandoYmd = nuevoYmd;
         actualizarCartel();
+        actualizarDayPicker();
         await recargar();
       }
     } else {
@@ -1331,14 +1483,140 @@ function _scrollToCardFromHash() {
   }, 80);
 }
 
+// ── DAY PICKER ────────────────────────────────────────────────────────────
+// Cantidad de días hábiles que el Worker retiene (aprox)
+const DAY_PICKER_BUSINESS_DAYS = 8;
+
+function _ymdShortDow(ymd) {
+  const d = new Date(`${ymd}T12:00:00`);
+  const dia = d.toLocaleDateString('es-AR', { weekday:'short', timeZone:'America/Argentina/Buenos_Aires' }).replace('.','');
+  const [, m, day] = ymd.split('-');
+  return `${dia} ${day}/${m}`;
+}
+
+function _ultimosDiasHabiles(n) {
+  const cd = window.CanutoDolar;
+  const out = [];
+  let probe = new Date();
+  for (let i = 0; i < 60 && out.length < n; i++) {
+    const ymd = probe.toLocaleDateString('sv-SE', { timeZone: 'America/Argentina/Buenos_Aires' });
+    const ctx = { ymd, dow: _dowArg(ymd) };
+    const habil = cd && typeof cd.esDiaHabilArg === 'function'
+      ? cd.esDiaHabilArg(ctx)
+      : (ctx.dow !== 0 && ctx.dow !== 6);
+    if (habil) out.push(ymd);
+    probe = new Date(probe.getTime() - 86400000);
+  }
+  return out;
+}
+
+function _renderDayPickerDropdown() {
+  const dd = document.getElementById('day-picker-dropdown');
+  if (!dd) return;
+  const todayYmd = _hoyArgYmd();
+  const days = _ultimosDiasHabiles(DAY_PICKER_BUSINESS_DAYS);
+  const rows = days.map(ymd => {
+    const isToday = ymd === todayYmd;
+    const isActive = ymd === _mostrandoYmd;
+    const label = isToday ? `Hoy · ${_ymdShortDow(ymd)}` : _ymdShortDow(ymd);
+    const status = isToday ? 'en vivo' : 'cierre';
+    return `<div class="day-picker-row${isActive ? ' active' : ''}" role="option" data-ymd="${ymd}">
+      <span class="dp-row-label">${label}</span>
+      <span class="dp-row-status">${status}</span>
+    </div>`;
+  }).join('');
+  dd.innerHTML = `
+    <div class="dp-head">DISPONIBLES (ÚLTIMOS DÍAS HÁBILES)</div>
+    ${rows}
+    <div class="day-picker-sep"></div>
+    <div class="day-picker-foot">Para fechas más viejas → <a href="/dolar-historico/">Dólar Histórico</a></div>
+  `;
+}
+
+function _abrirDayPicker() {
+  _renderDayPickerDropdown();
+  document.getElementById('day-picker-btn').classList.add('open');
+  document.getElementById('day-picker-btn').setAttribute('aria-expanded', 'true');
+  document.getElementById('day-picker-dropdown').classList.add('open');
+}
+
+function _cerrarDayPicker() {
+  const btn = document.getElementById('day-picker-btn');
+  const dd  = document.getElementById('day-picker-dropdown');
+  if (btn) { btn.classList.remove('open'); btn.setAttribute('aria-expanded', 'false'); }
+  if (dd)  dd.classList.remove('open');
+}
+
+async function _seleccionarDia(ymd) {
+  _cerrarDayPicker();
+  if (ymd === _mostrandoYmd) return;
+  const todayYmd = _hoyArgYmd();
+  // Marcar/desmarcar selección manual
+  _userPickedYmd = (ymd === todayYmd) ? null : ymd;
+  _mostrandoYmd = ymd;
+  actualizarDayPicker();
+  actualizarCartel();
+  await recargar();
+  // Aviso si la fecha vino vacía (Worker no la tiene)
+  const totalTicks = Object.values(_ticksByCasa || {})
+    .reduce((s, arr) => s + (Array.isArray(arr) ? arr.length : 0), 0);
+  if (totalTicks === 0 && _mostrandoYmd !== todayYmd) {
+    const cartel = document.getElementById('cartel-dia');
+    if (cartel) {
+      cartel.innerHTML = `Sin datos intradiarios para <strong>${_formatYmdLargo(_mostrandoYmd)}</strong> — el servidor solo conserva los últimos días.`;
+      cartel.style.display = 'flex';
+    }
+  }
+}
+
+function _wireDayPicker() {
+  const btn = document.getElementById('day-picker-btn');
+  const dd  = document.getElementById('day-picker-dropdown');
+  const volver = document.getElementById('btn-volver-hoy');
+  if (!btn || !dd) return;
+
+  btn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    if (dd.classList.contains('open')) _cerrarDayPicker();
+    else _abrirDayPicker();
+  });
+
+  dd.addEventListener('click', (e) => {
+    const row = e.target.closest('.day-picker-row');
+    if (!row) return;
+    const ymd = row.dataset.ymd;
+    if (ymd) _seleccionarDia(ymd);
+  });
+
+  // Click fuera cierra
+  document.addEventListener('click', (e) => {
+    if (!dd.classList.contains('open')) return;
+    if (e.target.closest('.day-picker-wrap')) return;
+    _cerrarDayPicker();
+  });
+
+  // Escape cierra
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && dd.classList.contains('open')) _cerrarDayPicker();
+  });
+
+  if (volver) {
+    volver.addEventListener('click', () => {
+      _seleccionarDia(_hoyArgYmd());
+    });
+  }
+}
+
 (async () => {
   buildGrid();
   _wireModal();
   _wireHistModal();
+  _wireDayPicker();
   _scrollToCardFromHash();
   await _esperarFeriados();
   _mostrandoYmd = _calcularYmdAMostrar();
   actualizarCartel();
+  actualizarDayPicker();
   await recargar();
   startAutoRefreshBar();
   setInterval(_tickAutoRefresh, AUTO_REFRESH_MS);
