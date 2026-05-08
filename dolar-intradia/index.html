@@ -6,7 +6,6 @@
   <title>Dólar Intra-día — Canuto.ar</title>
   <meta name="description" content="Seguimiento minuto a minuto de las cotizaciones del dólar en Argentina: oficial BNA, blue, mayorista, MEP y CCL." />
   <script src="/canuto-dolar-live.js"></script>
-
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
@@ -139,29 +138,6 @@
     .card-chart-wrap { position:relative; height:180px; flex:none; }
     .card[data-casa="mayorista"] .card-chart-wrap,
     .card[data-casa="oficial"]   .card-chart-wrap { height:210px; }
-
-    /* Leyenda del chart (línea gris + línea de hoy + punto titilante) */
-    .chart-legend {
-      display:flex; flex-wrap:wrap; justify-content:center;
-      gap:14px; padding-top:8px; margin-top:2px;
-      font-family:'IBM Plex Mono',monospace; font-size:.6rem;
-      color:var(--text3); letter-spacing:.02em;
-    }
-    .chart-legend.modal { font-size:.72rem; gap:20px; padding-top:12px; }
-    .leg-item { display:inline-flex; align-items:center; gap:6px; }
-    .leg-dash {
-      width:18px; height:0; flex-shrink:0;
-      border-top:1.5px dashed rgba(139,144,164,0.7);
-    }
-    .leg-line { width:18px; height:2px; border-radius:1px; flex-shrink:0; }
-    .leg-dot {
-      width:9px; height:9px; border-radius:50%; flex-shrink:0;
-      animation: leg-pulse 1.4s ease-in-out infinite;
-    }
-    @keyframes leg-pulse {
-      0%,100% { box-shadow:0 0 0 0 currentColor; transform:scale(1); }
-      70%     { box-shadow:0 0 0 6px transparent; transform:scale(1.08); }
-    }
 
     .card-stats {
       display:grid; grid-template-columns: repeat(3, 1fr);
@@ -349,6 +325,189 @@
       .modal-val { font-size: 1.9rem; }
       .modal-chart-wrap { height: 50vh; min-height: 240px; }
     }
+
+    /* ── BRECHA CARD ─────────────────────────────────────────────────── */
+    .brecha-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      margin-bottom: 16px;
+      overflow: hidden;
+    }
+    .brecha-accent { height: 3px; background: #fbbf24; }
+    .brecha-body { padding: 14px 18px 16px; }
+    .brecha-title {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.78rem; font-weight: 600;
+      color: #fbbf24;
+      letter-spacing: 0.10em;
+      margin-bottom: 2px;
+    }
+    .brecha-sub {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.7rem;
+      color: var(--text3);
+      margin-bottom: 14px;
+    }
+    .brecha-list {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 8px;
+    }
+    .brecha-row {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 10px 14px;
+      background: var(--bg);
+      border: 1px solid var(--surface2);
+      border-radius: 7px;
+    }
+    .brecha-row-label {
+      display: flex; align-items: center; gap: 8px;
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.78rem;
+      color: var(--text2);
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+    .brecha-row-label .dot {
+      width: 6px; height: 6px; border-radius: 50%;
+      flex-shrink: 0;
+    }
+    .brecha-row-val {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.92rem; font-weight: 600;
+      color: #a3e635;
+    }
+    .brecha-empty {
+      grid-column: 1 / -1;
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.75rem;
+      color: var(--text3);
+      padding: 4px 0;
+    }
+
+    /* ── BOTÓN HISTÓRICO en card-head ────────────────────────────────── */
+    .card-head-right {
+      display: flex; align-items: center; gap: 7px;
+      flex-shrink: 0;
+    }
+    .card-hist-btn {
+      padding: 3px 8px;
+      border-radius: 5px;
+      background: transparent;
+      border: 1px solid var(--border);
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.6rem;
+      color: var(--text2);
+      cursor: pointer;
+      letter-spacing: 0.06em;
+      line-height: 1.4;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      transition: color 0.15s, border-color 0.15s, background 0.15s;
+    }
+    .card-hist-btn:hover {
+      color: var(--text);
+      border-color: var(--accent);
+      background: rgba(74,222,128,0.08);
+    }
+    .card-hist-btn:focus-visible {
+      outline: 2px solid var(--accent);
+      outline-offset: 2px;
+    }
+
+    /* ── PULSE DOT (último tick) ─────────────────────────────────────── */
+    @keyframes canutoPulse {
+      0%   { box-shadow: 0 0 0 0 rgba(74,222,128,0.55); }
+      70%  { box-shadow: 0 0 0 10px rgba(74,222,128,0); }
+      100% { box-shadow: 0 0 0 0 rgba(74,222,128,0); }
+    }
+    .pulse-dot {
+      position: absolute;
+      width: 9px; height: 9px;
+      border-radius: 50%;
+      background: var(--accent);
+      border: 2px solid var(--bg);
+      transform: translate(-50%, -50%);
+      pointer-events: none;
+      z-index: 3;
+      animation: canutoPulse 1.5s ease-out infinite;
+      display: none;
+    }
+
+    /* ── HIST CONFIRM MODAL ──────────────────────────────────────────── */
+    .hist-modal {
+      position: fixed; inset: 0;
+      display: none;
+      z-index: 1100;
+      align-items: center; justify-content: center;
+      padding: 24px;
+    }
+    .hist-modal.open { display: flex; }
+    .hist-modal-backdrop {
+      position: absolute; inset: 0;
+      background: rgba(5,7,12,0.78);
+      backdrop-filter: blur(4px);
+      -webkit-backdrop-filter: blur(4px);
+    }
+    .hist-modal-box {
+      position: relative;
+      background: var(--surface);
+      border: 1px solid var(--border2);
+      border-radius: 14px;
+      padding: 26px 28px 22px;
+      max-width: 360px;
+      text-align: center;
+      box-shadow: 0 30px 60px -20px rgba(0,0,0,0.7);
+    }
+    .hist-modal-icon {
+      font-size: 36px; line-height: 1;
+      margin-bottom: 10px;
+    }
+    .hist-modal-title {
+      font-family: 'IBM Plex Sans', sans-serif;
+      font-size: 0.95rem; font-weight: 500;
+      color: var(--text);
+      margin-bottom: 8px;
+      line-height: 1.35;
+    }
+    .hist-modal-sub {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.72rem;
+      color: var(--text2);
+      margin-bottom: 20px;
+      line-height: 1.55;
+    }
+    .hist-modal-actions {
+      display: flex; gap: 8px; justify-content: center;
+    }
+    .hist-modal-btn {
+      padding: 9px 16px;
+      border-radius: 6px;
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.78rem;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .hist-modal-cancel {
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--text2);
+    }
+    .hist-modal-cancel:hover {
+      color: var(--text);
+      border-color: var(--border2);
+    }
+    .hist-modal-confirm {
+      background: rgba(74,222,128,0.13);
+      border: 1px solid var(--accent);
+      color: var(--accent);
+      font-weight: 500;
+    }
+    .hist-modal-confirm:hover {
+      background: rgba(74,222,128,0.22);
+    }
   </style>
 </head>
 <body>
@@ -366,6 +525,17 @@
   <p class="subtitle">Seguimiento minuto a minuto de las cinco cotizaciones del día — oficial, blue, mayorista, MEP y CCL — entre las 10:00 y las 17:00 (hora ARG). Forward-fill: si no hay tick nuevo, se mantiene el último valor conocido. Click en cualquier tarjeta para ampliar.</p>
 
   <div class="cartel" id="cartel-dia" style="display:none"></div>
+
+  <div class="brecha-card" id="brecha-card" aria-label="Brechas vs Oficial">
+    <div class="brecha-accent" aria-hidden="true"></div>
+    <div class="brecha-body">
+      <div class="brecha-title">BRECHA VS OFICIAL</div>
+      <div class="brecha-sub">canuto.ar · al instante</div>
+      <div class="brecha-list" id="brecha-list">
+        <div class="brecha-empty">Cargando…</div>
+      </div>
+    </div>
+  </div>
 
   <div class="grid" id="grid"></div>
 </main>
@@ -394,13 +564,24 @@
         <span class="card-stat-value" id="modal-max">—</span>
       </div>
     </div>
-    <div class="modal-chart-wrap"><canvas id="modal-chart"></canvas></div>
-    <div class="chart-legend modal" id="modal-legend" aria-hidden="true">
-      <span class="leg-item"><span class="leg-dash"></span>Cierre de ayer</span>
-      <span class="leg-item"><span class="leg-line" id="modal-legend-line"></span>Hoy</span>
-      <span class="leg-item"><span class="leg-dot" id="modal-legend-dot"></span>Cotización actual</span>
+    <div class="modal-chart-wrap">
+      <canvas id="modal-chart"></canvas>
+      <div class="pulse-dot" id="pulse-modal"></div>
     </div>
     <div class="modal-foot" id="modal-foot">10:00 – 17:00 ARG · forward-fill</div>
+  </div>
+</div>
+
+<div class="hist-modal" id="hist-modal" role="dialog" aria-modal="true" aria-hidden="true">
+  <div class="hist-modal-backdrop" id="hist-modal-backdrop"></div>
+  <div class="hist-modal-box">
+    <div class="hist-modal-icon" aria-hidden="true">📈</div>
+    <div class="hist-modal-title" id="hist-modal-title">¿Querés ver el gráfico histórico?</div>
+    <div class="hist-modal-sub">Vas a la herramienta Dólar Histórico<br>con datos diarios desde 2003.</div>
+    <div class="hist-modal-actions">
+      <button class="hist-modal-btn hist-modal-cancel" id="hist-modal-cancel">Cancelar</button>
+      <button class="hist-modal-btn hist-modal-confirm" id="hist-modal-confirm">Sí, ver histórico →</button>
+    </div>
   </div>
 </div>
 
@@ -522,10 +703,13 @@ function forwardFill(ticks, fromTs, toTs) {
     .filter(t => t && t.fa && t.venta != null);
   orden.sort((a, b) => new Date(a.fa).getTime() - new Date(b.fa).getTime());
 
+  const firstTickTs = orden.length ? new Date(orden[0].fa).getTime() : null;
+
   const out = [];
   let i = 0, ultimo = null;
   let minY = null, minTs = null;
   let maxY = null, maxTs = null;
+  let lastTickPoint = null;
   for (let t = fromTs; t <= toTs; t += 60000) {
     while (i < orden.length && new Date(orden[i].fa).getTime() <= t) {
       ultimo = orden[i];
@@ -536,93 +720,56 @@ function forwardFill(ticks, fromTs, toTs) {
     if (y != null) {
       if (minY == null || y < minY) { minY = y; minTs = t; }
       if (maxY == null || y > maxY) { maxY = y; maxTs = t; }
+      lastTickPoint = { x: t, y };
     }
   }
-  return { points: out, minY, minTs, maxY, maxTs };
+  return { points: out, minY, minTs, maxY, maxTs, firstTickTs, lastTickPoint };
 }
 
 const watermarkPlugin = {
   id: 'wm',
-  afterDraw(chart) {
+  beforeDatasetsDraw(chart) {
     const { ctx, chartArea } = chart;
     if (!chartArea) return;
+    const h = chartArea.bottom - chartArea.top;
+    const fontSize = Math.max(18, Math.min(34, Math.round(h * 0.12)));
     ctx.save();
-    ctx.font = '500 11px "IBM Plex Mono", monospace';
-    ctx.fillStyle = 'rgba(139,144,164,0.12)';
+    ctx.font = `500 ${fontSize}px "IBM Plex Mono", monospace`;
+    ctx.fillStyle = 'rgba(139,144,164,0.32)';
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
-    ctx.fillText('canuto.ar', (chartArea.left + chartArea.right)/2, (chartArea.top + chartArea.bottom)/2);
+    const xMid = (chartArea.left + chartArea.right) / 2;
+    const yLow = chartArea.top + h * 0.72;
+    ctx.fillText('canuto.ar', xMid, yLow);
     ctx.restore();
   },
 };
 
-// Plugin: punto titilante en el último valor del dataset marcado con _isToday.
-// Dibuja un círculo sólido + halo expansivo con fase basada en Date.now() para
-// que la animación sea independiente del refresh del chart.
-const blinkingDotPlugin = {
-  id: 'blinkingDot',
+// Etiqueta "CIERRE ANTERIOR" centrada en el segmento gris.
+// Solo aparece si el segmento tiene al menos 25 minutos de ancho.
+const grayLabelPlugin = {
+  id: 'grayLabel',
   afterDatasetsDraw(chart) {
-    const { ctx, chartArea } = chart;
-    if (!chartArea) return;
-    const dsIdx = chart.data.datasets.findIndex(d => d && d._isToday);
-    if (dsIdx < 0) return;
-    const meta = chart.getDatasetMeta(dsIdx);
-    if (!meta || !meta.data || !meta.data.length) return;
-    const last = meta.data[meta.data.length - 1];
-    if (!last) return;
-    // Validar que el punto está dentro del área del chart
-    if (last.x < chartArea.left || last.x > chartArea.right) return;
-    if (last.y < chartArea.top  || last.y > chartArea.bottom) return;
-
-    const ds = chart.data.datasets[dsIdx];
-    const color = ds.borderColor || '#4ade80';
-    const rgb   = ds._dotRgb     || '74,222,128';
-
-    // Fase 0..1 cada ~1.4s
-    const t = (Date.now() % 1400) / 1400;
-    const haloR = 4 + t * 11;
-    const haloA = 0.55 * (1 - t);
-
+    const grayDs = chart.data.datasets.find(d => d.label === 'Cierre ayer');
+    if (!grayDs || !grayDs.data || grayDs.data.length < 2) return;
+    const first = grayDs.data[0];
+    const last  = grayDs.data[grayDs.data.length - 1];
+    if (!first || !last) return;
+    const widthMs = last.x - first.x;
+    if (widthMs < 25 * 60 * 1000) return;
+    const xS = chart.scales.x, yS = chart.scales.y;
+    const xMid = (xS.getPixelForValue(first.x) + xS.getPixelForValue(last.x)) / 2;
+    const yPx  = yS.getPixelForValue(first.y);
+    const ctx = chart.ctx;
     ctx.save();
-    // Halo expansivo
-    ctx.beginPath();
-    ctx.arc(last.x, last.y, haloR, 0, Math.PI * 2);
-    ctx.fillStyle = `rgba(${rgb}, ${haloA})`;
-    ctx.fill();
-    // Punto sólido con borde oscuro para destacarlo del fondo
-    ctx.beginPath();
-    ctx.arc(last.x, last.y, 4.2, 0, Math.PI * 2);
-    ctx.fillStyle = color;
-    ctx.fill();
-    ctx.lineWidth = 1.5;
-    ctx.strokeStyle = '#0d0f14';
-    ctx.stroke();
+    ctx.font = '500 9px "IBM Plex Mono", monospace';
+    ctx.fillStyle = '#8b90a4';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'top';
+    ctx.fillText('CIERRE ANTERIOR', xMid, yPx + 8);
     ctx.restore();
   },
 };
-
-// Loop global: cada frame, redibuja sólo los charts visibles para que el halo
-// se anime continuamente sin recalcular escalas. Es barato.
-function _startBlinkLoop() {
-  function tick() {
-    for (const id in _charts) {
-      const c = _charts[id];
-      if (c && c.canvas && c.canvas.offsetParent !== null) c.draw();
-    }
-    if (_modalChart && _modalChart.canvas && _modalChart.canvas.offsetParent !== null) {
-      _modalChart.draw();
-    }
-    requestAnimationFrame(tick);
-  }
-  requestAnimationFrame(tick);
-}
-
-// Helper: dado un hex tipo "#4ade80", devuelve "74,222,128"
-function _hexToRgb(hex) {
-  const m = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
-  if (!m) return '74,222,128';
-  return [parseInt(m[1],16), parseInt(m[2],16), parseInt(m[3],16)].join(',');
-}
 
 function _fmt$(n) {
   if (n == null || isNaN(n)) return '—';
@@ -645,68 +792,26 @@ function _computarVista(casa) {
   const ticks = _ticksByCasa[casa.id] || [];
   const from = _ymdToDate(_mostrandoYmd, HORA_INI, 0).getTime();
   const to   = _ymdToDate(_mostrandoYmd, HORA_FIN, 0).getTime();
+  const { points, minY, minTs, maxY, maxTs, firstTickTs, lastTickPoint } = forwardFill(ticks, from, to);
+  const validos = points.filter(p => p.y != null);
+  const valorActual = validos.length ? validos[validos.length - 1].y : null;
   const ayer = _cierreAyer[casa.id];
-
-  // Ordenar y filtrar ticks válidos
-  const ticksOrden = (Array.isArray(ticks) ? ticks : []).slice()
-    .filter(t => t && t.fa && t.venta != null)
-    .sort((a, b) => new Date(a.fa).getTime() - new Date(b.fa).getTime());
-
-  // Sin ticks aún → solo línea gris cubriendo todo el rango (si tenemos cierre de ayer)
-  if (!ticksOrden.length) {
-    const cierrePts = (ayer != null) ? [{ x: from, y: ayer }, { x: to, y: ayer }] : [];
-    return {
-      cierrePts, hoyPts: [],
-      points: [], minY: null, minTs: null, maxY: null, maxTs: null,
-      valorActual: null, ayer, variacion: null, deltaAbs: null,
-      ultimoTickTs: null, ultimoTickVal: null,
-      from, to,
-    };
-  }
-
-  const ultimoTickTs  = new Date(ticksOrden[ticksOrden.length - 1].fa).getTime();
-  const ultimoTickVal = ticksOrden[ticksOrden.length - 1].venta;
-
-  // Forward-fill solo hasta el último tick real (no extender al futuro)
-  const ff = forwardFill(ticksOrden, from, ultimoTickTs);
-  const points = ff.points.slice();
-  // Si el último tick cae entre minutos, agregamos un punto exacto al final
-  // para que el círculo titilante quede en el timestamp real, no en el minuto previo
-  if (points.length === 0 || points[points.length - 1].x < ultimoTickTs) {
-    points.push({ x: ultimoTickTs, y: ultimoTickVal });
-  }
-  const { minY, minTs, maxY, maxTs } = ff;
-
-  // Primer minuto donde la curva tiene valor (ancla para conectar gris ↔ hoy)
-  const primerValido = points.find(p => p.y != null);
-  const anclaTs = primerValido ? primerValido.x : ultimoTickTs;
-
-  // Línea gris punteada: cierre de ayer extendido desde 10:00 hasta el ancla
-  const cierrePts = (ayer != null) ? [
-    { x: from, y: ayer },
-    { x: anclaTs, y: ayer },
-  ] : [];
-
-  // Línea de hoy: empieza anclada en (anclaTs, ayer) para conectar visualmente
-  // con la gris, y desde ahí siguen los puntos reales hasta el último tick.
-  const puntosReales = points.filter(p => p.x >= anclaTs && p.y != null);
-  const hoyPts = (ayer != null)
-    ? [{ x: anclaTs, y: ayer }, ...puntosReales]
-    : puntosReales;
-
-  const valorActual = ultimoTickVal;
   const variacion = (valorActual != null && ayer && ayer !== 0)
     ? ((valorActual - ayer) / ayer) * 100
     : null;
   const deltaAbs = (valorActual != null && ayer != null) ? (valorActual - ayer) : null;
 
-  return {
-    cierrePts, hoyPts,
-    points, minY, minTs, maxY, maxTs,
-    valorActual, ayer, variacion, deltaAbs,
-    ultimoTickTs, ultimoTickVal,
-    from, to,
-  };
+  // Línea gris del cierre anterior, arrastrada desde la apertura hasta el primer tick.
+  // Si no hay ticks aún, se arrastra hasta el "ahora" (extremo del eje x es to).
+  const grayPoints = [];
+  if (ayer != null) {
+    const grayEnd = firstTickTs != null ? firstTickTs : to;
+    for (let t = from; t <= grayEnd; t += 60000) {
+      grayPoints.push({ x: t, y: ayer });
+    }
+  }
+
+  return { points, grayPoints, lastTickPoint, minY, minTs, maxY, maxTs, valorActual, ayer, variacion, deltaAbs, from, to };
 }
 
 function _varClass(variacion) {
@@ -731,7 +836,10 @@ function buildGrid() {
       <div class="card-expand-hint" aria-hidden="true">⤢</div>
       <header class="card-head">
         <div class="card-name"><span class="dot"></span> ${casa.label}</div>
-        <span class="card-var var-neu" id="var-${casa.id}">—</span>
+        <div class="card-head-right">
+          <button class="card-hist-btn" data-casa="${casa.id}" data-label="${casa.label}" title="Ver gráfico histórico" aria-label="Ver histórico de ${casa.label}">📈 HIST</button>
+          <span class="card-var var-neu" id="var-${casa.id}">—</span>
+        </div>
       </header>
       <div class="card-val" id="val-${casa.id}">—</div>
       <div class="card-delta neu" id="delta-${casa.id}"></div>
@@ -750,11 +858,9 @@ function buildGrid() {
           <span class="card-stat-value" id="max-${casa.id}">—</span>
         </div>
       </div>
-      <div class="card-chart-wrap"><canvas id="chart-${casa.id}"></canvas></div>
-      <div class="chart-legend" aria-hidden="true">
-        <span class="leg-item"><span class="leg-dash"></span>Cierre de ayer</span>
-        <span class="leg-item"><span class="leg-line" style="background:${casa.color}"></span>Hoy</span>
-        <span class="leg-item"><span class="leg-dot" style="background:${casa.color};color:${casa.color}"></span>Cotización actual</span>
+      <div class="card-chart-wrap">
+        <canvas id="chart-${casa.id}"></canvas>
+        <div class="pulse-dot" id="pulse-${casa.id}"></div>
       </div>
     `;
     card.addEventListener('click', () => openModal(casa.id));
@@ -796,39 +902,36 @@ function renderCard(casa) {
     type: 'line',
     data: {
       datasets: [
-        // 1) Línea gris punteada — cierre de ayer extendido hasta el primer tick
-        {
-          label: 'Cierre de ayer',
-          data: v.cierrePts,
-          borderColor: 'rgba(139,144,164,0.55)',
-          borderWidth: 1.4,
-          borderDash: [4, 4],
-          pointRadius: 0,
-          tension: 0,
-          fill: false,
-          spanGaps: false,
-          parsing: false,
-          order: 2,
-        },
-        // 2) Línea de hoy — ancla en (anclaTs, ayer) + ticks reales del día
         {
           label: 'Hoy',
-          data: v.hoyPts,
+          data: v.points,
           borderColor: casa.color,
           backgroundColor: grad,
-          borderWidth: 1.6,
+          borderWidth: 1.4,
           pointRadius: 0,
           tension: 0.25,
           fill: true,
           spanGaps: false,
           parsing: false,
           order: 1,
-          _isToday: true,
-          _dotRgb: _hexToRgb(casa.color),
+        },
+        {
+          label: 'Cierre ayer',
+          data: v.grayPoints,
+          borderColor: '#b8bdc9',
+          backgroundColor: 'rgba(184,189,201,0.10)',
+          borderWidth: 1.6,
+          borderDash: [6, 4],
+          pointRadius: 0,
+          tension: 0,
+          fill: 'start',
+          spanGaps: false,
+          parsing: false,
+          order: 0,
         },
       ],
     },
-    plugins: [watermarkPlugin, blinkingDotPlugin],
+    plugins: [watermarkPlugin, grayLabelPlugin],
     options: {
       responsive: true,
       maintainAspectRatio: false,
@@ -844,19 +947,12 @@ function renderCard(casa) {
           titleFont: { family:'IBM Plex Mono', size:10 },
           bodyFont:  { family:'IBM Plex Mono', size:11 },
           padding: 8,
-          // Si hay valor de "Hoy" en este X, ocultamos la fila de "Cierre de ayer"
-          // para no duplicar info. Si solo está la gris (antes del primer tick),
-          // mostramos su valor con el label correspondiente.
-          filter: (item, _idx, items) => {
-            if (item.dataset.label !== 'Cierre de ayer') return true;
-            return !items.some(it => it.dataset.label === 'Hoy' && it.parsed.y != null);
-          },
           callbacks: {
             title: items => _hhmm(items[0].parsed.x),
             label: item => {
-              if (item.parsed.y == null) return ' Sin dato';
-              const prefix = item.dataset.label === 'Cierre de ayer' ? ' Ayer · ' : ' ';
-              return prefix + _fmt$(item.parsed.y);
+              if (item.parsed.y == null) return null;
+              const lbl = item.dataset.label === 'Cierre ayer' ? 'Cierre ayer ' : '';
+              return ' ' + lbl + _fmt$(item.parsed.y);
             },
           },
         },
@@ -885,10 +981,13 @@ function renderCard(casa) {
       animation: { duration: 150 },
     },
   });
+
+  positionDot(`pulse-${casa.id}`, _charts[casa.id], v.lastTickPoint, casa.color);
 }
 
 function renderTodo() {
   for (const casa of CASAS) renderCard(casa);
+  renderBrechas();
   if (_modalCasaId) renderModalContent(_modalCasaId);
 }
 
@@ -920,12 +1019,6 @@ function renderModalContent(casaId) {
   document.getElementById('modal-foot').textContent =
     `${_formatYmdLargo(_mostrandoYmd)} · 10:00 – 17:00 ARG · forward-fill`;
 
-  // Pintar la leyenda del modal con el color de la casa actual
-  const legLine = document.getElementById('modal-legend-line');
-  const legDot  = document.getElementById('modal-legend-dot');
-  if (legLine) legLine.style.background = casa.color;
-  if (legDot)  { legDot.style.background = casa.color; legDot.style.color = casa.color; }
-
   const canvas = document.getElementById('modal-chart');
   if (_modalChart) { _modalChart.destroy(); _modalChart = null; }
   const ctx = canvas.getContext('2d');
@@ -938,21 +1031,8 @@ function renderModalContent(casaId) {
     data: {
       datasets: [
         {
-          label: 'Cierre de ayer',
-          data: v.cierrePts,
-          borderColor: 'rgba(139,144,164,0.6)',
-          borderWidth: 1.6,
-          borderDash: [5, 5],
-          pointRadius: 0,
-          tension: 0,
-          fill: false,
-          spanGaps: false,
-          parsing: false,
-          order: 2,
-        },
-        {
           label: 'Hoy',
-          data: v.hoyPts,
+          data: v.points,
           borderColor: casa.color,
           backgroundColor: grad,
           borderWidth: 2,
@@ -966,12 +1046,24 @@ function renderModalContent(casaId) {
           spanGaps: false,
           parsing: false,
           order: 1,
-          _isToday: true,
-          _dotRgb: _hexToRgb(casa.color),
+        },
+        {
+          label: 'Cierre ayer',
+          data: v.grayPoints,
+          borderColor: '#b8bdc9',
+          backgroundColor: 'rgba(184,189,201,0.10)',
+          borderWidth: 2,
+          borderDash: [7, 5],
+          pointRadius: 0,
+          tension: 0,
+          fill: 'start',
+          spanGaps: false,
+          parsing: false,
+          order: 0,
         },
       ],
     },
-    plugins: [watermarkPlugin, blinkingDotPlugin],
+    plugins: [watermarkPlugin, grayLabelPlugin],
     options: {
       responsive: true,
       maintainAspectRatio: false,
@@ -987,16 +1079,12 @@ function renderModalContent(casaId) {
           titleFont: { family:'IBM Plex Mono', size:11 },
           bodyFont:  { family:'IBM Plex Mono', size:13, weight:'600' },
           padding: 10,
-          filter: (item, _idx, items) => {
-            if (item.dataset.label !== 'Cierre de ayer') return true;
-            return !items.some(it => it.dataset.label === 'Hoy' && it.parsed.y != null);
-          },
           callbacks: {
             title: items => _hhmm(items[0].parsed.x),
             label: item => {
-              if (item.parsed.y == null) return ' Sin dato';
-              const prefix = item.dataset.label === 'Cierre de ayer' ? ' Ayer · ' : ' ';
-              return prefix + _fmt$(item.parsed.y);
+              if (item.parsed.y == null) return null;
+              const lbl = item.dataset.label === 'Cierre ayer' ? 'Cierre ayer ' : '';
+              return ' ' + lbl + _fmt$(item.parsed.y);
             },
           },
         },
@@ -1025,6 +1113,8 @@ function renderModalContent(casaId) {
       animation: { duration: 200 },
     },
   });
+
+  positionDot('pulse-modal', _modalChart, v.lastTickPoint, casa.color);
 }
 
 function openModal(casaId) {
@@ -1050,6 +1140,119 @@ function _wireModal() {
   document.getElementById('modal-backdrop').addEventListener('click', closeModal);
   document.addEventListener('keydown', (e) => {
     if (e.key === 'Escape' && document.getElementById('modal').classList.contains('open')) closeModal();
+  });
+}
+
+// ── Punto titilante en el último tick ──────────────────────────────────────
+function positionDot(dotId, chart, lastTickPoint, color) {
+  const dot = document.getElementById(dotId);
+  if (!dot) return;
+  if (!chart || !lastTickPoint) { dot.style.display = 'none'; return; }
+  const xPx = chart.scales.x.getPixelForValue(lastTickPoint.x);
+  const yPx = chart.scales.y.getPixelForValue(lastTickPoint.y);
+  if (xPx == null || isNaN(xPx) || yPx == null || isNaN(yPx)) {
+    dot.style.display = 'none';
+    return;
+  }
+  dot.style.left = xPx + 'px';
+  dot.style.top  = yPx + 'px';
+  if (color) dot.style.background = color;
+  dot.style.display = 'block';
+}
+
+// ── Card de brecha vs oficial ──────────────────────────────────────────────
+const BRECHA_ROWS = [
+  { id:'blue',            label:'Blue',      color:'var(--blue)'   },
+  { id:'bolsa',           label:'MEP',       color:'var(--orange)' },
+  { id:'contadoconliqui', label:'CCL',       color:'var(--purple)' },
+  { id:'mayorista',       label:'Mayorista', color:'var(--teal)'   },
+];
+
+// Última venta conocida para una casa: priorizamos el último tick del día.
+// Si todavía no hay ticks, caemos al cierre de ayer así la card no queda en blanco.
+function _ultimaVenta(casaId) {
+  const ticks = (_ticksByCasa[casaId] || [])
+    .filter(t => t && t.fa && t.venta != null)
+    .sort((a, b) => new Date(a.fa).getTime() - new Date(b.fa).getTime());
+  if (ticks.length) return { val: ticks[ticks.length - 1].venta, live: true };
+  if (_cierreAyer[casaId] != null) return { val: _cierreAyer[casaId], live: false };
+  return null;
+}
+
+function renderBrechas() {
+  const list = document.getElementById('brecha-list');
+  if (!list) return;
+  const oficial = _ultimaVenta('oficial');
+  if (!oficial) {
+    list.innerHTML = '<div class="brecha-empty">Esperando cotización oficial…</div>';
+    return;
+  }
+  list.innerHTML = '';
+  for (const row of BRECHA_ROWS) {
+    const v = _ultimaVenta(row.id);
+    const brecha = v ? ((v.val - oficial.val) / oficial.val) * 100 : null;
+    const node = document.createElement('div');
+    node.className = 'brecha-row';
+    node.innerHTML = `
+      <span class="brecha-row-label">
+        <span class="dot" style="background:${row.color};"></span>
+        ${row.label}
+      </span>
+      <span class="brecha-row-val">${brecha != null ? (brecha > 0 ? '+' : '') + brecha.toFixed(2) + '%' : '—'}</span>
+    `;
+    list.appendChild(node);
+  }
+}
+
+// ── Modal de confirmación para ir al histórico ─────────────────────────────
+// Mapeo entre IDs internos (de las casas) y los que entiende /dolar-historico/?tipo=
+const _HIST_URL_TIPO = {
+  oficial:         'oficial',
+  blue:            'blue',
+  bolsa:           'mep',
+  contadoconliqui: 'ccl',
+  mayorista:       'mayorista',
+};
+
+let _histPendingCasaId = null;
+
+function abrirHistModal(casaId) {
+  const casa = CASAS.find(c => c.id === casaId);
+  if (!casa) return;
+  _histPendingCasaId = casaId;
+  const titleEl = document.getElementById('hist-modal-title');
+  if (titleEl) titleEl.textContent = `¿Querés ver el gráfico histórico del dólar ${casa.label}?`;
+  const overlay = document.getElementById('hist-modal');
+  overlay.classList.add('open');
+  overlay.setAttribute('aria-hidden', 'false');
+}
+
+function cerrarHistModal() {
+  const overlay = document.getElementById('hist-modal');
+  overlay.classList.remove('open');
+  overlay.setAttribute('aria-hidden', 'true');
+  _histPendingCasaId = null;
+}
+
+function _wireHistModal() {
+  // Click en cualquier botón "📈 HIST" — usamos delegation desde el grid.
+  document.getElementById('grid').addEventListener('click', (e) => {
+    const btn = e.target.closest('.card-hist-btn');
+    if (!btn) return;
+    e.stopPropagation();   // que NO abra el modal de vista ampliada
+    e.preventDefault();
+    abrirHistModal(btn.dataset.casa);
+  });
+
+  document.getElementById('hist-modal-cancel').addEventListener('click', cerrarHistModal);
+  document.getElementById('hist-modal-backdrop').addEventListener('click', cerrarHistModal);
+  document.getElementById('hist-modal-confirm').addEventListener('click', () => {
+    if (!_histPendingCasaId) { cerrarHistModal(); return; }
+    const tipo = _HIST_URL_TIPO[_histPendingCasaId] || 'oficial';
+    window.location.href = `/dolar-historico/?tipo=${tipo}`;
+  });
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && document.getElementById('hist-modal').classList.contains('open')) cerrarHistModal();
   });
 }
 
@@ -1131,13 +1334,13 @@ function _scrollToCardFromHash() {
 (async () => {
   buildGrid();
   _wireModal();
+  _wireHistModal();
   _scrollToCardFromHash();
   await _esperarFeriados();
   _mostrandoYmd = _calcularYmdAMostrar();
   actualizarCartel();
   await recargar();
   startAutoRefreshBar();
-  _startBlinkLoop();   // ← loop continuo para que el halo del punto titile
   setInterval(_tickAutoRefresh, AUTO_REFRESH_MS);
 })();
 </script>
