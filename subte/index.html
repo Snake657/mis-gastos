@@ -1396,20 +1396,58 @@ function renderAll() {
 const WORKER_URL = 'https://canuto-subte.lenzimartin.workers.dev';
 
 async function fetchWorkerData() {
-  if (!WORKER_URL) return { activas: [], cerrados: [], lastPoll: null };
+  const empty = { activasGcba: [], activasTweets: [], cerrados: [], lastPolls: null };
+  if (!WORKER_URL) return empty;
   try {
     const r = await fetch(WORKER_URL.replace(/\/$/, '') + '/data.json', { cache: 'no-store' });
     if (!r.ok) throw new Error('HTTP ' + r.status);
     const j = await r.json();
+    // Combinar cerrados de ambas fuentes (GCBA y tweets) en formato canónico
+    const cerrGcba = (j.cerrados_gcba || []).map(workerToIncidente).filter(Boolean);
+    const cerrTw = (j.cerrados_tweets || []).map(twIncToIncidente).filter(Boolean);
     return {
-      activas: j.activas || [],
-      cerrados: (j.cerrados || []).map(workerToIncidente).filter(Boolean),
-      lastPoll: j.last_poll || null,
+      activasGcba: j.activas_gcba || [],
+      activasTweets: j.activas_tweets || [],
+      cerrados: [...cerrGcba, ...cerrTw],
+      lastPolls: j.last_polls || null,
     };
   } catch (e) {
     console.warn('[canuto-subte] worker fetch fail (uso solo data.json):', e.message);
-    return { activas: [], cerrados: [], lastPoll: null };
+    return empty;
   }
+}
+
+// Convierte un incidente pareado de tweets al formato canónico de DATA.incidentes
+function twIncToIncidente(inc) {
+  if (!inc || !inc.linea || !inc.fecha_inicio_iso) return null;
+  const dt = new Date(inc.fecha_inicio_iso);
+  if (isNaN(dt.getTime())) return null;
+  const yyyy = dt.getFullYear();
+  const mm = String(dt.getMonth()+1).padStart(2,'0');
+  const dd = String(dt.getDate()).padStart(2,'0');
+  const hh = String(dt.getHours()).padStart(2,'0');
+  const mi = String(dt.getMinutes()).padStart(2,'0');
+  const fuentes = (inc.tweets || []).map(t => ({
+    user: t.user, tweet_id: t.tweet_id,
+    url: t.url || `https://x.com/${t.user}/status/${t.tweet_id}`,
+    text: t.text || '', datetime: t.fecha_iso, kind: t.kind,
+  }));
+  // origen: si hay tweets de Emova y basubte → 'ambas', sino el único
+  const users = new Set(fuentes.map(f => f.user));
+  const origen = users.size >= 2 ? 'ambas' : ([...users][0] || 'tweet');
+  return {
+    linea: inc.linea,
+    fecha: `${yyyy}-${mm}-${dd}`,
+    hora: `${hh}:${mi}`,
+    inicio_iso: inc.fecha_inicio_iso,
+    tipo: inc.tipo || 'otro',
+    duracion_min: inc.duracion_min || null,
+    cerrado: !!inc.fecha_fin_ms,
+    estaciones: null,
+    tweets_count: fuentes.length,
+    fuente_origen: origen,
+    fuentes,
+  };
 }
 
 // Convierte un incidente del worker (formato GTFS-RT diff) al formato canónico de DATA.incidentes
@@ -1503,7 +1541,48 @@ function _hace(ms) {
   return `hace ${d}d`;
 }
 
-function renderLiveBanner(activas, lastPoll) {
+// Unifica activas de GCBA + tweets. Deduplica por (línea, tipo) cercanos en tiempo (<30 min).
+function combineActivas(actGcba, actTw) {
+  const W = 30 * 60 * 1000;
+  const out = [];
+  // Primero los de tweets (más específicos / recientes)
+  for (const t of (actTw || [])) {
+    out.push({
+      _src: 'tweet',
+      linea: t.linea,
+      tipo: t.tipo,
+      text: (t.tweets && t.tweets[0] && t.tweets[0].text) || '',
+      sinceMs: t.fecha_inicio_ms || (t.fecha_inicio_iso ? Date.parse(t.fecha_inicio_iso) : Date.now()),
+      tweets: t.tweets || [],
+    });
+  }
+  // Luego GCBA, pero solo si no hay un tweet activo cercano del mismo tipo/línea
+  for (const g of (actGcba || [])) {
+    const sinceMs = g.first_seen_ms || (g.first_seen ? Date.parse(g.first_seen) : Date.now());
+    const dup = out.find(o => o.linea === g.linea && o.tipo === g.tipo && Math.abs(o.sinceMs - sinceMs) < W);
+    if (dup) {
+      dup._src = 'ambas';
+      continue;
+    }
+    out.push({
+      _src: 'gcba',
+      linea: g.linea, tipo: g.tipo,
+      text: g.text || g.header || '',
+      sinceMs,
+      tweets: [],
+    });
+  }
+  // Filtrar info_operativa (no son alertas reales que el usuario quiera ver al entrar)
+  return out.filter(a => a.tipo !== 'info_operativa').sort((a,b) => (a.linea||'').localeCompare(b.linea||''));
+}
+
+const SRC_BADGES = {
+  gcba:   { label: 'GCBA',     bg: 'rgba(34,211,238,0.15)', color: '#22d3ee' },
+  tweet:  { label: 'Twitter',  bg: 'rgba(168,85,247,0.15)', color: '#a855f7' },
+  ambas:  { label: 'GCBA+Twitter', bg: 'rgba(34,197,94,0.18)', color: '#22c55e' },
+};
+
+function renderLiveBanner(activas, lastPolls) {
   const banner = $('live-banner');
   const list = $('live-list');
   const meta = $('live-meta');
@@ -1515,37 +1594,42 @@ function renderLiveBanner(activas, lastPoll) {
     return;
   }
 
-  // Ordenar por línea alfabética
-  const sorted = [...activas].sort((a, b) => (a.linea || '').localeCompare(b.linea || ''));
-
-  list.innerHTML = sorted.map(a => {
+  list.innerHTML = activas.map(a => {
     const linea = a.linea || '?';
     const colorVar = (linea === 'P') ? 'var(--lp)' : `var(--l${linea.toLowerCase()})`;
     const tipoLbl = TIPO_LBL_LIVE[a.tipo] || 'Alerta';
-    const text = (a.text || a.header || '').trim() || 'Sin descripción.';
-    const sinceMs = a.first_seen_ms || (a.first_seen ? new Date(a.first_seen).getTime() : Date.now());
-    const desde = new Date(sinceMs);
+    const text = (a.text || '').trim() || 'Sin descripción.';
+    const desde = new Date(a.sinceMs);
     const horaInicio = String(desde.getHours()).padStart(2,'0') + ':' + String(desde.getMinutes()).padStart(2,'0');
+    const badge = SRC_BADGES[a._src] || SRC_BADGES.gcba;
+    const tweetsLinks = a.tweets && a.tweets.length
+      ? a.tweets.slice(0, 3).map(t => `<a href="${t.url}" target="_blank" rel="noopener" style="color:${badge.color};text-decoration:none;font-size:0.7rem;margin-right:6px">↗ @${t.user}</a>`).join('')
+      : '';
     return `
       <div class="live-card" style="--linecolor:${colorVar}">
         <div class="live-line">${linea}</div>
         <div class="live-body">
           <div class="live-text">${text.replace(/&/g,'&amp;').replace(/</g,'&lt;')}</div>
-          <div class="live-tipo">${tipoLbl}</div>
+          <div class="live-tipo">
+            ${tipoLbl}
+            <span style="display:inline-block;margin-left:6px;padding:1px 6px;border-radius:3px;background:${badge.bg};color:${badge.color};font-size:0.62rem;font-weight:600">${badge.label}</span>
+            ${tweetsLinks ? '<span style="margin-left:8px">' + tweetsLinks + '</span>' : ''}
+          </div>
         </div>
         <div class="live-since">
           <strong>${horaInicio}</strong>
-          ${_hace(sinceMs)}
+          ${_hace(a.sinceMs)}
         </div>
       </div>
     `;
   }).join('');
 
-  // Meta: cuándo fue el último poll del worker
-  if (meta && lastPoll && lastPoll.last_run_ms) {
-    meta.textContent = 'actualizado ' + _hace(lastPoll.last_run_ms);
-  } else if (meta) {
-    meta.textContent = '';
+  // Meta: cuándo fue el último poll de cada fuente
+  if (meta) {
+    const partes = [];
+    if (lastPolls && lastPolls.gcba && lastPolls.gcba.last_run_ms) partes.push('GCBA: ' + _hace(lastPolls.gcba.last_run_ms));
+    if (lastPolls && lastPolls.tweets && lastPolls.tweets.last_run_ms) partes.push('Twitter: ' + _hace(lastPolls.tweets.last_run_ms));
+    meta.textContent = partes.join(' · ');
   }
 
   banner.classList.add('show');
@@ -1557,14 +1641,14 @@ async function init() {
     const r = await fetch('/subte/data.json', { cache: 'no-store' });
     if (!r.ok) throw new Error('HTTP ' + r.status);
     DATA = await r.json();
-    // Bajar data del worker GTFS-RT (silencioso si falla / si WORKER_URL está vacío)
-    const workerData = await fetchWorkerData();
-    mergeWorkerWithStatic(workerData.cerrados);
-    renderLiveBanner(workerData.activas, workerData.lastPoll);
+    // Bajar data del worker (silencioso si falla / si WORKER_URL está vacío)
+    const wd = await fetchWorkerData();
+    mergeWorkerWithStatic(wd.cerrados);
+    renderLiveBanner(combineActivas(wd.activasGcba, wd.activasTweets), wd.lastPolls);
     // Auto-refresh del banner cada 60s (sin bloquear la UI)
     setInterval(async () => {
-      const wd = await fetchWorkerData();
-      renderLiveBanner(wd.activas, wd.lastPoll);
+      const wd2 = await fetchWorkerData();
+      renderLiveBanner(combineActivas(wd2.activasGcba, wd2.activasTweets), wd2.lastPolls);
     }, 60000);
     _lineasOn = new Set(DATA.lineas_disponibles);
     _tiposOn = new Set(Object.keys(DATA.tipos));
