@@ -1810,7 +1810,9 @@ function combineActivas(actGcba, actTw, quejasObj, volumenObj) {
       });
     }
   }
-  const filtradas = out.filter(a => a.tipo !== 'info_operativa').sort((a,b) => (a.linea||'').localeCompare(b.linea||''));
+  // Mostrar TODAS las alertas activas (incluyendo info_operativa para que se vean obras estructurales).
+  // El distintivo visual de urgencia se hace en renderLiveBanner según el tipo.
+  const filtradas = out.sort((a,b) => (a.linea||'').localeCompare(b.linea||''));
 
   // Detector de VOLUMEN (sin filtros): si hay cluster de usuarios distintos arrobando a las cuentas oficiales
   // y NO hay otra alerta activa, agregar una "posible incidencia" general (sin línea identificada).
@@ -1845,7 +1847,7 @@ function renderLiveBanner(activas, lastPolls) {
   const tag = banner ? banner.querySelector('.live-tag') : null;
   if (!banner || !list) return;
 
-  // Helper para reset del header al estado "alerta" rojo
+  // Helper: ok (verde, sin alertas), aviso (amarillo, solo info_operativa), alert (rojo, hay urgentes)
   const setHeader = (state) => {
     if (!dot || !tag) return;
     if (state === 'ok') {
@@ -1853,6 +1855,11 @@ function renderLiveBanner(activas, lastPolls) {
       dot.style.animation = 'none';
       tag.textContent = '✓ Sin alertas activas';
       tag.style.color = 'var(--green)';
+    } else if (state === 'aviso') {
+      dot.style.background = 'var(--yellow)';
+      dot.style.animation = 'none';
+      tag.textContent = 'Avisos del servicio';
+      tag.style.color = 'var(--yellow)';
     } else {
       dot.style.background = 'var(--red)';
       dot.style.animation = '';  // restaurar default
@@ -1873,7 +1880,9 @@ function renderLiveBanner(activas, lastPolls) {
     }
     return;
   }
-  setHeader('alert');
+  // Si TODAS las alertas son info_operativa → header amarillo "aviso"; si hay alguna urgente → rojo "alerta"
+  const hayUrgentes = activas.some(a => a.tipo !== 'info_operativa');
+  setHeader(hayUrgentes ? 'alert' : 'aviso');
 
   list.innerHTML = activas.map(a => {
     const linea = a.linea || '?';
@@ -2129,7 +2138,7 @@ async function renderServicioHoy() {
       </tr></thead>
       <tbody>${rows}</tbody>
     </table>
-    <p class="nota-pie">Inicio del servicio hoy: ${apertura} · Datos de emova.com.ar (+/- 5 min tolerancia) · Novedades de API GCBA + tweets oficiales</p>
+    <p class="nota-pie">Frecuencias y horarios según emova.com.ar (+/- 5 min tolerancia)</p>
   `;
 
   banner.style.display = 'block';
