@@ -492,6 +492,61 @@
     color: var(--yellow);
   }
 
+  /* ── BANNER LIVE (alertas activas GCBA) ── */
+  #live-banner { display: none; margin: 0 0 24px; }
+  #live-banner.show { display: block; }
+  .live-header {
+    display: flex; align-items: center; gap: 8px;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.72rem; letter-spacing: 0.08em; text-transform: uppercase;
+    color: var(--text2); margin-bottom: 8px;
+  }
+  .live-dot {
+    width: 8px; height: 8px; border-radius: 50%;
+    background: var(--red); flex-shrink: 0;
+    animation: livepulse 1.6s ease-in-out infinite;
+  }
+  @keyframes livepulse {
+    0%, 100% { opacity: 1; box-shadow: 0 0 0 0 rgba(239,68,68,0.6); }
+    50% { opacity: 0.7; box-shadow: 0 0 0 6px rgba(239,68,68,0); }
+  }
+  .live-tag { color: var(--red); font-weight: 700; }
+  .live-meta { margin-left: auto; color: var(--text3); font-weight: 400; text-transform: none; letter-spacing: 0; }
+  .live-list { display: grid; grid-template-columns: 1fr; gap: 8px; }
+  .live-card {
+    background: var(--surface); border: 1px solid var(--border);
+    border-left: 3px solid var(--linecolor, var(--text2));
+    border-radius: 8px; padding: 10px 14px;
+    display: grid; grid-template-columns: auto 1fr auto; gap: 12px; align-items: center;
+  }
+  .live-line {
+    width: 26px; height: 26px; border-radius: 50%;
+    background: var(--linecolor, var(--text2)); color: #0d0f14;
+    font-family: 'IBM Plex Mono', monospace; font-weight: 700;
+    font-size: 0.85rem;
+    display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+  }
+  .live-body { min-width: 0; }
+  .live-text {
+    color: var(--text); font-size: 0.88rem; line-height: 1.35;
+    overflow: hidden; text-overflow: ellipsis; display: -webkit-box;
+    -webkit-line-clamp: 2; -webkit-box-orient: vertical;
+  }
+  .live-tipo {
+    font-family: 'IBM Plex Mono', monospace; font-size: 0.68rem;
+    color: var(--text2); margin-top: 3px; letter-spacing: 0.04em;
+  }
+  .live-since {
+    font-family: 'IBM Plex Mono', monospace; font-size: 0.72rem;
+    color: var(--text2); text-align: right; flex-shrink: 0;
+    line-height: 1.3;
+  }
+  .live-since strong { color: var(--text); display: block; font-weight: 600; }
+  @media (max-width: 540px) {
+    .live-card { grid-template-columns: auto 1fr; }
+    .live-since { grid-column: 1 / -1; text-align: left; padding-left: 38px; }
+  }
+
   /* ── LOADING ── */
   .loading {
     text-align: center;
@@ -547,6 +602,16 @@
     Los pareamos con sus respectivos tweets de cierre (<code>Servicio normalizado</code>, <code>Reabrió</code>, etc.) para reconstruir la duración real.
     Cuando ambas cuentas reportan el mismo evento, queda <strong style="color:#22c55e">✓ confirmado</strong>.
   </p>
+
+  <!-- Banner de alertas activas (GCBA GTFS-RT en vivo) -->
+  <section id="live-banner" aria-live="polite">
+    <div class="live-header">
+      <span class="live-dot" aria-hidden="true"></span>
+      <span class="live-tag">En vivo · GCBA</span>
+      <span class="live-meta" id="live-meta"></span>
+    </div>
+    <div class="live-list" id="live-list"></div>
+  </section>
 
   <!-- KPIs -->
   <div class="kpi-grid" id="kpis">
@@ -1330,17 +1395,20 @@ function renderAll() {
 // Dejar como '' si todavía no se deployó — en ese caso solo se usa data.json estático.
 const WORKER_URL = 'https://canuto-subte.lenzimartin.workers.dev';
 
-async function fetchWorkerIncidentes() {
-  if (!WORKER_URL) return [];
+async function fetchWorkerData() {
+  if (!WORKER_URL) return { activas: [], cerrados: [], lastPoll: null };
   try {
     const r = await fetch(WORKER_URL.replace(/\/$/, '') + '/data.json', { cache: 'no-store' });
     if (!r.ok) throw new Error('HTTP ' + r.status);
     const j = await r.json();
-    const cerrados = (j.cerrados || []).map(workerToIncidente).filter(Boolean);
-    return cerrados;
+    return {
+      activas: j.activas || [],
+      cerrados: (j.cerrados || []).map(workerToIncidente).filter(Boolean),
+      lastPoll: j.last_poll || null,
+    };
   } catch (e) {
     console.warn('[canuto-subte] worker fetch fail (uso solo data.json):', e.message);
-    return [];
+    return { activas: [], cerrados: [], lastPoll: null };
   }
 }
 
@@ -1413,15 +1481,91 @@ function mergeWorkerWithStatic(workerIncs) {
   }
 }
 
+// ─── BANNER LIVE ───────────────────────────────────────────────────
+const TIPO_LBL_LIVE = {
+  'inicio_demora':           'Demora',
+  'inicio_limitado':         'Servicio limitado',
+  'inicio_estacion_cerrada': 'Estación cerrada',
+  'inicio_interrumpido':     'Servicio interrumpido',
+  'info_operativa':          'Info operativa',
+  'otro':                    'Alerta',
+};
+
+function _hace(ms) {
+  const seg = Math.max(0, Math.floor((Date.now() - ms) / 1000));
+  if (seg < 60) return 'hace <1 min';
+  const m = Math.floor(seg / 60);
+  if (m < 60) return `hace ${m} min`;
+  const h = Math.floor(m / 60);
+  const rm = m - h * 60;
+  if (h < 24) return rm > 0 ? `hace ${h}h ${rm}m` : `hace ${h}h`;
+  const d = Math.floor(h / 24);
+  return `hace ${d}d`;
+}
+
+function renderLiveBanner(activas, lastPoll) {
+  const banner = $('live-banner');
+  const list = $('live-list');
+  const meta = $('live-meta');
+  if (!banner || !list) return;
+
+  if (!activas || activas.length === 0) {
+    banner.classList.remove('show');
+    list.innerHTML = '';
+    return;
+  }
+
+  // Ordenar por línea alfabética
+  const sorted = [...activas].sort((a, b) => (a.linea || '').localeCompare(b.linea || ''));
+
+  list.innerHTML = sorted.map(a => {
+    const linea = a.linea || '?';
+    const colorVar = (linea === 'P') ? 'var(--lp)' : `var(--l${linea.toLowerCase()})`;
+    const tipoLbl = TIPO_LBL_LIVE[a.tipo] || 'Alerta';
+    const text = (a.text || a.header || '').trim() || 'Sin descripción.';
+    const sinceMs = a.first_seen_ms || (a.first_seen ? new Date(a.first_seen).getTime() : Date.now());
+    const desde = new Date(sinceMs);
+    const horaInicio = String(desde.getHours()).padStart(2,'0') + ':' + String(desde.getMinutes()).padStart(2,'0');
+    return `
+      <div class="live-card" style="--linecolor:${colorVar}">
+        <div class="live-line">${linea}</div>
+        <div class="live-body">
+          <div class="live-text">${text.replace(/&/g,'&amp;').replace(/</g,'&lt;')}</div>
+          <div class="live-tipo">${tipoLbl}</div>
+        </div>
+        <div class="live-since">
+          <strong>${horaInicio}</strong>
+          ${_hace(sinceMs)}
+        </div>
+      </div>
+    `;
+  }).join('');
+
+  // Meta: cuándo fue el último poll del worker
+  if (meta && lastPoll && lastPoll.last_run_ms) {
+    meta.textContent = 'actualizado ' + _hace(lastPoll.last_run_ms);
+  } else if (meta) {
+    meta.textContent = '';
+  }
+
+  banner.classList.add('show');
+}
+
 // ─── INIT ──────────────────────────────────────────────────────────
 async function init() {
   try {
     const r = await fetch('/subte/data.json', { cache: 'no-store' });
     if (!r.ok) throw new Error('HTTP ' + r.status);
     DATA = await r.json();
-    // Mergear con el worker GTFS-RT (silencioso si falla / si WORKER_URL está vacío)
-    const workerIncs = await fetchWorkerIncidentes();
-    mergeWorkerWithStatic(workerIncs);
+    // Bajar data del worker GTFS-RT (silencioso si falla / si WORKER_URL está vacío)
+    const workerData = await fetchWorkerData();
+    mergeWorkerWithStatic(workerData.cerrados);
+    renderLiveBanner(workerData.activas, workerData.lastPoll);
+    // Auto-refresh del banner cada 60s (sin bloquear la UI)
+    setInterval(async () => {
+      const wd = await fetchWorkerData();
+      renderLiveBanner(wd.activas, wd.lastPoll);
+    }, 60000);
     _lineasOn = new Set(DATA.lineas_disponibles);
     _tiposOn = new Set(Object.keys(DATA.tipos));
     // Setear hmYear al año más reciente con datos
