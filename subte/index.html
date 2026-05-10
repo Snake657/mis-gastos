@@ -1325,12 +1325,103 @@ function renderAll() {
   renderTop();
 }
 
+// ─── WORKER LIVE: incidentes nuevos desde Cloudflare Worker ────────
+// URL del worker que polea la API GTFS-RT de GCBA cada 5 min.
+// Dejar como '' si todavía no se deployó — en ese caso solo se usa data.json estático.
+const WORKER_URL = 'https://canuto-subte.lenzimartin.workers.dev';
+
+async function fetchWorkerIncidentes() {
+  if (!WORKER_URL) return [];
+  try {
+    const r = await fetch(WORKER_URL.replace(/\/$/, '') + '/data.json', { cache: 'no-store' });
+    if (!r.ok) throw new Error('HTTP ' + r.status);
+    const j = await r.json();
+    const cerrados = (j.cerrados || []).map(workerToIncidente).filter(Boolean);
+    return cerrados;
+  } catch (e) {
+    console.warn('[canuto-subte] worker fetch fail (uso solo data.json):', e.message);
+    return [];
+  }
+}
+
+// Convierte un incidente del worker (formato GTFS-RT diff) al formato canónico de DATA.incidentes
+function workerToIncidente(w) {
+  if (!w || !w.linea || !w.first_seen) return null;
+  const dt = new Date(w.first_seen);
+  if (isNaN(dt.getTime())) return null;
+  const yyyy = dt.getFullYear();
+  const mm = String(dt.getMonth() + 1).padStart(2, '0');
+  const dd = String(dt.getDate()).padStart(2, '0');
+  const hh = String(dt.getHours()).padStart(2, '0');
+  const mi = String(dt.getMinutes()).padStart(2, '0');
+  return {
+    linea: w.linea,
+    fecha: `${yyyy}-${mm}-${dd}`,
+    hora: `${hh}:${mi}`,
+    inicio_iso: w.first_seen,
+    tipo: w.tipo || 'otro',
+    duracion_min: w.duration_min || null,
+    cerrado: !!w.cerrado_at,
+    estaciones: null,
+    tweets_count: 0,
+    fuente_origen: 'GCBA_GTFS',
+    fuentes: [{
+      user: 'GCBA',
+      tweet_id: w.id,
+      url: null,
+      text: w.text || w.header || '',
+      datetime: w.first_seen,
+      kind: w.tipo || 'otro',
+    }],
+  };
+}
+
+// Mergea incidentes del worker con los de data.json sin duplicar.
+// Heurística: misma línea + diferencia <30 min + tipo compatible -> mismo incidente.
+function mergeWorkerWithStatic(workerIncs) {
+  if (!workerIncs.length) return;
+  const W = 30 * 60 * 1000;
+  let agregados = 0;
+  for (const w of workerIncs) {
+    const wMs = new Date(w.inicio_iso).getTime();
+    const dup = DATA.incidentes.find(i => {
+      if (i.linea !== w.linea) return false;
+      const iMs = new Date(i.inicio_iso || (i.fecha + 'T' + (i.hora || '00:00') + ':00')).getTime();
+      return Math.abs(iMs - wMs) < W;
+    });
+    if (!dup) {
+      DATA.incidentes.push(w);
+      agregados++;
+    } else {
+      // si el estático no tiene duración pero el worker sí, completar
+      if (!dup.duracion_min && w.duracion_min) dup.duracion_min = w.duracion_min;
+      if (!dup.cerrado && w.cerrado) dup.cerrado = true;
+      // marcar que también lo vio el worker
+      dup.fuentes = dup.fuentes || [];
+      if (!dup.fuentes.some(f => f.user === 'GCBA')) {
+        dup.fuentes.push(w.fuentes[0]);
+      }
+    }
+  }
+  if (agregados) {
+    // ordenar cronológicamente
+    DATA.incidentes.sort((a, b) => (a.inicio_iso < b.inicio_iso ? -1 : 1));
+    // extender rango_cubierto.hasta si hace falta
+    const ultimoFecha = DATA.incidentes[DATA.incidentes.length - 1].fecha;
+    if (ultimoFecha > DATA.rango_cubierto.hasta) DATA.rango_cubierto.hasta = ultimoFecha;
+    console.info(`[canuto-subte] +${agregados} incidentes nuevos del worker GCBA`);
+  }
+}
+
 // ─── INIT ──────────────────────────────────────────────────────────
 async function init() {
   try {
     const r = await fetch('/subte/data.json', { cache: 'no-store' });
     if (!r.ok) throw new Error('HTTP ' + r.status);
     DATA = await r.json();
+    // Mergear con el worker GTFS-RT (silencioso si falla / si WORKER_URL está vacío)
+    const workerIncs = await fetchWorkerIncidentes();
+    mergeWorkerWithStatic(workerIncs);
     _lineasOn = new Set(DATA.lineas_disponibles);
     _tiposOn = new Set(Object.keys(DATA.tipos));
     // Setear hmYear al año más reciente con datos
