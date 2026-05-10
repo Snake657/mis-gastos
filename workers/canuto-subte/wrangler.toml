@@ -1,0 +1,42 @@
+name = "canuto-subte"
+main = "src/index.js"
+compatibility_date = "2025-05-01"
+
+# ============================================================
+#  CRON: cada 5 minutos polea la API de GCBA y diffea contra KV
+# ============================================================
+[triggers]
+crons = ["*/5 * * * *"]
+
+# ============================================================
+#  KV NAMESPACES
+#  -------------
+#  Antes de hacer deploy, crear los dos namespaces con:
+#     wrangler kv namespace create ACTIVAS
+#     wrangler kv namespace create HISTORICOS
+#
+#  Cada uno te va a devolver un id tipo "abc123..." que tenés que
+#  pegar abajo reemplazando los REPLACE_ME_*.
+#
+#  Si querés un namespace separado para previews/dev,
+#  agregá la línea preview_id (opcional).
+# ============================================================
+[[kv_namespaces]]
+binding = "ACTIVAS"
+id = "509b83689ce14fd7881ca39dcc75c79c"
+
+[[kv_namespaces]]
+binding = "HISTORICOS"
+id = "5b170c6a382e4adaacb29418f888ed9c"
+
+# ============================================================
+#  SECRETS (no van en este archivo, se cargan con wrangler secret put)
+#  ----------------------------------------------------------
+#     wrangler secret put GCBA_CLIENT_ID
+#     wrangler secret put GCBA_CLIENT_SECRET
+#     wrangler secret put ADMIN_KEY     (opcional, solo si vas a usar /poll)
+# ============================================================
+
+# Observabilidad: dejá los logs en Cloudflare por 3 días para poder debuggear
+[observability]
+enabled = true
