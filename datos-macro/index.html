@@ -1695,8 +1695,23 @@
         <button class="range-tab" data-r="TODO">Todo</button>
         <button class="range-tab" data-r="CUSTOM">Rango</button>
         <span class="range-tabs-divider"></span>
-        <span id="rt-subte-pres" style="display:contents"></span>
-        <button class="range-tab presidentes-toggle" id="btn-subte-presidentes" type="button" title="Pintar el gráfico por presidencia">🎨 Presidentes</button>
+        <label for="subte-mes-filtro" style="font-family:'IBM Plex Mono',monospace;font-size:0.65rem;color:var(--text3);font-weight:600;display:flex;align-items:center;gap:6px">📅 Mes:
+          <select id="subte-mes-filtro" style="background:var(--surface2);border:1px solid var(--border2);border-radius:6px;padding:3px 8px;color:var(--text);font-family:'IBM Plex Mono',monospace;font-size:0.68rem;outline:none;cursor:pointer">
+            <option value="0">Todos</option>
+            <option value="1">Enero</option>
+            <option value="2">Febrero</option>
+            <option value="3">Marzo</option>
+            <option value="4">Abril</option>
+            <option value="5">Mayo</option>
+            <option value="6">Junio</option>
+            <option value="7">Julio</option>
+            <option value="8">Agosto</option>
+            <option value="9">Septiembre</option>
+            <option value="10">Octubre</option>
+            <option value="11">Noviembre</option>
+            <option value="12">Diciembre</option>
+          </select>
+        </label>
       </div>
     </div>
     <div class="date-range-wrap" id="subte-date-inputs" style="display:none">
@@ -5927,17 +5942,10 @@ const SUBTE_URL = '/subte/data.json';
 let subteRaw = null;            // {fuente, lineas, colores, data: [{ym,total,A,B,...}]}
 let _subteModo = 'total';       // 'total' | 'lineas' | 'stack'
 let _subteVista = 'mensual';    // 'mensual' | 'anual'
-let _subtePorPres = false;
 let _subteLineasOn = null;      // Set con líneas activas (para 'lineas'/'stack')
-let _subteCompA = null;         // {idx, ym, valor, label}
+let _subteMesFiltro = 0;        // 0 = todos, 1..12 = solo ese mes
+let _subteCompA = null;         // {idx, ym, valor, label, año}
 let _subteCompB = null;
-
-const PRESIDENTES_SUBTE = [
-  { key:'cfk', fecha:'2010-01-01', nombre:'CFK',          color:'#7dd3fc' },
-  { key:'mm',  fecha:'2015-12-10', nombre:'Macri',        color:'#fbbf24' },
-  { key:'af',  fecha:'2019-12-10', nombre:'A. Fernández', color:'#1e40af' },
-  { key:'jm',  fecha:'2023-12-10', nombre:'Milei',        color:'#a855f7' }
-];
 
 function _subteFmtFecha(ym) {
   const [y, m] = ym.split('-').map(Number);
@@ -5989,37 +5997,40 @@ async function loadSubte() {
 function _subteSlice(range) {
   if (!subteRaw) return [];
   const data = subteRaw.data;
-  if (range === 'TODO') return data.slice();
-  if (range === 'CUSTOM') {
+  let filtered;
+  if (range === 'TODO') {
+    filtered = data.slice();
+  } else if (range === 'CUSTOM') {
     const desde = $('subte-desde').value;
     const hasta = $('subte-hasta').value;
-    if (!desde || !hasta) return data.slice();
-    const dYm = desde.slice(0, 7), hYm = hasta.slice(0, 7);
-    return data.filter(d => d.ym >= dYm && d.ym <= hYm);
+    if (!desde || !hasta) filtered = data.slice();
+    else {
+      const dYm = desde.slice(0, 7), hYm = hasta.slice(0, 7);
+      filtered = data.filter(d => d.ym >= dYm && d.ym <= hYm);
+    }
+  } else {
+    // Rangos relativos
+    const last = data[data.length - 1];
+    if (!last) return [];
+    const [ly, lm] = last.ym.split('-').map(Number);
+    const cut = new Date(ly, lm - 1, 1);
+    if      (range === '6M')  cut.setMonth(cut.getMonth() - 6);
+    else if (range === '1A')  cut.setFullYear(cut.getFullYear() - 1);
+    else if (range === '2A')  cut.setFullYear(cut.getFullYear() - 2);
+    else if (range === '5A')  cut.setFullYear(cut.getFullYear() - 5);
+    else if (range === '10A') cut.setFullYear(cut.getFullYear() - 10);
+    else filtered = data.slice();
+    if (!filtered) {
+      const cutYm = `${cut.getFullYear()}-${String(cut.getMonth() + 1).padStart(2, '0')}`;
+      filtered = data.filter(d => d.ym >= cutYm);
+    }
   }
-  if (typeof range === 'string' && range.startsWith('PRES-')) {
-    const k = range.slice(5);
-    const idx = PRESIDENTES_SUBTE.findIndex(p => p.key === k);
-    if (idx === -1) return data.slice();
-    const desdeYm = PRESIDENTES_SUBTE[idx].fecha.slice(0, 7);
-    const hastaYm = (idx + 1 < PRESIDENTES_SUBTE.length)
-      ? PRESIDENTES_SUBTE[idx + 1].fecha.slice(0, 7)
-      : '9999-12';
-    return data.filter(d => d.ym >= desdeYm && d.ym < hastaYm);
+  // Filtro por mes específico (solo aplica en vista mensual)
+  if (_subteMesFiltro && _subteVista === 'mensual') {
+    const m = String(_subteMesFiltro).padStart(2, '0');
+    filtered = filtered.filter(d => d.ym.endsWith('-' + m));
   }
-  // Rangos relativos
-  const last = data[data.length - 1];
-  if (!last) return [];
-  const [ly, lm] = last.ym.split('-').map(Number);
-  const cut = new Date(ly, lm - 1, 1);
-  if      (range === '6M')  cut.setMonth(cut.getMonth() - 6);
-  else if (range === '1A')  cut.setFullYear(cut.getFullYear() - 1);
-  else if (range === '2A')  cut.setFullYear(cut.getFullYear() - 2);
-  else if (range === '5A')  cut.setFullYear(cut.getFullYear() - 5);
-  else if (range === '10A') cut.setFullYear(cut.getFullYear() - 10);
-  else return data.slice();
-  const cutYm = `${cut.getFullYear()}-${String(cut.getMonth() + 1).padStart(2, '0')}`;
-  return data.filter(d => d.ym >= cutYm);
+  return filtered;
 }
 
 function _subteRenderRangeStats(slice, range) {
@@ -6032,10 +6043,10 @@ function _subteRenderRangeStats(slice, range) {
   const promedio = total / slice.length;
   const max = slice.reduce((a, b) => (b.total > a.total ? b : a));
   const min = slice.reduce((a, b) => (b.total < a.total ? b : a));
+  const MESES_NOM = ['','Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
   let titulo = `${_subteFmtFecha(first.ym)} → ${_subteFmtFecha(last.ym)}`;
-  if (range && range.startsWith('PRES-')) {
-    const p = PRESIDENTES_SUBTE.find(x => x.key === range.slice(5));
-    if (p) titulo = `${p.nombre} · ${titulo}`;
+  if (_subteMesFiltro && _subteVista === 'mensual') {
+    titulo = `Solo ${MESES_NOM[_subteMesFiltro]} · ${titulo} · ${slice.length} año${slice.length === 1 ? '' : 's'}`;
   }
   el.style.display = 'flex';
   el.innerHTML = `
@@ -6093,17 +6104,30 @@ function _subteRenderComparador() {
   const cls = dif > 0 ? 'pos' : dif < 0 ? 'neg' : '';
   const signo = dif > 0 ? '+' : '';
   const pctTxt = pct === null ? '—' : `${pct >= 0 ? '+' : ''}${pct.toFixed(1).replace('.', ',')}%`;
-  const tiempo = meses !== null
-    ? `${meses === 0 ? 'mismo mes' : (meses > 0 ? `${meses} meses` : `${Math.abs(meses)} meses`)}`
-    : (años !== null ? `${años} año${años === 1 ? '' : 's'}` : '');
+  // Formato de tiempo: si > 12 meses, mostrar años + meses
+  let tiempo = '';
+  if (meses !== null) {
+    const m = Math.abs(meses);
+    if (m === 0) tiempo = 'mismo mes';
+    else if (m < 12) tiempo = `${m} ${m === 1 ? 'mes' : 'meses'}`;
+    else {
+      const ay = Math.floor(m / 12), am = m % 12;
+      tiempo = ay + ' año' + (ay === 1 ? '' : 's') + (am ? ` y ${am} ${am === 1 ? 'mes' : 'meses'}` : '');
+    }
+  } else if (años !== null) {
+    tiempo = `${años} año${años === 1 ? '' : 's'}`;
+  }
+  // Variación numérica detallada (cantidad exacta de pasajeros)
+  const difFull = _subteFmtNum(Math.abs(dif));
   res.style.display = 'flex';
   res.style.flexWrap = 'wrap';
   res.style.gap = '14px';
   res.innerHTML = `
     <span><strong style="color:var(--text)">${_subteFmtCompacto(a.valor)}</strong> → <strong style="color:var(--text)">${_subteFmtCompacto(b.valor)}</strong></span>
-    <span class="${cls}" style="font-weight:700">Δ ${signo}${_subteFmtCompacto(dif)}</span>
-    <span class="${cls}" style="font-weight:700">${pctTxt}</span>
+    <span class="${cls}" style="font-weight:700" title="${signo}${difFull} pasajeros">Δ ${signo}${_subteFmtCompacto(dif)}</span>
+    <span class="${cls}" style="font-weight:700;font-size:0.78rem">${pctTxt}</span>
     ${tiempo ? `<span style="color:var(--text3)">en ${tiempo}</span>` : ''}
+    <span style="color:var(--text3);font-size:0.66rem">(${signo}${difFull} pasajeros)</span>
   `;
 }
 
@@ -6250,44 +6274,21 @@ function renderSubte(range) {
   }
 
   if (_subteModo === 'total') {
-    if (!_subtePorPres) {
-      const baseColor = '#22d3ee';
-      const valores = plotData.map(d => d.total);
-      datasets = [{
-        label: 'Total pasajeros pagos',
-        data: valores,
-        borderColor: baseColor,
-        backgroundColor: baseColor + '22',
-        pointRadius: _puntoR(valores),
-        pointHoverRadius: 7,
-        pointBackgroundColor: _puntoBg(valores, baseColor),
-        pointBorderColor: _puntoBg(valores, baseColor),
-        borderWidth: 2,
-        fill: true,
-        tension: 0.25
-      }];
-    } else {
-      // Por presidencia: una serie por bloque, total en eje único
-      datasets = PRESIDENTES_SUBTE.map((p, i) => {
-        const fin = (i + 1 < PRESIDENTES_SUBTE.length) ? PRESIDENTES_SUBTE[i + 1].fecha.slice(0, 7) : '9999-12';
-        const ini = p.fecha.slice(0, 7);
-        const vals = plotData.map(d => {
-          const k = esAnual ? `${d.año}-06` : d.ym;
-          return (k >= ini && k < fin) ? d.total : null;
-        });
-        return {
-          label: p.nombre,
-          data: vals,
-          borderColor: p.color,
-          backgroundColor: p.color + '33',
-          spanGaps: false,
-          tension: 0.25,
-          fill: true,
-          pointRadius: 0,
-          borderWidth: 2.2
-        };
-      });
-    }
+    const baseColor = '#22d3ee';
+    const valores = plotData.map(d => d.total);
+    datasets = [{
+      label: 'Total pasajeros pagos',
+      data: valores,
+      borderColor: baseColor,
+      backgroundColor: baseColor + '22',
+      pointRadius: _puntoR(valores),
+      pointHoverRadius: 7,
+      pointBackgroundColor: _puntoBg(valores, baseColor),
+      pointBorderColor: _puntoBg(valores, baseColor),
+      borderWidth: 2,
+      fill: true,
+      tension: 0.25
+    }];
   } else {
     // Modo lineas o stack
     const lineasActivas = _subteLineasActivas();
@@ -6310,6 +6311,36 @@ function renderSubte(range) {
     });
   }
 
+  // ─── Línea de tendencia entre los 2 puntos del comparador ───────
+  // Solo en modo "total" (en lineas/stack no tiene sentido visual y se
+  // apilaría con el resto de los datasets en stack mode).
+  if (_subteModo === 'total' && _subteCompA && _subteCompB) {
+    const findIdx = pt => plotData.findIndex(d => esAnual ? d.año === pt.año : d.ym === pt.ym);
+    const iA = findIdx(_subteCompA);
+    const iB = findIdx(_subteCompB);
+    if (iA >= 0 && iB >= 0 && iA !== iB) {
+      const trendVals = plotData.map(() => null);
+      trendVals[iA] = _subteCompA.valor;
+      trendVals[iB] = _subteCompB.valor;
+      const dif = _subteCompB.valor - _subteCompA.valor;
+      const tendCol = dif > 0 ? '#22c55e' : dif < 0 ? '#ef4444' : '#fbbf24';
+      datasets.push({
+        label: 'Tendencia A→B',
+        data: trendVals,
+        borderColor: tendCol,
+        backgroundColor: 'transparent',
+        borderWidth: 2.5,
+        borderDash: [6, 4],
+        pointRadius: 0,
+        pointHoverRadius: 0,
+        fill: false,
+        spanGaps: true,
+        tension: 0,
+        order: -1
+      });
+    }
+  }
+
   const chartConfig = {
     type: chartType,
     data: { labels, datasets },
@@ -6320,7 +6351,7 @@ function renderSubte(range) {
       interaction: { mode: 'index', intersect: false },
       plugins: {
         legend: {
-          display: (_subteModo !== 'total') || _subtePorPres,
+          display: (_subteModo !== 'total') || (!!_subteCompA && !!_subteCompB),
           position: 'bottom',
           labels: { color: '#a8a8b3', font: { family: "'IBM Plex Mono', monospace", size: 10 }, boxWidth: 10, padding: 8 }
         },
@@ -6392,17 +6423,14 @@ function setupSubteTabs() {
     });
   });
 
-  // Presidentes (botones)
-  const presContainer = $('rt-subte-pres');
-  if (presContainer && presContainer.children.length === 0) {
-    PRESIDENTES_SUBTE.forEach(p => {
-      const b = document.createElement('button');
-      b.className = 'range-tab pres-tab';
-      b.dataset.r = `PRES-${p.key}`;
-      b.textContent = p.nombre;
-      b.title = `Filtrar al período de ${p.nombre}`;
-      b.style.setProperty('--pres-color', p.color);
-      presContainer.appendChild(b);
+  // Filtro por mes específico
+  const mesSel = $('subte-mes-filtro');
+  if (mesSel) {
+    mesSel.addEventListener('change', () => {
+      _subteMesFiltro = parseInt(mesSel.value, 10) || 0;
+      // Si filtra por mes y está en vista anual, lo ignora (se muestra warning visual)
+      _subteResetComparador();
+      renderSubte(activeRange('rt-subte'));
     });
   }
 
@@ -6427,15 +6455,6 @@ function setupSubteTabs() {
   }
   $('subte-desde').addEventListener('change', () => { if (activeRange('rt-subte') === 'CUSTOM') renderSubte('CUSTOM'); });
   $('subte-hasta').addEventListener('change', () => { if (activeRange('rt-subte') === 'CUSTOM') renderSubte('CUSTOM'); });
-
-  const btnPres = $('btn-subte-presidentes');
-  if (btnPres) {
-    btnPres.addEventListener('click', () => {
-      _subtePorPres = !_subtePorPres;
-      btnPres.classList.toggle('active', _subtePorPres);
-      renderSubte(activeRange('rt-subte'));
-    });
-  }
 
   // Comparador reset
   const btnReset = $('subte-comp-reset');
