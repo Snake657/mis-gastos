@@ -183,6 +183,15 @@
   }
 
   /* ── CALENDARIO TRADICIONAL (mini-calendarios mensuales) ── */
+  .cal-header {
+    display: flex; align-items: center; gap: 12px;
+    flex-wrap: wrap; margin-bottom: 14px;
+  }
+  .cal-header .section-title { margin: 0; }
+  .cal-header .range-tabs { margin-left: auto; }
+  @media (max-width: 540px) {
+    .cal-header .range-tabs { margin-left: 0; width: 100%; }
+  }
   .hm-year-title {
     font-family: 'IBM Plex Mono', monospace;
     font-size: 0.95rem;
@@ -199,31 +208,31 @@
   }
   .hm-months-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-    gap: 18px;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 12px;
   }
   .hm-month-card {
     background: var(--surface2);
     border: 1px solid var(--border);
-    border-radius: 10px;
-    padding: 12px 14px;
+    border-radius: 8px;
+    padding: 8px 10px;
     min-width: 0;
   }
   .hm-month-card-title {
     font-family: 'IBM Plex Mono', monospace;
-    font-size: 0.78rem;
+    font-size: 0.7rem;
     font-weight: 700;
     color: var(--text);
     text-transform: uppercase;
     letter-spacing: 0.06em;
-    margin-bottom: 10px;
+    margin-bottom: 6px;
     display: flex;
     justify-content: space-between;
     align-items: baseline;
   }
   .hm-month-card-title .count {
     font-weight: 400;
-    font-size: 0.66rem;
+    font-size: 0.6rem;
     color: var(--text3);
     text-transform: none;
     letter-spacing: 0;
@@ -231,25 +240,25 @@
   .hm-cal-grid {
     display: grid;
     grid-template-columns: repeat(7, 1fr);
-    gap: 3px;
+    gap: 2px;
   }
   .hm-cal-dow {
     font-family: 'IBM Plex Mono', monospace;
-    font-size: 0.58rem;
+    font-size: 0.52rem;
     color: var(--text3);
     text-align: center;
     font-weight: 700;
     letter-spacing: 0.04em;
-    padding-bottom: 4px;
+    padding-bottom: 2px;
   }
   .hm-cal-cell {
     aspect-ratio: 1;
     display: flex;
     align-items: center;
     justify-content: center;
-    border-radius: 5px;
+    border-radius: 4px;
     font-family: 'IBM Plex Mono', monospace;
-    font-size: 0.74rem;
+    font-size: 0.62rem;
     font-weight: 600;
     color: var(--text2);
     background: transparent;
@@ -281,32 +290,32 @@
   }
   .hm-cal-cell .count-dot {
     position: absolute;
-    top: 2px;
-    right: 3px;
+    top: 1px;
+    right: 2px;
     background: rgba(0,0,0,0.55);
     color: #fff;
-    border-radius: 8px;
-    font-size: 0.55rem;
+    border-radius: 7px;
+    font-size: 0.48rem;
     line-height: 1;
-    padding: 1px 4px;
+    padding: 1px 3px;
     font-weight: 700;
-    min-width: 10px;
+    min-width: 8px;
     text-align: center;
   }
   .hm-legend {
     display: flex;
     align-items: center;
-    gap: 12px;
-    margin-top: 16px;
-    padding-top: 14px;
+    gap: 10px;
+    margin-top: 12px;
+    padding-top: 10px;
     border-top: 1px solid var(--border);
     font-family: 'IBM Plex Mono', monospace;
-    font-size: 0.66rem;
+    font-size: 0.6rem;
     color: var(--text3);
     flex-wrap: wrap;
   }
-  .hm-legend-item { display: inline-flex; align-items: center; gap: 6px; color: var(--text2); }
-  .hm-legend-cell { width: 14px; height: 14px; border-radius: 4px; flex-shrink: 0; }
+  .hm-legend-item { display: inline-flex; align-items: center; gap: 5px; color: var(--text2); }
+  .hm-legend-cell { width: 11px; height: 11px; border-radius: 3px; flex-shrink: 0; }
 
   /* ── TIMELINE / CHART ── */
   .chart-wrap {
@@ -315,7 +324,7 @@
     height: 320px;
     margin-top: 8px;
   }
-  .chart-wrap.tall { height: 380px; }
+  .chart-wrap.tall { height: 280px; }
 
   /* ── TOOLBAR (rangos) ── */
   .toolbar {
@@ -655,37 +664,41 @@
         <div class="line-chips" id="line-chips" hidden></div>
       </div>
       <div>
-        <div class="filter-label">Días de la semana</div>
+        <div class="filter-label">Días</div>
         <div class="range-tabs" id="filter-dow">
           <button class="range-tab active" data-dow="all">Todos</button>
-          <button class="range-tab" data-dow="weekday">Días hábiles (Lun–Vie)</button>
-          <button class="range-tab" data-dow="weekend">Fin de semana (Sáb–Dom)</button>
+          <button class="range-tab" data-dow="weekday">L–V</button>
+          <button class="range-tab" data-dow="weekend">S–D</button>
         </div>
       </div>
       <div>
         <div class="filter-label">Horario</div>
         <div class="range-tabs" id="filter-hora">
-          <button class="range-tab active" data-hora="all">Todo el día</button>
-          <button class="range-tab" data-hora="picos">Picos (7–11 + 16–20)</button>
-          <button class="range-tab" data-hora="pico-am">Pico mañana (7–11)</button>
-          <button class="range-tab" data-hora="pico-pm">Pico tarde (16–20)</button>
+          <button class="range-tab active" data-hora="all">Todo</button>
+          <button class="range-tab" data-hora="picos">Picos</button>
+          <button class="range-tab" data-hora="pico-am">Pico AM (7–11)</button>
+          <button class="range-tab" data-hora="pico-pm">Pico PM (16–20)</button>
           <button class="range-tab" data-hora="off">Fuera de pico</button>
         </div>
       </div>
       <div>
         <div class="filter-label">Tipo de incidente</div>
-        <div class="line-chips" id="filter-tipo"></div>
+        <div class="lineas-collapsed">
+          <button type="button" class="lineas-pill" id="tipos-pill" aria-expanded="false">
+            <span id="tipos-pill-label">🏷️ Todos los tipos</span>
+            <span class="lineas-pill-arrow" aria-hidden="true">▾</span>
+          </button>
+          <button type="button" class="lineas-clear" id="tipos-clear" hidden>✕ Volver a todos</button>
+        </div>
+        <div class="line-chips" id="filter-tipo" hidden></div>
       </div>
     </div>
   </div>
 
   <!-- CALENDARIO HEATMAP -->
   <div class="section">
-    <div class="section-header">
-      <div>
-        <div class="section-title">📅 Calendario de incidentes</div>
-        <div class="section-desc">Cada cuadradito es un día. Color según severidad del peor incidente del día. Click en un día para ver el detalle abajo.</div>
-      </div>
+    <div class="cal-header">
+      <div class="section-title">📅 Calendario</div>
       <div class="range-tabs" id="hm-range">
         <button class="range-tab" data-yr="2024">2024</button>
         <button class="range-tab" data-yr="2025">2025</button>
@@ -879,6 +892,7 @@ function renderFilterSummary() {
 function renderTipoChips() {
   const wrap = $('filter-tipo');
   wrap.innerHTML = '';
+  const allTipos = Object.keys(DATA.tipos);
   for (const [tipo, info] of Object.entries(DATA.tipos)) {
     const on = _tiposOn.has(tipo);
     const chip = document.createElement('button');
@@ -890,6 +904,54 @@ function renderTipoChips() {
       renderAll();
     });
     wrap.appendChild(chip);
+  }
+  // Botón "Todos / Ninguno"
+  const all = document.createElement('button');
+  const todosOn = allTipos.every(t => _tiposOn.has(t));
+  all.className = 'lineas-clear';
+  all.style.marginLeft = '6px';
+  all.textContent = todosOn ? '✕ Ninguno' : '✓ Todos';
+  all.addEventListener('click', () => {
+    if (todosOn) _tiposOn = new Set();
+    else _tiposOn = new Set(allTipos);
+    renderAll();
+  });
+  wrap.appendChild(all);
+
+  // Actualizar pill de tipos
+  const label = $('tipos-pill-label');
+  const clearBtn = $('tipos-clear');
+  if (label) {
+    const seleccionados = allTipos.filter(t => _tiposOn.has(t));
+    if (seleccionados.length === allTipos.length) {
+      label.textContent = '🏷️ Todos los tipos';
+      if (clearBtn) clearBtn.hidden = true;
+    } else if (seleccionados.length === 0) {
+      label.textContent = '🏷️ Ningún tipo';
+      if (clearBtn) clearBtn.hidden = false;
+    } else {
+      const nombres = seleccionados.map(t => DATA.tipos[t].label);
+      label.textContent = '🏷️ ' + (nombres.length > 2 ? `${nombres.length} tipos` : nombres.join(' · '));
+      if (clearBtn) clearBtn.hidden = false;
+    }
+  }
+}
+
+function initTiposPill() {
+  const pill = $('tipos-pill');
+  const wrap = $('filter-tipo');
+  const clearBtn = $('tipos-clear');
+  if (!pill || !wrap) return;
+  pill.addEventListener('click', () => {
+    const open = pill.getAttribute('aria-expanded') === 'true';
+    pill.setAttribute('aria-expanded', String(!open));
+    wrap.hidden = open;
+  });
+  if (clearBtn) {
+    clearBtn.addEventListener('click', () => {
+      _tiposOn = new Set(Object.keys(DATA.tipos));
+      renderAll();
+    });
   }
 }
 
@@ -1636,13 +1698,39 @@ function renderLiveBanner(activas, lastPolls) {
   const banner = $('live-banner');
   const list = $('live-list');
   const meta = $('live-meta');
+  const dot = banner ? banner.querySelector('.live-dot') : null;
+  const tag = banner ? banner.querySelector('.live-tag') : null;
   if (!banner || !list) return;
 
+  // Helper para reset del header al estado "alerta" rojo
+  const setHeader = (state) => {
+    if (!dot || !tag) return;
+    if (state === 'ok') {
+      dot.style.background = 'var(--green)';
+      dot.style.animation = 'none';
+      tag.textContent = '✓ Sin alertas activas';
+      tag.style.color = 'var(--green)';
+    } else {
+      dot.style.background = 'var(--red)';
+      dot.style.animation = '';  // restaurar default
+      tag.textContent = 'En vivo · GCBA';
+      tag.style.color = 'var(--red)';
+    }
+  };
+
   if (!activas || activas.length === 0) {
-    banner.classList.remove('show');
+    banner.classList.add('show');
     list.innerHTML = '';
+    setHeader('ok');
+    if (meta && lastPolls) {
+      const partes = [];
+      if (lastPolls.gcba && lastPolls.gcba.last_run_ms) partes.push('GCBA: ' + _hace(lastPolls.gcba.last_run_ms));
+      if (lastPolls.tweets && lastPolls.tweets.last_run_ms) partes.push('Twitter: ' + _hace(lastPolls.tweets.last_run_ms));
+      meta.textContent = partes.join(' · ');
+    }
     return;
   }
+  setHeader('alert');
 
   list.innerHTML = activas.map(a => {
     const linea = a.linea || '?';
@@ -1771,6 +1859,7 @@ async function init() {
       renderAll();
     });
     initLineasPill();
+    initTiposPill();
     renderAll();
   } catch (e) {
     document.querySelector('main').innerHTML = `<div style="padding:40px;text-align:center;color:var(--red);font-family:'IBM Plex Mono',monospace">Error cargando datos: ${e.message}</div>`;
