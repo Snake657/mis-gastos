@@ -148,13 +148,13 @@
     flex-shrink: 0;
   }
 
-  /* ── HEATMAP ── */
+  /* ── CALENDARIO TRADICIONAL (mini-calendarios mensuales) ── */
   .hm-year-title {
     font-family: 'IBM Plex Mono', monospace;
     font-size: 0.95rem;
     color: var(--text);
     font-weight: 700;
-    margin-bottom: 14px;
+    margin-bottom: 16px;
     letter-spacing: 0.05em;
   }
   .hm-year-title .sub {
@@ -163,88 +163,102 @@
     margin-left: 10px;
     font-size: 0.78rem;
   }
-  .hm-scroll { overflow-x: auto; padding-bottom: 8px; }
-  .hm-container {
-    display: inline-grid;
-    grid-template-columns: auto auto;
-    gap: 4px 8px;
-  }
-  .hm-corner { width: 28px; }
-  .hm-months {
+  .hm-months-grid {
     display: grid;
-    grid-auto-flow: column;
-    grid-auto-columns: 16px;
-    gap: 0;
-    height: 18px;
-    align-items: end;
-    position: relative;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 18px;
   }
-  .hm-month {
-    font-family: 'IBM Plex Mono', monospace;
-    font-size: 0.68rem;
-    color: var(--text2);
-    font-weight: 600;
-    letter-spacing: 0.04em;
-    white-space: nowrap;
-    line-height: 1;
-    align-self: end;
-    padding-bottom: 2px;
-  }
-  .hm-month.year-mark {
-    color: var(--accent);
-    border-left: 1px solid var(--border2);
-    padding-left: 6px;
-    margin-left: -6px;
-  }
-  .hm-dow-labels {
-    display: grid;
-    grid-template-rows: repeat(7, 14px);
-    gap: 3px;
-    align-items: center;
-    width: 28px;
-    text-align: right;
-  }
-  .hm-dow-labels span {
-    font-family: 'IBM Plex Mono', monospace;
-    font-size: 0.6rem;
-    color: var(--text3);
-    line-height: 14px;
-    letter-spacing: 0.04em;
-    font-weight: 600;
-  }
-  .hm-dow-labels span.empty { visibility: hidden; }
-  .hm-grid {
-    display: grid;
-    grid-auto-flow: column;
-    grid-auto-columns: 14px;
-    gap: 3px;
-    grid-template-rows: repeat(7, 14px);
-  }
-  .hm-month-sep {
-    grid-row: 1 / 8;
-    border-left: 1px solid var(--border);
-    width: 0;
-    margin-left: -2px;
-  }
-  .hm-cell {
-    width: 14px;
-    height: 14px;
-    border-radius: 3px;
+  .hm-month-card {
     background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 12px 14px;
+    min-width: 0;
+  }
+  .hm-month-card-title {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.78rem;
+    font-weight: 700;
+    color: var(--text);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    margin-bottom: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+  }
+  .hm-month-card-title .count {
+    font-weight: 400;
+    font-size: 0.66rem;
+    color: var(--text3);
+    text-transform: none;
+    letter-spacing: 0;
+  }
+  .hm-cal-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 3px;
+  }
+  .hm-cal-dow {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.58rem;
+    color: var(--text3);
+    text-align: center;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    padding-bottom: 4px;
+  }
+  .hm-cal-cell {
+    aspect-ratio: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 5px;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.74rem;
+    font-weight: 600;
+    color: var(--text2);
+    background: transparent;
     border: 1px solid transparent;
     cursor: pointer;
     transition: transform 0.08s, border-color 0.08s, box-shadow 0.08s;
+    user-select: none;
+    position: relative;
   }
-  .hm-cell:hover { transform: scale(1.45); border-color: var(--text); z-index: 5; position: relative; box-shadow: 0 2px 8px rgba(0,0,0,0.4); }
-  .hm-cell.empty { cursor: default; opacity: 0.25; background: transparent; }
-  .hm-cell.empty:hover { transform: none; border-color: transparent; box-shadow: none; }
-  .hm-cell.l1 { background: rgba(251,191,36,0.55); }
-  .hm-cell.l2 { background: rgba(249,115,22,0.65); }
-  .hm-cell.l3 { background: rgba(239,68,68,0.78); }
-  .hm-cell.l4 { background: rgba(220,38,38,0.92); }
-  .hm-cell.l5 { background: #a855f7; }
-  .hm-cell.selected { border-color: var(--accent); box-shadow: 0 0 0 2px var(--bg), 0 0 0 3px var(--accent); z-index: 6; position: relative; }
-  .hm-cell.today { box-shadow: inset 0 0 0 1px var(--text); }
+  .hm-cal-cell:hover { transform: scale(1.12); border-color: var(--text); z-index: 5; box-shadow: 0 2px 8px rgba(0,0,0,0.4); }
+  .hm-cal-cell.empty { cursor: default; visibility: hidden; }
+  .hm-cal-cell.no-data {
+    color: var(--text3);
+    background: rgba(255,255,255,0.02);
+  }
+  .hm-cal-cell.no-data:hover { transform: none; border-color: transparent; box-shadow: none; }
+  .hm-cal-cell.l1 { background: rgba(251,191,36,0.65); color: #1a1300; }
+  .hm-cal-cell.l2 { background: rgba(249,115,22,0.78); color: #1f0f00; }
+  .hm-cal-cell.l3 { background: rgba(239,68,68,0.85); color: #fff; }
+  .hm-cal-cell.l4 { background: rgba(220,38,38,0.95); color: #fff; }
+  .hm-cal-cell.l5 { background: #a855f7; color: #fff; }
+  .hm-cal-cell.selected {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 2px var(--bg), 0 0 0 3px var(--accent);
+    z-index: 6;
+  }
+  .hm-cal-cell.today {
+    border: 1.5px dashed var(--text);
+  }
+  .hm-cal-cell .count-dot {
+    position: absolute;
+    top: 2px;
+    right: 3px;
+    background: rgba(0,0,0,0.55);
+    color: #fff;
+    border-radius: 8px;
+    font-size: 0.55rem;
+    line-height: 1;
+    padding: 1px 4px;
+    font-weight: 700;
+    min-width: 10px;
+    text-align: center;
+  }
   .hm-legend {
     display: flex;
     align-items: center;
@@ -258,7 +272,7 @@
     flex-wrap: wrap;
   }
   .hm-legend-item { display: inline-flex; align-items: center; gap: 6px; color: var(--text2); }
-  .hm-legend-cell { width: 12px; height: 12px; border-radius: 3px; flex-shrink: 0; }
+  .hm-legend-cell { width: 14px; height: 14px; border-radius: 4px; flex-shrink: 0; }
 
   /* ── TIMELINE / CHART ── */
   .chart-wrap {
@@ -516,7 +530,7 @@
       </div>
     </div>
     <div id="hm-year-title" class="hm-year-title"></div>
-    <div class="hm-scroll" id="hm-wrap">
+    <div id="hm-wrap">
       <div class="loading"><span class="spinner"></span>Generando calendario…</div>
     </div>
     <div class="hm-legend">
@@ -737,13 +751,13 @@ function renderChips() {
   });
 }
 
-// ─── HEATMAP CALENDARIO ───────────────────────────────────────────
+// ─── CALENDARIO TRADICIONAL (mini-calendarios mensuales) ─────────
 function renderHeatmap() {
   const wrap = $('hm-wrap');
   wrap.innerHTML = '';
   const incs = inciActivos();
 
-  // Indexar por día con severidad máxima + count + lista de tipos
+  // Indexar por día: severidad máxima + count + lista de tipos
   const porDia = {};
   for (const i of incs) {
     const sev = (DATA.tipos[i.tipo] || {}).severidad || 1;
@@ -753,144 +767,144 @@ function renderHeatmap() {
     porDia[i.fecha].tipos.add(i.tipo);
   }
 
-  // Determinar rango temporal del calendario que vamos a dibujar
-  let calStart, calEnd;
-  if (_hmYear === 'all') {
-    calStart = parseFecha(DATA.rango_cubierto.desde);
-    calEnd = parseFecha(DATA.rango_cubierto.hasta);
-  } else {
-    calStart = new Date(+_hmYear, 0, 1);
-    calEnd = new Date(+_hmYear, 11, 31);
-  }
+  // Determinar qué meses dibujar
   const dataStart = parseFecha(DATA.rango_cubierto.desde);
   const dataEnd = parseFecha(DATA.rango_cubierto.hasta);
-  const todayStr = (() => { const d = new Date(); return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0'); })();
+  const todayStr = (() => {
+    const d = new Date();
+    return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0');
+  })();
 
-  // Título del año
+  let mesesARenderizar = []; // [{year, month}]
+  if (_hmYear === 'all') {
+    // Todos los meses en el rango (de más reciente a más antiguo)
+    let cur = new Date(dataEnd.getFullYear(), dataEnd.getMonth(), 1);
+    const min = new Date(dataStart.getFullYear(), dataStart.getMonth(), 1);
+    while (cur >= min) {
+      mesesARenderizar.push({ year: cur.getFullYear(), month: cur.getMonth() });
+      cur.setMonth(cur.getMonth() - 1);
+    }
+  } else {
+    // Solo los 12 meses del año seleccionado, de más reciente a más antiguo
+    for (let m = 11; m >= 0; m--) {
+      mesesARenderizar.push({ year: +_hmYear, month: m });
+    }
+  }
+
+  // Filtrar meses que no tengan ningún día en el rango
+  mesesARenderizar = mesesARenderizar.filter(({year, month}) => {
+    const lastDay = new Date(year, month + 1, 0);
+    const firstDay = new Date(year, month, 1);
+    return lastDay >= dataStart && firstDay <= dataEnd;
+  });
+
+  // Título
   const titleEl = $('hm-year-title');
   if (_hmYear === 'all') {
-    titleEl.innerHTML = `Todo el período <span class="sub">${DATA.rango_cubierto.desde} → ${DATA.rango_cubierto.hasta}</span>`;
+    titleEl.innerHTML = `Todo el período <span class="sub">${DATA.rango_cubierto.desde} → ${DATA.rango_cubierto.hasta} · ${incs.length} incidentes</span>`;
   } else {
     const incsAño = incs.filter(i => i.fecha.startsWith(_hmYear));
     const totalMin = incsAño.filter(i => i.duracion_min).reduce((s, i) => s + i.duracion_min, 0);
     titleEl.innerHTML = `Año ${_hmYear} <span class="sub">${incsAño.length} incidentes · ${(totalMin/60).toFixed(0)} hs degradadas</span>`;
   }
 
-  // Ajustar al lunes anterior (las columnas siempre son semanas Lun-Dom)
-  const startOffset = (calStart.getDay() + 6) % 7; // 0=lun, 6=dom
-  const firstDate = new Date(calStart);
-  firstDate.setDate(firstDate.getDate() - startOffset);
-
-  // Construir array de columnas (cada columna es una semana de 7 días)
-  const weeks = []; // Array de { dayObjs: [{dt, ymd, inRange, info}, ...x7], monthStarts: [], yearStarts: [] }
-  let cursor = new Date(firstDate);
-  while (cursor <= calEnd) {
-    const week = { days: [], monthStart: null, yearStart: null };
-    for (let dow = 0; dow < 7; dow++) {
-      const dt = new Date(cursor);
-      const ymd = dt.getFullYear() + '-' + String(dt.getMonth()+1).padStart(2,'0') + '-' + String(dt.getDate()).padStart(2,'0');
-      const inRange = dt >= dataStart && dt <= dataEnd && (_hmYear === 'all' || dt.getFullYear() === +_hmYear);
-      week.days.push({ dt, ymd, inRange, info: porDia[ymd] || null });
-      if (dow === 0 && dt.getDate() <= 7 && dt >= calStart) {
-        // Este es el primer lunes del mes (la celda de "lunes" cae en los primeros 7 días)
-        week.monthStart = dt.getMonth();
-        week.monthYear = dt.getFullYear();
-        if (dt.getMonth() === 0) week.yearStart = dt.getFullYear();
-      }
-      cursor.setDate(cursor.getDate() + 1);
-    }
-    weeks.push(week);
-  }
-
-  // Container
-  const container = document.createElement('div');
-  container.className = 'hm-container';
-
-  // Row 1: corner + month labels
-  const corner = document.createElement('div');
-  corner.className = 'hm-corner';
-  container.appendChild(corner);
-
-  const monthsRow = document.createElement('div');
-  monthsRow.className = 'hm-months';
-  monthsRow.style.gridTemplateColumns = `repeat(${weeks.length}, 17px)`;
-  // Distribuir labels por mes ocupando rangos de columnas
-  const monthLabels = [];
-  let curMonth = -1, curYear = -1, startCol = 0;
-  weeks.forEach((w, idx) => {
-    if (w.monthStart != null && (w.monthStart !== curMonth || w.monthYear !== curYear)) {
-      if (curMonth !== -1) {
-        monthLabels.push({ month: curMonth, year: curYear, fromCol: startCol, toCol: idx });
-      }
-      curMonth = w.monthStart;
-      curYear = w.monthYear;
-      startCol = idx;
-    }
-  });
-  if (curMonth !== -1) monthLabels.push({ month: curMonth, year: curYear, fromCol: startCol, toCol: weeks.length });
-  monthLabels.forEach((ml, i) => {
-    const span = document.createElement('span');
-    span.className = 'hm-month';
-    if (_hmYear === 'all' && ml.month === 0) span.classList.add('year-mark');
-    span.style.gridColumn = `${ml.fromCol + 1} / ${ml.toCol + 1}`;
-    span.textContent = _hmYear === 'all'
-      ? (ml.month === 0 ? `${MESES_ES[ml.month]} ${ml.year}` : MESES_ES[ml.month])
-      : MESES_ES[ml.month];
-    monthsRow.appendChild(span);
-  });
-  container.appendChild(monthsRow);
-
-  // Row 2: dow labels + grid
-  const dowEl = document.createElement('div');
-  dowEl.className = 'hm-dow-labels';
-  // Mostrar Lun, Mié, Vie, Dom (alternados para no recargar)
-  const dowShow = ['Lun', '', 'Mié', '', 'Vie', '', 'Dom'];
-  dowShow.forEach(lbl => {
-    const sp = document.createElement('span');
-    if (!lbl) sp.classList.add('empty');
-    sp.textContent = lbl;
-    dowEl.appendChild(sp);
-  });
-  container.appendChild(dowEl);
-
+  // Container con grilla responsive
   const grid = document.createElement('div');
-  grid.className = 'hm-grid';
-  grid.style.gridTemplateColumns = `repeat(${weeks.length}, 14px)`;
+  grid.className = 'hm-months-grid';
 
-  // Recorremos por día de la semana (rows) y por semana (cols)
-  // Pero como grid-auto-flow es column, vamos por semana → 7 días seguidos
-  weeks.forEach(w => {
-    w.days.forEach(d => {
+  // DOW labels
+  const DOW = ['L', 'M', 'M', 'J', 'V', 'S', 'D'];
+
+  for (const { year, month } of mesesARenderizar) {
+    const card = document.createElement('div');
+    card.className = 'hm-month-card';
+
+    // Resumen del mes
+    const incsMes = incs.filter(i => i.fecha.startsWith(year + '-' + String(month + 1).padStart(2, '0')));
+    const dursMes = incsMes.filter(i => i.duracion_min).map(i => i.duracion_min);
+    const totalMinMes = dursMes.reduce((s, x) => s + x, 0);
+
+    // Header
+    const titleH = document.createElement('div');
+    titleH.className = 'hm-month-card-title';
+    titleH.innerHTML = `<span>${MESES_LARGOS[month]} ${year}</span>` +
+      (incsMes.length
+        ? `<span class="count">${incsMes.length} incidente${incsMes.length === 1 ? '' : 's'}${totalMinMes ? ' · ' + (totalMinMes/60 >= 1 ? (totalMinMes/60).toFixed(1) + ' hs' : Math.round(totalMinMes) + ' min') : ''}</span>`
+        : `<span class="count">sin incidentes</span>`);
+    card.appendChild(titleH);
+
+    // Calendar grid (7 cols)
+    const calGrid = document.createElement('div');
+    calGrid.className = 'hm-cal-grid';
+
+    // DOW labels
+    DOW.forEach(d => {
+      const lbl = document.createElement('div');
+      lbl.className = 'hm-cal-dow';
+      lbl.textContent = d;
+      calGrid.appendChild(lbl);
+    });
+
+    // Días del mes (con padding al inicio para alinear con DOW)
+    const firstDay = new Date(year, month, 1);
+    const lastDay = new Date(year, month + 1, 0);
+    const startOffset = (firstDay.getDay() + 6) % 7; // 0=lun
+
+    // Empty cells antes del día 1
+    for (let i = 0; i < startOffset; i++) {
+      const empty = document.createElement('div');
+      empty.className = 'hm-cal-cell empty';
+      calGrid.appendChild(empty);
+    }
+
+    // Días del mes
+    for (let day = 1; day <= lastDay.getDate(); day++) {
+      const dt = new Date(year, month, day);
+      const ymd = year + '-' + String(month + 1).padStart(2, '0') + '-' + String(day).padStart(2, '0');
+      const inRange = dt >= dataStart && dt <= dataEnd;
       const cell = document.createElement('div');
-      cell.className = 'hm-cell';
-      if (!d.inRange) {
-        cell.classList.add('empty');
+      cell.className = 'hm-cal-cell';
+      cell.textContent = day;
+
+      if (!inRange) {
+        cell.classList.add('no-data');
+        cell.title = fmtFecha(ymd) + ' — fuera del rango de datos';
       } else {
-        cell.dataset.fecha = d.ymd;
-        if (d.info) {
-          cell.classList.add('l' + d.info.sev);
-          const tiposLst = [...d.info.tipos].map(t => (DATA.tipos[t]||{label:t}).label).join(', ');
-          cell.title = `${fmtFecha(d.ymd)}\n${d.info.count} incidente${d.info.count === 1 ? '' : 's'}\n${tiposLst}`;
+        cell.dataset.fecha = ymd;
+        const info = porDia[ymd];
+        if (info) {
+          cell.classList.add('l' + info.sev);
+          const tiposLst = [...info.tipos].map(t => (DATA.tipos[t] || { label: t }).label).join(', ');
+          cell.title = `${fmtFecha(ymd)}\n${info.count} incidente${info.count === 1 ? '' : 's'}\n${tiposLst}`;
+          if (info.count > 1) {
+            const dot = document.createElement('span');
+            dot.className = 'count-dot';
+            dot.textContent = info.count;
+            cell.appendChild(dot);
+          }
         } else {
-          cell.title = fmtFecha(d.ymd) + ' — sin incidentes registrados';
+          cell.classList.add('no-data');
+          cell.title = fmtFecha(ymd) + ' — sin incidentes registrados';
         }
-        if (d.ymd === todayStr) cell.classList.add('today');
-        if (_selectedDay === d.ymd) cell.classList.add('selected');
+        if (ymd === todayStr) cell.classList.add('today');
+        if (_selectedDay === ymd) cell.classList.add('selected');
         cell.addEventListener('click', () => {
-          _selectedDay = d.ymd;
+          _selectedDay = ymd;
           _selectedMonth = null;
-          $('pick-day').value = d.ymd;
+          $('pick-day').value = ymd;
           $('pick-month').value = '';
           renderAll();
           $('detail-panel').scrollIntoView({ behavior: 'smooth', block: 'center' });
         });
       }
-      grid.appendChild(cell);
-    });
-  });
-  container.appendChild(grid);
+      calGrid.appendChild(cell);
+    }
 
-  wrap.appendChild(container);
+    card.appendChild(calGrid);
+    grid.appendChild(card);
+  }
+
+  wrap.appendChild(grid);
 }
 
 // ─── TIMELINE CHART ────────────────────────────────────────────────
