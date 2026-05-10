@@ -5969,6 +5969,51 @@ function _subteLineasActivas() {
   return subteRaw.lineas.filter(l => _subteLineasOn.has(l));
 }
 
+// Devuelve el valor "visible" de un punto según el modo + filtro de líneas:
+// total → d.total | lineas/stack → suma de las líneas activas
+function _subteValorPunto(d) {
+  if (!d) return 0;
+  if (_subteModo === 'total') return d.total || 0;
+  const activas = _subteLineasActivas();
+  if (!activas.length) return 0;
+  return activas.reduce((s, l) => s + (d[l] || 0), 0);
+}
+
+// Etiqueta corta de la serie activa para el panel del comparador
+function _subteEtiquetaSerie() {
+  if (_subteModo === 'total') return 'Total';
+  const activas = _subteLineasActivas();
+  if (!activas.length) return '(sin líneas)';
+  if (activas.length === subteRaw.lineas.length) return 'Suma todas';
+  if (activas.length === 1) return 'Línea ' + activas[0];
+  return 'Líneas ' + activas.join('+');
+}
+
+// Recalcula los valores del comparador A/B según el modo + filtro
+// de líneas vigentes. Mantiene el ym/año fijo. Útil cuando el usuario
+// cambia el filtro de líneas o el modo después de marcar los puntos.
+function _subteRecalcComparador() {
+  if (!subteRaw) return;
+  function _recalc(pt) {
+    if (!pt) return pt;
+    if (pt.ym) {
+      const d = subteRaw.data.find(x => x.ym === pt.ym);
+      if (!d) return pt;
+      return { ...pt, valor: _subteValorPunto(d) };
+    }
+    if (pt.año) {
+      // Vista anual: sumar todos los meses del año
+      const filas = subteRaw.data.filter(x => x.ym.startsWith(pt.año + '-'));
+      if (!filas.length) return pt;
+      const valor = filas.reduce((s, d) => s + _subteValorPunto(d), 0);
+      return { ...pt, valor };
+    }
+    return pt;
+  }
+  if (_subteCompA) _subteCompA = _recalc(_subteCompA);
+  if (_subteCompB) _subteCompB = _recalc(_subteCompB);
+}
+
 function _subteAgrupaAnual(monthlyArr) {
   // Agrupa por año, sumando total y por línea. Marca parcial si tiene <12 meses.
   const porAño = new Map();
@@ -6078,9 +6123,10 @@ function _subteRenderComparador() {
     btn.style.display = 'none';
     return;
   }
+  const serieLbl = _subteEtiquetaSerie();
   btn.style.display = 'inline-block';
   if (_subteCompA && !_subteCompB) {
-    msg.innerHTML = `📍 Punto A fijado: <strong>${_subteCompA.label}</strong> · ${_subteFmtCompacto(_subteCompA.valor)}. Hacé clic en otro punto para comparar.`;
+    msg.innerHTML = `📍 Punto A: <strong>${_subteCompA.label}</strong> · ${_subteFmtCompacto(_subteCompA.valor)} <span style="color:var(--text3)">(${serieLbl})</span>. Hacé clic en otro punto para comparar.`;
     res.style.display = 'none';
     return;
   }
@@ -6088,7 +6134,8 @@ function _subteRenderComparador() {
   let a = _subteCompA, b = _subteCompB;
   // Garantizar A < B en tiempo
   if (a.ym && b.ym && a.ym > b.ym) [a, b] = [b, a];
-  msg.innerHTML = `🆚 <strong>${a.label}</strong> → <strong>${b.label}</strong>`;
+  if (a.año && b.año && a.año > b.año) [a, b] = [b, a];
+  msg.innerHTML = `🆚 <strong>${a.label}</strong> → <strong>${b.label}</strong> <span style="color:var(--text3)">(${serieLbl})</span>`;
   const dif = b.valor - a.valor;
   const pct = a.valor !== 0 ? (dif / a.valor) * 100 : null;
   // Meses transcurridos (solo en mensual)
@@ -6188,6 +6235,10 @@ function _subteRenderLineChips() {
 
 function renderSubte(range) {
   if (!subteRaw) return;
+  // Recalcular valores del comparador (modo/filtros pueden haber cambiado)
+  // antes de generar datasets y renderizar el panel.
+  _subteRecalcComparador();
+  _subteRenderComparador();
   const data = subteRaw.data;
   const slice = _subteSlice(range);
   if (!slice.length) return;
@@ -6312,9 +6363,10 @@ function renderSubte(range) {
   }
 
   // ─── Línea de tendencia entre los 2 puntos del comparador ───────
-  // Solo en modo "total" (en lineas/stack no tiene sentido visual y se
-  // apilaría con el resto de los datasets en stack mode).
-  if (_subteModo === 'total' && _subteCompA && _subteCompB) {
+  // Funciona en cualquier modo. En "stack" usamos un yAxisID separado
+  // (oculto) para que la línea no se apile con los datasets stacked.
+  let tendActiva = false;
+  if (_subteCompA && _subteCompB) {
     const findIdx = pt => plotData.findIndex(d => esAnual ? d.año === pt.año : d.ym === pt.ym);
     const iA = findIdx(_subteCompA);
     const iB = findIdx(_subteCompB);
@@ -6336,9 +6388,22 @@ function renderSubte(range) {
         fill: false,
         spanGaps: true,
         tension: 0,
-        order: -1
+        order: -1,
+        yAxisID: stacked ? 'y2' : 'y'
       });
+      tendActiva = true;
     }
+  }
+  // En stack, calculamos el max del eje stacked para espejarlo en y2
+  let _stackMaxY = 0;
+  if (stacked && tendActiva) {
+    const lineasActivas = _subteLineasActivas();
+    for (const d of plotData) {
+      const sum = lineasActivas.reduce((s, l) => s + (d[l] || 0), 0);
+      if (sum > _stackMaxY) _stackMaxY = sum;
+    }
+    // Asegurar que los puntos A/B también caben (por si están fuera del rango filtrado)
+    _stackMaxY = Math.max(_stackMaxY, _subteCompA.valor, _subteCompB.valor);
   }
 
   const chartConfig = {
@@ -6376,11 +6441,11 @@ function renderSubte(range) {
         const idx = p.index;
         const d = plotData[idx];
         if (!d) return;
-        // En modo "lineas"/"stack", usamos el TOTAL como valor del punto
-        const valor = (_subteModo === 'total') ? d.total : (esAnual ? d.total : d.total);
+        // El valor del punto respeta el modo + las líneas filtradas
+        const valor = _subteValorPunto(d);
         const label = esAnual ? `${d.año}` : _subteFmtFecha(d.ym);
         _subteSetComparadorPoint(idx, esAnual ? null : d.ym, valor, label, esAnual ? d.año : null);
-        // Re-render para resaltar puntos
+        // Re-render para resaltar puntos y dibujar tendencia
         renderSubte(range);
       },
       scales: {
@@ -6393,7 +6458,10 @@ function renderSubte(range) {
           stacked,
           ticks: { color: '#9090a0', font: { family: "'IBM Plex Mono', monospace", size: 10 }, callback: v => _subteFmtCompacto(v) },
           grid: { color: 'rgba(80,80,100,0.12)' }
-        }
+        },
+        ...(stacked && tendActiva ? {
+          y2: { display: false, stacked: false, position: 'right', beginAtZero: true, min: 0, max: _stackMaxY * 1.05, grid: { drawOnChartArea: false } }
+        } : {})
       }
     }
   };
@@ -6402,17 +6470,18 @@ function renderSubte(range) {
 
 function setupSubteTabs() {
   // Modo (total / lineas / stack)
+  // No reseteamos el comparador: los valores se recalculan según el modo/filtros.
   document.querySelectorAll('#rt-subte-modo .range-tab[data-modo]').forEach(btn => {
     btn.addEventListener('click', () => {
       document.querySelectorAll('#rt-subte-modo .range-tab[data-modo]').forEach(b => b.classList.remove('active'));
       btn.classList.add('active');
       _subteModo = btn.dataset.modo;
-      _subteResetComparador();
       _subteRenderLineChips();
       renderSubte(activeRange('rt-subte'));
     });
   });
-  // Vista (mensual / anual)
+  // Vista (mensual / anual): cambia la "granularidad" → reseteamos el comparador
+  // porque un punto mensual no tiene equivalente directo en la vista anual.
   document.querySelectorAll('#rt-subte-modo .range-tab[data-vista]').forEach(btn => {
     btn.addEventListener('click', () => {
       document.querySelectorAll('#rt-subte-modo .range-tab[data-vista]').forEach(b => b.classList.remove('active'));
@@ -6423,13 +6492,11 @@ function setupSubteTabs() {
     });
   });
 
-  // Filtro por mes específico
+  // Filtro por mes específico (no resetea el comparador)
   const mesSel = $('subte-mes-filtro');
   if (mesSel) {
     mesSel.addEventListener('change', () => {
       _subteMesFiltro = parseInt(mesSel.value, 10) || 0;
-      // Si filtra por mes y está en vista anual, lo ignora (se muestra warning visual)
-      _subteResetComparador();
       renderSubte(activeRange('rt-subte'));
     });
   }
