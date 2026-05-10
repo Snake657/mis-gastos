@@ -1,0 +1,1822 @@
+[
+  {
+    "id": "1995912600878456855",
+    "datetime": "2025-12-02T17:47:00.000Z",
+    "text": "#LíneaB - Reabrió Carlos Gardel. Uruguay continúa cerrada por obras. 14:47",
+    "user": "emova_arg",
+    "line": "B",
+    "kind": "fin",
+    "stations": "Carlos Gardel",
+    "hashtags": [
+      "#líneab"
+    ],
+    "hora_emova": "14:47"
+  },
+  {
+    "id": "1996894537986236424",
+    "datetime": "2025-12-05T10:48:53.000Z",
+    "text": "#LíneaB - Circula con demora. 07:48",
+    "user": "emova_arg",
+    "line": "B",
+    "kind": "inicio_demora",
+    "stations": null,
+    "hashtags": [
+      "#líneab"
+    ],
+    "hora_emova": "07:48"
+  },
+  {
+    "id": "1996903096941752602",
+    "datetime": "2025-12-05T11:22:53.000Z",
+    "text": "#LíneaB - Ya funciona con su frecuencia habitual. 08:22",
+    "user": "emova_arg",
+    "line": "B",
+    "kind": "fin",
+    "stations": null,
+    "hashtags": [
+      "#líneab"
+    ],
+    "hora_emova": "08:22"
+  },
+  {
+    "id": "1996904355446854055",
+    "datetime": "2025-12-05T11:27:53.000Z",
+    "text": "#LíneaB - Reabrió Carlos Gardel. Uruguay continúa cerrada por obras. 08:27",
+    "user": "emova_arg",
+    "line": "B",
+    "kind": "fin",
+    "stations": "Carlos Gardel",
+    "hashtags": [
+      "#líneab"
+    ],
+    "hora_emova": "08:27"
+  },
+  {
+    "id": "1997018135925534756",
+    "datetime": "2025-12-05T19:00:01.000Z",
+    "text": "¡Atención usuarios! Desde el martes 9 de diciembre la estación Malabia - Osvaldo Pugliese de la #LíneaB estará cerrada por obras de renovación.",
+    "user": "emova_arg",
+    "line": "B",
+    "kind": "cierre_programado",
+    "stations": null,
+    "hashtags": [
+      "#líneab"
+    ],
+    "hora_emova": null
+  },
+  {
+    "id": "1997088373425521130",
+    "datetime": "2025-12-05T23:39:06.000Z",
+    "text": "#LíneaB - Uruguay cerrada por obras. Viernes y sabado con horario extendido. 20:39",
+    "user": "emova_arg",
+    "line": "B",
+    "kind": "info_horario",
+    "stations": null,
+    "hashtags": [
+      "#líneab"
+    ],
+    "hora_emova": "20:39"
+  },
+  {
+    "id": "1997199445205700804",
+    "datetime": "2025-12-06T07:00:28.000Z",
+    "text": "#LíneaB - A partir del 09/12 estación Malabia cerrada por obras de renovación integral. 04:00",
+    "user": "emova_arg",
+    "line": "B",
+    "kind": "cierre_programado",
+    "stations": "Malabia",
+    "hashtags": [
+      "#líneab"
+    ],
+    "hora_emova": "04:00"
+  },
+  {
+    "id": "1997441362384277619",
+    "datetime": "2025-12-06T23:01:46.000Z",
+    "text": "#LíneaB - Viernes y Sábado con horario extendido. Uruguay cerrada por obras. 20:01",
+    "user": "emova_arg",
+    "line": "B",
+    "kind": "info_horario",
+    "stations": null,
+    "hashtags": [
+      "#líneab"
+    ],
+    "hora_emova": "20:01"
+  },
+  {
+    "id": "1997561748841173100",
+    "datetime": "2025-12-07T07:00:08.000Z",
+    "text": "#LíneaB - A partir del 09/12 estación Malabia cerrada por obras de renovación integral. 04:00",
+    "user": "emova_arg",
+    "line": "B",
+    "kind": "cierre_programado",
+    "stations": "Malabia",
+    "hashtags": [
+      "#líneab"
+    ],
+    "hora_emova": "04:00"
+  },
+  {
+    "id": "1998309513439445353",
+    "datetime": "2025-12-09T08:31:29.000Z",
+    "text": "#LíneaB - Malabia y Uruguay cerradas por obras de renovación integral. 05:31",
+    "user": "emova_arg",
+    "line": "B",
+    "kind": "cierre_programado",
+    "stations": null,
+    "hashtags": [
+      "#líneab"
+    ],
+    "hora_emova": "05:31"
+  },
+  {
+    "id": "1998346903637897595",
+    "datetime": "2025-12-09T11:00:03.000Z",
+    "text": "¡Atención usuarios! La estación Malabia - Osvaldo Pugliese de la #LíneaB se encuentra cerrada por obras de renovación.",
+    "user": "emova_arg",
+    "line": "B",
+    "kind": "cierre_programado",
+    "stations": null,
+    "hashtags": [
+      "#líneab"
+    ],
+    "hora_emova": null
+  },
+  {
+    "id": "1998507371836960943",
+    "datetime": "2025-12-09T21:37:42.000Z",
+    "text": "#LíneaB - Circula con demora. 18:37",
+    "user": "emova_arg",
+    "line": "B",
+    "kind": "inicio_demora",
+    "stations": null,
+    "hashtags": [
+      "#líneab"
+    ],
+    "hora_emova": "18:37"
+  },
+  {
+    "id": "1998516182878486605",
+    "datetime": "2025-12-09T22:12:43.000Z",
+    "text": "#LíneaB - Ya funciona con su frecuencia habitual. 19:12",
+    "user": "emova_arg",
+    "line": "B",
+    "kind": "fin",
+    "stations": null,
+    "hashtags": [
+      "#líneab"
+    ],
+    "hora_emova": "19:12"
+  },
+  {
+    "id": "1998520714152784171",
+    "datetime": "2025-12-09T22:30:43.000Z",
+    "text": "#LíneaB - Malabia y Uruguay cerradas por obras de renovación integral. 19:30",
+    "user": "emova_arg",
+    "line": "B",
+    "kind": "cierre_programado",
+    "stations": null,
+    "hashtags": [
+      "#líneab"
+    ],
+    "hora_emova": "19:30"
+  },
+  {
+    "id": "1998563004913242384",
+    "datetime": "2025-12-10T01:18:46.000Z",
+    "text": "#LíneaB - Circula con demora. 22:18",
+    "user": "emova_arg",
+    "line": "B",
+    "kind": "inicio_demora",
+    "stations": null,
+    "hashtags": [
+      "#líneab"
+    ],
+    "hora_emova": "22:18"
+  },
+  {
+    "id": "1998565521386582121",
+    "datetime": "2025-12-10T01:28:46.000Z",
+    "text": "#LíneaB - Ya funciona con su frecuencia habitual. 22:28",
+    "user": "emova_arg",
+    "line": "B",
+    "kind": "fin",
+    "stations": null,
+    "hashtags": [
+      "#líneab"
+    ],
+    "hora_emova": "22:28"
+  },
+  {
+    "id": "1998566780281712705",
+    "datetime": "2025-12-10T01:33:46.000Z",
+    "text": "#LíneaB - Malabia y Uruguay cerradas por obras de renovación integral. 22:33",
+    "user": "emova_arg",
+    "line": "B",
+    "kind": "cierre_programado",
+    "stations": null,
+    "hashtags": [
+      "#líneab"
+    ],
+    "hora_emova": "22:33"
+  },
+  {
+    "id": "1999266462167421064",
+    "datetime": "2025-12-11T23:54:03.000Z",
+    "text": "#LíneaB - Circula con demora. 20:54",
+    "user": "emova_arg",
+    "line": "B",
+    "kind": "inicio_demora",
+    "stations": null,
+    "hashtags": [
+      "#líneab"
+    ],
+    "hora_emova": "20:54"
+  },
+  {
+    "id": "1999271999571411134",
+    "datetime": "2025-12-12T00:16:04.000Z",
+    "text": "#LíneaB - Circula con servicio limitado entre las estaciones Leandro N. Alem y Angel Gallardo. 21:16",
+    "user": "emova_arg",
+    "line": "B",
+    "kind": "inicio_limitado",
+    "stations": "Leandro N",
+    "hashtags": [
+      "#líneab"
+    ],
+    "hora_emova": "21:16"
+  },
+  {
+    "id": "1999275020535693669",
+    "datetime": "2025-12-12T00:28:04.000Z",
+    "text": "#LíneaB - Presta su servicio completo entre cabeceras normalizando su frecuencia habitual. 21:28",
+    "user": "emova_arg",
+    "line": "B",
+    "kind": "fin",
+    "stations": null,
+    "hashtags": [
+      "#líneab"
+    ],
+    "hora_emova": "21:28"
+  },
+  {
+    "id": "1999280810612900298",
+    "datetime": "2025-12-12T00:51:04.000Z",
+    "text": "#LíneaB - Malabia y Uruguay cerradas por obras de renovación integral. 21:51",
+    "user": "emova_arg",
+    "line": "B",
+    "kind": "cierre_programado",
+    "stations": null,
+    "hashtags": [
+      "#líneab"
+    ],
+    "hora_emova": "21:51"
+  },
+  {
+    "id": "1999396916874866763",
+    "datetime": "2025-12-12T08:32:26.000Z",
+    "text": "#LíneaB - Viernes y Sábado con horario extendido. Malabia y Uruguay cerradas por obras. 05:32",
+    "user": "emova_arg",
+    "line": "B",
+    "kind": "info_horario",
+    "stations": null,
+    "hashtags": [
+      "#líneab"
+    ],
+    "hora_emova": "05:32"
+  },
+  {
+    "id": "2000098608515867105",
+    "datetime": "2025-12-14T07:00:42.000Z",
+    "text": "#LíneaB - Malabia y Uruguay cerradas por obras de renovación integral. 04:00",
+    "user": "emova_arg",
+    "line": "B",
+    "kind": "cierre_programado",
+    "stations": null,
+    "hashtags": [
+      "#líneab"
+    ],
+    "hora_emova": "04:00"
+  },
+  {
+    "id": "2001570699836629470",
+    "datetime": "2025-12-18T08:30:16.000Z",
+    "text": "#LíneaB - Malabia y Uruguay cerradas por obras de renovación integral. 05:30",
+    "user": "emova_arg",
+    "line": "B",
+    "kind": "cierre_programado",
+    "stations": null,
+    "hashtags": [
+      "#líneab"
+    ],
+    "hora_emova": "05:30"
+  },
+  {
+    "id": "2001747913437745496",
+    "datetime": "2025-12-18T20:14:27.000Z",
+    "text": "#LíneaB - Malabia y Uruguay cerradas por obras de renovación integral. 17:14",
+    "user": "emova_arg",
+    "line": "B",
+    "kind": "cierre_programado",
+    "stations": null,
+    "hashtags": [
+      "#líneab"
+    ],
+    "hora_emova": "17:14"
+  },
+  {
+    "id": "2002635169442771301",
+    "datetime": "2025-12-21T07:00:06.000Z",
+    "text": "#LíneaB - Malabia y Uruguay cerradas por obras de renovación integral. 04:00",
+    "user": "emova_arg",
+    "line": "B",
+    "kind": "cierre_programado",
+    "stations": null,
+    "hashtags": [
+      "#líneab"
+    ],
+    "hora_emova": "04:00"
+  },
+  {
+    "id": "2003915365282169185",
+    "datetime": "2025-12-24T19:47:08.000Z",
+    "text": "#LíneaB - Malabia y Uruguay cerradas por obras de renovación integral. 16:47",
+    "user": "emova_arg",
+    "line": "B",
+    "kind": "cierre_programado",
+    "stations": null,
+    "hashtags": [
+      "#líneab"
+    ],
+    "hora_emova": "16:47"
+  },
+  {
+    "id": "2004481610087801085",
+    "datetime": "2025-12-26T09:17:11.000Z",
+    "text": "#LíneaB - Malabia y Uruguay cerradas por obras de renovación integral. 06:17",
+    "user": "emova_arg",
+    "line": "B",
+    "kind": "cierre_programado",
+    "stations": null,
+    "hashtags": [
+      "#líneab"
+    ],
+    "hora_emova": "06:17"
+  },
+  {
+    "id": "2004677199215931497",
+    "datetime": "2025-12-26T22:14:24.000Z",
+    "text": "#LíneaB - Viernes y Sábado con horario extendido. Malabia y Uruguay cerradas por obras. 19:14",
+    "user": "emova_arg",
+    "line": "B",
+    "kind": "info_horario",
+    "stations": null,
+    "hashtags": [
+      "#líneab"
+    ],
+    "hora_emova": "19:14"
+  },
+  {
+    "id": "2005171955561828805",
+    "datetime": "2025-12-28T07:00:23.000Z",
+    "text": "#LíneaB - Malabia y Uruguay cerradas por obras de renovación integral. 04:00",
+    "user": "emova_arg",
+    "line": "B",
+    "kind": "cierre_programado",
+    "stations": null,
+    "hashtags": [
+      "#líneab"
+    ],
+    "hora_emova": "04:00"
+  },
+  {
+    "id": "2006411871067226555",
+    "datetime": "2025-12-31T17:07:22.000Z",
+    "text": "#LíneaB - Malabia y Uruguay cerradas por obras de renovación integral. 14:07",
+    "user": "emova_arg",
+    "line": "B",
+    "kind": "cierre_programado",
+    "stations": null,
+    "hashtags": [
+      "#líneab"
+    ],
+    "hora_emova": "14:07"
+  },
+  {
+    "id": "2007007318588739962",
+    "datetime": "2026-01-02T08:33:27.000Z",
+    "text": "#LíneaB - Hoy funcionará con horario extendido. Malabia y Uruguay cerradas por obras. 05:33",
+    "user": "emova_arg",
+    "line": "B",
+    "kind": "info_horario",
+    "stations": null,
+    "hashtags": [
+      "#líneab"
+    ],
+    "hora_emova": "05:33"
+  },
+  {
+    "id": "2007346286366728569",
+    "datetime": "2026-01-03T07:00:24.000Z",
+    "text": "#LíneaB - Hoy funcionará con horario extendido. Malabia y Uruguay cerradas por obras. 04:00",
+    "user": "emova_arg",
+    "line": "B",
+    "kind": "info_horario",
+    "stations": null,
+    "hashtags": [
+      "#líneab"
+    ],
+    "hora_emova": "04:00"
+  },
+  {
+    "id": "2007708821003624603",
+    "datetime": "2026-01-04T07:00:59.000Z",
+    "text": "#LíneaB - Malabia y Uruguay cerradas por obras de renovación integral. 04:00",
+    "user": "emova_arg",
+    "line": "B",
+    "kind": "cierre_programado",
+    "stations": null,
+    "hashtags": [
+      "#líneab"
+    ],
+    "hora_emova": "04:00"
+  },
+  {
+    "id": "2008534836676317626",
+    "datetime": "2026-01-06T13:43:16.000Z",
+    "text": "#LíneaB - Circula con demora. 10:43",
+    "user": "emova_arg",
+    "line": "B",
+    "kind": "inicio_demora",
+    "stations": null,
+    "hashtags": [
+      "#líneab"
+    ],
+    "hora_emova": "10:43"
+  },
+  {
+    "id": "2008542388076056734",
+    "datetime": "2026-01-06T14:13:16.000Z",
+    "text": "#LíneaB - Ya funciona con su frecuencia habitual. 11:13",
+    "user": "emova_arg",
+    "line": "B",
+    "kind": "fin",
+    "stations": null,
+    "hashtags": [
+      "#líneab"
+    ],
+    "hora_emova": "11:13"
+  },
+  {
+    "id": "2008543394939736268",
+    "datetime": "2026-01-06T14:17:16.000Z",
+    "text": "#LíneaB - Malabia y Uruguay cerradas por obras de renovación integral. 11:17",
+    "user": "emova_arg",
+    "line": "B",
+    "kind": "cierre_programado",
+    "stations": null,
+    "hashtags": [
+      "#líneab"
+    ],
+    "hora_emova": "11:17"
+  },
+  {
+    "id": "2009543657423020138",
+    "datetime": "2026-01-09T08:31:58.000Z",
+    "text": "#LíneaB - Viernes y Sábado con horario extendido. Malabia y Uruguay cerradas por obras. 05:31",
+    "user": "emova_arg",
+    "line": "B",
+    "kind": "info_horario",
+    "stations": null,
+    "hashtags": [
+      "#líneab"
+    ],
+    "hora_emova": "05:31"
+  },
+  {
+    "id": "2010245326129549684",
+    "datetime": "2026-01-11T07:00:08.000Z",
+    "text": "#LíneaB - Malabia y Uruguay cerradas por obras de renovación integral. 04:00",
+    "user": "emova_arg",
+    "line": "B",
+    "kind": "cierre_programado",
+    "stations": null,
+    "hashtags": [
+      "#líneab"
+    ],
+    "hora_emova": "04:00"
+  },
+  {
+    "id": "2012080920237379672",
+    "datetime": "2026-01-16T08:34:08.000Z",
+    "text": "#LíneaB - Hoy funcionará con horario extendido. Malabia y Uruguay cerradas por obras. 05:34",
+    "user": "emova_arg",
+    "line": "B",
+    "kind": "info_horario",
+    "stations": null,
+    "hashtags": [
+      "#líneab"
+    ],
+    "hora_emova": "05:34"
+  },
+  {
+    "id": "2012081674410930314",
+    "datetime": "2026-01-16T08:37:08.000Z",
+    "text": "#LíneaB - Viernes y Sábado con horario extendido. Malabia y Uruguay cerradas por obras. 05:37",
+    "user": "emova_arg",
+    "line": "B",
+    "kind": "info_horario",
+    "stations": null,
+    "hashtags": [
+      "#líneab"
+    ],
+    "hora_emova": "05:37"
+  },
+  {
+    "id": "2012782079017202055",
+    "datetime": "2026-01-18T07:00:17.000Z",
+    "text": "#LíneaB - Malabia y Uruguay cerradas por obras de renovación integral. 04:00",
+    "user": "emova_arg",
+    "line": "B",
+    "kind": "cierre_programado",
+    "stations": null,
+    "hashtags": [
+      "#líneab"
+    ],
+    "hora_emova": "04:00"
+  },
+  {
+    "id": "2014616918502588686",
+    "datetime": "2026-01-23T08:31:17.000Z",
+    "text": "#LíneaB - Viernes y Sábado con horario extendido. Malabia y Uruguay cerradas por obras. 05:31",
+    "user": "emova_arg",
+    "line": "B",
+    "kind": "info_horario",
+    "stations": null,
+    "hashtags": [
+      "#líneab"
+    ],
+    "hora_emova": "05:31"
+  },
+  {
+    "id": "2015318835516125440",
+    "datetime": "2026-01-25T07:00:27.000Z",
+    "text": "#LíneaB - Malabia y Uruguay cerradas por obras de renovación integral. 04:00",
+    "user": "emova_arg",
+    "line": "B",
+    "kind": "cierre_programado",
+    "stations": null,
+    "hashtags": [
+      "#líneab"
+    ],
+    "hora_emova": "04:00"
+  },
+  {
+    "id": "2017159213093355679",
+    "datetime": "2026-01-30T08:53:28.000Z",
+    "text": "#LíneaB - Viernes y Sábado con horario extendido. Malabia y Uruguay cerradas por obras. 05:53",
+    "user": "emova_arg",
+    "line": "B",
+    "kind": "info_horario",
+    "stations": null,
+    "hashtags": [
+      "#líneab"
+    ],
+    "hora_emova": "05:53"
+  },
+  {
+    "id": "2017855596616176126",
+    "datetime": "2026-02-01T07:00:38.000Z",
+    "text": "#LíneaB - Malabia y Uruguay cerradas por obras de renovación integral. 04:00",
+    "user": "emova_arg",
+    "line": "B",
+    "kind": "cierre_programado",
+    "stations": null,
+    "hashtags": [
+      "#líneab"
+    ],
+    "hora_emova": "04:00"
+  },
+  {
+    "id": "2018217881113137376",
+    "datetime": "2026-02-02T07:00:14.000Z",
+    "text": "#LíneaB - Malabia y Uruguay cerradas por obras de renovación integral. 04:00",
+    "user": "emova_arg",
+    "line": "B",
+    "kind": "cierre_programado",
+    "stations": null,
+    "hashtags": [
+      "#líneab"
+    ],
+    "hora_emova": "04:00"
+  },
+  {
+    "id": "2019305125911654584",
+    "datetime": "2026-02-05T07:00:33.000Z",
+    "text": "#LíneaB - Malabia y Uruguay cerradas por obras de renovación integral. 04:00",
+    "user": "emova_arg",
+    "line": "B",
+    "kind": "cierre_programado",
+    "stations": null,
+    "hashtags": [
+      "#líneab"
+    ],
+    "hora_emova": "04:00"
+  },
+  {
+    "id": "2019691322626510931",
+    "datetime": "2026-02-06T08:35:10.000Z",
+    "text": "#LíneaB - Viernes y Sábado con horario extendido. Malabia y Uruguay cerradas por obras. 05:35",
+    "user": "emova_arg",
+    "line": "B",
+    "kind": "info_horario",
+    "stations": null,
+    "hashtags": [
+      "#líneab"
+    ],
+    "hora_emova": "05:35"
+  },
+  {
+    "id": "2020029945930506647",
+    "datetime": "2026-02-07T07:00:44.000Z",
+    "text": "#LíneaB - Malabia y Uruguay cerradas por obras de renovación integral. 04:00",
+    "user": "emova_arg",
+    "line": "B",
+    "kind": "cierre_programado",
+    "stations": null,
+    "hashtags": [
+      "#líneab"
+    ],
+    "hora_emova": "04:00"
+  },
+  {
+    "id": "2020060404001517697",
+    "datetime": "2026-02-07T09:01:45.000Z",
+    "text": "#LíneaB - Viernes y Sábado con horario extendido. Malabia y Uruguay cerradas por obras. 06:01",
+    "user": "emova_arg",
+    "line": "B",
+    "kind": "info_horario",
+    "stations": null,
+    "hashtags": [
+      "#líneab"
+    ],
+    "hora_emova": "06:01"
+  },
+  {
+    "id": "2021780642267111504",
+    "datetime": "2026-02-12T02:57:22.000Z",
+    "text": "#LíneaB - Malabia y Uruguay cerradas por obras de renovación integral. 23:57",
+    "user": "emova_arg",
+    "line": "B",
+    "kind": "cierre_programado",
+    "stations": null,
+    "hashtags": [
+      "#líneab"
+    ],
+    "hora_emova": "23:57"
+  },
+  {
+    "id": "2022227062962933764",
+    "datetime": "2026-02-13T08:31:17.000Z",
+    "text": "#LíneaB - Viernes y Sábado con horario extendido. Malabia y Uruguay cerradas por obras. 05:31",
+    "user": "emova_arg",
+    "line": "B",
+    "kind": "info_horario",
+    "stations": null,
+    "hashtags": [
+      "#líneab"
+    ],
+    "hora_emova": "05:31"
+  },
+  {
+    "id": "2022594377869144451",
+    "datetime": "2026-02-14T08:50:52.000Z",
+    "text": "#LíneaB - Viernes y sábado con horario extendido. Malabia y Uruguay cerradas por obras. 05:50",
+    "user": "emova_arg",
+    "line": "B",
+    "kind": "info_horario",
+    "stations": null,
+    "hashtags": [
+      "#líneab"
+    ],
+    "hora_emova": "05:50"
+  },
+  {
+    "id": "2022928972623876242",
+    "datetime": "2026-02-15T07:00:25.000Z",
+    "text": "#LíneaB - Malabia y Uruguay cerradas por obras de renovación integral. 04:00",
+    "user": "emova_arg",
+    "line": "B",
+    "kind": "cierre_programado",
+    "stations": null,
+    "hashtags": [
+      "#líneab"
+    ],
+    "hora_emova": "04:00"
+  },
+  {
+    "id": "2023291257087287397",
+    "datetime": "2026-02-16T07:00:01.000Z",
+    "text": "#LíneaB - Malabia y Uruguay cerradas por obras de renovación integral. 04:00",
+    "user": "emova_arg",
+    "line": "B",
+    "kind": "cierre_programado",
+    "stations": null,
+    "hashtags": [
+      "#líneab"
+    ],
+    "hora_emova": "04:00"
+  },
+  {
+    "id": "2024740903630291283",
+    "datetime": "2026-02-20T07:00:23.000Z",
+    "text": "#LíneaB - Malabia y Uruguay cerradas por obras de renovación integral. 04:00",
+    "user": "emova_arg",
+    "line": "B",
+    "kind": "cierre_programado",
+    "stations": null,
+    "hashtags": [
+      "#líneab"
+    ],
+    "hora_emova": "04:00"
+  },
+  {
+    "id": "2024763303940002001",
+    "datetime": "2026-02-20T08:29:24.000Z",
+    "text": "#LíneaB - Hoy funcionará con horario extendido. Malabia y Uruguay cerradas por obras. 05:29",
+    "user": "emova_arg",
+    "line": "B",
+    "kind": "info_horario",
+    "stations": null,
+    "hashtags": [
+      "#líneab"
+    ],
+    "hora_emova": "05:29"
+  },
+  {
+    "id": "2025465729303056724",
+    "datetime": "2026-02-22T07:00:35.000Z",
+    "text": "#LíneaB - Malabia y Uruguay cerradas por obras de renovación integral. 04:00",
+    "user": "emova_arg",
+    "line": "B",
+    "kind": "cierre_programado",
+    "stations": null,
+    "hashtags": [
+      "#líneab"
+    ],
+    "hora_emova": "04:00"
+  },
+  {
+    "id": "2026361965535260951",
+    "datetime": "2026-02-24T18:21:55.000Z",
+    "text": "¡Atención usuarios! Desde este miércoles 25 de febrero, la estación Uruguay de la #LíneaB estará operativa.",
+    "user": "emova_arg",
+    "line": "B",
+    "kind": "fin",
+    "stations": null,
+    "hashtags": [
+      "#líneab"
+    ],
+    "hora_emova": null
+  },
+  {
+    "id": "2026577006297579662",
+    "datetime": "2026-02-25T08:36:24.000Z",
+    "text": "#LíneaB - Reabrió la estación Uruguay. Malabia continúa cerrada por obras. 05:36",
+    "user": "emova_arg",
+    "line": "B",
+    "kind": "fin",
+    "stations": "Uruguay. Malabia continúa",
+    "hashtags": [
+      "#líneab"
+    ],
+    "hora_emova": "05:36"
+  },
+  {
+    "id": "2026612248530071799",
+    "datetime": "2026-02-25T10:56:27.000Z",
+    "text": "#LíneaB - Circula con demora. 07:56",
+    "user": "emova_arg",
+    "line": "B",
+    "kind": "inicio_demora",
+    "stations": null,
+    "hashtags": [
+      "#líneab"
+    ],
+    "hora_emova": "07:56"
+  },
+  {
+    "id": "2026619547780812941",
+    "datetime": "2026-02-25T11:25:27.000Z",
+    "text": "#LíneaB - Servicio con demora. 08:25",
+    "user": "emova_arg",
+    "line": "B",
+    "kind": "inicio_demora",
+    "stations": null,
+    "hashtags": [
+      "#líneab"
+    ],
+    "hora_emova": "08:25"
+  },
+  {
+    "id": "2026627602518053232",
+    "datetime": "2026-02-25T11:57:28.000Z",
+    "text": "#LíneaB - Ya funciona con su frecuencia habitual. 08:57",
+    "user": "emova_arg",
+    "line": "B",
+    "kind": "fin",
+    "stations": null,
+    "hashtags": [
+      "#líneab"
+    ],
+    "hora_emova": "08:57"
+  },
+  {
+    "id": "2026628250601136250",
+    "datetime": "2026-02-25T12:00:02.000Z",
+    "text": "¡Atención usuarios! La estación Uruguay de la #LíneaB ya se encuentra operativa.",
+    "user": "emova_arg",
+    "line": "B",
+    "kind": "otro",
+    "stations": null,
+    "hashtags": [
+      "#líneab"
+    ],
+    "hora_emova": null
+  },
+  {
+    "id": "2027482650693292356",
+    "datetime": "2026-02-27T20:35:07.000Z",
+    "text": "#LíneaB - Hoy funcionará con horario extendido. Malabia cerrada por obras de renovación. 17:35",
+    "user": "emova_arg",
+    "line": "B",
+    "kind": "info_horario",
+    "stations": null,
+    "hashtags": [
+      "#líneab"
+    ],
+    "hora_emova": "17:35"
+  },
+  {
+    "id": "2027504015525945743",
+    "datetime": "2026-02-27T22:00:01.000Z",
+    "text": "¡Atención usuarios! Todos los viernes y sábados, la #LíneaB presta servicio nocturno hasta la 1:30 horas. Mirá cuáles serán las estaciones habilitadas para viajar desde este viernes 27 de febrero",
+    "user": "emova_arg",
+    "line": "B",
+    "kind": "info_horario",
+    "stations": null,
+    "hashtags": [
+      "#líneab"
+    ],
+    "hora_emova": null
+  },
+  {
+    "id": "2027640054735134902",
+    "datetime": "2026-02-28T07:00:35.000Z",
+    "text": "#LíneaB - Viernes y Sábado con horario extendido. Malabia cerrada por obras de renovación. 04:00",
+    "user": "emova_arg",
+    "line": "B",
+    "kind": "info_horario",
+    "stations": null,
+    "hashtags": [
+      "#líneab"
+    ],
+    "hora_emova": "04:00"
+  },
+  {
+    "id": "2027682343415152651",
+    "datetime": "2026-02-28T09:48:37.000Z",
+    "text": "#LíneaB - Reabrió la estación Uruguay. Malabia continúa cerrada por obras. 06:48",
+    "user": "emova_arg",
+    "line": "B",
+    "kind": "fin",
+    "stations": "Uruguay. Malabia continúa",
+    "hashtags": [
+      "#líneab"
+    ],
+    "hora_emova": "06:48"
+  },
+  {
+    "id": "2027868112423449019",
+    "datetime": "2026-02-28T22:06:48.000Z",
+    "text": "#LíneaB - Viernes y Sábado con horario extendido. Malabia cerrada por obras de renovación. 19:06",
+    "user": "emova_arg",
+    "line": "B",
+    "kind": "info_horario",
+    "stations": null,
+    "hashtags": [
+      "#líneab"
+    ],
+    "hora_emova": "19:06"
+  },
+  {
+    "id": "2028002341081800807",
+    "datetime": "2026-03-01T07:00:11.000Z",
+    "text": "#LíneaB - Reabrió la estación Uruguay. Malabia continúa cerrada por obras. 04:00",
+    "user": "emova_arg",
+    "line": "B",
+    "kind": "fin",
+    "stations": "Uruguay. Malabia continúa",
+    "hashtags": [
+      "#líneab"
+    ],
+    "hora_emova": "04:00"
+  },
+  {
+    "id": "2028405412236611642",
+    "datetime": "2026-03-02T09:41:50.000Z",
+    "text": "#LíneaB - Estación Malabia cerrada por obras de renovación integral. 06:41",
+    "user": "emova_arg",
+    "line": "B",
+    "kind": "cierre_programado",
+    "stations": "Malabia",
+    "hashtags": [
+      "#líneab"
+    ],
+    "hora_emova": "06:41"
+  },
+  {
+    "id": "2028551163172343869",
+    "datetime": "2026-03-02T19:21:00.000Z",
+    "text": "#LíneaB - Circula con demora. 16:21",
+    "user": "emova_arg",
+    "line": "B",
+    "kind": "inicio_demora",
+    "stations": null,
+    "hashtags": [
+      "#líneab"
+    ],
+    "hora_emova": "16:21"
+  },
+  {
+    "id": "2028558966377083165",
+    "datetime": "2026-03-02T19:52:01.000Z",
+    "text": "#LíneaB - Ya funciona con su frecuencia habitual. 16:52",
+    "user": "emova_arg",
+    "line": "B",
+    "kind": "fin",
+    "stations": null,
+    "hashtags": [
+      "#líneab"
+    ],
+    "hora_emova": "16:52"
+  },
+  {
+    "id": "2028561735645348040",
+    "datetime": "2026-03-02T20:03:01.000Z",
+    "text": "#LíneaB - Estación Malabia cerrada por obras de renovación integral. 17:03",
+    "user": "emova_arg",
+    "line": "B",
+    "kind": "cierre_programado",
+    "stations": "Malabia",
+    "hashtags": [
+      "#líneab"
+    ],
+    "hora_emova": "17:03"
+  },
+  {
+    "id": "2029366734247846025",
+    "datetime": "2026-03-05T01:21:47.000Z",
+    "text": "#LíneaB - Estación Malabia cerrada por obras de renovación integral. 22:21",
+    "user": "emova_arg",
+    "line": "B",
+    "kind": "cierre_programado",
+    "stations": "Malabia",
+    "hashtags": [
+      "#líneab"
+    ],
+    "hora_emova": "22:21"
+  },
+  {
+    "id": "2029944786518470961",
+    "datetime": "2026-03-06T15:38:46.000Z",
+    "text": "#LíneaB - Viernes y Sábado con horario extendido. Malabia cerrada por obras de renovación. 12:38",
+    "user": "emova_arg",
+    "line": "B",
+    "kind": "info_horario",
+    "stations": null,
+    "hashtags": [
+      "#líneab"
+    ],
+    "hora_emova": "12:38"
+  },
+  {
+    "id": "2030377066089107559",
+    "datetime": "2026-03-07T20:16:29.000Z",
+    "text": "#LíneaB - Servicio con demora. 17:16",
+    "user": "emova_arg",
+    "line": "B",
+    "kind": "inicio_demora",
+    "stations": null,
+    "hashtags": [
+      "#líneab"
+    ],
+    "hora_emova": "17:16"
+  },
+  {
+    "id": "2030379834904310007",
+    "datetime": "2026-03-07T20:27:29.000Z",
+    "text": "#LíneaB - Circula con servicio limitado entre las estaciones Leandro N. Alem y Federico Lacroze. 17:27",
+    "user": "emova_arg",
+    "line": "B",
+    "kind": "inicio_limitado",
+    "stations": "Leandro N",
+    "hashtags": [
+      "#líneab"
+    ],
+    "hora_emova": "17:27"
+  },
+  {
+    "id": "2030396700779536399",
+    "datetime": "2026-03-07T21:34:31.000Z",
+    "text": "#LíneaB - Presta su servicio completo entre cabeceras normalizando su frecuencia habitual. 18:34",
+    "user": "emova_arg",
+    "line": "B",
+    "kind": "fin",
+    "stations": null,
+    "hashtags": [
+      "#líneab"
+    ],
+    "hora_emova": "18:34"
+  },
+  {
+    "id": "2030399218012094466",
+    "datetime": "2026-03-07T21:44:31.000Z",
+    "text": "#LíneaB - Viernes y Sábado con horario extendido. Malabia cerrada por obras de renovación. 18:44",
+    "user": "emova_arg",
+    "line": "B",
+    "kind": "info_horario",
+    "stations": null,
+    "hashtags": [
+      "#líneab"
+    ],
+    "hora_emova": "18:44"
+  },
+  {
+    "id": "2030539239339761856",
+    "datetime": "2026-03-08T07:00:54.000Z",
+    "text": "#LíneaB - Estación Malabia cerrada por obras de renovación integral. 04:00",
+    "user": "emova_arg",
+    "line": "B",
+    "kind": "cierre_programado",
+    "stations": "Malabia",
+    "hashtags": [
+      "#líneab"
+    ],
+    "hora_emova": "04:00"
+  },
+  {
+    "id": "2032373880791159102",
+    "datetime": "2026-03-13T08:31:07.000Z",
+    "text": "#LíneaB - Viernes y Sábado con horario extendido. Malabia cerrada por obras de renovación. 05:31",
+    "user": "emova_arg",
+    "line": "B",
+    "kind": "info_horario",
+    "stations": null,
+    "hashtags": [
+      "#líneab"
+    ],
+    "hora_emova": "05:31"
+  },
+  {
+    "id": "2033075807904543048",
+    "datetime": "2026-03-15T07:00:19.000Z",
+    "text": "#LíneaB - Estación Malabia cerrada por obras de renovación integral. 04:00",
+    "user": "emova_arg",
+    "line": "B",
+    "kind": "cierre_programado",
+    "stations": "Malabia",
+    "hashtags": [
+      "#líneab"
+    ],
+    "hora_emova": "04:00"
+  },
+  {
+    "id": "2033335590532284478",
+    "datetime": "2026-03-16T00:12:36.000Z",
+    "text": "#LíneaB - Circula con demora. 21:12",
+    "user": "emova_arg",
+    "line": "B",
+    "kind": "inicio_demora",
+    "stations": null,
+    "hashtags": [
+      "#líneab"
+    ],
+    "hora_emova": "21:12"
+  },
+  {
+    "id": "2033338107974631579",
+    "datetime": "2026-03-16T00:22:37.000Z",
+    "text": "#LíneaB - Circula con servicio limitado entre las estaciones Juan Manuel de Rosas y Medrano. 21:22",
+    "user": "emova_arg",
+    "line": "B",
+    "kind": "inicio_limitado",
+    "stations": "Juan Manuel de Rosas y Medrano",
+    "hashtags": [
+      "#líneab"
+    ],
+    "hora_emova": "21:22"
+  },
+  {
+    "id": "2033344904655507647",
+    "datetime": "2026-03-16T00:49:37.000Z",
+    "text": "#LíneaB - Presta su servicio completo entre cabeceras normalizando su frecuencia habitual. 21:49",
+    "user": "emova_arg",
+    "line": "B",
+    "kind": "fin",
+    "stations": null,
+    "hashtags": [
+      "#líneab"
+    ],
+    "hora_emova": "21:49"
+  },
+  {
+    "id": "2033345659797934549",
+    "datetime": "2026-03-16T00:52:37.000Z",
+    "text": "#LíneaB - Estación Malabia cerrada por obras de renovación integral. 21:52",
+    "user": "emova_arg",
+    "line": "B",
+    "kind": "cierre_programado",
+    "stations": "Malabia",
+    "hashtags": [
+      "#líneab"
+    ],
+    "hora_emova": "21:52"
+  },
+  {
+    "id": "2034975647743778909",
+    "datetime": "2026-03-20T12:49:37.000Z",
+    "text": "#LíneaB - Viernes y Sábado con horario extendido. Malabia cerrada por obras de renovación. 09:49",
+    "user": "emova_arg",
+    "line": "B",
+    "kind": "info_horario",
+    "stations": null,
+    "hashtags": [
+      "#líneab"
+    ],
+    "hora_emova": "09:49"
+  },
+  {
+    "id": "2035612665951781012",
+    "datetime": "2026-03-22T07:00:54.000Z",
+    "text": "#LíneaB - Estación Malabia cerrada por obras de renovación integral. 04:00",
+    "user": "emova_arg",
+    "line": "B",
+    "kind": "cierre_programado",
+    "stations": "Malabia",
+    "hashtags": [
+      "#líneab"
+    ],
+    "hora_emova": "04:00"
+  },
+  {
+    "id": "2037447401582055437",
+    "datetime": "2026-03-27T08:31:29.000Z",
+    "text": "#LíneaB - Viernes y Sábado con horario extendido. Malabia cerrada por obras de renovación. 05:31",
+    "user": "emova_arg",
+    "line": "B",
+    "kind": "info_horario",
+    "stations": null,
+    "hashtags": [
+      "#líneab"
+    ],
+    "hora_emova": "05:31"
+  },
+  {
+    "id": "2038149361142583464",
+    "datetime": "2026-03-29T07:00:49.000Z",
+    "text": "#LíneaB - Estación Malabia cerrada por obras de renovación integral. 04:00",
+    "user": "emova_arg",
+    "line": "B",
+    "kind": "cierre_programado",
+    "stations": "Malabia",
+    "hashtags": [
+      "#líneab"
+    ],
+    "hora_emova": "04:00"
+  },
+  {
+    "id": "2039370972487188574",
+    "datetime": "2026-04-01T15:55:04.000Z",
+    "text": "#LíneaB - Circula con demora. 12:55",
+    "user": "emova_arg",
+    "line": "B",
+    "kind": "inicio_demora",
+    "stations": null,
+    "hashtags": [
+      "#líneab"
+    ],
+    "hora_emova": "12:55"
+  },
+  {
+    "id": "2039373741667283284",
+    "datetime": "2026-04-01T16:06:04.000Z",
+    "text": "#LíneaB - Ya funciona con su frecuencia habitual. 13:06",
+    "user": "emova_arg",
+    "line": "B",
+    "kind": "fin",
+    "stations": null,
+    "hashtags": [
+      "#líneab"
+    ],
+    "hora_emova": "13:06"
+  },
+  {
+    "id": "2039374748468072582",
+    "datetime": "2026-04-01T16:10:04.000Z",
+    "text": "#LíneaB - Estación Malabia cerrada por obras de renovación integral. 13:10",
+    "user": "emova_arg",
+    "line": "B",
+    "kind": "cierre_programado",
+    "stations": "Malabia",
+    "hashtags": [
+      "#líneab"
+    ],
+    "hora_emova": "13:10"
+  },
+  {
+    "id": "2039391363851030999",
+    "datetime": "2026-04-01T17:16:05.000Z",
+    "text": "#LíneaB - Circula con demora. 14:16",
+    "user": "emova_arg",
+    "line": "B",
+    "kind": "inicio_demora",
+    "stations": null,
+    "hashtags": [
+      "#líneab"
+    ],
+    "hora_emova": "14:16"
+  },
+  {
+    "id": "2039394384697758207",
+    "datetime": "2026-04-01T17:28:06.000Z",
+    "text": "#LíneaB - Ya funciona con su frecuencia habitual. 14:28",
+    "user": "emova_arg",
+    "line": "B",
+    "kind": "fin",
+    "stations": null,
+    "hashtags": [
+      "#líneab"
+    ],
+    "hora_emova": "14:28"
+  },
+  {
+    "id": "2039395144005276043",
+    "datetime": "2026-04-01T17:31:07.000Z",
+    "text": "#LíneaB - Estación Malabia cerrada por obras de renovación integral. 14:31",
+    "user": "emova_arg",
+    "line": "B",
+    "kind": "cierre_programado",
+    "stations": "Malabia",
+    "hashtags": [
+      "#líneab"
+    ],
+    "hora_emova": "14:31"
+  },
+  {
+    "id": "2039514299379376302",
+    "datetime": "2026-04-02T01:24:35.000Z",
+    "text": "#LíneaB - Estación Malabia cerrada por obras de renovación integral. 22:24",
+    "user": "emova_arg",
+    "line": "B",
+    "kind": "cierre_programado",
+    "stations": "Malabia",
+    "hashtags": [
+      "#líneab"
+    ],
+    "hora_emova": "22:24"
+  },
+  {
+    "id": "2040021878899650706",
+    "datetime": "2026-04-03T11:01:32.000Z",
+    "text": "#LíneaB - Circula con servicio limitado entre las estaciones Leandro N. Alem y Los Incas. 08:01",
+    "user": "emova_arg",
+    "line": "B",
+    "kind": "inicio_limitado",
+    "stations": "Leandro N",
+    "hashtags": [
+      "#líneab"
+    ],
+    "hora_emova": "08:01"
+  },
+  {
+    "id": "2040030437595082948",
+    "datetime": "2026-04-03T11:35:32.000Z",
+    "text": "#LíneaB - Presta su servicio completo entre cabeceras normalizando su frecuencia habitual. 08:35",
+    "user": "emova_arg",
+    "line": "B",
+    "kind": "fin",
+    "stations": null,
+    "hashtags": [
+      "#líneab"
+    ],
+    "hora_emova": "08:35"
+  },
+  {
+    "id": "2040031947892641849",
+    "datetime": "2026-04-03T11:41:32.000Z",
+    "text": "#LíneaB - Estación Malabia cerrada por obras de renovación integral. 08:41",
+    "user": "emova_arg",
+    "line": "B",
+    "kind": "cierre_programado",
+    "stations": "Malabia",
+    "hashtags": [
+      "#líneab"
+    ],
+    "hora_emova": "08:41"
+  },
+  {
+    "id": "2040347677586502070",
+    "datetime": "2026-04-04T08:36:08.000Z",
+    "text": "#LíneaB - Hoy funcionará con horario extendido. Malabia cerrada por obras de renovación. 05:36",
+    "user": "emova_arg",
+    "line": "B",
+    "kind": "info_horario",
+    "stations": null,
+    "hashtags": [
+      "#líneab"
+    ],
+    "hora_emova": "05:36"
+  },
+  {
+    "id": "2040686076130381855",
+    "datetime": "2026-04-05T07:00:49.000Z",
+    "text": "#LíneaB - Estación Malabia cerrada por obras de renovación integral. 04:00",
+    "user": "emova_arg",
+    "line": "B",
+    "kind": "cierre_programado",
+    "stations": "Malabia",
+    "hashtags": [
+      "#líneab"
+    ],
+    "hora_emova": "04:00"
+  },
+  {
+    "id": "2041114830115844312",
+    "datetime": "2026-04-06T11:24:32.000Z",
+    "text": "#LíneaB - Circula con demora. 08:24",
+    "user": "emova_arg",
+    "line": "B",
+    "kind": "inicio_demora",
+    "stations": null,
+    "hashtags": [
+      "#líneab"
+    ],
+    "hora_emova": "08:24"
+  },
+  {
+    "id": "2041116340329615765",
+    "datetime": "2026-04-06T11:30:32.000Z",
+    "text": "#LíneaB - Circula con servicio limitado entre las estaciones Juan Manuel de Rosas y Carlos Pellegrini. 08:30",
+    "user": "emova_arg",
+    "line": "B",
+    "kind": "inicio_limitado",
+    "stations": "Juan Manuel de Rosas y Carlos Pellegrini",
+    "hashtags": [
+      "#líneab"
+    ],
+    "hora_emova": "08:30"
+  },
+  {
+    "id": "2041119361297957007",
+    "datetime": "2026-04-06T11:42:32.000Z",
+    "text": "#LíneaB - Ya realiza el recorrido completo entre cabeceras. 08:42",
+    "user": "emova_arg",
+    "line": "B",
+    "kind": "fin",
+    "stations": null,
+    "hashtags": [
+      "#líneab"
+    ],
+    "hora_emova": "08:42"
+  },
+  {
+    "id": "2041120871259963408",
+    "datetime": "2026-04-06T11:48:32.000Z",
+    "text": "#LíneaB - Servicio con demora. 08:48",
+    "user": "emova_arg",
+    "line": "B",
+    "kind": "inicio_demora",
+    "stations": null,
+    "hashtags": [
+      "#líneab"
+    ],
+    "hora_emova": "08:48"
+  },
+  {
+    "id": "2041126661630963712",
+    "datetime": "2026-04-06T12:11:33.000Z",
+    "text": "#LíneaB - Ya funciona con su frecuencia habitual. 09:11",
+    "user": "emova_arg",
+    "line": "B",
+    "kind": "fin",
+    "stations": null,
+    "hashtags": [
+      "#líneab"
+    ],
+    "hora_emova": "09:11"
+  },
+  {
+    "id": "2041129178880188807",
+    "datetime": "2026-04-06T12:21:33.000Z",
+    "text": "#LíneaB - Estación Malabia cerrada por obras de renovación integral. 09:21",
+    "user": "emova_arg",
+    "line": "B",
+    "kind": "cierre_programado",
+    "stations": "Malabia",
+    "hashtags": [
+      "#líneab"
+    ],
+    "hora_emova": "09:21"
+  },
+  {
+    "id": "2042520793435820517",
+    "datetime": "2026-04-10T08:31:20.000Z",
+    "text": "#LíneaB - Hoy funcionará con horario extendido. Malabia cerrada por obras de renovación. 05:31",
+    "user": "emova_arg",
+    "line": "B",
+    "kind": "info_horario",
+    "stations": null,
+    "hashtags": [
+      "#líneab"
+    ],
+    "hora_emova": "05:31"
+  },
+  {
+    "id": "2042544455878685052",
+    "datetime": "2026-04-10T10:05:21.000Z",
+    "text": "#LíneaB - Viernes y Sábado con horario extendido. Malabia cerrada por obras de renovación. 07:05",
+    "user": "emova_arg",
+    "line": "B",
+    "kind": "info_horario",
+    "stations": null,
+    "hashtags": [
+      "#líneab"
+    ],
+    "hora_emova": "07:05"
+  },
+  {
+    "id": "2043222765856072073",
+    "datetime": "2026-04-12T07:00:43.000Z",
+    "text": "#LíneaB - Estación Malabia cerrada por obras de renovación integral. 04:00",
+    "user": "emova_arg",
+    "line": "B",
+    "kind": "cierre_programado",
+    "stations": "Malabia",
+    "hashtags": [
+      "#líneab"
+    ],
+    "hora_emova": "04:00"
+  },
+  {
+    "id": "2043742405732548786",
+    "datetime": "2026-04-13T17:25:35.000Z",
+    "text": "#LíneaB - Circula con servicio limitado entre las estaciones Leandro N. Alem y Angel Gallardo. 14:25",
+    "user": "emova_arg",
+    "line": "B",
+    "kind": "inicio_limitado",
+    "stations": "Leandro N",
+    "hashtags": [
+      "#líneab"
+    ],
+    "hora_emova": "14:25"
+  },
+  {
+    "id": "2043761284500295914",
+    "datetime": "2026-04-13T18:40:36.000Z",
+    "text": "#LíneaB - Presta su servicio completo entre cabeceras normalizando su frecuencia habitual. 15:40",
+    "user": "emova_arg",
+    "line": "B",
+    "kind": "fin",
+    "stations": null,
+    "hashtags": [
+      "#líneab"
+    ],
+    "hora_emova": "15:40"
+  },
+  {
+    "id": "2043762794919555303",
+    "datetime": "2026-04-13T18:46:36.000Z",
+    "text": "#LíneaB - Estación Malabia cerrada por obras de renovación integral. 15:46",
+    "user": "emova_arg",
+    "line": "B",
+    "kind": "cierre_programado",
+    "stations": "Malabia",
+    "hashtags": [
+      "#líneab"
+    ],
+    "hora_emova": "15:46"
+  },
+  {
+    "id": "2044339137499611486",
+    "datetime": "2026-04-15T08:56:47.000Z",
+    "text": "#LíneaB - Los trenes no se detienen en la estación Medrano. 05:56",
+    "user": "emova_arg",
+    "line": "B",
+    "kind": "inicio_estacion_cerrada",
+    "stations": "Medrano",
+    "hashtags": [
+      "#líneab"
+    ],
+    "hora_emova": "05:56"
+  },
+  {
+    "id": "2044347193654497662",
+    "datetime": "2026-04-15T09:28:47.000Z",
+    "text": "#LíneaB - Los trenes no se detienen en Medrano. Malabia continúa cerrada por obras. 06:28",
+    "user": "emova_arg",
+    "line": "B",
+    "kind": "cierre_programado",
+    "stations": null,
+    "hashtags": [
+      "#líneab"
+    ],
+    "hora_emova": "06:28"
+  },
+  {
+    "id": "2044350466016915475",
+    "datetime": "2026-04-15T09:41:47.000Z",
+    "text": "#LíneaB - Los trenes no se detienen en Medrano. Malabia continúa cerrada por obras. 06:41",
+    "user": "emova_arg",
+    "line": "B",
+    "kind": "cierre_programado",
+    "stations": null,
+    "hashtags": [
+      "#líneab"
+    ],
+    "hora_emova": "06:41"
+  },
+  {
+    "id": "2044353486599393565",
+    "datetime": "2026-04-15T09:53:48.000Z",
+    "text": "#LíneaB - Los trenes no se detienen en la estación Medrano con destino a J. M. Rosas. 06:53",
+    "user": "emova_arg",
+    "line": "B",
+    "kind": "inicio_estacion_cerrada",
+    "stations": "Medrano con destino a J",
+    "hashtags": [
+      "#líneab"
+    ],
+    "hora_emova": "06:53"
+  },
+  {
+    "id": "2044356507513270492",
+    "datetime": "2026-04-15T10:05:48.000Z",
+    "text": "#LíneaB - Ya se detienen en todas las estaciones. 07:05",
+    "user": "emova_arg",
+    "line": "B",
+    "kind": "fin",
+    "stations": null,
+    "hashtags": [
+      "#líneab"
+    ],
+    "hora_emova": "07:05"
+  },
+  {
+    "id": "2044357514754400448",
+    "datetime": "2026-04-15T10:09:48.000Z",
+    "text": "#LíneaB - Estación Malabia cerrada por obras de renovación integral. 07:09",
+    "user": "emova_arg",
+    "line": "B",
+    "kind": "cierre_programado",
+    "stations": "Malabia",
+    "hashtags": [
+      "#líneab"
+    ],
+    "hora_emova": "07:09"
+  },
+  {
+    "id": "2044851774440251710",
+    "datetime": "2026-04-16T18:53:49.000Z",
+    "text": "¡Atención usuarios! Desde el viernes 17 de abril, la estación Malabia - Osvaldo Pugliese de la #LíneaB estará operativa.",
+    "user": "emova_arg",
+    "line": "B",
+    "kind": "fin",
+    "stations": null,
+    "hashtags": [
+      "#líneab"
+    ],
+    "hora_emova": null
+  },
+  {
+    "id": "2045057459220320325",
+    "datetime": "2026-04-17T08:31:08.000Z",
+    "text": "#LíneaB - Reabrió la estación Malabia luego del plan de renovación. 05:31",
+    "user": "emova_arg",
+    "line": "B",
+    "kind": "fin",
+    "stations": "Malabia",
+    "hashtags": [
+      "#líneab"
+    ],
+    "hora_emova": "05:31"
+  },
+  {
+    "id": "2045061738769346996",
+    "datetime": "2026-04-17T08:48:08.000Z",
+    "text": "#LíneaB - Reabrió la estación Malabia luego del plan de renovación. 05:48",
+    "user": "emova_arg",
+    "line": "B",
+    "kind": "fin",
+    "stations": "Malabia",
+    "hashtags": [
+      "#líneab"
+    ],
+    "hora_emova": "05:48"
+  },
+  {
+    "id": "2045094923402133951",
+    "datetime": "2026-04-17T11:00:00.000Z",
+    "text": "¡Atención usuarios! La estación Malabia - Osvaldo Pugliese de la #LíneaB ya se encuentra operativa.",
+    "user": "emova_arg",
+    "line": "B",
+    "kind": "otro",
+    "stations": null,
+    "hashtags": [
+      "#líneab"
+    ],
+    "hora_emova": null
+  },
+  {
+    "id": "2046140089739141457",
+    "datetime": "2026-04-20T08:13:07.000Z",
+    "text": "#LíneaB - Reabrió la estación Malabia luego del plan de renovación. 05:13",
+    "user": "emova_arg",
+    "line": "B",
+    "kind": "fin",
+    "stations": "Malabia",
+    "hashtags": [
+      "#líneab"
+    ],
+    "hora_emova": "05:13"
+  },
+  {
+    "id": "2046146383082570161",
+    "datetime": "2026-04-20T08:38:07.000Z",
+    "text": "#LíneaB - Reabrió la estación Malabia luego del plan de renovación. 05:38",
+    "user": "emova_arg",
+    "line": "B",
+    "kind": "fin",
+    "stations": "Malabia",
+    "hashtags": [
+      "#líneab"
+    ],
+    "hora_emova": "05:38"
+  },
+  {
+    "id": "2047594361022505235",
+    "datetime": "2026-04-24T08:31:52.000Z",
+    "text": "#LíneaB - Viernes y sábados horario extendido. Estaciones habilitadas en http:// buenosaires.gob.ar. 05:31",
+    "user": "emova_arg",
+    "line": "B",
+    "kind": "info_horario",
+    "stations": null,
+    "hashtags": [
+      "#líneab"
+    ],
+    "hora_emova": "05:31"
+  },
+  {
+    "id": "2047763276570763571",
+    "datetime": "2026-04-24T19:43:05.000Z",
+    "text": "#LíneaB - Circula con demora. 16:43",
+    "user": "emova_arg",
+    "line": "B",
+    "kind": "inicio_demora",
+    "stations": null,
+    "hashtags": [
+      "#líneab"
+    ],
+    "hora_emova": "16:43"
+  },
+  {
+    "id": "2047775107892887638",
+    "datetime": "2026-04-24T20:30:06.000Z",
+    "text": "#LíneaB - Ya funciona con su frecuencia habitual. 17:30",
+    "user": "emova_arg",
+    "line": "B",
+    "kind": "fin",
+    "stations": null,
+    "hashtags": [
+      "#líneab"
+    ],
+    "hora_emova": "17:30"
+  },
+  {
+    "id": "2047776869995417873",
+    "datetime": "2026-04-24T20:37:06.000Z",
+    "text": "#LíneaB - Viernes y sábados horario extendido. Estaciones habilitadas en http:// buenosaires.gob.ar. 17:37",
+    "user": "emova_arg",
+    "line": "B",
+    "kind": "info_horario",
+    "stations": null,
+    "hashtags": [
+      "#líneab"
+    ],
+    "hora_emova": "17:37"
+  },
+  {
+    "id": "2050188417506414644",
+    "datetime": "2026-05-01T12:19:44.000Z",
+    "text": "#LíneaB - Los trenes no se detienen en la estación Malabia. 09:19",
+    "user": "emova_arg",
+    "line": "B",
+    "kind": "inicio_estacion_cerrada",
+    "stations": "Malabia",
+    "hashtags": [
+      "#líneab"
+    ],
+    "hora_emova": "09:19"
+  },
+  {
+    "id": "2050190179814592551",
+    "datetime": "2026-05-01T12:26:44.000Z",
+    "text": "#LíneaB - Los trenes no se detienen en las estaciones Gallardo y Malabia. 09:26",
+    "user": "emova_arg",
+    "line": "B",
+    "kind": "inicio_estacion_cerrada",
+    "stations": "Gallardo y Malabia",
+    "hashtags": [
+      "#líneab"
+    ],
+    "hora_emova": "09:26"
+  },
+  {
+    "id": "2050192949095387227",
+    "datetime": "2026-05-01T12:37:44.000Z",
+    "text": "#LíneaB - Los trenes no se detienen en la estación Angel Gallardo. 09:37",
+    "user": "emova_arg",
+    "line": "B",
+    "kind": "inicio_estacion_cerrada",
+    "stations": "Angel Gallardo",
+    "hashtags": [
+      "#líneab"
+    ],
+    "hora_emova": "09:37"
+  },
+  {
+    "id": "2050205283419406635",
+    "datetime": "2026-05-01T13:26:45.000Z",
+    "text": "#LíneaB - Ya se detienen en todas las estaciones. 10:26",
+    "user": "emova_arg",
+    "line": "B",
+    "kind": "fin",
+    "stations": null,
+    "hashtags": [
+      "#líneab"
+    ],
+    "hora_emova": "10:26"
+  },
+  {
+    "id": "2050695990240301244",
+    "datetime": "2026-05-02T21:56:38.000Z",
+    "text": "#LíneaB - Hoy horario extendido. Más información en http:// buenosaires.gob.ar/subte. 18:56",
+    "user": "emova_arg",
+    "line": "B",
+    "kind": "info_horario",
+    "stations": null,
+    "hashtags": [
+      "#líneab"
+    ],
+    "hora_emova": "18:56"
+  },
+  {
+    "id": "2051091784264995008",
+    "datetime": "2026-05-04T00:09:23.000Z",
+    "text": "#LíneaB - Los trenes no se detienen en la estación Dorrego. 21:09",
+    "user": "emova_arg",
+    "line": "B",
+    "kind": "inicio_estacion_cerrada",
+    "stations": "Dorrego",
+    "hashtags": [
+      "#líneab"
+    ],
+    "hora_emova": "21:09"
+  },
+  {
+    "id": "2051106384205267329",
+    "datetime": "2026-05-04T01:07:24.000Z",
+    "text": "#LíneaB - Ya se detienen en todas las estaciones. 22:07",
+    "user": "emova_arg",
+    "line": "B",
+    "kind": "fin",
+    "stations": null,
+    "hashtags": [
+      "#líneab"
+    ],
+    "hora_emova": "22:07"
+  },
+  {
+    "id": "2052722456020844575",
+    "datetime": "2026-05-08T12:09:05.000Z",
+    "text": "#LíneaB - Viernes y sábados horario extendido. Estaciones habilitadas en http:// buenosaires.gob.ar. 09:09",
+    "user": "emova_arg",
+    "line": "B",
+    "kind": "info_horario",
+    "stations": null,
+    "hashtags": [
+      "#líneab"
+    ],
+    "hora_emova": "09:09"
+  }
+]

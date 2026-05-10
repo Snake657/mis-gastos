@@ -1,0 +1,2368 @@
+[
+  {
+    "id": "1912002266917109794",
+    "datetime": "2025-04-15T04:37:18.000Z",
+    "text": "La limpieza en estaciones se realiza todas las noches. Una vez finalizado el servicio, equipos de @Emova_arg se ocupan de dejar todo listo para que al día siguiente encuentres todo en condiciones para tu viaje. Esto es ahora, en la estación Pasteur-AMIA de la Línea B.",
+    "line": "B",
+    "kind": "otro",
+    "stations": null,
+    "hashtags": []
+  },
+  {
+    "id": "1912169664479641674",
+    "datetime": "2025-04-15T15:42:29.000Z",
+    "text": "Avanzan las obras en Pueyrredón de la Línea B. Continúan los trabajos de renovación integral que incluyen pintura, impermeabilización, reparación de pisos, incorporación de luces LED y nuevo mobiliario en andén.",
+    "line": "B",
+    "kind": "info_operativa",
+    "stations": null,
+    "hashtags": []
+  },
+  {
+    "id": "1912180418926776541",
+    "datetime": "2025-04-15T16:25:13.000Z",
+    "text": "#Subte | Línea B: Estacion Pueyrredon cerrada por obras de renovacion integral",
+    "line": "B",
+    "kind": "info_operativa",
+    "stations": null,
+    "hashtags": [
+      "#subte"
+    ]
+  },
+  {
+    "id": "1912544361339838553",
+    "datetime": "2025-04-16T16:31:23.000Z",
+    "text": "#Subte | Línea B: Estacion Pueyrredon cerrada por obras de renovacion integral",
+    "line": "B",
+    "kind": "info_operativa",
+    "stations": null,
+    "hashtags": [
+      "#subte"
+    ]
+  },
+  {
+    "id": "1912553185790534037",
+    "datetime": "2025-04-16T17:06:27.000Z",
+    "text": "#Subte | Línea B: Servicio con demora",
+    "line": "B",
+    "kind": "inicio_demora",
+    "stations": null,
+    "hashtags": [
+      "#subte"
+    ]
+  },
+  {
+    "id": "1912575846776266796",
+    "datetime": "2025-04-16T18:36:30.000Z",
+    "text": "#Subte | Línea B: Ya circula con su frecuencia habitual. 14:37",
+    "line": "B",
+    "kind": "otro",
+    "stations": null,
+    "hashtags": [
+      "#subte"
+    ]
+  },
+  {
+    "id": "1913241560960950718",
+    "datetime": "2025-04-18T14:41:49.000Z",
+    "text": "Tras las obras de renovación integral, reabre la estación de la Línea B con combinación con la Línea H. Si hicieron trabajos de: Impermeabilización. Pintura. Reparación de pisos. Incorporación de luces LED. Nuevo mobiliario.",
+    "line": "B",
+    "kind": "info_operativa",
+    "stations": null,
+    "hashtags": []
+  },
+  {
+    "id": "1914273028298375210",
+    "datetime": "2025-04-21T11:00:30.000Z",
+    "text": "Abrió la estación Pueyrredón de la Línea B tras las obras de renovación integral. Se renovaron pisos, se incorporó luces LED, nuevo mobiliario y se hicieron importantes trabajos de impermeabilización y pintura. Los trabajos continuarán con la estación ya operativa.",
+    "line": "B",
+    "kind": "info_operativa",
+    "stations": null,
+    "hashtags": []
+  },
+  {
+    "id": "1914292210150822071",
+    "datetime": "2025-04-21T12:16:43.000Z",
+    "text": "#Subte | Línea B: Reabrió la estación Pueyrredón luego del plan de renovación integral.",
+    "line": "B",
+    "kind": "otro",
+    "stations": null,
+    "hashtags": [
+      "#subte"
+    ]
+  },
+  {
+    "id": "1914654732729143562",
+    "datetime": "2025-04-22T12:17:15.000Z",
+    "text": "#Subte | Línea B: Reabrió la estación Pueyrredón luego del plan de renovación integral.",
+    "line": "B",
+    "kind": "otro",
+    "stations": null,
+    "hashtags": [
+      "#subte"
+    ]
+  },
+  {
+    "id": "1915095280900296715",
+    "datetime": "2025-04-23T17:27:50.000Z",
+    "text": "#Subte | Línea B: Reabrió la estación Pueyrredón luego del plan de renovación integral.",
+    "line": "B",
+    "kind": "otro",
+    "stations": null,
+    "hashtags": [
+      "#subte"
+    ]
+  },
+  {
+    "id": "1915458079023419489",
+    "datetime": "2025-04-24T17:29:28.000Z",
+    "text": "#Subte | Línea B: Reabrió la estación Pueyrredón luego del plan de renovación integral.",
+    "line": "B",
+    "kind": "otro",
+    "stations": null,
+    "hashtags": [
+      "#subte"
+    ]
+  },
+  {
+    "id": "1915639385262874839",
+    "datetime": "2025-04-25T05:29:54.000Z",
+    "text": "Así se trabaja durante las noches en materia de limpieza. Personal de @Emova_arg se encarga de que las estaciones se encuentren en condiciones al arrancar el día. Esto es ahora, en la estación Pueyrredón de la Línea B.",
+    "line": "B",
+    "kind": "otro",
+    "stations": null,
+    "hashtags": []
+  },
+  {
+    "id": "1917649463075553323",
+    "datetime": "2025-04-30T18:37:14.000Z",
+    "text": "#Subte | Línea B: Servicio interrumpido",
+    "line": "B",
+    "kind": "inicio_interrumpido",
+    "stations": null,
+    "hashtags": [
+      "#subte"
+    ]
+  },
+  {
+    "id": "1918669854631964865",
+    "datetime": "2025-05-03T14:11:55.000Z",
+    "text": "#Subte | Línea B: Viernes y sábados horario extendido. Estaciones habilitadas en http:// buenosaires.gob.ar",
+    "line": "B",
+    "kind": "info_operativa",
+    "stations": null,
+    "hashtags": [
+      "#subte"
+    ]
+  },
+  {
+    "id": "1920811122694717765",
+    "datetime": "2025-05-09T12:00:33.000Z",
+    "text": "#Subte | Línea B: Viernes y sábados horario extendido. Estaciones habilitadas en http:// buenosaires.gob.ar",
+    "line": "B",
+    "kind": "info_operativa",
+    "stations": null,
+    "hashtags": [
+      "#subte"
+    ]
+  },
+  {
+    "id": "1921172513603702875",
+    "datetime": "2025-05-10T11:56:35.000Z",
+    "text": "#Subte | Línea B: Viernes y sábados horario extendido. Estaciones habilitadas en http:// buenosaires.gob.ar",
+    "line": "B",
+    "kind": "info_operativa",
+    "stations": null,
+    "hashtags": [
+      "#subte"
+    ]
+  },
+  {
+    "id": "1923421302896926903",
+    "datetime": "2025-05-16T16:52:28.000Z",
+    "text": "#Subte | Línea B: Hoy horario extendido Más información en http:// buenosaires.gob.ar/subte",
+    "line": "B",
+    "kind": "info_operativa",
+    "stations": null,
+    "hashtags": [
+      "#subte"
+    ]
+  },
+  {
+    "id": "1925173845901611063",
+    "datetime": "2025-05-21T12:56:27.000Z",
+    "text": "#Subte | Línea B: Servicio limitado entre las estaciones Leandro N. Alem y Los Incas",
+    "line": "B",
+    "kind": "inicio_limitado",
+    "stations": "Leandro N",
+    "hashtags": [
+      "#subte"
+    ]
+  },
+  {
+    "id": "1925178888696537259",
+    "datetime": "2025-05-21T13:16:29.000Z",
+    "text": "#Subte | Línea B: Servicio normalizado",
+    "line": "B",
+    "kind": "fin",
+    "stations": null,
+    "hashtags": [
+      "#subte"
+    ]
+  },
+  {
+    "id": "1925288975050133945",
+    "datetime": "2025-05-21T20:33:56.000Z",
+    "text": "#Subte | Línea B: Servicio con demora",
+    "line": "B",
+    "kind": "inicio_demora",
+    "stations": null,
+    "hashtags": [
+      "#subte"
+    ]
+  },
+  {
+    "id": "1925290236466037247",
+    "datetime": "2025-05-21T20:38:57.000Z",
+    "text": "#Subte | Línea B: Servicio limitado entre las estaciones Juan Manuel de Rosas y Carlos Pellegrini",
+    "line": "B",
+    "kind": "inicio_limitado",
+    "stations": "Juan Manuel de Rosas y Carlos Pellegrini",
+    "hashtags": [
+      "#subte"
+    ]
+  },
+  {
+    "id": "1925676539808514498",
+    "datetime": "2025-05-22T22:13:59.000Z",
+    "text": "#Subte | Línea B: Viernes y sábados horario extendido. Estaciones habilitadas en http:// buenosaires.gob.ar",
+    "line": "B",
+    "kind": "info_operativa",
+    "stations": null,
+    "hashtags": [
+      "#subte"
+    ]
+  },
+  {
+    "id": "1926039213033623827",
+    "datetime": "2025-05-23T22:15:07.000Z",
+    "text": "#Subte | Línea B: Viernes y sábados horario extendido. Estaciones habilitadas en http:// buenosaires.gob.ar",
+    "line": "B",
+    "kind": "info_operativa",
+    "stations": null,
+    "hashtags": [
+      "#subte"
+    ]
+  },
+  {
+    "id": "1926402659377967415",
+    "datetime": "2025-05-24T22:19:19.000Z",
+    "text": "#Subte | Línea B: Viernes y sábados horario extendido. Estaciones habilitadas en http:// buenosaires.gob.ar",
+    "line": "B",
+    "kind": "info_operativa",
+    "stations": null,
+    "hashtags": [
+      "#subte"
+    ]
+  },
+  {
+    "id": "1928420104364052778",
+    "datetime": "2025-05-30T11:55:55.000Z",
+    "text": "#Subte | Línea B: Viernes y sábados horario extendido. Estaciones habilitadas en http:// buenosaires.gob.ar",
+    "line": "B",
+    "kind": "info_operativa",
+    "stations": null,
+    "hashtags": [
+      "#subte"
+    ]
+  },
+  {
+    "id": "1928783618781872430",
+    "datetime": "2025-05-31T12:00:24.000Z",
+    "text": "#Subte | Línea B: Viernes y sábados horario extendido. Estaciones habilitadas en http:// buenosaires.gob.ar",
+    "line": "B",
+    "kind": "info_operativa",
+    "stations": null,
+    "hashtags": [
+      "#subte"
+    ]
+  },
+  {
+    "id": "1929945058947571812",
+    "datetime": "2025-06-03T16:55:33.000Z",
+    "text": "#Subte | Línea B: Los trenes no se detienen en la estación Malabia",
+    "line": "B",
+    "kind": "inicio_estacion_cerrada",
+    "stations": "Malabia",
+    "hashtags": [
+      "#subte"
+    ]
+  },
+  {
+    "id": "1929950104317821177",
+    "datetime": "2025-06-03T17:15:36.000Z",
+    "text": "#Subte | Línea B: Ya se detienen en todas las estaciones.",
+    "line": "B",
+    "kind": "fin",
+    "stations": null,
+    "hashtags": [
+      "#subte"
+    ]
+  },
+  {
+    "id": "1930774170096316570",
+    "datetime": "2025-06-05T23:50:08.000Z",
+    "text": "#Subte | Línea B: Viernes y sábados horario extendido. Estaciones habilitadas en http:// buenosaires.gob.ar",
+    "line": "B",
+    "kind": "info_operativa",
+    "stations": null,
+    "hashtags": [
+      "#subte"
+    ]
+  },
+  {
+    "id": "1931137455463219636",
+    "datetime": "2025-06-06T23:53:42.000Z",
+    "text": "#Subte | Línea B: Viernes y sábados horario extendido. Estaciones habilitadas en http:// buenosaires.gob.ar",
+    "line": "B",
+    "kind": "info_operativa",
+    "stations": null,
+    "hashtags": [
+      "#subte"
+    ]
+  },
+  {
+    "id": "1931500203976106104",
+    "datetime": "2025-06-07T23:55:08.000Z",
+    "text": "#Subte | Línea B: Viernes y sábados horario extendido. Estaciones habilitadas en http:// buenosaires.gob.ar",
+    "line": "B",
+    "kind": "info_operativa",
+    "stations": null,
+    "hashtags": [
+      "#subte"
+    ]
+  },
+  {
+    "id": "1936515757363319078",
+    "datetime": "2025-06-21T20:05:09.000Z",
+    "text": "#Subte | Línea B: Hoy horario extendido Más información en http:// buenosaires.gob.ar/subte",
+    "line": "B",
+    "kind": "info_operativa",
+    "stations": null,
+    "hashtags": [
+      "#subte"
+    ]
+  },
+  {
+    "id": "1938289001607172504",
+    "datetime": "2025-06-26T17:31:24.000Z",
+    "text": "#Subte | Línea B: Servicio limitado entre las estaciones Leandro N. Alem y Federico Lacroze",
+    "line": "B",
+    "kind": "inicio_limitado",
+    "stations": "Leandro N",
+    "hashtags": [
+      "#subte"
+    ]
+  },
+  {
+    "id": "1938291020732485999",
+    "datetime": "2025-06-26T17:39:25.000Z",
+    "text": "#Subte | Línea B: Servicio normalizado",
+    "line": "B",
+    "kind": "fin",
+    "stations": null,
+    "hashtags": [
+      "#subte"
+    ]
+  },
+  {
+    "id": "1941178995313086770",
+    "datetime": "2025-07-04T16:55:12.000Z",
+    "text": "#Subte | Línea B: Viernes y sábados horario extendido. Estaciones habilitadas en http:// buenosaires.gob.ar",
+    "line": "B",
+    "kind": "info_operativa",
+    "stations": null,
+    "hashtags": [
+      "#subte"
+    ]
+  },
+  {
+    "id": "1941237669830459462",
+    "datetime": "2025-07-04T20:48:21.000Z",
+    "text": "Recordá que los viernes y sábados la Línea B funciona con horario extendido. Último tres desde J. M. De Rosas: 01.00 h. Último tren desde L. N. Alem: 01:30 h.",
+    "line": "B",
+    "kind": "info_operativa",
+    "stations": null,
+    "hashtags": []
+  },
+  {
+    "id": "1941577824831472081",
+    "datetime": "2025-07-05T19:20:00.000Z",
+    "text": "Si hoy vas a La Renga, podés ir volver en Subte. A la vuelta y hasta la 1 AM, te subís en Caseros y podés bajar en las estaciones: Humberto 1º, Once, Corrientes (podés combinar con la Línea B que también va a estar con extensión horaria), Santa Fe y Facultad de Derecho.",
+    "line": "B",
+    "kind": "otro",
+    "stations": null,
+    "hashtags": []
+  },
+  {
+    "id": "1941589667360448909",
+    "datetime": "2025-07-05T20:07:04.000Z",
+    "text": "#Subte | Línea B: Viernes y sábados horario extendido. Estaciones habilitadas en http:// buenosaires.gob.ar",
+    "line": "B",
+    "kind": "info_operativa",
+    "stations": null,
+    "hashtags": [
+      "#subte"
+    ]
+  },
+  {
+    "id": "1942217176573776284",
+    "datetime": "2025-07-07T13:40:34.000Z",
+    "text": "#Subte | Línea B: Servicio con demora",
+    "line": "B",
+    "kind": "inicio_demora",
+    "stations": null,
+    "hashtags": [
+      "#subte"
+    ]
+  },
+  {
+    "id": "1942219197880152493",
+    "datetime": "2025-07-07T13:48:36.000Z",
+    "text": "#Subte | Línea B: Servicio limitado entre las estaciones Juan Manuel de Rosas y Dorrego",
+    "line": "B",
+    "kind": "inicio_limitado",
+    "stations": "Juan Manuel de Rosas y Dorrego",
+    "hashtags": [
+      "#subte"
+    ]
+  },
+  {
+    "id": "1942221219492700583",
+    "datetime": "2025-07-07T13:56:38.000Z",
+    "text": "#Subte | Línea B: Ya realiza el recorrido completo entre cabeceras",
+    "line": "B",
+    "kind": "fin",
+    "stations": null,
+    "hashtags": [
+      "#subte"
+    ]
+  },
+  {
+    "id": "1942224250355511391",
+    "datetime": "2025-07-07T14:08:40.000Z",
+    "text": "#Subte | Línea B: Servicio normalizado",
+    "line": "B",
+    "kind": "fin",
+    "stations": null,
+    "hashtags": [
+      "#subte"
+    ]
+  },
+  {
+    "id": "1942642073405907412",
+    "datetime": "2025-07-08T17:48:57.000Z",
+    "text": "#Subte | Línea B: Servicio con demora",
+    "line": "B",
+    "kind": "inicio_demora",
+    "stations": null,
+    "hashtags": [
+      "#subte"
+    ]
+  },
+  {
+    "id": "1942646619695964648",
+    "datetime": "2025-07-08T18:07:01.000Z",
+    "text": "#Subte | Línea B: Servicio normalizado",
+    "line": "B",
+    "kind": "fin",
+    "stations": null,
+    "hashtags": [
+      "#subte"
+    ]
+  },
+  {
+    "id": "1943441148103512231",
+    "datetime": "2025-07-10T22:44:11.000Z",
+    "text": "#Subte | Línea B: Viernes y sábados horario extendido. Estaciones habilitadas en http:// buenosaires.gob.ar",
+    "line": "B",
+    "kind": "info_operativa",
+    "stations": null,
+    "hashtags": [
+      "#subte"
+    ]
+  },
+  {
+    "id": "1943687363227423179",
+    "datetime": "2025-07-11T15:02:34.000Z",
+    "text": "#Subte | Línea B: Viernes y sábados horario extendido. Estaciones habilitadas en http:// buenosaires.gob.ar",
+    "line": "B",
+    "kind": "info_operativa",
+    "stations": null,
+    "hashtags": [
+      "#subte"
+    ]
+  },
+  {
+    "id": "1943733709040922658",
+    "datetime": "2025-07-11T18:06:43.000Z",
+    "text": "Recordá que los viernes y sábados la Línea B funciona con horario extendido. Último tres desde J. M. De Rosas: 01.00 h. Último tren desde L. N. Alem: 01:30 h.",
+    "line": "B",
+    "kind": "info_operativa",
+    "stations": null,
+    "hashtags": []
+  },
+  {
+    "id": "1944050999133389138",
+    "datetime": "2025-07-12T15:07:31.000Z",
+    "text": "#Subte | Línea B: Viernes y sábados horario extendido. Estaciones habilitadas en http:// buenosaires.gob.ar",
+    "line": "B",
+    "kind": "info_operativa",
+    "stations": null,
+    "hashtags": [
+      "#subte"
+    ]
+  },
+  {
+    "id": "1945971189467296132",
+    "datetime": "2025-07-17T22:17:40.000Z",
+    "text": "#Subte | Línea B: Viernes y sábados horario extendido. Estaciones habilitadas en http:// buenosaires.gob.ar",
+    "line": "B",
+    "kind": "info_operativa",
+    "stations": null,
+    "hashtags": [
+      "#subte"
+    ]
+  },
+  {
+    "id": "1946353814241456428",
+    "datetime": "2025-07-18T23:38:05.000Z",
+    "text": "Recordá que los viernes y sábados la Línea B funciona con horario extendido. Último tres desde J. M. De Rosas: 01.00 h. Último tren desde L. N. Alem: 01:30 h.",
+    "line": "B",
+    "kind": "info_operativa",
+    "stations": null,
+    "hashtags": []
+  },
+  {
+    "id": "1946356020076257506",
+    "datetime": "2025-07-18T23:46:51.000Z",
+    "text": "#Subte | Línea B: Viernes y sábados horario extendido. Estaciones habilitadas en http:// buenosaires.gob.ar",
+    "line": "B",
+    "kind": "info_operativa",
+    "stations": null,
+    "hashtags": [
+      "#subte"
+    ]
+  },
+  {
+    "id": "1946719430530027585",
+    "datetime": "2025-07-19T23:50:55.000Z",
+    "text": "#Subte | Línea B: Viernes y sábados horario extendido. Estaciones habilitadas en http:// buenosaires.gob.ar",
+    "line": "B",
+    "kind": "info_operativa",
+    "stations": null,
+    "hashtags": [
+      "#subte"
+    ]
+  },
+  {
+    "id": "1948504415180091840",
+    "datetime": "2025-07-24T22:03:48.000Z",
+    "text": "#Subte | Línea B: Viernes y sábados horario extendido. Estaciones habilitadas en http:// buenosaires.gob.ar",
+    "line": "B",
+    "kind": "info_operativa",
+    "stations": null,
+    "hashtags": [
+      "#subte"
+    ]
+  },
+  {
+    "id": "1948732484012708088",
+    "datetime": "2025-07-25T13:10:04.000Z",
+    "text": "#Subte | Línea B: Viernes y sábados horario extendido. Estaciones habilitadas en http:// buenosaires.gob.ar",
+    "line": "B",
+    "kind": "info_operativa",
+    "stations": null,
+    "hashtags": [
+      "#subte"
+    ]
+  },
+  {
+    "id": "1949095621849141669",
+    "datetime": "2025-07-26T13:13:03.000Z",
+    "text": "#Subte | Línea B: Viernes y sábados horario extendido. Estaciones habilitadas en http:// buenosaires.gob.ar",
+    "line": "B",
+    "kind": "info_operativa",
+    "stations": null,
+    "hashtags": [
+      "#subte"
+    ]
+  },
+  {
+    "id": "1953612541843644555",
+    "datetime": "2025-08-08T00:21:40.000Z",
+    "text": "#Subte | Línea B: Viernes y sábados horario extendido. Estaciones habilitadas en http:// buenosaires.gob.ar",
+    "line": "B",
+    "kind": "info_operativa",
+    "stations": null,
+    "hashtags": [
+      "#subte"
+    ]
+  },
+  {
+    "id": "1953975955304640658",
+    "datetime": "2025-08-09T00:25:45.000Z",
+    "text": "#Subte | Línea B: Viernes y sábados horario extendido. Estaciones habilitadas en http:// buenosaires.gob.ar",
+    "line": "B",
+    "kind": "info_operativa",
+    "stations": null,
+    "hashtags": [
+      "#subte"
+    ]
+  },
+  {
+    "id": "1954338659521446119",
+    "datetime": "2025-08-10T00:27:00.000Z",
+    "text": "#Subte | Línea B: Viernes y sábados horario extendido. Estaciones habilitadas en http:// buenosaires.gob.ar",
+    "line": "B",
+    "kind": "info_operativa",
+    "stations": null,
+    "hashtags": [
+      "#subte"
+    ]
+  },
+  {
+    "id": "1957400823446520145",
+    "datetime": "2025-08-18T11:14:57.000Z",
+    "text": "#Subte | Línea B: Servicio normalizado",
+    "line": "B",
+    "kind": "fin",
+    "stations": null,
+    "hashtags": [
+      "#subte"
+    ]
+  },
+  {
+    "id": "1958691040086384792",
+    "datetime": "2025-08-22T00:41:49.000Z",
+    "text": "#Subte | Línea B: Viernes y sábados horario extendido. Estaciones habilitadas en http:// buenosaires.gob.ar",
+    "line": "B",
+    "kind": "info_operativa",
+    "stations": null,
+    "hashtags": [
+      "#subte"
+    ]
+  },
+  {
+    "id": "1958841433344901562",
+    "datetime": "2025-08-22T10:39:25.000Z",
+    "text": "#Subte | Línea B: Servicio limitado entre las estaciones Juan Manuel de Rosas y Carlos Pellegrini",
+    "line": "B",
+    "kind": "inicio_limitado",
+    "stations": "Juan Manuel de Rosas y Carlos Pellegrini",
+    "hashtags": [
+      "#subte"
+    ]
+  },
+  {
+    "id": "1958846226759049609",
+    "datetime": "2025-08-22T10:58:28.000Z",
+    "text": "#Subte | Línea B: Servicio normalizado",
+    "line": "B",
+    "kind": "fin",
+    "stations": null,
+    "hashtags": [
+      "#subte"
+    ]
+  },
+  {
+    "id": "1961386875534414109",
+    "datetime": "2025-08-29T11:14:06.000Z",
+    "text": "#Subte | Línea B: Servicio con demora",
+    "line": "B",
+    "kind": "inicio_demora",
+    "stations": null,
+    "hashtags": [
+      "#subte"
+    ]
+  },
+  {
+    "id": "1961389904765554847",
+    "datetime": "2025-08-29T11:26:08.000Z",
+    "text": "#Subte | Línea B: Servicio normalizado",
+    "line": "B",
+    "kind": "fin",
+    "stations": null,
+    "hashtags": [
+      "#subte"
+    ]
+  },
+  {
+    "id": "1961390663255117986",
+    "datetime": "2025-08-29T11:29:09.000Z",
+    "text": "#Subte | Línea B: Estacion Carlos Gardel cerrada por obras de renovacion integral",
+    "line": "B",
+    "kind": "info_operativa",
+    "stations": null,
+    "hashtags": [
+      "#subte"
+    ]
+  },
+  {
+    "id": "1963799202397405498",
+    "datetime": "2025-09-05T02:59:50.000Z",
+    "text": "#Subte | Línea B: Servicio finalizado",
+    "line": "B",
+    "kind": "otro",
+    "stations": null,
+    "hashtags": [
+      "#subte"
+    ]
+  },
+  {
+    "id": "1964191490772500836",
+    "datetime": "2025-09-06T04:58:38.000Z",
+    "text": "#Subte | Línea B: Estación Carlos Gardel cerrada por obras. Viernes y Sábado con horario extendido.",
+    "line": "B",
+    "kind": "info_operativa",
+    "stations": null,
+    "hashtags": [
+      "#subte"
+    ]
+  },
+  {
+    "id": "1964489025512759734",
+    "datetime": "2025-09-07T00:40:56.000Z",
+    "text": "#Subte | Línea B: Estación Carlos Gardel cerrada por obras. Viernes y Sábado con horario extendido.",
+    "line": "B",
+    "kind": "info_operativa",
+    "stations": null,
+    "hashtags": [
+      "#subte"
+    ]
+  },
+  {
+    "id": "1965131044367073386",
+    "datetime": "2025-09-08T19:12:06.000Z",
+    "text": "#Subte | Línea B: Servicio con demora",
+    "line": "B",
+    "kind": "inicio_demora",
+    "stations": null,
+    "hashtags": [
+      "#subte"
+    ]
+  },
+  {
+    "id": "1965133823512854798",
+    "datetime": "2025-09-08T19:23:08.000Z",
+    "text": "#Subte | Línea B: Servicio normalizado",
+    "line": "B",
+    "kind": "fin",
+    "stations": null,
+    "hashtags": [
+      "#subte"
+    ]
+  },
+  {
+    "id": "1966471175892050204",
+    "datetime": "2025-09-12T11:57:18.000Z",
+    "text": "#Subte | Línea B: Estación Carlos Gardel cerrada por obras. Viernes y Sábado con horario extendido.",
+    "line": "B",
+    "kind": "info_operativa",
+    "stations": null,
+    "hashtags": [
+      "#subte"
+    ]
+  },
+  {
+    "id": "1967090511673508226",
+    "datetime": "2025-09-14T04:58:19.000Z",
+    "text": "#Subte | Línea B: A partir del 15/09 estación Uruguay cerrada por obras de renovación integral.",
+    "line": "B",
+    "kind": "info_operativa",
+    "stations": null,
+    "hashtags": [
+      "#subte"
+    ]
+  },
+  {
+    "id": "1968280009463750755",
+    "datetime": "2025-09-17T11:44:57.000Z",
+    "text": "#Subte | Línea B: Servicio con demora",
+    "line": "B",
+    "kind": "inicio_demora",
+    "stations": null,
+    "hashtags": [
+      "#subte"
+    ]
+  },
+  {
+    "id": "1970931809379856737",
+    "datetime": "2025-09-24T19:22:16.000Z",
+    "text": "Como parte del Plan de Renovación Integral de Estaciones está siendo intervenida Uruguay de la Línea B. Los trabajos contemplan recambio de pisos, impermeabilización, pintura, incorporación de nuevas luces led, revestimiento de cielorrasos y paredes, y la restauración de murales.",
+    "line": "B",
+    "kind": "otro",
+    "stations": null,
+    "hashtags": []
+  },
+  {
+    "id": "1971590951001788467",
+    "datetime": "2025-09-26T15:01:27.000Z",
+    "text": "#Subte | Línea B: Carlos Gardel y Uruguay cerradas por obras. Viernes y Sábado con horario extendido.",
+    "line": "B",
+    "kind": "info_operativa",
+    "stations": null,
+    "hashtags": [
+      "#subte"
+    ]
+  },
+  {
+    "id": "1971705826193674428",
+    "datetime": "2025-09-26T22:37:56.000Z",
+    "text": "#Subte | Línea B: Servicio con demora",
+    "line": "B",
+    "kind": "inicio_demora",
+    "stations": null,
+    "hashtags": [
+      "#subte"
+    ]
+  },
+  {
+    "id": "1971709865434218606",
+    "datetime": "2025-09-26T22:53:59.000Z",
+    "text": "#Subte | Línea B: Servicio normalizado",
+    "line": "B",
+    "kind": "fin",
+    "stations": null,
+    "hashtags": [
+      "#subte"
+    ]
+  },
+  {
+    "id": "1975018617923145914",
+    "datetime": "2025-10-06T02:01:47.000Z",
+    "text": "#Subte | Línea B: Servicio finalizado",
+    "line": "B",
+    "kind": "otro",
+    "stations": null,
+    "hashtags": [
+      "#subte"
+    ]
+  },
+  {
+    "id": "1975308522935009434",
+    "datetime": "2025-10-06T21:13:45.000Z",
+    "text": "#Subte | Línea B: Servicio con demora",
+    "line": "B",
+    "kind": "inicio_demora",
+    "stations": null,
+    "hashtags": [
+      "#subte"
+    ]
+  },
+  {
+    "id": "1975313319318659086",
+    "datetime": "2025-10-06T21:32:49.000Z",
+    "text": "#Subte | Línea B: Servicio normalizado",
+    "line": "B",
+    "kind": "fin",
+    "stations": null,
+    "hashtags": [
+      "#subte"
+    ]
+  },
+  {
+    "id": "1975315339647836319",
+    "datetime": "2025-10-06T21:40:51.000Z",
+    "text": "#Subte | Línea B: Estaciones Carlos Gardel y Uruguay cerradas por obras de renovación integral.",
+    "line": "B",
+    "kind": "info_operativa",
+    "stations": null,
+    "hashtags": [
+      "#subte"
+    ]
+  },
+  {
+    "id": "1975579480656654463",
+    "datetime": "2025-10-07T15:10:27.000Z",
+    "text": "#Subte | Línea B: Servicio limitado entre las estaciones Juan Manuel de Rosas y Dorrego",
+    "line": "B",
+    "kind": "inicio_limitado",
+    "stations": "Juan Manuel de Rosas y Dorrego",
+    "hashtags": [
+      "#subte"
+    ]
+  },
+  {
+    "id": "1975661500099395985",
+    "datetime": "2025-10-07T20:36:22.000Z",
+    "text": "#Subte | Línea B: Servicio normalizado",
+    "line": "B",
+    "kind": "fin",
+    "stations": null,
+    "hashtags": [
+      "#subte"
+    ]
+  },
+  {
+    "id": "1975663268166332812",
+    "datetime": "2025-10-07T20:43:23.000Z",
+    "text": "#Subte | Línea B: Estaciones Carlos Gardel y Uruguay cerradas por obras de renovación integral.",
+    "line": "B",
+    "kind": "info_operativa",
+    "stations": null,
+    "hashtags": [
+      "#subte"
+    ]
+  },
+  {
+    "id": "1976945119430410581",
+    "datetime": "2025-10-11T09:37:00.000Z",
+    "text": "#Subte | Línea B: Carlos Gardel y Uruguay cerradas por obras. Viernes y Sábado con horario extendido.",
+    "line": "B",
+    "kind": "info_operativa",
+    "stations": null,
+    "hashtags": [
+      "#subte"
+    ]
+  },
+  {
+    "id": "1978121736420819321",
+    "datetime": "2025-10-14T15:32:28.000Z",
+    "text": "Mañana hay extensión horaria en la Línea B por Carlos Vives. Estaciones habilitadas: L. N. Alem, Carlos Pellegrini, Callao, Pueyrredón, Medrano, Dorrego, F. Lacroze, y J. M. de Rosas. Último tren desde J. M. De Rosas a la 01.00 h., y desde L. N. Alem a la 01:30 h.",
+    "line": "B",
+    "kind": "otro",
+    "stations": null,
+    "hashtags": []
+  },
+  {
+    "id": "1979169605298876753",
+    "datetime": "2025-10-17T12:56:19.000Z",
+    "text": "#Subte | Línea B: Carlos Gardel y Uruguay cerradas por obras Viernes y sabado con horario extendido",
+    "line": "B",
+    "kind": "info_operativa",
+    "stations": null,
+    "hashtags": [
+      "#subte"
+    ]
+  },
+  {
+    "id": "1979774638738620667",
+    "datetime": "2025-10-19T05:00:30.000Z",
+    "text": "#Subte | Línea B: Estaciones Carlos Gardel y Uruguay cerradas por obras de renovación integral.",
+    "line": "B",
+    "kind": "info_operativa",
+    "stations": null,
+    "hashtags": [
+      "#subte"
+    ]
+  },
+  {
+    "id": "1984189615952011373",
+    "datetime": "2025-10-31T09:24:03.000Z",
+    "text": "#Subte | Línea B: Carlos Gardel y Uruguay cerradas por obras. Viernes y Sábado con horario extendido.",
+    "line": "B",
+    "kind": "info_operativa",
+    "stations": null,
+    "hashtags": [
+      "#subte"
+    ]
+  },
+  {
+    "id": "1986713158493380616",
+    "datetime": "2025-11-07T08:31:42.000Z",
+    "text": "#Subte | Línea B: Viernes y Sábado con horario extendido. Carlos Gardel y Uruguay cerradas por obras.",
+    "line": "B",
+    "kind": "info_operativa",
+    "stations": null,
+    "hashtags": [
+      "#subte"
+    ]
+  },
+  {
+    "id": "1987392164146323566",
+    "datetime": "2025-11-09T05:29:50.000Z",
+    "text": "#Subte | Línea B: Estaciones Carlos Gardel y Uruguay cerradas por obras de renovación integral.",
+    "line": "B",
+    "kind": "info_operativa",
+    "stations": null,
+    "hashtags": [
+      "#subte"
+    ]
+  },
+  {
+    "id": "1987938839520768152",
+    "datetime": "2025-11-10T17:42:08.000Z",
+    "text": "#Subte | Línea B: Carlos Gardel y Uruguay cerradas por obras de renovación integral.",
+    "line": "B",
+    "kind": "info_operativa",
+    "stations": null,
+    "hashtags": [
+      "#subte"
+    ]
+  },
+  {
+    "id": "1989295678720209260",
+    "datetime": "2025-11-14T11:33:43.000Z",
+    "text": "#Subte | Línea B: Hoy funcionará con horario extendido. Carlos Gardel y Uruguay cerradas por obras.",
+    "line": "B",
+    "kind": "info_operativa",
+    "stations": null,
+    "hashtags": [
+      "#subte"
+    ]
+  },
+  {
+    "id": "1989921316678341017",
+    "datetime": "2025-11-16T04:59:47.000Z",
+    "text": "#Subte | Línea B: Carlos Gardel y Uruguay cerradas por obras de renovación integral.",
+    "line": "B",
+    "kind": "info_operativa",
+    "stations": null,
+    "hashtags": [
+      "#subte"
+    ]
+  },
+  {
+    "id": "1990198249609671040",
+    "datetime": "2025-11-16T23:20:13.000Z",
+    "text": "#Subte | Línea B: Servicio con demora",
+    "line": "B",
+    "kind": "inicio_demora",
+    "stations": null,
+    "hashtags": [
+      "#subte"
+    ]
+  },
+  {
+    "id": "1990206332176126165",
+    "datetime": "2025-11-16T23:52:20.000Z",
+    "text": "#Subte | Línea B: Servicio normalizado",
+    "line": "B",
+    "kind": "fin",
+    "stations": null,
+    "hashtags": [
+      "#subte"
+    ]
+  },
+  {
+    "id": "1990207091810697287",
+    "datetime": "2025-11-16T23:55:21.000Z",
+    "text": "#Subte | Línea B: Carlos Gardel y Uruguay cerradas por obras de renovación integral.",
+    "line": "B",
+    "kind": "info_operativa",
+    "stations": null,
+    "hashtags": [
+      "#subte"
+    ]
+  },
+  {
+    "id": "1990238679252586623",
+    "datetime": "2025-11-17T02:00:52.000Z",
+    "text": "#Subte | Línea B: Servicio finalizado",
+    "line": "B",
+    "kind": "otro",
+    "stations": null,
+    "hashtags": [
+      "#subte"
+    ]
+  },
+  {
+    "id": "1993340467199852722",
+    "datetime": "2025-11-25T15:26:16.000Z",
+    "text": "Avanzan las obras en el Subte. Como parte del Plan de Renovación Integral de Estaciones, continúan los trabajos de mejora en Carlos Gardel y Uruguay de la Línea B. Impermeabilización, pintura, reparación de pisos, nuevas luces LED y puesta en valor de murales.",
+    "line": "B",
+    "kind": "info_operativa",
+    "stations": null,
+    "hashtags": []
+  },
+  {
+    "id": "1994333656236671164",
+    "datetime": "2025-11-28T09:12:51.000Z",
+    "text": "#Subte | Línea B: Hoy funcionará con horario extendido. Carlos Gardel y Uruguay cerradas por obras.",
+    "line": "B",
+    "kind": "info_operativa",
+    "stations": null,
+    "hashtags": [
+      "#subte"
+    ]
+  },
+  {
+    "id": "1994346791773315157",
+    "datetime": "2025-11-28T10:05:02.000Z",
+    "text": "#Subte | Línea B: Viernes y Sábado con horario extendido. Carlos Gardel y Uruguay cerradas por obras.",
+    "line": "B",
+    "kind": "info_operativa",
+    "stations": null,
+    "hashtags": [
+      "#subte"
+    ]
+  },
+  {
+    "id": "1994385940203106518",
+    "datetime": "2025-11-28T12:40:36.000Z",
+    "text": "#Subte | Línea B: 01/12 reapertura de Carlos Gardel Uruguay continúa cerrada por obras.",
+    "line": "B",
+    "kind": "info_operativa",
+    "stations": null,
+    "hashtags": [
+      "#subte"
+    ]
+  },
+  {
+    "id": "1994390994356244929",
+    "datetime": "2025-11-28T13:00:41.000Z",
+    "text": "#Subte | Línea B: 01/12 reapertura de Carlos Gardel. Uruguay continúa cerrada por obras.",
+    "line": "B",
+    "kind": "info_operativa",
+    "stations": null,
+    "hashtags": [
+      "#subte"
+    ]
+  },
+  {
+    "id": "1994542615128047763",
+    "datetime": "2025-11-28T23:03:10.000Z",
+    "text": "#Subte | Línea B: Viernes y Sábado con horario extendido. Carlos Gardel y Uruguay cerradas por obras.",
+    "line": "B",
+    "kind": "info_operativa",
+    "stations": null,
+    "hashtags": [
+      "#subte"
+    ]
+  },
+  {
+    "id": "1994632308335235377",
+    "datetime": "2025-11-29T04:59:35.000Z",
+    "text": "#Subte | Línea B: 01/12 reapertura de Carlos Gardel. Uruguay continúa cerrada por obras.",
+    "line": "B",
+    "kind": "info_operativa",
+    "stations": null,
+    "hashtags": [
+      "#subte"
+    ]
+  },
+  {
+    "id": "1994929295920070974",
+    "datetime": "2025-11-30T00:39:42.000Z",
+    "text": "#Subte | Línea B: Viernes y Sábado con horario extendido. Carlos Gardel y Uruguay cerradas por obras.",
+    "line": "B",
+    "kind": "info_operativa",
+    "stations": null,
+    "hashtags": [
+      "#subte"
+    ]
+  },
+  {
+    "id": "1994994742946410920",
+    "datetime": "2025-11-30T04:59:46.000Z",
+    "text": "#Subte | Línea B: 01/12 reapertura de Carlos Gardel. Uruguay continúa cerrada por obras.",
+    "line": "B",
+    "kind": "info_operativa",
+    "stations": null,
+    "hashtags": [
+      "#subte"
+    ]
+  },
+  {
+    "id": "1995480256753381837",
+    "datetime": "2025-12-01T13:09:02.000Z",
+    "text": "Recordá que, a partir de hoy, la estación Carlos Gardel de la Línea B está abierta luego de las obras de renovación integral. Los trabajos continuarán con la estación ya operativa.",
+    "line": "B",
+    "kind": "info_operativa",
+    "stations": null,
+    "hashtags": []
+  },
+  {
+    "id": "1996200872959680965",
+    "datetime": "2025-12-03T12:52:30.000Z",
+    "text": "#Subte | Línea B: Reabrió Carlos Gardel. Uruguay continúa cerrada por obras.",
+    "line": "B",
+    "kind": "info_operativa",
+    "stations": null,
+    "hashtags": [
+      "#subte"
+    ]
+  },
+  {
+    "id": "1996894510089920882",
+    "datetime": "2025-12-05T10:48:46.000Z",
+    "text": "#Subte | Línea B: Servicio con demora",
+    "line": "B",
+    "kind": "inicio_demora",
+    "stations": null,
+    "hashtags": [
+      "#subte"
+    ]
+  },
+  {
+    "id": "1996903109155569785",
+    "datetime": "2025-12-05T11:22:56.000Z",
+    "text": "#Subte | Línea B: Servicio normalizado",
+    "line": "B",
+    "kind": "fin",
+    "stations": null,
+    "hashtags": [
+      "#subte"
+    ]
+  },
+  {
+    "id": "1996904373809516656",
+    "datetime": "2025-12-05T11:27:58.000Z",
+    "text": "#Subte | Línea B: Reabrió Carlos Gardel. Uruguay continúa cerrada por obras.",
+    "line": "B",
+    "kind": "info_operativa",
+    "stations": null,
+    "hashtags": [
+      "#subte"
+    ]
+  },
+  {
+    "id": "1996967479923409247",
+    "datetime": "2025-12-05T15:38:43.000Z",
+    "text": "Continuamos con el Plan de Renovación Integral de Estaciones. A partir del martes 9 de diciembre, la estación Malabia de la Línea B permanecerá cerrada temporalmente por obras de mejora. Más info en https:// buenosaires.gob.ar/noticias/subte -este-martes-cierra-la-estacion-malabia-por-obras-de-renovacion …",
+    "line": "B",
+    "kind": "info_operativa",
+    "stations": null,
+    "hashtags": []
+  },
+  {
+    "id": "1996989522156847597",
+    "datetime": "2025-12-05T17:06:19.000Z",
+    "text": "#Subte | Línea B: A partir del 09/12 estación Malabia cerrada por obras de renovación integral.",
+    "line": "B",
+    "kind": "info_operativa",
+    "stations": null,
+    "hashtags": [
+      "#subte"
+    ]
+  },
+  {
+    "id": "1997088597501985196",
+    "datetime": "2025-12-05T23:40:00.000Z",
+    "text": "#Subte | Línea B: Uruguay cerrada por obras. Viernes y sabado con horario extendido.",
+    "line": "B",
+    "kind": "info_operativa",
+    "stations": null,
+    "hashtags": [
+      "#subte"
+    ]
+  },
+  {
+    "id": "1997441371188113601",
+    "datetime": "2025-12-06T23:01:48.000Z",
+    "text": "#Subte | Línea B: Viernes y Sábado con horario extendido. Uruguay cerrada por obras.",
+    "line": "B",
+    "kind": "info_operativa",
+    "stations": null,
+    "hashtags": [
+      "#subte"
+    ]
+  },
+  {
+    "id": "1997531061790634291",
+    "datetime": "2025-12-07T04:58:12.000Z",
+    "text": "#Subte | Línea B: A partir del 09/12 estación Malabia cerrada por obras de renovación integral.",
+    "line": "B",
+    "kind": "info_operativa",
+    "stations": null,
+    "hashtags": [
+      "#subte"
+    ]
+  },
+  {
+    "id": "1998309367896998058",
+    "datetime": "2025-12-09T08:30:54.000Z",
+    "text": "#Subte | Línea B: Malabia y Uruguay cerradas por obras de renovación integral",
+    "line": "B",
+    "kind": "info_operativa",
+    "stations": null,
+    "hashtags": [
+      "#subte"
+    ]
+  },
+  {
+    "id": "1998507221731135667",
+    "datetime": "2025-12-09T21:37:06.000Z",
+    "text": "#Subte | Línea B: Servicio con demora",
+    "line": "B",
+    "kind": "inicio_demora",
+    "stations": null,
+    "hashtags": [
+      "#subte"
+    ]
+  },
+  {
+    "id": "1998516061017124889",
+    "datetime": "2025-12-09T22:12:14.000Z",
+    "text": "#Subte | Línea B: Servicio normalizado",
+    "line": "B",
+    "kind": "fin",
+    "stations": null,
+    "hashtags": [
+      "#subte"
+    ]
+  },
+  {
+    "id": "1998520860387270661",
+    "datetime": "2025-12-09T22:31:18.000Z",
+    "text": "#Subte | Línea B: Malabia y Uruguay cerradas por obras de renovación integral",
+    "line": "B",
+    "kind": "info_operativa",
+    "stations": null,
+    "hashtags": [
+      "#subte"
+    ]
+  },
+  {
+    "id": "1999266650143510553",
+    "datetime": "2025-12-11T23:54:48.000Z",
+    "text": "#Subte | Línea B: Servicio con demora",
+    "line": "B",
+    "kind": "inicio_demora",
+    "stations": null,
+    "hashtags": [
+      "#subte"
+    ]
+  },
+  {
+    "id": "1999271954650431900",
+    "datetime": "2025-12-12T00:15:53.000Z",
+    "text": "#Subte | Línea B: Servicio limitado entre las estaciones Leandro N. Alem y Angel Gallardo",
+    "line": "B",
+    "kind": "inicio_limitado",
+    "stations": "Leandro N",
+    "hashtags": [
+      "#subte"
+    ]
+  },
+  {
+    "id": "1999274987266474476",
+    "datetime": "2025-12-12T00:27:56.000Z",
+    "text": "#Subte | Línea B: Servicio normalizado",
+    "line": "B",
+    "kind": "fin",
+    "stations": null,
+    "hashtags": [
+      "#subte"
+    ]
+  },
+  {
+    "id": "1999280796562010444",
+    "datetime": "2025-12-12T00:51:01.000Z",
+    "text": "#Subte | Línea B: Malabia y Uruguay cerradas por obras de renovación integral",
+    "line": "B",
+    "kind": "info_operativa",
+    "stations": null,
+    "hashtags": [
+      "#subte"
+    ]
+  },
+  {
+    "id": "1999397004825219086",
+    "datetime": "2025-12-12T08:32:47.000Z",
+    "text": "#Subte | Línea B: Viernes y Sábado con horario extendido. Malabia y Uruguay cerradas por obras.",
+    "line": "B",
+    "kind": "info_operativa",
+    "stations": null,
+    "hashtags": [
+      "#subte"
+    ]
+  },
+  {
+    "id": "2000532042254025004",
+    "datetime": "2025-12-15T11:43:01.000Z",
+    "text": "#Subte | Línea B: Malabia y Uruguay cerradas por obras de renovación integral",
+    "line": "B",
+    "kind": "info_operativa",
+    "stations": null,
+    "hashtags": [
+      "#subte"
+    ]
+  },
+  {
+    "id": "2001979099988873666",
+    "datetime": "2025-12-19T11:33:07.000Z",
+    "text": "#Subte | Línea B: Viernes y Sábado con horario extendido. Malabia y Uruguay cerradas por obras.",
+    "line": "B",
+    "kind": "info_operativa",
+    "stations": null,
+    "hashtags": [
+      "#subte"
+    ]
+  },
+  {
+    "id": "2002604395356188685",
+    "datetime": "2025-12-21T04:57:49.000Z",
+    "text": "#Subte | Línea B: Malabia y Uruguay cerradas por obras de renovación integral",
+    "line": "B",
+    "kind": "info_operativa",
+    "stations": null,
+    "hashtags": [
+      "#subte"
+    ]
+  },
+  {
+    "id": "2003915392297656749",
+    "datetime": "2025-12-24T19:47:15.000Z",
+    "text": "#Subte | Línea B: Malabia y Uruguay cerradas por obras de renovación integral.",
+    "line": "B",
+    "kind": "info_operativa",
+    "stations": null,
+    "hashtags": [
+      "#subte"
+    ]
+  },
+  {
+    "id": "2004481649619128728",
+    "datetime": "2025-12-26T09:17:21.000Z",
+    "text": "#Subte | Línea B: Malabia y Uruguay cerradas por obras de renovación integral",
+    "line": "B",
+    "kind": "info_operativa",
+    "stations": null,
+    "hashtags": [
+      "#subte"
+    ]
+  },
+  {
+    "id": "2004677213044506814",
+    "datetime": "2025-12-26T22:14:27.000Z",
+    "text": "#Subte | Línea B: Viernes y Sábado con horario extendido. Malabia y Uruguay cerradas por obras.",
+    "line": "B",
+    "kind": "info_operativa",
+    "stations": null,
+    "hashtags": [
+      "#subte"
+    ]
+  },
+  {
+    "id": "2005140522029973883",
+    "datetime": "2025-12-28T04:55:28.000Z",
+    "text": "#Subte | Línea B: Malabia y Uruguay cerradas por obras de renovación integral",
+    "line": "B",
+    "kind": "info_operativa",
+    "stations": null,
+    "hashtags": [
+      "#subte"
+    ]
+  },
+  {
+    "id": "2006411700992446910",
+    "datetime": "2025-12-31T17:06:41.000Z",
+    "text": "#Subte | Línea B: Malabia y Uruguay cerradas por obras de renovación integral.",
+    "line": "B",
+    "kind": "info_operativa",
+    "stations": null,
+    "hashtags": [
+      "#subte"
+    ]
+  },
+  {
+    "id": "2007007263915905476",
+    "datetime": "2026-01-02T08:33:14.000Z",
+    "text": "#Subte | Línea B: Hoy funcionará con horario extendido. Malabia y Uruguay cerradas por obras.",
+    "line": "B",
+    "kind": "info_operativa",
+    "stations": null,
+    "hashtags": [
+      "#subte"
+    ]
+  },
+  {
+    "id": "2007677705924325412",
+    "datetime": "2026-01-04T04:57:20.000Z",
+    "text": "#Subte | Línea B: Malabia y Uruguay cerradas por obras de renovación integral",
+    "line": "B",
+    "kind": "info_operativa",
+    "stations": null,
+    "hashtags": [
+      "#subte"
+    ]
+  },
+  {
+    "id": "2008534974459269250",
+    "datetime": "2026-01-06T13:43:49.000Z",
+    "text": "#Subte | Línea B: Servicio con demora",
+    "line": "B",
+    "kind": "inicio_demora",
+    "stations": null,
+    "hashtags": [
+      "#subte"
+    ]
+  },
+  {
+    "id": "2008542297630056745",
+    "datetime": "2026-01-06T14:12:55.000Z",
+    "text": "#Subte | Línea B: Servicio normalizado",
+    "line": "B",
+    "kind": "fin",
+    "stations": null,
+    "hashtags": [
+      "#subte"
+    ]
+  },
+  {
+    "id": "2008543308906119612",
+    "datetime": "2026-01-06T14:16:56.000Z",
+    "text": "#Subte | Línea B: Malabia y Uruguay cerradas por obras de renovación integral",
+    "line": "B",
+    "kind": "info_operativa",
+    "stations": null,
+    "hashtags": [
+      "#subte"
+    ]
+  },
+  {
+    "id": "2009543577357938952",
+    "datetime": "2026-01-09T08:31:39.000Z",
+    "text": "#Subte | Línea B: Viernes y Sábado con horario extendido. Malabia y Uruguay cerradas por obras.",
+    "line": "B",
+    "kind": "info_operativa",
+    "stations": null,
+    "hashtags": [
+      "#subte"
+    ]
+  },
+  {
+    "id": "2010214072327778479",
+    "datetime": "2026-01-11T04:55:57.000Z",
+    "text": "#Subte | Línea B: Malabia y Uruguay cerradas por obras de renovación integral",
+    "line": "B",
+    "kind": "info_operativa",
+    "stations": null,
+    "hashtags": [
+      "#subte"
+    ]
+  },
+  {
+    "id": "2012080901702746446",
+    "datetime": "2026-01-16T08:34:04.000Z",
+    "text": "#Subte | Línea B: Hoy funcionará con horario extendido. Malabia y Uruguay cerradas por obras.",
+    "line": "B",
+    "kind": "info_operativa",
+    "stations": null,
+    "hashtags": [
+      "#subte"
+    ]
+  },
+  {
+    "id": "2012081660829786606",
+    "datetime": "2026-01-16T08:37:05.000Z",
+    "text": "#Subte | Línea B: Viernes y Sábado con horario extendido. Malabia y Uruguay cerradas por obras.",
+    "line": "B",
+    "kind": "info_operativa",
+    "stations": null,
+    "hashtags": [
+      "#subte"
+    ]
+  },
+  {
+    "id": "2013337355243946228",
+    "datetime": "2026-01-19T19:46:46.000Z",
+    "text": "#Subte | Línea B: Malabia y Uruguay cerradas por obras de renovación integral",
+    "line": "B",
+    "kind": "info_operativa",
+    "stations": null,
+    "hashtags": [
+      "#subte"
+    ]
+  },
+  {
+    "id": "2014616872587538621",
+    "datetime": "2026-01-23T08:31:06.000Z",
+    "text": "#Subte | Línea B: Viernes y Sábado con horario extendido. Malabia y Uruguay cerradas por obras.",
+    "line": "B",
+    "kind": "info_operativa",
+    "stations": null,
+    "hashtags": [
+      "#subte"
+    ]
+  },
+  {
+    "id": "2015286683890041036",
+    "datetime": "2026-01-25T04:52:42.000Z",
+    "text": "#Subte | Línea B: Malabia y Uruguay cerradas por obras de renovación integral",
+    "line": "B",
+    "kind": "info_operativa",
+    "stations": null,
+    "hashtags": [
+      "#subte"
+    ]
+  },
+  {
+    "id": "2017159387987521855",
+    "datetime": "2026-01-30T08:54:09.000Z",
+    "text": "#Subte | Línea B: Viernes y Sábado con horario extendido. Malabia y Uruguay cerradas por obras.",
+    "line": "B",
+    "kind": "info_operativa",
+    "stations": null,
+    "hashtags": [
+      "#subte"
+    ]
+  },
+  {
+    "id": "2017821838185791955",
+    "datetime": "2026-02-01T04:46:30.000Z",
+    "text": "#Subte | Línea B: Malabia y Uruguay cerradas por obras de renovación integral",
+    "line": "B",
+    "kind": "info_operativa",
+    "stations": null,
+    "hashtags": [
+      "#subte"
+    ]
+  },
+  {
+    "id": "2018138429767180691",
+    "datetime": "2026-02-02T01:44:31.000Z",
+    "text": "#Subte | Línea B: Servicio finalizado",
+    "line": "B",
+    "kind": "otro",
+    "stations": null,
+    "hashtags": [
+      "#subte"
+    ]
+  },
+  {
+    "id": "2018174068927697188",
+    "datetime": "2026-02-02T04:06:08.000Z",
+    "text": "#Subte | Línea B: Malabia y Uruguay cerradas por obras de renovación integral",
+    "line": "B",
+    "kind": "info_operativa",
+    "stations": null,
+    "hashtags": [
+      "#subte"
+    ]
+  },
+  {
+    "id": "2019691347108639154",
+    "datetime": "2026-02-06T08:35:15.000Z",
+    "text": "#Subte | Línea B: Viernes y Sábado con horario extendido. Malabia y Uruguay cerradas por obras.",
+    "line": "B",
+    "kind": "info_operativa",
+    "stations": null,
+    "hashtags": [
+      "#subte"
+    ]
+  },
+  {
+    "id": "2019996470775067053",
+    "datetime": "2026-02-07T04:47:43.000Z",
+    "text": "#Subte | Línea B: Malabia y Uruguay cerradas por obras de renovación integral",
+    "line": "B",
+    "kind": "info_operativa",
+    "stations": null,
+    "hashtags": [
+      "#subte"
+    ]
+  },
+  {
+    "id": "2020060396053319768",
+    "datetime": "2026-02-07T09:01:43.000Z",
+    "text": "#Subte | Línea B: Viernes y Sábado con horario extendido. Malabia y Uruguay cerradas por obras.",
+    "line": "B",
+    "kind": "info_operativa",
+    "stations": null,
+    "hashtags": [
+      "#subte"
+    ]
+  },
+  {
+    "id": "2020359969242030121",
+    "datetime": "2026-02-08T04:52:07.000Z",
+    "text": "#Subte | Línea B: Malabia y Uruguay cerradas por obras de renovación integral",
+    "line": "B",
+    "kind": "info_operativa",
+    "stations": null,
+    "hashtags": [
+      "#subte"
+    ]
+  },
+  {
+    "id": "2022844818729095567",
+    "datetime": "2026-02-15T01:26:02.000Z",
+    "text": "[SERVICIO] Mañana, domingo 15 de febrero, las Líneas B y D comienzan su servicio a las 10 AM por obras de repotenciación en la Línea B.",
+    "line": "B",
+    "kind": "info_operativa",
+    "stations": null,
+    "hashtags": []
+  },
+  {
+    "id": "2024519705311006745",
+    "datetime": "2026-02-19T16:21:26.000Z",
+    "text": "#Subte | Línea B: Servicio interrumpido por medida de fuerza gremial.",
+    "line": "B",
+    "kind": "inicio_interrumpido",
+    "stations": null,
+    "hashtags": [
+      "#subte"
+    ]
+  },
+  {
+    "id": "2024680714382229707",
+    "datetime": "2026-02-20T03:01:13.000Z",
+    "text": "#Subte | Línea B: Malabia y Uruguay cerradas por obras de renovación integral",
+    "line": "B",
+    "kind": "info_operativa",
+    "stations": null,
+    "hashtags": [
+      "#subte"
+    ]
+  },
+  {
+    "id": "2024763284948218068",
+    "datetime": "2026-02-20T08:29:20.000Z",
+    "text": "#Subte | Línea B: Hoy funcionará con horario extendido. Malabia y Uruguay cerradas por obras.",
+    "line": "B",
+    "kind": "info_operativa",
+    "stations": null,
+    "hashtags": [
+      "#subte"
+    ]
+  },
+  {
+    "id": "2025433306712457286",
+    "datetime": "2026-02-22T04:51:45.000Z",
+    "text": "#Subte | Línea B: Malabia y Uruguay cerradas por obras de renovación integral",
+    "line": "B",
+    "kind": "info_operativa",
+    "stations": null,
+    "hashtags": [
+      "#subte"
+    ]
+  },
+  {
+    "id": "2026365108922859810",
+    "datetime": "2026-02-24T18:34:24.000Z",
+    "text": "#Subte | Línea B: 25-02 reabre la estación Uruguay. Malabia continúa cerrada por obras",
+    "line": "B",
+    "kind": "info_operativa",
+    "stations": null,
+    "hashtags": [
+      "#subte"
+    ]
+  },
+  {
+    "id": "2026577087801200733",
+    "datetime": "2026-02-25T08:36:44.000Z",
+    "text": "#Subte | Línea B: Reabrió la estación Uruguay. Malabia continúa cerrada por obras",
+    "line": "B",
+    "kind": "info_operativa",
+    "stations": null,
+    "hashtags": [
+      "#subte"
+    ]
+  },
+  {
+    "id": "2026612209325859157",
+    "datetime": "2026-02-25T10:56:17.000Z",
+    "text": "#Subte | Línea B: Servicio con demora",
+    "line": "B",
+    "kind": "inicio_demora",
+    "stations": null,
+    "hashtags": [
+      "#subte"
+    ]
+  },
+  {
+    "id": "2026627612563341801",
+    "datetime": "2026-02-25T11:57:30.000Z",
+    "text": "#Subte | Línea B: Servicio normalizado",
+    "line": "B",
+    "kind": "fin",
+    "stations": null,
+    "hashtags": [
+      "#subte"
+    ]
+  },
+  {
+    "id": "2027451136161014050",
+    "datetime": "2026-02-27T18:29:53.000Z",
+    "text": "Todos los viernes y sábados, la Línea B extiende su horario hasta la 2 a.m. Ahora, en lugar de detenerse en Callo, se detendrá en Uruguay.",
+    "line": "B",
+    "kind": "otro",
+    "stations": null,
+    "hashtags": []
+  },
+  {
+    "id": "2027482748517048385",
+    "datetime": "2026-02-27T20:35:30.000Z",
+    "text": "#Subte | Línea B: Hoy funcionará con horario extendido. Malabia cerrada por obras de renovación.",
+    "line": "B",
+    "kind": "info_operativa",
+    "stations": null,
+    "hashtags": [
+      "#subte"
+    ]
+  },
+  {
+    "id": "2027610576977801375",
+    "datetime": "2026-02-28T05:03:27.000Z",
+    "text": "#Subte | Línea B: Viernes y Sábado con horario extendido. Malabia cerrada por obras de renovación..",
+    "line": "B",
+    "kind": "info_operativa",
+    "stations": null,
+    "hashtags": [
+      "#subte"
+    ]
+  },
+  {
+    "id": "2027682333952758219",
+    "datetime": "2026-02-28T09:48:35.000Z",
+    "text": "#Subte | Línea B: Reabrió la estación Uruguay. Malabia continúa cerrada por obras",
+    "line": "B",
+    "kind": "info_operativa",
+    "stations": null,
+    "hashtags": [
+      "#subte"
+    ]
+  },
+  {
+    "id": "2027868058308542611",
+    "datetime": "2026-02-28T22:06:35.000Z",
+    "text": "#Subte | Línea B: Viernes y Sábado con horario extendido. Malabia cerrada por obras de renovación..",
+    "line": "B",
+    "kind": "info_operativa",
+    "stations": null,
+    "hashtags": [
+      "#subte"
+    ]
+  },
+  {
+    "id": "2027969386267443479",
+    "datetime": "2026-03-01T04:49:14.000Z",
+    "text": "#Subte | Línea B: Reabrió la estación Uruguay. Malabia continúa cerrada por obras",
+    "line": "B",
+    "kind": "info_operativa",
+    "stations": null,
+    "hashtags": [
+      "#subte"
+    ]
+  },
+  {
+    "id": "2028405482424062162",
+    "datetime": "2026-03-02T09:42:07.000Z",
+    "text": "#Subte | Línea B: Estación Malabia cerrada por obras de renovación integral.",
+    "line": "B",
+    "kind": "info_operativa",
+    "stations": null,
+    "hashtags": [
+      "#subte"
+    ]
+  },
+  {
+    "id": "2028551260174000220",
+    "datetime": "2026-03-02T19:21:23.000Z",
+    "text": "#Subte | Línea B: Servicio con demora",
+    "line": "B",
+    "kind": "inicio_demora",
+    "stations": null,
+    "hashtags": [
+      "#subte"
+    ]
+  },
+  {
+    "id": "2028559088250994817",
+    "datetime": "2026-03-02T19:52:30.000Z",
+    "text": "#Subte | Línea B: Servicio normalizado",
+    "line": "B",
+    "kind": "fin",
+    "stations": null,
+    "hashtags": [
+      "#subte"
+    ]
+  },
+  {
+    "id": "2028559847340339304",
+    "datetime": "2026-03-02T19:55:31.000Z",
+    "text": "#Subte | Línea B: 25-02 reabre la estación Uruguay. Malabia continúa cerrada por obras",
+    "line": "B",
+    "kind": "info_operativa",
+    "stations": null,
+    "hashtags": [
+      "#subte"
+    ]
+  },
+  {
+    "id": "2029944905292722480",
+    "datetime": "2026-03-06T15:39:14.000Z",
+    "text": "#Subte | Línea B: Viernes y Sábado con horario extendido. Malabia cerrada por obras de renovación..",
+    "line": "B",
+    "kind": "info_operativa",
+    "stations": null,
+    "hashtags": [
+      "#subte"
+    ]
+  },
+  {
+    "id": "2030377048573673627",
+    "datetime": "2026-03-07T20:16:25.000Z",
+    "text": "#Subte | Línea B: Servicio con demora",
+    "line": "B",
+    "kind": "inicio_demora",
+    "stations": null,
+    "hashtags": [
+      "#subte"
+    ]
+  },
+  {
+    "id": "2030379828017291656",
+    "datetime": "2026-03-07T20:27:28.000Z",
+    "text": "#Subte | Línea B: Servicio limitado entre las estaciones Leandro N. Alem y Federico Lacroze",
+    "line": "B",
+    "kind": "inicio_limitado",
+    "stations": "Leandro N",
+    "hashtags": [
+      "#subte"
+    ]
+  },
+  {
+    "id": "2030396758690316317",
+    "datetime": "2026-03-07T21:34:44.000Z",
+    "text": "#Subte | Línea B: Servicio normalizado",
+    "line": "B",
+    "kind": "fin",
+    "stations": null,
+    "hashtags": [
+      "#subte"
+    ]
+  },
+  {
+    "id": "2030399286244999281",
+    "datetime": "2026-03-07T21:44:47.000Z",
+    "text": "#Subte | Línea B: Viernes y Sábado con horario extendido. Malabia cerrada por obras de renovación..",
+    "line": "B",
+    "kind": "info_operativa",
+    "stations": null,
+    "hashtags": [
+      "#subte"
+    ]
+  },
+  {
+    "id": "2030507958543499358",
+    "datetime": "2026-03-08T04:56:36.000Z",
+    "text": "#Subte | Línea B: Estación Malabia cerrada por obras de renovación integral.",
+    "line": "B",
+    "kind": "info_operativa",
+    "stations": null,
+    "hashtags": [
+      "#subte"
+    ]
+  },
+  {
+    "id": "2031700629777772558",
+    "datetime": "2026-03-11T11:55:51.000Z",
+    "text": "#Subte | Línea B: Estación Malabia cerrada por obras de renovación integral.",
+    "line": "B",
+    "kind": "info_operativa",
+    "stations": null,
+    "hashtags": [
+      "#subte"
+    ]
+  },
+  {
+    "id": "2032373970192769267",
+    "datetime": "2026-03-13T08:31:28.000Z",
+    "text": "#Subte | Línea B: Viernes y Sábado con horario extendido. Malabia cerrada por obras de renovación..",
+    "line": "B",
+    "kind": "info_operativa",
+    "stations": null,
+    "hashtags": [
+      "#subte"
+    ]
+  },
+  {
+    "id": "2032681847977660557",
+    "datetime": "2026-03-14T04:54:52.000Z",
+    "text": "#Subte | Línea B: Viernes y Sábado con horario extendido. Malabia cerrada por obras de renovación..",
+    "line": "B",
+    "kind": "info_operativa",
+    "stations": null,
+    "hashtags": [
+      "#subte"
+    ]
+  },
+  {
+    "id": "2033024555871039498",
+    "datetime": "2026-03-15T03:36:40.000Z",
+    "text": "#Subte | Línea B: Viernes y sábados horario extendido. Estaciones habilitadas en http:// buenosaires.gob.ar",
+    "line": "B",
+    "kind": "info_operativa",
+    "stations": null,
+    "hashtags": [
+      "#subte"
+    ]
+  },
+  {
+    "id": "2033043766668357903",
+    "datetime": "2026-03-15T04:53:00.000Z",
+    "text": "#Subte | Línea B: Estación Malabia cerrada por obras de renovación integral.",
+    "line": "B",
+    "kind": "info_operativa",
+    "stations": null,
+    "hashtags": [
+      "#subte"
+    ]
+  },
+  {
+    "id": "2033335435909337167",
+    "datetime": "2026-03-16T00:12:00.000Z",
+    "text": "#Subte | Línea B: Servicio con demora",
+    "line": "B",
+    "kind": "inicio_demora",
+    "stations": null,
+    "hashtags": [
+      "#subte"
+    ]
+  },
+  {
+    "id": "2033337963375960109",
+    "datetime": "2026-03-16T00:22:02.000Z",
+    "text": "#Subte | Línea B: Servicio limitado entre las estaciones Juan Manuel de Rosas y Medrano",
+    "line": "B",
+    "kind": "inicio_limitado",
+    "stations": "Juan Manuel de Rosas y Medrano",
+    "hashtags": [
+      "#subte"
+    ]
+  },
+  {
+    "id": "2033344787126890569",
+    "datetime": "2026-03-16T00:49:09.000Z",
+    "text": "#Subte | Línea B: Servicio normalizado",
+    "line": "B",
+    "kind": "fin",
+    "stations": null,
+    "hashtags": [
+      "#subte"
+    ]
+  },
+  {
+    "id": "2033345799266992283",
+    "datetime": "2026-03-16T00:53:10.000Z",
+    "text": "#Subte | Línea B: Estación Malabia cerrada por obras de renovación integral.",
+    "line": "B",
+    "kind": "info_operativa",
+    "stations": null,
+    "hashtags": [
+      "#subte"
+    ]
+  },
+  {
+    "id": "2037174325644583032",
+    "datetime": "2026-03-26T14:26:22.000Z",
+    "text": "#Subte | Línea B: Malabia cerrada por obras de renovación integral.",
+    "line": "B",
+    "kind": "info_operativa",
+    "stations": null,
+    "hashtags": [
+      "#subte"
+    ]
+  },
+  {
+    "id": "2037175337465856383",
+    "datetime": "2026-03-26T14:30:23.000Z",
+    "text": "#Subte | Línea B: Estación Malabia cerrada por obras de renovación integral.",
+    "line": "B",
+    "kind": "info_operativa",
+    "stations": null,
+    "hashtags": [
+      "#subte"
+    ]
+  },
+  {
+    "id": "2037447370774921422",
+    "datetime": "2026-03-27T08:31:21.000Z",
+    "text": "#Subte | Línea B: Viernes y Sábado con horario extendido. Malabia cerrada por obras de renovación..",
+    "line": "B",
+    "kind": "info_operativa",
+    "stations": null,
+    "hashtags": [
+      "#subte"
+    ]
+  },
+  {
+    "id": "2038116695080874070",
+    "datetime": "2026-03-29T04:51:01.000Z",
+    "text": "#Subte | Línea B: Estación Malabia cerrada por obras de renovación integral.",
+    "line": "B",
+    "kind": "info_operativa",
+    "stations": null,
+    "hashtags": [
+      "#subte"
+    ]
+  },
+  {
+    "id": "2040454932780687457",
+    "datetime": "2026-04-04T15:42:20.000Z",
+    "text": "#Subte | Línea B: Hoy funcionará con horario extendido. Malabia cerrada por obras de renovación.",
+    "line": "B",
+    "kind": "info_operativa",
+    "stations": null,
+    "hashtags": [
+      "#subte"
+    ]
+  },
+  {
+    "id": "2040651803977490938",
+    "datetime": "2026-04-05T04:44:38.000Z",
+    "text": "#Subte | Línea B: Estación Malabia cerrada por obras de renovación integral.",
+    "line": "B",
+    "kind": "info_operativa",
+    "stations": null,
+    "hashtags": [
+      "#subte"
+    ]
+  },
+  {
+    "id": "2041115014858190970",
+    "datetime": "2026-04-06T11:25:16.000Z",
+    "text": "#Subte | Línea B: Servicio con demora",
+    "line": "B",
+    "kind": "inicio_demora",
+    "stations": null,
+    "hashtags": [
+      "#subte"
+    ]
+  },
+  {
+    "id": "2041116279411499296",
+    "datetime": "2026-04-06T11:30:17.000Z",
+    "text": "#Subte | Línea B: Servicio limitado entre las estaciones Juan Manuel de Rosas y Carlos Pellegrini",
+    "line": "B",
+    "kind": "inicio_limitado",
+    "stations": "Juan Manuel de Rosas y Carlos Pellegrini",
+    "hashtags": [
+      "#subte"
+    ]
+  },
+  {
+    "id": "2041119312841240620",
+    "datetime": "2026-04-06T11:42:21.000Z",
+    "text": "#Subte | Línea B: Ya realiza el recorrido completo entre cabeceras",
+    "line": "B",
+    "kind": "fin",
+    "stations": null,
+    "hashtags": [
+      "#subte"
+    ]
+  },
+  {
+    "id": "2041126622443511994",
+    "datetime": "2026-04-06T12:11:23.000Z",
+    "text": "#Subte | Línea B: Servicio normalizado",
+    "line": "B",
+    "kind": "fin",
+    "stations": null,
+    "hashtags": [
+      "#subte"
+    ]
+  },
+  {
+    "id": "2041129150900023417",
+    "datetime": "2026-04-06T12:21:26.000Z",
+    "text": "#Subte | Línea B: Estación Malabia cerrada por obras de renovación integral.",
+    "line": "B",
+    "kind": "info_operativa",
+    "stations": null,
+    "hashtags": [
+      "#subte"
+    ]
+  },
+  {
+    "id": "2042652851596312696",
+    "datetime": "2026-04-10T17:16:05.000Z",
+    "text": "#Subte | Línea B: Viernes y Sábado con horario extendido. Malabia cerrada por obras de renovación..",
+    "line": "B",
+    "kind": "info_operativa",
+    "stations": null,
+    "hashtags": [
+      "#subte"
+    ]
+  },
+  {
+    "id": "2043190998549815598",
+    "datetime": "2026-04-12T04:54:29.000Z",
+    "text": "#Subte | Línea B: Estación Malabia cerrada por obras de renovación integral.",
+    "line": "B",
+    "kind": "info_operativa",
+    "stations": null,
+    "hashtags": [
+      "#subte"
+    ]
+  },
+  {
+    "id": "2043742425793913109",
+    "datetime": "2026-04-13T17:25:39.000Z",
+    "text": "#Subte | Línea B: Servicio limitado entre las estaciones Leandro N. Alem y Angel Gallardo",
+    "line": "B",
+    "kind": "inicio_limitado",
+    "stations": "Leandro N",
+    "hashtags": [
+      "#subte"
+    ]
+  },
+  {
+    "id": "2043761421884739783",
+    "datetime": "2026-04-13T18:41:08.000Z",
+    "text": "#Subte | Línea B: Servicio normalizado",
+    "line": "B",
+    "kind": "fin",
+    "stations": null,
+    "hashtags": [
+      "#subte"
+    ]
+  },
+  {
+    "id": "2043762686274539902",
+    "datetime": "2026-04-13T18:46:10.000Z",
+    "text": "#Subte | Línea B: Estación Malabia cerrada por obras de renovación integral.",
+    "line": "B",
+    "kind": "info_operativa",
+    "stations": null,
+    "hashtags": [
+      "#subte"
+    ]
+  },
+  {
+    "id": "2045128068461699200",
+    "datetime": "2026-04-17T13:11:42.000Z",
+    "text": "#Subte | Línea B: Reabrió la estación Malabia luego del plan de renovación.",
+    "line": "B",
+    "kind": "otro",
+    "stations": null,
+    "hashtags": [
+      "#subte"
+    ]
+  },
+  {
+    "id": "2047594519160336834",
+    "datetime": "2026-04-24T08:32:30.000Z",
+    "text": "#Subte | Línea B: Viernes y sábados horario extendido. Estaciones habilitadas en http:// buenosaires.gob.ar",
+    "line": "B",
+    "kind": "info_operativa",
+    "stations": null,
+    "hashtags": [
+      "#subte"
+    ]
+  },
+  {
+    "id": "2047763430107484548",
+    "datetime": "2026-04-24T19:43:41.000Z",
+    "text": "#Subte | Línea B: Servicio con demora",
+    "line": "B",
+    "kind": "inicio_demora",
+    "stations": null,
+    "hashtags": [
+      "#subte"
+    ]
+  },
+  {
+    "id": "2047775310481907745",
+    "datetime": "2026-04-24T20:30:54.000Z",
+    "text": "#Subte | Línea B: Servicio normalizado",
+    "line": "B",
+    "kind": "fin",
+    "stations": null,
+    "hashtags": [
+      "#subte"
+    ]
+  },
+  {
+    "id": "2047776828220125488",
+    "datetime": "2026-04-24T20:36:56.000Z",
+    "text": "#Subte | Línea B: Viernes y sábados horario extendido. Estaciones habilitadas en http:// buenosaires.gob.ar",
+    "line": "B",
+    "kind": "info_operativa",
+    "stations": null,
+    "hashtags": [
+      "#subte"
+    ]
+  },
+  {
+    "id": "2050188413299576931",
+    "datetime": "2026-05-01T12:19:43.000Z",
+    "text": "#Subte | Línea B: Los trenes no se detienen en la estación Malabia",
+    "line": "B",
+    "kind": "inicio_estacion_cerrada",
+    "stations": "Malabia",
+    "hashtags": [
+      "#subte"
+    ]
+  },
+  {
+    "id": "2050190183664922705",
+    "datetime": "2026-05-01T12:26:45.000Z",
+    "text": "#Subte | Línea B: Los trenes no se detienen en las estaciones Gallardo y Malabia",
+    "line": "B",
+    "kind": "inicio_estacion_cerrada",
+    "stations": "Gallardo y Malabia",
+    "hashtags": [
+      "#subte"
+    ]
+  },
+  {
+    "id": "2050192966593962468",
+    "datetime": "2026-05-01T12:37:48.000Z",
+    "text": "#Subte | Línea B: Los trenes no se detienen en la estación Angel Gallardo",
+    "line": "B",
+    "kind": "inicio_estacion_cerrada",
+    "stations": "Angel Gallardo",
+    "hashtags": [
+      "#subte"
+    ]
+  },
+  {
+    "id": "2050205350083674408",
+    "datetime": "2026-05-01T13:27:01.000Z",
+    "text": "#Subte | Línea B: Ya se detienen en todas las estaciones.",
+    "line": "B",
+    "kind": "fin",
+    "stations": null,
+    "hashtags": [
+      "#subte"
+    ]
+  },
+  {
+    "id": "2050695774040649965",
+    "datetime": "2026-05-02T21:55:47.000Z",
+    "text": "#Subte | Línea B: Hoy horario extendido. Más información en http:// buenosaires.gob.ar/subte",
+    "line": "B",
+    "kind": "info_operativa",
+    "stations": null,
+    "hashtags": [
+      "#subte"
+    ]
+  },
+  {
+    "id": "2051091779823251642",
+    "datetime": "2026-05-04T00:09:22.000Z",
+    "text": "#Subte | Línea B: Los trenes no se detienen en la estación Dorrego",
+    "line": "B",
+    "kind": "inicio_estacion_cerrada",
+    "stations": "Dorrego",
+    "hashtags": [
+      "#subte"
+    ]
+  },
+  {
+    "id": "2051106436659151100",
+    "datetime": "2026-05-04T01:07:36.000Z",
+    "text": "#Subte | Línea B: Ya se detienen en todas las estaciones.",
+    "line": "B",
+    "kind": "fin",
+    "stations": null,
+    "hashtags": [
+      "#subte"
+    ]
+  },
+  {
+    "id": "2052722386894573794",
+    "datetime": "2026-05-08T12:08:49.000Z",
+    "text": "#Subte | Línea B: Viernes y sábados horario extendido. Estaciones habilitadas en http:// buenosaires.gob.ar",
+    "line": "B",
+    "kind": "info_operativa",
+    "stations": null,
+    "hashtags": [
+      "#subte"
+    ]
+  }
+]

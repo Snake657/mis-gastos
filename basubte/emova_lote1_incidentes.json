@@ -1,0 +1,316 @@
+[
+  {
+    "linea": "B",
+    "inicio": "2025-12-05T07:48:00-03:00",
+    "inicio_str": "2025-12-05 07:48",
+    "tipo_principal": "inicio_demora",
+    "tipos": [
+      "inicio_demora"
+    ],
+    "estaciones": [],
+    "tweets_count": 2,
+    "fin": "2025-12-05T08:22:00-03:00",
+    "fin_str": "2025-12-05 08:22",
+    "duracion_min": 34.0,
+    "cerrado_por": "fin_tuiteado"
+  },
+  {
+    "linea": "B",
+    "inicio": "2025-12-09T18:37:00-03:00",
+    "inicio_str": "2025-12-09 18:37",
+    "tipo_principal": "inicio_demora",
+    "tipos": [
+      "inicio_demora"
+    ],
+    "estaciones": [],
+    "tweets_count": 2,
+    "fin": "2025-12-09T19:12:00-03:00",
+    "fin_str": "2025-12-09 19:12",
+    "duracion_min": 35.0,
+    "cerrado_por": "fin_tuiteado"
+  },
+  {
+    "linea": "B",
+    "inicio": "2025-12-09T22:18:00-03:00",
+    "inicio_str": "2025-12-09 22:18",
+    "tipo_principal": "inicio_demora",
+    "tipos": [
+      "inicio_demora"
+    ],
+    "estaciones": [],
+    "tweets_count": 2,
+    "fin": "2025-12-09T22:28:00-03:00",
+    "fin_str": "2025-12-09 22:28",
+    "duracion_min": 10.0,
+    "cerrado_por": "fin_tuiteado"
+  },
+  {
+    "linea": "B",
+    "inicio": "2025-12-11T20:54:00-03:00",
+    "inicio_str": "2025-12-11 20:54",
+    "tipo_principal": "inicio_limitado",
+    "tipos": [
+      "inicio_demora",
+      "inicio_limitado"
+    ],
+    "estaciones": [
+      "Leandro N"
+    ],
+    "tweets_count": 3,
+    "fin": "2025-12-11T21:28:00-03:00",
+    "fin_str": "2025-12-11 21:28",
+    "duracion_min": 34.0,
+    "cerrado_por": "fin_tuiteado"
+  },
+  {
+    "linea": "B",
+    "inicio": "2026-01-06T10:43:00-03:00",
+    "inicio_str": "2026-01-06 10:43",
+    "tipo_principal": "inicio_demora",
+    "tipos": [
+      "inicio_demora"
+    ],
+    "estaciones": [],
+    "tweets_count": 2,
+    "fin": "2026-01-06T11:13:00-03:00",
+    "fin_str": "2026-01-06 11:13",
+    "duracion_min": 30.0,
+    "cerrado_por": "fin_tuiteado"
+  },
+  {
+    "linea": "B",
+    "inicio": "2026-02-25T07:56:00-03:00",
+    "inicio_str": "2026-02-25 07:56",
+    "tipo_principal": "inicio_demora",
+    "tipos": [
+      "inicio_demora",
+      "inicio_demora"
+    ],
+    "estaciones": [],
+    "tweets_count": 3,
+    "fin": "2026-02-25T08:57:00-03:00",
+    "fin_str": "2026-02-25 08:57",
+    "duracion_min": 61.0,
+    "cerrado_por": "fin_tuiteado"
+  },
+  {
+    "linea": "B",
+    "inicio": "2026-03-02T16:21:00-03:00",
+    "inicio_str": "2026-03-02 16:21",
+    "tipo_principal": "inicio_demora",
+    "tipos": [
+      "inicio_demora"
+    ],
+    "estaciones": [],
+    "tweets_count": 2,
+    "fin": "2026-03-02T16:52:00-03:00",
+    "fin_str": "2026-03-02 16:52",
+    "duracion_min": 31.0,
+    "cerrado_por": "fin_tuiteado"
+  },
+  {
+    "linea": "B",
+    "inicio": "2026-03-07T17:16:00-03:00",
+    "inicio_str": "2026-03-07 17:16",
+    "tipo_principal": "inicio_limitado",
+    "tipos": [
+      "inicio_demora",
+      "inicio_limitado"
+    ],
+    "estaciones": [
+      "Leandro N"
+    ],
+    "tweets_count": 3,
+    "fin": "2026-03-07T18:34:00-03:00",
+    "fin_str": "2026-03-07 18:34",
+    "duracion_min": 78.0,
+    "cerrado_por": "fin_tuiteado"
+  },
+  {
+    "linea": "B",
+    "inicio": "2026-03-15T21:12:00-03:00",
+    "inicio_str": "2026-03-15 21:12",
+    "tipo_principal": "inicio_limitado",
+    "tipos": [
+      "inicio_demora",
+      "inicio_limitado"
+    ],
+    "estaciones": [
+      "Juan Manuel de Rosas y Medrano"
+    ],
+    "tweets_count": 3,
+    "fin": "2026-03-15T21:49:00-03:00",
+    "fin_str": "2026-03-15 21:49",
+    "duracion_min": 37.0,
+    "cerrado_por": "fin_tuiteado"
+  },
+  {
+    "linea": "B",
+    "inicio": "2026-04-01T12:55:00-03:00",
+    "inicio_str": "2026-04-01 12:55",
+    "tipo_principal": "inicio_demora",
+    "tipos": [
+      "inicio_demora"
+    ],
+    "estaciones": [],
+    "tweets_count": 2,
+    "fin": "2026-04-01T13:06:00-03:00",
+    "fin_str": "2026-04-01 13:06",
+    "duracion_min": 11.0,
+    "cerrado_por": "fin_tuiteado"
+  },
+  {
+    "linea": "B",
+    "inicio": "2026-04-01T14:16:00-03:00",
+    "inicio_str": "2026-04-01 14:16",
+    "tipo_principal": "inicio_demora",
+    "tipos": [
+      "inicio_demora"
+    ],
+    "estaciones": [],
+    "tweets_count": 2,
+    "fin": "2026-04-01T14:28:00-03:00",
+    "fin_str": "2026-04-01 14:28",
+    "duracion_min": 12.0,
+    "cerrado_por": "fin_tuiteado"
+  },
+  {
+    "linea": "B",
+    "inicio": "2026-04-03T08:01:00-03:00",
+    "inicio_str": "2026-04-03 08:01",
+    "tipo_principal": "inicio_limitado",
+    "tipos": [
+      "inicio_limitado"
+    ],
+    "estaciones": [
+      "Leandro N"
+    ],
+    "tweets_count": 2,
+    "fin": "2026-04-03T08:35:00-03:00",
+    "fin_str": "2026-04-03 08:35",
+    "duracion_min": 34.0,
+    "cerrado_por": "fin_tuiteado"
+  },
+  {
+    "linea": "B",
+    "inicio": "2026-04-06T08:24:00-03:00",
+    "inicio_str": "2026-04-06 08:24",
+    "tipo_principal": "inicio_limitado",
+    "tipos": [
+      "inicio_demora",
+      "inicio_limitado"
+    ],
+    "estaciones": [
+      "Juan Manuel de Rosas y Carlos Pellegrini"
+    ],
+    "tweets_count": 3,
+    "fin": "2026-04-06T08:42:00-03:00",
+    "fin_str": "2026-04-06 08:42",
+    "duracion_min": 18.0,
+    "cerrado_por": "fin_tuiteado"
+  },
+  {
+    "linea": "B",
+    "inicio": "2026-04-06T08:48:00-03:00",
+    "inicio_str": "2026-04-06 08:48",
+    "tipo_principal": "inicio_demora",
+    "tipos": [
+      "inicio_demora"
+    ],
+    "estaciones": [],
+    "tweets_count": 2,
+    "fin": "2026-04-06T09:11:00-03:00",
+    "fin_str": "2026-04-06 09:11",
+    "duracion_min": 23.0,
+    "cerrado_por": "fin_tuiteado"
+  },
+  {
+    "linea": "B",
+    "inicio": "2026-04-13T14:25:00-03:00",
+    "inicio_str": "2026-04-13 14:25",
+    "tipo_principal": "inicio_limitado",
+    "tipos": [
+      "inicio_limitado"
+    ],
+    "estaciones": [
+      "Leandro N"
+    ],
+    "tweets_count": 2,
+    "fin": "2026-04-13T15:40:00-03:00",
+    "fin_str": "2026-04-13 15:40",
+    "duracion_min": 75.0,
+    "cerrado_por": "fin_tuiteado"
+  },
+  {
+    "linea": "B",
+    "inicio": "2026-04-15T05:56:00-03:00",
+    "inicio_str": "2026-04-15 05:56",
+    "tipo_principal": "inicio_estacion_cerrada",
+    "tipos": [
+      "inicio_estacion_cerrada",
+      "inicio_estacion_cerrada"
+    ],
+    "estaciones": [
+      "Medrano",
+      "Medrano con destino a J"
+    ],
+    "tweets_count": 3,
+    "fin": "2026-04-15T07:05:00-03:00",
+    "fin_str": "2026-04-15 07:05",
+    "duracion_min": 69.0,
+    "cerrado_por": "fin_tuiteado"
+  },
+  {
+    "linea": "B",
+    "inicio": "2026-04-24T16:43:00-03:00",
+    "inicio_str": "2026-04-24 16:43",
+    "tipo_principal": "inicio_demora",
+    "tipos": [
+      "inicio_demora"
+    ],
+    "estaciones": [],
+    "tweets_count": 2,
+    "fin": "2026-04-24T17:30:00-03:00",
+    "fin_str": "2026-04-24 17:30",
+    "duracion_min": 47.0,
+    "cerrado_por": "fin_tuiteado"
+  },
+  {
+    "linea": "B",
+    "inicio": "2026-05-01T09:19:00-03:00",
+    "inicio_str": "2026-05-01 09:19",
+    "tipo_principal": "inicio_estacion_cerrada",
+    "tipos": [
+      "inicio_estacion_cerrada",
+      "inicio_estacion_cerrada",
+      "inicio_estacion_cerrada"
+    ],
+    "estaciones": [
+      "Malabia",
+      "Gallardo y Malabia",
+      "Angel Gallardo"
+    ],
+    "tweets_count": 4,
+    "fin": "2026-05-01T10:26:00-03:00",
+    "fin_str": "2026-05-01 10:26",
+    "duracion_min": 67.0,
+    "cerrado_por": "fin_tuiteado"
+  },
+  {
+    "linea": "B",
+    "inicio": "2026-05-03T21:09:00-03:00",
+    "inicio_str": "2026-05-03 21:09",
+    "tipo_principal": "inicio_estacion_cerrada",
+    "tipos": [
+      "inicio_estacion_cerrada"
+    ],
+    "estaciones": [
+      "Dorrego"
+    ],
+    "tweets_count": 2,
+    "fin": "2026-05-03T22:07:00-03:00",
+    "fin_str": "2026-05-03 22:07",
+    "duracion_min": 58.0,
+    "cerrado_por": "fin_tuiteado"
+  }
+]

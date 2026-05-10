@@ -1,0 +1,5529 @@
+[
+  {
+    "id": "1743445370741440896",
+    "datetime": "2024-01-06T01:32:22.000Z",
+    "text": "#LíneaB - Circula con demora. 22:31",
+    "user": "emova_arg",
+    "_lote": "2024-01",
+    "line": "B",
+    "kind": "inicio_demora",
+    "hora_emova": "22:31",
+    "stations": null
+  },
+  {
+    "id": "1743446376971747373",
+    "datetime": "2024-01-06T01:36:22.000Z",
+    "text": "#LíneaB - Servicio limitado: Rosas y Dorrego debido a la atencion medica a un usuario. 22:35",
+    "user": "emova_arg",
+    "_lote": "2024-01",
+    "line": "B",
+    "kind": "inicio_limitado",
+    "hora_emova": "22:35",
+    "stations": null
+  },
+  {
+    "id": "1743448388689895623",
+    "datetime": "2024-01-06T01:44:22.000Z",
+    "text": "#LíneaB - Ya realiza el recorrido completo entre cabeceras. 22:43",
+    "user": "emova_arg",
+    "_lote": "2024-01",
+    "line": "B",
+    "kind": "fin",
+    "hora_emova": "22:43",
+    "stations": null
+  },
+  {
+    "id": "1744721234309611875",
+    "datetime": "2024-01-09T14:02:12.000Z",
+    "text": "#LíneaB - Circula con demora. 11:00",
+    "user": "emova_arg",
+    "_lote": "2024-01",
+    "line": "B",
+    "kind": "inicio_demora",
+    "hora_emova": "11:00",
+    "stations": null
+  },
+  {
+    "id": "1744727024307224879",
+    "datetime": "2024-01-09T14:25:12.000Z",
+    "text": "#LíneaB - Ya circula con su frecuencia normal. 11:23",
+    "user": "emova_arg",
+    "_lote": "2024-01",
+    "line": "B",
+    "kind": "otro",
+    "hora_emova": "11:23",
+    "stations": null
+  },
+  {
+    "id": "1744774095428874241",
+    "datetime": "2024-01-09T17:32:15.000Z",
+    "text": "#LíneaB - Circula con servicio limitado entre las estaciones Juan Manuel de Rosas y Carlos Pellegrini. 14:30",
+    "user": "emova_arg",
+    "_lote": "2024-01",
+    "line": "B",
+    "kind": "inicio_limitado",
+    "hora_emova": "14:30",
+    "stations": "Juan Manuel de Rosas y Carlos Pellegrini"
+  },
+  {
+    "id": "1744775856914850268",
+    "datetime": "2024-01-09T17:39:15.000Z",
+    "text": "#LíneaB - Ya realiza el recorrido completo entre cabeceras. 14:37",
+    "user": "emova_arg",
+    "_lote": "2024-01",
+    "line": "B",
+    "kind": "fin",
+    "hora_emova": "14:37",
+    "stations": null
+  },
+  {
+    "id": "1745887654074372590",
+    "datetime": "2024-01-12T19:17:08.000Z",
+    "text": "#LíneaB - Circula con demora. 16:17",
+    "user": "emova_arg",
+    "_lote": "2024-01",
+    "line": "B",
+    "kind": "inicio_demora",
+    "hora_emova": "16:17",
+    "stations": null
+  },
+  {
+    "id": "1745893191281258871",
+    "datetime": "2024-01-12T19:39:08.000Z",
+    "text": "#LíneaB - Ya circula con su frecuencia normal. 16:39",
+    "user": "emova_arg",
+    "_lote": "2024-01",
+    "line": "B",
+    "kind": "otro",
+    "hora_emova": "16:39",
+    "stations": null
+  },
+  {
+    "id": "1747211452732080615",
+    "datetime": "2024-01-16T10:57:26.000Z",
+    "text": "#LíneaB - Circula con demora. 07:57",
+    "user": "emova_arg",
+    "_lote": "2024-01",
+    "line": "B",
+    "kind": "inicio_demora",
+    "hora_emova": "07:57",
+    "stations": null
+  },
+  {
+    "id": "1747219256264007741",
+    "datetime": "2024-01-16T11:28:27.000Z",
+    "text": "#LíneaB - Ya circula con su frecuencia normal. 08:28",
+    "user": "emova_arg",
+    "_lote": "2024-01",
+    "line": "B",
+    "kind": "otro",
+    "hora_emova": "08:28",
+    "stations": null
+  },
+  {
+    "id": "1753724515941536193",
+    "datetime": "2024-02-03T10:18:01.000Z",
+    "text": "#LíneaB - Circula con servicio limitado entre las estaciones Leandro N. Alem y Los Incas. 07:18",
+    "user": "emova_arg",
+    "_lote": "2024-02",
+    "line": "B",
+    "kind": "inicio_limitado",
+    "hora_emova": "07:18",
+    "stations": "Leandro N"
+  },
+  {
+    "id": "1753739369557422195",
+    "datetime": "2024-02-03T11:17:03.000Z",
+    "text": "#LíneaB - Ya realiza el recorrido completo entre cabeceras. 08:17",
+    "user": "emova_arg",
+    "_lote": "2024-02",
+    "line": "B",
+    "kind": "fin",
+    "hora_emova": "08:17",
+    "stations": null
+  },
+  {
+    "id": "1755627298001179118",
+    "datetime": "2024-02-08T16:19:00.000Z",
+    "text": "#LíneaB - Circula con servicio limitado entre las estaciones Juan Manuel de Rosas y Dorrego. 13:18",
+    "user": "emova_arg",
+    "_lote": "2024-02",
+    "line": "B",
+    "kind": "inicio_limitado",
+    "hora_emova": "13:18",
+    "stations": "Juan Manuel de Rosas y Dorrego"
+  },
+  {
+    "id": "1755637621328380168",
+    "datetime": "2024-02-08T17:00:01.000Z",
+    "text": "#LíneaB - Presta su servicio completo entre cabeceras normalizando su frecuencia habitual. 14:00",
+    "user": "emova_arg",
+    "_lote": "2024-02",
+    "line": "B",
+    "kind": "fin",
+    "hora_emova": "14:00",
+    "stations": null
+  },
+  {
+    "id": "1755638879296668103",
+    "datetime": "2024-02-08T17:05:01.000Z",
+    "text": "#LíneaB - Circula con demora. 14:05",
+    "user": "emova_arg",
+    "_lote": "2024-02",
+    "line": "B",
+    "kind": "inicio_demora",
+    "hora_emova": "14:05",
+    "stations": null
+  },
+  {
+    "id": "1755698551642845463",
+    "datetime": "2024-02-08T21:02:08.000Z",
+    "text": "#LíneaB - Ya circula con su frecuencia normal. 18:02",
+    "user": "emova_arg",
+    "_lote": "2024-02",
+    "line": "B",
+    "kind": "otro",
+    "hora_emova": "18:02",
+    "stations": null
+  },
+  {
+    "id": "1758413223773028651",
+    "datetime": "2024-02-16T08:49:16.000Z",
+    "text": "#LíneaB - Circula con servicio limitado entre las estaciones Juan Manuel de Rosas y Dorrego. 05:49",
+    "user": "emova_arg",
+    "_lote": "2024-02",
+    "line": "B",
+    "kind": "inicio_limitado",
+    "hora_emova": "05:49",
+    "stations": "Juan Manuel de Rosas y Dorrego"
+  },
+  {
+    "id": "1758424301093409030",
+    "datetime": "2024-02-16T09:33:17.000Z",
+    "text": "#LíneaB - Ya realiza el recorrido completo entre cabeceras. 06:33",
+    "user": "emova_arg",
+    "_lote": "2024-02",
+    "line": "B",
+    "kind": "fin",
+    "hora_emova": "06:33",
+    "stations": null
+  },
+  {
+    "id": "1758425057112551645",
+    "datetime": "2024-02-16T09:36:18.000Z",
+    "text": "#LíneaB - Servicio con demora. 06:36",
+    "user": "emova_arg",
+    "_lote": "2024-02",
+    "line": "B",
+    "kind": "inicio_demora",
+    "hora_emova": "06:36",
+    "stations": null
+  },
+  {
+    "id": "1758436134953103796",
+    "datetime": "2024-02-16T10:20:19.000Z",
+    "text": "#LíneaB - Ya circula con su frecuencia normal. 07:20",
+    "user": "emova_arg",
+    "_lote": "2024-02",
+    "line": "B",
+    "kind": "otro",
+    "hora_emova": "07:20",
+    "stations": null
+  },
+  {
+    "id": "1763637698881876384",
+    "datetime": "2024-03-01T18:49:28.000Z",
+    "text": "#LíneaB - Circula con servicio limitado entre las estaciones Juan Manuel de Rosas y Dorrego. 15:49",
+    "user": "emova_arg",
+    "_lote": "2024-03",
+    "line": "B",
+    "kind": "inicio_limitado",
+    "hora_emova": "15:49",
+    "stations": "Juan Manuel de Rosas y Dorrego"
+  },
+  {
+    "id": "1763656074886877374",
+    "datetime": "2024-03-01T20:02:30.000Z",
+    "text": "#LíneaB - Ya realiza el recorrido completo entre cabeceras. 17:02",
+    "user": "emova_arg",
+    "_lote": "2024-03",
+    "line": "B",
+    "kind": "fin",
+    "hora_emova": "17:02",
+    "stations": null
+  },
+  {
+    "id": "1769451181099618400",
+    "datetime": "2024-03-17T19:50:11.000Z",
+    "text": "#LíneaB - Circula con servicio limitado entre las estaciones Juan Manuel de Rosas y Carlos Pellegrini. 16:50",
+    "user": "emova_arg",
+    "_lote": "2024-03",
+    "line": "B",
+    "kind": "inicio_limitado",
+    "hora_emova": "16:50",
+    "stations": "Juan Manuel de Rosas y Carlos Pellegrini"
+  },
+  {
+    "id": "1769454452212158812",
+    "datetime": "2024-03-17T20:03:10.000Z",
+    "text": "#LíneaB - Presta su servicio completo entre cabeceras normalizando su frecuencia habitual. 17:03",
+    "user": "emova_arg",
+    "_lote": "2024-03",
+    "line": "B",
+    "kind": "fin",
+    "hora_emova": "17:03",
+    "stations": null
+  },
+  {
+    "id": "1770005194593484897",
+    "datetime": "2024-03-19T08:31:38.000Z",
+    "text": "#LíneaB - Servicio interrumpido. 05:31",
+    "user": "emova_arg",
+    "_lote": "2024-03",
+    "line": "B",
+    "kind": "inicio_interrumpido",
+    "hora_emova": "05:31",
+    "stations": null
+  },
+  {
+    "id": "1770018789502976265",
+    "datetime": "2024-03-19T09:25:39.000Z",
+    "text": "#LíneaB - Presta su servicio completo entre cabeceras normalizando su frecuencia habitual. 06:25",
+    "user": "emova_arg",
+    "_lote": "2024-03",
+    "line": "B",
+    "kind": "fin",
+    "hora_emova": "06:25",
+    "stations": null
+  },
+  {
+    "id": "1770439558221447226",
+    "datetime": "2024-03-20T13:17:38.000Z",
+    "text": "#LíneaB - Los trenes no se detienen en la estación Medrano con destino a J. M. Rosas. 10:17",
+    "user": "emova_arg",
+    "_lote": "2024-03",
+    "line": "B",
+    "kind": "inicio_estacion_cerrada",
+    "hora_emova": "10:17",
+    "stations": "Medrano con destino a J"
+  },
+  {
+    "id": "1770466498521293289",
+    "datetime": "2024-03-20T15:04:41.000Z",
+    "text": "#LíneaB - Ya se detienen en todas las estaciones. 12:04",
+    "user": "emova_arg",
+    "_lote": "2024-03",
+    "line": "B",
+    "kind": "fin",
+    "hora_emova": "12:04",
+    "stations": null
+  },
+  {
+    "id": "1770496965647675859",
+    "datetime": "2024-03-20T17:05:45.000Z",
+    "text": "#LíneaB - Circula con demora. 14:05",
+    "user": "emova_arg",
+    "_lote": "2024-03",
+    "line": "B",
+    "kind": "inicio_demora",
+    "hora_emova": "14:05",
+    "stations": null
+  },
+  {
+    "id": "1772679681088623061",
+    "datetime": "2024-03-26T17:39:05.000Z",
+    "text": "#LíneaB - Circula con demora. 14:39",
+    "user": "emova_arg",
+    "_lote": "2024-03",
+    "line": "B",
+    "kind": "inicio_demora",
+    "hora_emova": "14:39",
+    "stations": null
+  },
+  {
+    "id": "1772680687151198268",
+    "datetime": "2024-03-26T17:43:05.000Z",
+    "text": "#LíneaB - Circula con servicio limitado entre las estaciones Leandro N. Alem y Federico Lacroze. 14:43",
+    "user": "emova_arg",
+    "_lote": "2024-03",
+    "line": "B",
+    "kind": "inicio_limitado",
+    "hora_emova": "14:43",
+    "stations": "Leandro N"
+  },
+  {
+    "id": "1772684463287181506",
+    "datetime": "2024-03-26T17:58:05.000Z",
+    "text": "#LíneaB - Ya realiza el recorrido completo entre cabeceras. 14:58",
+    "user": "emova_arg",
+    "_lote": "2024-03",
+    "line": "B",
+    "kind": "fin",
+    "hora_emova": "14:58",
+    "stations": null
+  },
+  {
+    "id": "1775440318688579967",
+    "datetime": "2024-04-03T08:28:52.000Z",
+    "text": "#LíneaB - Estación Pasteur cerrada por obras de renovación integral. 05:28",
+    "user": "emova_arg",
+    "_lote": "2024-04",
+    "line": "B",
+    "kind": "cierre_programado",
+    "hora_emova": "05:28",
+    "stations": "Pasteur"
+  },
+  {
+    "id": "1775443086602129446",
+    "datetime": "2024-04-03T08:39:52.000Z",
+    "text": "#LíneaB - Estación Pasteur cerrada por obras de renovación integral. 05:39",
+    "user": "emova_arg",
+    "_lote": "2024-04",
+    "line": "B",
+    "kind": "cierre_programado",
+    "hora_emova": "05:39",
+    "stations": "Pasteur"
+  },
+  {
+    "id": "1775509525916709274",
+    "datetime": "2024-04-03T13:03:53.000Z",
+    "text": "¡Atención usuarios! La estación Pasteur-Amia de la #LíneaB se encuentra cerrada por obras de puesta en valor.",
+    "user": "emova_arg",
+    "_lote": "2024-04",
+    "line": "B",
+    "kind": "cierre_programado",
+    "hora_emova": null,
+    "stations": null
+  },
+  {
+    "id": "1777352317991309730",
+    "datetime": "2024-04-08T15:06:28.000Z",
+    "text": "#LíneaB - Servicio limitado: Rosas y Dorrego debido a la atencion medica a un usuario. 12:06",
+    "user": "emova_arg",
+    "_lote": "2024-04",
+    "line": "B",
+    "kind": "inicio_limitado",
+    "hora_emova": "12:06",
+    "stations": null
+  },
+  {
+    "id": "1777357102316466241",
+    "datetime": "2024-04-08T15:25:29.000Z",
+    "text": "#LíneaB - Presta su servicio completo entre cabeceras normalizando su frecuencia habitual. 12:25",
+    "user": "emova_arg",
+    "_lote": "2024-04",
+    "line": "B",
+    "kind": "fin",
+    "hora_emova": "12:25",
+    "stations": null
+  },
+  {
+    "id": "1777358612861448316",
+    "datetime": "2024-04-08T15:31:29.000Z",
+    "text": "#LíneaB - Estación Pasteur cerrada por obras de renovación integral. 12:31",
+    "user": "emova_arg",
+    "_lote": "2024-04",
+    "line": "B",
+    "kind": "cierre_programado",
+    "hora_emova": "12:31",
+    "stations": "Pasteur"
+  },
+  {
+    "id": "1777800786266726793",
+    "datetime": "2024-04-09T20:48:32.000Z",
+    "text": "#LíneaB - Circula con demora. 17:48",
+    "user": "emova_arg",
+    "_lote": "2024-04",
+    "line": "B",
+    "kind": "inicio_demora",
+    "hora_emova": "17:48",
+    "stations": null
+  },
+  {
+    "id": "1777823952544403461",
+    "datetime": "2024-04-09T22:20:35.000Z",
+    "text": "#LíneaB - Ya circula con su frecuencia normal. 19:20",
+    "user": "emova_arg",
+    "_lote": "2024-04",
+    "line": "B",
+    "kind": "otro",
+    "hora_emova": "19:20",
+    "stations": null
+  },
+  {
+    "id": "1777824705363255647",
+    "datetime": "2024-04-09T22:23:34.000Z",
+    "text": "#LíneaB - Estación Pasteur cerrada por obras de renovación integral. 19:23",
+    "user": "emova_arg",
+    "_lote": "2024-04",
+    "line": "B",
+    "kind": "cierre_programado",
+    "hora_emova": "19:23",
+    "stations": "Pasteur"
+  },
+  {
+    "id": "1780718273731973626",
+    "datetime": "2024-04-17T22:01:35.000Z",
+    "text": "#LíneaB - Circula con demora. 19:01",
+    "user": "emova_arg",
+    "_lote": "2024-04",
+    "line": "B",
+    "kind": "inicio_demora",
+    "hora_emova": "19:01",
+    "stations": null
+  },
+  {
+    "id": "1780725071230734487",
+    "datetime": "2024-04-17T22:28:35.000Z",
+    "text": "#LíneaB - Ya circula con su frecuencia normal. 19:28",
+    "user": "emova_arg",
+    "_lote": "2024-04",
+    "line": "B",
+    "kind": "otro",
+    "hora_emova": "19:28",
+    "stations": null
+  },
+  {
+    "id": "1780726330327285904",
+    "datetime": "2024-04-17T22:33:36.000Z",
+    "text": "#LíneaB - Estación Pasteur cerrada por obras de renovación integral. 19:33",
+    "user": "emova_arg",
+    "_lote": "2024-04",
+    "line": "B",
+    "kind": "cierre_programado",
+    "hora_emova": "19:33",
+    "stations": "Pasteur"
+  },
+  {
+    "id": "1782854172636782724",
+    "datetime": "2024-04-23T19:28:53.000Z",
+    "text": "#LíneaB - Servicio con demora. 16:28",
+    "user": "emova_arg",
+    "_lote": "2024-04",
+    "line": "B",
+    "kind": "inicio_demora",
+    "hora_emova": "16:28",
+    "stations": null
+  },
+  {
+    "id": "1782871545565618496",
+    "datetime": "2024-04-23T20:37:55.000Z",
+    "text": "#LíneaB - Ya circula con su frecuencia normal. 17:37",
+    "user": "emova_arg",
+    "_lote": "2024-04",
+    "line": "B",
+    "kind": "otro",
+    "hora_emova": "17:37",
+    "stations": null
+  },
+  {
+    "id": "1782873559930372178",
+    "datetime": "2024-04-23T20:45:55.000Z",
+    "text": "#LíneaB - Estación Pasteur cerrada por obras de renovación integral. 17:45",
+    "user": "emova_arg",
+    "_lote": "2024-04",
+    "line": "B",
+    "kind": "cierre_programado",
+    "hora_emova": "17:45",
+    "stations": "Pasteur"
+  },
+  {
+    "id": "1783809336491278826",
+    "datetime": "2024-04-26T10:44:22.000Z",
+    "text": "#LíneaB - Circula con servicio limitado entre las estaciones Juan Manuel de Rosas y Carlos Pellegrini. 07:44",
+    "user": "emova_arg",
+    "_lote": "2024-04",
+    "line": "B",
+    "kind": "inicio_limitado",
+    "hora_emova": "07:44",
+    "stations": "Juan Manuel de Rosas y Carlos Pellegrini"
+  },
+  {
+    "id": "1783815629239124399",
+    "datetime": "2024-04-26T11:09:22.000Z",
+    "text": "#LíneaB - Presta su servicio completo entre cabeceras normalizando su frecuencia habitual. 08:09",
+    "user": "emova_arg",
+    "_lote": "2024-04",
+    "line": "B",
+    "kind": "fin",
+    "hora_emova": "08:09",
+    "stations": null
+  },
+  {
+    "id": "1783816638883663929",
+    "datetime": "2024-04-26T11:13:23.000Z",
+    "text": "#LíneaB - Estación Pasteur cerrada por obras de renovación integral. 08:13",
+    "user": "emova_arg",
+    "_lote": "2024-04",
+    "line": "B",
+    "kind": "cierre_programado",
+    "hora_emova": "08:13",
+    "stations": "Pasteur"
+  },
+  {
+    "id": "1785047987472744952",
+    "datetime": "2024-04-29T20:46:19.000Z",
+    "text": "#LíneaB - Circula con demora. 17:46",
+    "user": "emova_arg",
+    "_lote": "2024-04",
+    "line": "B",
+    "kind": "inicio_demora",
+    "hora_emova": "17:46",
+    "stations": null
+  },
+  {
+    "id": "1785048993011044374",
+    "datetime": "2024-04-29T20:50:19.000Z",
+    "text": "#LíneaB - Circula con servicio limitado entre las estaciones Juan Manuel de Rosas y Dorrego. 17:50",
+    "user": "emova_arg",
+    "_lote": "2024-04",
+    "line": "B",
+    "kind": "inicio_limitado",
+    "hora_emova": "17:50",
+    "stations": "Juan Manuel de Rosas y Dorrego"
+  },
+  {
+    "id": "1785056797943853292",
+    "datetime": "2024-04-29T21:21:20.000Z",
+    "text": "#LíneaB - Servicio interrumpido. 18:21",
+    "user": "emova_arg",
+    "_lote": "2024-04",
+    "line": "B",
+    "kind": "inicio_interrumpido",
+    "hora_emova": "18:21",
+    "stations": null
+  },
+  {
+    "id": "1785079711330132390",
+    "datetime": "2024-04-29T22:52:23.000Z",
+    "text": "#LíneaB - Presta su servicio completo entre cabeceras normalizando su frecuencia habitual. 19:52",
+    "user": "emova_arg",
+    "_lote": "2024-04",
+    "line": "B",
+    "kind": "fin",
+    "hora_emova": "19:52",
+    "stations": null
+  },
+  {
+    "id": "1785092801304109257",
+    "datetime": "2024-04-29T23:44:23.000Z",
+    "text": "#LíneaB - Estación Pasteur cerrada por obras de renovación integral. 20:44",
+    "user": "emova_arg",
+    "_lote": "2024-04",
+    "line": "B",
+    "kind": "cierre_programado",
+    "hora_emova": "20:44",
+    "stations": "Pasteur"
+  },
+  {
+    "id": "1785840344644411796",
+    "datetime": "2024-05-02T01:14:52.000Z",
+    "text": "#LíneaB - Estación Pasteur cerrada por obras de renovación integral. 22:14",
+    "user": "emova_arg",
+    "_lote": "2024-05",
+    "line": "B",
+    "kind": "cierre_programado",
+    "hora_emova": "22:14",
+    "stations": "Pasteur"
+  },
+  {
+    "id": "1787907688208195895",
+    "datetime": "2024-05-07T18:09:45.000Z",
+    "text": "#LíneaB - Circula con demora. 15:09",
+    "user": "emova_arg",
+    "_lote": "2024-05",
+    "line": "B",
+    "kind": "inicio_demora",
+    "hora_emova": "15:09",
+    "stations": null
+  },
+  {
+    "id": "1787921031320994056",
+    "datetime": "2024-05-07T19:02:46.000Z",
+    "text": "#LíneaB - Ya funciona con su frecuencia habitual. 16:02",
+    "user": "emova_arg",
+    "_lote": "2024-05",
+    "line": "B",
+    "kind": "fin",
+    "hora_emova": "16:02",
+    "stations": null
+  },
+  {
+    "id": "1787923547383288128",
+    "datetime": "2024-05-07T19:12:46.000Z",
+    "text": "#LíneaB - Estación Pasteur cerrada por obras de renovación integral. 16:12",
+    "user": "emova_arg",
+    "_lote": "2024-05",
+    "line": "B",
+    "kind": "cierre_programado",
+    "hora_emova": "16:12",
+    "stations": "Pasteur"
+  },
+  {
+    "id": "1788749962349547538",
+    "datetime": "2024-05-10T01:56:39.000Z",
+    "text": "#LíneaB - Estación Pasteur cerrada por obras de renovación integral. 22:56",
+    "user": "emova_arg",
+    "_lote": "2024-05",
+    "line": "B",
+    "kind": "cierre_programado",
+    "hora_emova": "22:56",
+    "stations": "Pasteur"
+  },
+  {
+    "id": "1788869856164475157",
+    "datetime": "2024-05-10T09:53:03.000Z",
+    "text": "#LíneaB - Circula con servicio limitado entre las estaciones Juan Manuel de Rosas y Carlos Pellegrini. 06:53",
+    "user": "emova_arg",
+    "_lote": "2024-05",
+    "line": "B",
+    "kind": "inicio_limitado",
+    "hora_emova": "06:53",
+    "stations": "Juan Manuel de Rosas y Carlos Pellegrini"
+  },
+  {
+    "id": "1788872374386938260",
+    "datetime": "2024-05-10T10:03:04.000Z",
+    "text": "#LíneaB - Ya realiza el recorrido completo entre cabeceras. 07:03",
+    "user": "emova_arg",
+    "_lote": "2024-05",
+    "line": "B",
+    "kind": "fin",
+    "hora_emova": "07:03",
+    "stations": null
+  },
+  {
+    "id": "1788873129026048023",
+    "datetime": "2024-05-10T10:06:04.000Z",
+    "text": "#LíneaB - Estación Pasteur cerrada por obras de renovación integral. 07:06",
+    "user": "emova_arg",
+    "_lote": "2024-05",
+    "line": "B",
+    "kind": "cierre_programado",
+    "hora_emova": "07:06",
+    "stations": "Pasteur"
+  },
+  {
+    "id": "1789017898750448023",
+    "datetime": "2024-05-10T19:41:20.000Z",
+    "text": "#LíneaB - Circula con demora. 16:41",
+    "user": "emova_arg",
+    "_lote": "2024-05",
+    "line": "B",
+    "kind": "inicio_demora",
+    "hora_emova": "16:41",
+    "stations": null
+  },
+  {
+    "id": "1789019911429177720",
+    "datetime": "2024-05-10T19:49:19.000Z",
+    "text": "#LíneaB - Ya funciona con su frecuencia habitual. 16:49",
+    "user": "emova_arg",
+    "_lote": "2024-05",
+    "line": "B",
+    "kind": "fin",
+    "hora_emova": "16:49",
+    "stations": null
+  },
+  {
+    "id": "1789029480134050057",
+    "datetime": "2024-05-10T20:27:21.000Z",
+    "text": "#LíneaB - Estación Pasteur cerrada por obras de renovación integral. 17:27",
+    "user": "emova_arg",
+    "_lote": "2024-05",
+    "line": "B",
+    "kind": "cierre_programado",
+    "hora_emova": "17:27",
+    "stations": "Pasteur"
+  },
+  {
+    "id": "1790861870175277513",
+    "datetime": "2024-05-15T21:48:37.000Z",
+    "text": "#LíneaB - Circula con demora. 18:48",
+    "user": "emova_arg",
+    "_lote": "2024-05",
+    "line": "B",
+    "kind": "inicio_demora",
+    "hora_emova": "18:48",
+    "stations": null
+  },
+  {
+    "id": "1790869926774710742",
+    "datetime": "2024-05-15T22:20:37.000Z",
+    "text": "#LíneaB - Ya funciona con su frecuencia habitual. 19:20",
+    "user": "emova_arg",
+    "_lote": "2024-05",
+    "line": "B",
+    "kind": "fin",
+    "hora_emova": "19:20",
+    "stations": null
+  },
+  {
+    "id": "1790873200009596984",
+    "datetime": "2024-05-15T22:33:38.000Z",
+    "text": "#LíneaB - Estación Pasteur cerrada por obras de renovación integral. 19:33",
+    "user": "emova_arg",
+    "_lote": "2024-05",
+    "line": "B",
+    "kind": "cierre_programado",
+    "hora_emova": "19:33",
+    "stations": "Pasteur"
+  },
+  {
+    "id": "1792684639921807572",
+    "datetime": "2024-05-20T22:31:39.000Z",
+    "text": "#LíneaB - Circula con demora. 19:31",
+    "user": "emova_arg",
+    "_lote": "2024-05",
+    "line": "B",
+    "kind": "inicio_demora",
+    "hora_emova": "19:31",
+    "stations": null
+  },
+  {
+    "id": "1792687910447091867",
+    "datetime": "2024-05-20T22:44:39.000Z",
+    "text": "#LíneaB - Ya funciona con su frecuencia habitual. 19:44",
+    "user": "emova_arg",
+    "_lote": "2024-05",
+    "line": "B",
+    "kind": "fin",
+    "hora_emova": "19:44",
+    "stations": null
+  },
+  {
+    "id": "1792688919357649021",
+    "datetime": "2024-05-20T22:48:39.000Z",
+    "text": "#LíneaB - Estación Pasteur cerrada por obras de renovación integral. 19:48",
+    "user": "emova_arg",
+    "_lote": "2024-05",
+    "line": "B",
+    "kind": "cierre_programado",
+    "hora_emova": "19:48",
+    "stations": "Pasteur"
+  },
+  {
+    "id": "1794173654193868912",
+    "datetime": "2024-05-25T01:08:27.000Z",
+    "text": "#LíneaB - Servicio interrumpido por medida de fuerza gremial. 22:08",
+    "user": "emova_arg",
+    "_lote": "2024-05",
+    "line": "B",
+    "kind": "inicio_paro",
+    "hora_emova": "22:08",
+    "stations": null
+  },
+  {
+    "id": "1794175416279654772",
+    "datetime": "2024-05-25T01:15:28.000Z",
+    "text": "#LíneaB - Reanuda su servicio y realiza el recorrido completo entre cabeceras. 22:15",
+    "user": "emova_arg",
+    "_lote": "2024-05",
+    "line": "B",
+    "kind": "otro",
+    "hora_emova": "22:15",
+    "stations": null
+  },
+  {
+    "id": "1794181459479003175",
+    "datetime": "2024-05-25T01:39:28.000Z",
+    "text": "#LíneaB - Estación Pasteur cerrada por obras de renovación integral. 22:39",
+    "user": "emova_arg",
+    "_lote": "2024-05",
+    "line": "B",
+    "kind": "cierre_programado",
+    "hora_emova": "22:39",
+    "stations": "Pasteur"
+  },
+  {
+    "id": "1796496592549101664",
+    "datetime": "2024-05-31T10:58:59.000Z",
+    "text": "#LíneaB - Circula con demora. 07:58",
+    "user": "emova_arg",
+    "_lote": "2024-05",
+    "line": "B",
+    "kind": "inicio_demora",
+    "hora_emova": "07:58",
+    "stations": null
+  },
+  {
+    "id": "1796507417158492201",
+    "datetime": "2024-05-31T11:42:00.000Z",
+    "text": "#LíneaB - Ya funciona con su frecuencia habitual. 08:41",
+    "user": "emova_arg",
+    "_lote": "2024-05",
+    "line": "B",
+    "kind": "fin",
+    "hora_emova": "08:41",
+    "stations": null
+  },
+  {
+    "id": "1796508423405637785",
+    "datetime": "2024-05-31T11:46:00.000Z",
+    "text": "#LíneaB - Estación Pasteur cerrada por obras de renovación integral. 08:45",
+    "user": "emova_arg",
+    "_lote": "2024-05",
+    "line": "B",
+    "kind": "cierre_programado",
+    "hora_emova": "08:45",
+    "stations": "Pasteur"
+  },
+  {
+    "id": "1797777368917905531",
+    "datetime": "2024-06-03T23:48:20.000Z",
+    "text": "#LíneaB - Circula con demora. 20:48",
+    "user": "emova_arg",
+    "_lote": "2024-06",
+    "line": "B",
+    "kind": "inicio_demora",
+    "hora_emova": "20:48",
+    "stations": null
+  },
+  {
+    "id": "1797782152894984301",
+    "datetime": "2024-06-04T00:07:21.000Z",
+    "text": "#LíneaB - Ya funciona con su frecuencia habitual. 21:07",
+    "user": "emova_arg",
+    "_lote": "2024-06",
+    "line": "B",
+    "kind": "fin",
+    "hora_emova": "21:07",
+    "stations": null
+  },
+  {
+    "id": "1797785171988517032",
+    "datetime": "2024-06-04T00:19:20.000Z",
+    "text": "#LíneaB - Estación Pasteur cerrada por obras de renovación integral. 21:19",
+    "user": "emova_arg",
+    "_lote": "2024-06",
+    "line": "B",
+    "kind": "cierre_programado",
+    "hora_emova": "21:19",
+    "stations": "Pasteur"
+  },
+  {
+    "id": "1798450256327094718",
+    "datetime": "2024-06-05T20:22:09.000Z",
+    "text": "#LíneaB - Circula con demora. 17:22",
+    "user": "emova_arg",
+    "_lote": "2024-06",
+    "line": "B",
+    "kind": "inicio_demora",
+    "hora_emova": "17:22",
+    "stations": null
+  },
+  {
+    "id": "1798456800615780757",
+    "datetime": "2024-06-05T20:48:09.000Z",
+    "text": "#LíneaB - Ya funciona con su frecuencia habitual. 17:48",
+    "user": "emova_arg",
+    "_lote": "2024-06",
+    "line": "B",
+    "kind": "fin",
+    "hora_emova": "17:48",
+    "stations": null
+  },
+  {
+    "id": "1798458311005671609",
+    "datetime": "2024-06-05T20:54:09.000Z",
+    "text": "#LíneaB - Estación Pasteur cerrada por obras de renovación integral. 17:54",
+    "user": "emova_arg",
+    "_lote": "2024-06",
+    "line": "B",
+    "kind": "cierre_programado",
+    "hora_emova": "17:54",
+    "stations": "Pasteur"
+  },
+  {
+    "id": "1798479456220156110",
+    "datetime": "2024-06-05T22:18:11.000Z",
+    "text": "#LíneaB - Circula con demora. 19:18",
+    "user": "emova_arg",
+    "_lote": "2024-06",
+    "line": "B",
+    "kind": "inicio_demora",
+    "hora_emova": "19:18",
+    "stations": null
+  },
+  {
+    "id": "1798482981629128784",
+    "datetime": "2024-06-05T22:32:11.000Z",
+    "text": "#LíneaB - Ya funciona con su frecuencia habitual. 19:32",
+    "user": "emova_arg",
+    "_lote": "2024-06",
+    "line": "B",
+    "kind": "fin",
+    "hora_emova": "19:32",
+    "stations": null
+  },
+  {
+    "id": "1798486002228412639",
+    "datetime": "2024-06-05T22:44:11.000Z",
+    "text": "#LíneaB - Estación Pasteur cerrada por obras de renovación integral. 19:44",
+    "user": "emova_arg",
+    "_lote": "2024-06",
+    "line": "B",
+    "kind": "cierre_programado",
+    "hora_emova": "19:44",
+    "stations": "Pasteur"
+  },
+  {
+    "id": "1798549754692968656",
+    "datetime": "2024-06-06T02:57:31.000Z",
+    "text": "#LíneaB - Estación Pasteur cerrada por obras de renovación integral. 23:57",
+    "user": "emova_arg",
+    "_lote": "2024-06",
+    "line": "B",
+    "kind": "cierre_programado",
+    "hora_emova": "23:57",
+    "stations": "Pasteur"
+  },
+  {
+    "id": "1798886879435378903",
+    "datetime": "2024-06-07T01:17:08.000Z",
+    "text": "#LíneaB - Circula con servicio limitado entre las estaciones Leandro N. Alem y Los Incas. 22:17",
+    "user": "emova_arg",
+    "_lote": "2024-06",
+    "line": "B",
+    "kind": "inicio_limitado",
+    "hora_emova": "22:17",
+    "stations": "Leandro N"
+  },
+  {
+    "id": "1798891157776429298",
+    "datetime": "2024-06-07T01:34:08.000Z",
+    "text": "#LíneaB - Presta su servicio completo entre cabeceras normalizando su frecuencia habitual. 22:34",
+    "user": "emova_arg",
+    "_lote": "2024-06",
+    "line": "B",
+    "kind": "fin",
+    "hora_emova": "22:34",
+    "stations": null
+  },
+  {
+    "id": "1798891913761988740",
+    "datetime": "2024-06-07T01:37:08.000Z",
+    "text": "#LíneaB - Servicio con demora. 22:37",
+    "user": "emova_arg",
+    "_lote": "2024-06",
+    "line": "B",
+    "kind": "inicio_demora",
+    "hora_emova": "22:37",
+    "stations": null
+  },
+  {
+    "id": "1798897953463005461",
+    "datetime": "2024-06-07T02:01:08.000Z",
+    "text": "#LíneaB - Ya funciona con su frecuencia habitual. 23:01",
+    "user": "emova_arg",
+    "_lote": "2024-06",
+    "line": "B",
+    "kind": "fin",
+    "hora_emova": "23:01",
+    "stations": null
+  },
+  {
+    "id": "1798899213528690910",
+    "datetime": "2024-06-07T02:06:09.000Z",
+    "text": "#LíneaB - Estación Pasteur cerrada por obras de renovación integral. 23:06",
+    "user": "emova_arg",
+    "_lote": "2024-06",
+    "line": "B",
+    "kind": "cierre_programado",
+    "hora_emova": "23:06",
+    "stations": "Pasteur"
+  },
+  {
+    "id": "1799431247019593808",
+    "datetime": "2024-06-08T13:20:15.000Z",
+    "text": "#LíneaB - Circula con demora. 10:20",
+    "user": "emova_arg",
+    "_lote": "2024-06",
+    "line": "B",
+    "kind": "inicio_demora",
+    "hora_emova": "10:20",
+    "stations": null
+  },
+  {
+    "id": "1799444334200173047",
+    "datetime": "2024-06-08T14:12:15.000Z",
+    "text": "#LíneaB - Ya funciona con su frecuencia habitual. 11:12",
+    "user": "emova_arg",
+    "_lote": "2024-06",
+    "line": "B",
+    "kind": "fin",
+    "hora_emova": "11:12",
+    "stations": null
+  },
+  {
+    "id": "1799446350074900797",
+    "datetime": "2024-06-08T14:20:16.000Z",
+    "text": "#LíneaB - Estación Pasteur cerrada por obras de renovación integral. 11:20",
+    "user": "emova_arg",
+    "_lote": "2024-06",
+    "line": "B",
+    "kind": "cierre_programado",
+    "hora_emova": "11:20",
+    "stations": "Pasteur"
+  },
+  {
+    "id": "1800484920680161750",
+    "datetime": "2024-06-11T11:07:11.000Z",
+    "text": "#LíneaB - Circula con demora. 08:07",
+    "user": "emova_arg",
+    "_lote": "2024-06",
+    "line": "B",
+    "kind": "inicio_demora",
+    "hora_emova": "08:07",
+    "stations": null
+  },
+  {
+    "id": "1800485925496975830",
+    "datetime": "2024-06-11T11:11:10.000Z",
+    "text": "#LíneaB - Servicio limitado: Rosas y Dorrego debido a un usuario que requiere asistencia. 08:11",
+    "user": "emova_arg",
+    "_lote": "2024-06",
+    "line": "B",
+    "kind": "inicio_limitado",
+    "hora_emova": "08:11",
+    "stations": null
+  },
+  {
+    "id": "1800491715834392868",
+    "datetime": "2024-06-11T11:34:11.000Z",
+    "text": "#LíneaB - Presta su servicio completo entre cabeceras normalizando su frecuencia habitual. 08:34",
+    "user": "emova_arg",
+    "_lote": "2024-06",
+    "line": "B",
+    "kind": "fin",
+    "hora_emova": "08:34",
+    "stations": null
+  },
+  {
+    "id": "1800493227738321051",
+    "datetime": "2024-06-11T11:40:11.000Z",
+    "text": "#LíneaB - Estación Pasteur cerrada por obras de renovación integral. 08:40",
+    "user": "emova_arg",
+    "_lote": "2024-06",
+    "line": "B",
+    "kind": "cierre_programado",
+    "hora_emova": "08:40",
+    "stations": "Pasteur"
+  },
+  {
+    "id": "1801018406394605620",
+    "datetime": "2024-06-12T22:27:04.000Z",
+    "text": "#LíneaB - Circula con servicio limitado entre las estaciones Juan Manuel de Rosas y Dorrego. 19:27",
+    "user": "emova_arg",
+    "_lote": "2024-06",
+    "line": "B",
+    "kind": "inicio_limitado",
+    "hora_emova": "19:27",
+    "stations": "Juan Manuel de Rosas y Dorrego"
+  },
+  {
+    "id": "1801069511208034677",
+    "datetime": "2024-06-13T01:50:08.000Z",
+    "text": "#LíneaB - Ya realiza el recorrido completo entre cabeceras. 22:50",
+    "user": "emova_arg",
+    "_lote": "2024-06",
+    "line": "B",
+    "kind": "fin",
+    "hora_emova": "22:50",
+    "stations": null
+  },
+  {
+    "id": "1801074795196362864",
+    "datetime": "2024-06-13T02:11:08.000Z",
+    "text": "#LíneaB - Los trenes no se detiene en las estaciones Pateur y Carlos Gardel. 23:11",
+    "user": "emova_arg",
+    "_lote": "2024-06",
+    "line": "B",
+    "kind": "inicio_estacion_cerrada",
+    "hora_emova": "23:11",
+    "stations": "Pateur y Carlos Gardel"
+  },
+  {
+    "id": "1801080333955207344",
+    "datetime": "2024-06-13T02:33:08.000Z",
+    "text": "#LíneaB - Ya se detienen en todas las estaciones. 23:33",
+    "user": "emova_arg",
+    "_lote": "2024-06",
+    "line": "B",
+    "kind": "fin",
+    "hora_emova": "23:33",
+    "stations": null
+  },
+  {
+    "id": "1801082095952966129",
+    "datetime": "2024-06-13T02:40:08.000Z",
+    "text": "#LíneaB - Estación Pasteur cerrada por obras de renovación integral. 23:40",
+    "user": "emova_arg",
+    "_lote": "2024-06",
+    "line": "B",
+    "kind": "cierre_programado",
+    "hora_emova": "23:40",
+    "stations": "Pasteur"
+  },
+  {
+    "id": "1803497395562463386",
+    "datetime": "2024-06-19T18:37:41.000Z",
+    "text": "#LíneaB - Circula con demora. 15:37",
+    "user": "emova_arg",
+    "_lote": "2024-06",
+    "line": "B",
+    "kind": "inicio_demora",
+    "hora_emova": "15:37",
+    "stations": null
+  },
+  {
+    "id": "1803505702868058177",
+    "datetime": "2024-06-19T19:10:41.000Z",
+    "text": "#LíneaB - Ya funciona con su frecuencia habitual. 16:10",
+    "user": "emova_arg",
+    "_lote": "2024-06",
+    "line": "B",
+    "kind": "fin",
+    "hora_emova": "16:10",
+    "stations": null
+  },
+  {
+    "id": "1803508473134453121",
+    "datetime": "2024-06-19T19:21:42.000Z",
+    "text": "#LíneaB - Estación Pasteur cerrada por obras de renovación integral. 16:21",
+    "user": "emova_arg",
+    "_lote": "2024-06",
+    "line": "B",
+    "kind": "cierre_programado",
+    "hora_emova": "16:21",
+    "stations": "Pasteur"
+  },
+  {
+    "id": "1803520556152570087",
+    "datetime": "2024-06-19T20:09:43.000Z",
+    "text": "#LíneaB - Servicio interrumpido por medida de fuerza gremial. 17:09",
+    "user": "emova_arg",
+    "_lote": "2024-06",
+    "line": "B",
+    "kind": "inicio_paro",
+    "hora_emova": "17:09",
+    "stations": null
+  },
+  {
+    "id": "1803549507554054584",
+    "datetime": "2024-06-19T22:04:45.000Z",
+    "text": "#LíneaB - Presta su servicio completo entre cabeceras normalizando su frecuencia habitual. 19:04",
+    "user": "emova_arg",
+    "_lote": "2024-06",
+    "line": "B",
+    "kind": "fin",
+    "hora_emova": "19:04",
+    "stations": null
+  },
+  {
+    "id": "1803578707497394434",
+    "datetime": "2024-06-20T00:00:47.000Z",
+    "text": "#LíneaB - Estación Pasteur cerrada por obras de renovación integral. 21:00",
+    "user": "emova_arg",
+    "_lote": "2024-06",
+    "line": "B",
+    "kind": "cierre_programado",
+    "hora_emova": "21:00",
+    "stations": "Pasteur"
+  },
+  {
+    "id": "1805581003848548561",
+    "datetime": "2024-06-25T12:37:12.000Z",
+    "text": "#LíneaB - Estación Pasteur cerrada por obras de renovación integral. 09:37",
+    "user": "emova_arg",
+    "_lote": "2024-06",
+    "line": "B",
+    "kind": "cierre_programado",
+    "hora_emova": "09:37",
+    "stations": "Pasteur"
+  },
+  {
+    "id": "1805663329894981819",
+    "datetime": "2024-06-25T18:04:20.000Z",
+    "text": "#LíneaB - Circula con demora. 15:04",
+    "user": "emova_arg",
+    "_lote": "2024-06",
+    "line": "B",
+    "kind": "inicio_demora",
+    "hora_emova": "15:04",
+    "stations": null
+  },
+  {
+    "id": "1805664838225379478",
+    "datetime": "2024-06-25T18:10:19.000Z",
+    "text": "#LíneaB - Circula con servicio limitado entre las estaciones Juan Manuel de Rosas y Dorrego. 15:10",
+    "user": "emova_arg",
+    "_lote": "2024-06",
+    "line": "B",
+    "kind": "inicio_limitado",
+    "hora_emova": "15:10",
+    "stations": "Juan Manuel de Rosas y Dorrego"
+  },
+  {
+    "id": "1805677425902207302",
+    "datetime": "2024-06-25T19:00:20.000Z",
+    "text": "#LíneaB - Presta su servicio completo entre cabeceras normalizando su frecuencia habitual. 16:00",
+    "user": "emova_arg",
+    "_lote": "2024-06",
+    "line": "B",
+    "kind": "fin",
+    "hora_emova": "16:00",
+    "stations": null
+  },
+  {
+    "id": "1805678434355380673",
+    "datetime": "2024-06-25T19:04:21.000Z",
+    "text": "#LíneaB - Estación Pasteur cerrada por obras de renovación integral. 16:04",
+    "user": "emova_arg",
+    "_lote": "2024-06",
+    "line": "B",
+    "kind": "cierre_programado",
+    "hora_emova": "16:04",
+    "stations": "Pasteur"
+  },
+  {
+    "id": "1806064674158366793",
+    "datetime": "2024-06-26T20:39:08.000Z",
+    "text": "#LíneaB - Servicio con demora debido a un usuario que requiere asistencia. 17:39",
+    "user": "emova_arg",
+    "_lote": "2024-06",
+    "line": "B",
+    "kind": "inicio_demora",
+    "hora_emova": "17:39",
+    "stations": null
+  },
+  {
+    "id": "1806066939518738787",
+    "datetime": "2024-06-26T20:48:08.000Z",
+    "text": "#LíneaB - Ya funciona con su frecuencia habitual. 17:48",
+    "user": "emova_arg",
+    "_lote": "2024-06",
+    "line": "B",
+    "kind": "fin",
+    "hora_emova": "17:48",
+    "stations": null
+  },
+  {
+    "id": "1806068951929004531",
+    "datetime": "2024-06-26T20:56:07.000Z",
+    "text": "#LíneaB - Estación Pasteur cerrada por obras de renovación integral. 17:56",
+    "user": "emova_arg",
+    "_lote": "2024-06",
+    "line": "B",
+    "kind": "cierre_programado",
+    "hora_emova": "17:56",
+    "stations": "Pasteur"
+  },
+  {
+    "id": "1806440589388402694",
+    "datetime": "2024-06-27T21:32:53.000Z",
+    "text": "#LíneaB - Circula con demora. 18:32",
+    "user": "emova_arg",
+    "_lote": "2024-06",
+    "line": "B",
+    "kind": "inicio_demora",
+    "hora_emova": "18:32",
+    "stations": null
+  },
+  {
+    "id": "1806449150281552364",
+    "datetime": "2024-06-27T22:06:54.000Z",
+    "text": "#LíneaB - Ya funciona con su frecuencia habitual. 19:06",
+    "user": "emova_arg",
+    "_lote": "2024-06",
+    "line": "B",
+    "kind": "fin",
+    "hora_emova": "19:06",
+    "stations": null
+  },
+  {
+    "id": "1806454941289992637",
+    "datetime": "2024-06-27T22:29:54.000Z",
+    "text": "#LíneaB - Estación Pasteur cerrada por obras de renovación integral. 19:29",
+    "user": "emova_arg",
+    "_lote": "2024-06",
+    "line": "B",
+    "kind": "cierre_programado",
+    "hora_emova": "19:29",
+    "stations": "Pasteur"
+  },
+  {
+    "id": "1807925618320740582",
+    "datetime": "2024-07-01T23:53:51.000Z",
+    "text": "#LíneaB - Servicio con demora debido a un usuario que requiere asistencia. 20:53",
+    "user": "emova_arg",
+    "_lote": "2024-07",
+    "line": "B",
+    "kind": "inicio_demora",
+    "hora_emova": "20:53",
+    "stations": null
+  },
+  {
+    "id": "1807928135557513549",
+    "datetime": "2024-07-02T00:03:51.000Z",
+    "text": "#LíneaB - Circula con servicio limitado entre las estaciones Juan Manuel de Rosas y Dorrego. 21:03",
+    "user": "emova_arg",
+    "_lote": "2024-07",
+    "line": "B",
+    "kind": "inicio_limitado",
+    "hora_emova": "21:03",
+    "stations": "Juan Manuel de Rosas y Dorrego"
+  },
+  {
+    "id": "1807932163632902304",
+    "datetime": "2024-07-02T00:19:52.000Z",
+    "text": "#LíneaB - Presta su servicio completo entre cabeceras normalizando su frecuencia habitual. 21:19",
+    "user": "emova_arg",
+    "_lote": "2024-07",
+    "line": "B",
+    "kind": "fin",
+    "hora_emova": "21:19",
+    "stations": null
+  },
+  {
+    "id": "1807934177435582889",
+    "datetime": "2024-07-02T00:27:52.000Z",
+    "text": "#LíneaB - Estación Pasteur cerrada por obras de renovación integral. 21:27",
+    "user": "emova_arg",
+    "_lote": "2024-07",
+    "line": "B",
+    "kind": "cierre_programado",
+    "hora_emova": "21:27",
+    "stations": "Pasteur"
+  },
+  {
+    "id": "1808684847482761642",
+    "datetime": "2024-07-04T02:10:46.000Z",
+    "text": "#LíneaB - Estación Pasteur cerrada por obras de renovación integral. 23:10",
+    "user": "emova_arg",
+    "_lote": "2024-07",
+    "line": "B",
+    "kind": "cierre_programado",
+    "hora_emova": "23:10",
+    "stations": "Pasteur"
+  },
+  {
+    "id": "1810433937753174330",
+    "datetime": "2024-07-08T22:01:01.000Z",
+    "text": "#LíneaB - Circula con demora. 19:01",
+    "user": "emova_arg",
+    "_lote": "2024-07",
+    "line": "B",
+    "kind": "inicio_demora",
+    "hora_emova": "19:01",
+    "stations": null
+  },
+  {
+    "id": "1810434942574219408",
+    "datetime": "2024-07-08T22:05:01.000Z",
+    "text": "#LíneaB - Circula con servicio limitado entre las estaciones Leandro N. Alem y Los Incas. 19:05",
+    "user": "emova_arg",
+    "_lote": "2024-07",
+    "line": "B",
+    "kind": "inicio_limitado",
+    "hora_emova": "19:05",
+    "stations": "Leandro N"
+  },
+  {
+    "id": "1810438468553638165",
+    "datetime": "2024-07-08T22:19:01.000Z",
+    "text": "#LíneaB - Circula con servicio limitado entre las estaciones Leandro N. Alem y Federico Lacroze. 19:19",
+    "user": "emova_arg",
+    "_lote": "2024-07",
+    "line": "B",
+    "kind": "inicio_limitado",
+    "hora_emova": "19:19",
+    "stations": "Leandro N"
+  },
+  {
+    "id": "1810447530955526501",
+    "datetime": "2024-07-08T22:55:02.000Z",
+    "text": "#LíneaB - Presta su servicio completo entre cabeceras normalizando su frecuencia habitual. 19:55",
+    "user": "emova_arg",
+    "_lote": "2024-07",
+    "line": "B",
+    "kind": "fin",
+    "hora_emova": "19:55",
+    "stations": null
+  },
+  {
+    "id": "1810449797100257781",
+    "datetime": "2024-07-08T23:04:02.000Z",
+    "text": "#LíneaB - Estación Pasteur cerrada por obras de renovación integral. 20:04",
+    "user": "emova_arg",
+    "_lote": "2024-07",
+    "line": "B",
+    "kind": "cierre_programado",
+    "hora_emova": "20:04",
+    "stations": "Pasteur"
+  },
+  {
+    "id": "1810459615735243093",
+    "datetime": "2024-07-08T23:43:03.000Z",
+    "text": "#LíneaB - Circula con servicio limitado entre las estaciones Juan Manuel de Rosas y Dorrego. 20:43",
+    "user": "emova_arg",
+    "_lote": "2024-07",
+    "line": "B",
+    "kind": "inicio_limitado",
+    "hora_emova": "20:43",
+    "stations": "Juan Manuel de Rosas y Dorrego"
+  },
+  {
+    "id": "1810462131013239117",
+    "datetime": "2024-07-08T23:53:03.000Z",
+    "text": "#LíneaB - Presta su servicio completo entre cabeceras normalizando su frecuencia habitual. 20:53",
+    "user": "emova_arg",
+    "_lote": "2024-07",
+    "line": "B",
+    "kind": "fin",
+    "hora_emova": "20:53",
+    "stations": null
+  },
+  {
+    "id": "1810464647494947142",
+    "datetime": "2024-07-09T00:03:03.000Z",
+    "text": "#LíneaB - Estación Pasteur cerrada por obras de renovación integral. 21:03",
+    "user": "emova_arg",
+    "_lote": "2024-07",
+    "line": "B",
+    "kind": "cierre_programado",
+    "hora_emova": "21:03",
+    "stations": "Pasteur"
+  },
+  {
+    "id": "1811431982422765983",
+    "datetime": "2024-07-11T16:06:54.000Z",
+    "text": "#LíneaB - Circula con servicio limitado entre las estaciones Juan Manuel de Rosas y Carlos Pellegrini. 13:06",
+    "user": "emova_arg",
+    "_lote": "2024-07",
+    "line": "B",
+    "kind": "inicio_limitado",
+    "hora_emova": "13:06",
+    "stations": "Juan Manuel de Rosas y Carlos Pellegrini"
+  },
+  {
+    "id": "1811446833639465299",
+    "datetime": "2024-07-11T17:05:54.000Z",
+    "text": "#LíneaB - Presta su servicio completo entre cabeceras normalizando su frecuencia habitual. 14:05",
+    "user": "emova_arg",
+    "_lote": "2024-07",
+    "line": "B",
+    "kind": "fin",
+    "hora_emova": "14:05",
+    "stations": null
+  },
+  {
+    "id": "1811451364389650877",
+    "datetime": "2024-07-11T17:23:55.000Z",
+    "text": "#LíneaB - Estación Pasteur cerrada por obras de renovación integral. 14:23",
+    "user": "emova_arg",
+    "_lote": "2024-07",
+    "line": "B",
+    "kind": "cierre_programado",
+    "hora_emova": "14:23",
+    "stations": "Pasteur"
+  },
+  {
+    "id": "1811734631613382722",
+    "datetime": "2024-07-12T12:09:31.000Z",
+    "text": "#LíneaB - Servicio con demora. 09:09",
+    "user": "emova_arg",
+    "_lote": "2024-07",
+    "line": "B",
+    "kind": "inicio_demora",
+    "hora_emova": "09:09",
+    "stations": null
+  },
+  {
+    "id": "1811740925275607076",
+    "datetime": "2024-07-12T12:34:31.000Z",
+    "text": "#LíneaB - Ya funciona con su frecuencia habitual. 09:34",
+    "user": "emova_arg",
+    "_lote": "2024-07",
+    "line": "B",
+    "kind": "fin",
+    "hora_emova": "09:34",
+    "stations": null
+  },
+  {
+    "id": "1811743190786900052",
+    "datetime": "2024-07-12T12:43:31.000Z",
+    "text": "#LíneaB - Estación Pasteur cerrada por obras de renovación integral. 09:43",
+    "user": "emova_arg",
+    "_lote": "2024-07",
+    "line": "B",
+    "kind": "cierre_programado",
+    "hora_emova": "09:43",
+    "stations": "Pasteur"
+  },
+  {
+    "id": "1811829285608423564",
+    "datetime": "2024-07-12T18:25:38.000Z",
+    "text": "#LíneaB - Servicio con demora debido a un usuario que requiere asistencia. 15:25",
+    "user": "emova_arg",
+    "_lote": "2024-07",
+    "line": "B",
+    "kind": "inicio_demora",
+    "hora_emova": "15:25",
+    "stations": null
+  },
+  {
+    "id": "1811832056101388301",
+    "datetime": "2024-07-12T18:36:39.000Z",
+    "text": "#LíneaB - Servicio limitado: Rosas y Dorrego debido a un usuario que requiere asistencia. 15:36",
+    "user": "emova_arg",
+    "_lote": "2024-07",
+    "line": "B",
+    "kind": "inicio_limitado",
+    "hora_emova": "15:36",
+    "stations": null
+  },
+  {
+    "id": "1811834572994220478",
+    "datetime": "2024-07-12T18:46:39.000Z",
+    "text": "#LíneaB - Presta su servicio completo entre cabeceras normalizando su frecuencia habitual. 15:46",
+    "user": "emova_arg",
+    "_lote": "2024-07",
+    "line": "B",
+    "kind": "fin",
+    "hora_emova": "15:46",
+    "stations": null
+  },
+  {
+    "id": "1811840866194997728",
+    "datetime": "2024-07-12T19:11:39.000Z",
+    "text": "#LíneaB - Estación Pasteur cerrada por obras de renovación integral. 16:11",
+    "user": "emova_arg",
+    "_lote": "2024-07",
+    "line": "B",
+    "kind": "cierre_programado",
+    "hora_emova": "16:11",
+    "stations": "Pasteur"
+  },
+  {
+    "id": "1812770200107782151",
+    "datetime": "2024-07-15T08:44:30.000Z",
+    "text": "#LíneaB - Los trenes no se detienen en C Pellegrini y Uruguay por protocolo de seguridad. 05:44",
+    "user": "emova_arg",
+    "_lote": "2024-07",
+    "line": "B",
+    "kind": "otro",
+    "hora_emova": "05:44",
+    "stations": null
+  },
+  {
+    "id": "1812784548612079710",
+    "datetime": "2024-07-15T09:41:30.000Z",
+    "text": "#LíneaB - Ya se detienen en todas las estaciones. 06:41",
+    "user": "emova_arg",
+    "_lote": "2024-07",
+    "line": "B",
+    "kind": "fin",
+    "hora_emova": "06:41",
+    "stations": null
+  },
+  {
+    "id": "1812785808111206693",
+    "datetime": "2024-07-15T09:46:31.000Z",
+    "text": "#LíneaB - Estación Pasteur cerrada por obras de renovación integral. 06:46",
+    "user": "emova_arg",
+    "_lote": "2024-07",
+    "line": "B",
+    "kind": "cierre_programado",
+    "hora_emova": "06:46",
+    "stations": "Pasteur"
+  },
+  {
+    "id": "1812800156766515541",
+    "datetime": "2024-07-15T10:43:32.000Z",
+    "text": "#LíneaB - Circula con demora. 07:43",
+    "user": "emova_arg",
+    "_lote": "2024-07",
+    "line": "B",
+    "kind": "inicio_demora",
+    "hora_emova": "07:43",
+    "stations": null
+  },
+  {
+    "id": "1812804689278214153",
+    "datetime": "2024-07-15T11:01:32.000Z",
+    "text": "#LíneaB - Ya funciona con su frecuencia habitual. 08:01",
+    "user": "emova_arg",
+    "_lote": "2024-07",
+    "line": "B",
+    "kind": "fin",
+    "hora_emova": "08:01",
+    "stations": null
+  },
+  {
+    "id": "1812805695323979987",
+    "datetime": "2024-07-15T11:05:32.000Z",
+    "text": "#LíneaB - Estación Pasteur cerrada por obras de renovación integral. 08:05",
+    "user": "emova_arg",
+    "_lote": "2024-07",
+    "line": "B",
+    "kind": "cierre_programado",
+    "hora_emova": "08:05",
+    "stations": "Pasteur"
+  },
+  {
+    "id": "1813265363800629328",
+    "datetime": "2024-07-16T17:32:06.000Z",
+    "text": "¡Atención usuarios! Desde el jueves 18 de julio, la estación Pasteur-AMIA de la #LíneaB estará operativa.",
+    "user": "emova_arg",
+    "_lote": "2024-07",
+    "line": "B",
+    "kind": "fin",
+    "hora_emova": null,
+    "stations": null
+  },
+  {
+    "id": "1813299662956196245",
+    "datetime": "2024-07-16T19:48:23.000Z",
+    "text": "#LíneaB - Estación Pasteur cerrada por obras de renovación integral. 16:48",
+    "user": "emova_arg",
+    "_lote": "2024-07",
+    "line": "B",
+    "kind": "cierre_programado",
+    "hora_emova": "16:48",
+    "stations": "Pasteur"
+  },
+  {
+    "id": "1814439296952041851",
+    "datetime": "2024-07-19T23:16:53.000Z",
+    "text": "#LíneaB - Servicio interrumpido por medida de fuerza gremial. 20:16",
+    "user": "emova_arg",
+    "_lote": "2024-07",
+    "line": "B",
+    "kind": "inicio_paro",
+    "hora_emova": "20:16",
+    "stations": null
+  },
+  {
+    "id": "1818006948534534372",
+    "datetime": "2024-07-29T19:33:28.000Z",
+    "text": "#LíneaB - Servicio interrumpido por operativo de seguridad en la vía pública. 16:33",
+    "user": "emova_arg",
+    "_lote": "2024-07",
+    "line": "B",
+    "kind": "inicio_interrumpido",
+    "hora_emova": "16:33",
+    "stations": null
+  },
+  {
+    "id": "1818023562189422955",
+    "datetime": "2024-07-29T20:39:29.000Z",
+    "text": "#LíneaB - Presta su servicio completo entre cabeceras normalizando su frecuencia habitual. 17:39",
+    "user": "emova_arg",
+    "_lote": "2024-07",
+    "line": "B",
+    "kind": "fin",
+    "hora_emova": "17:39",
+    "stations": null
+  },
+  {
+    "id": "1819101586934698382",
+    "datetime": "2024-08-01T20:03:10.000Z",
+    "text": "#LíneaB - Circula con demora. 17:03",
+    "user": "emova_arg",
+    "_lote": "2024-08",
+    "line": "B",
+    "kind": "inicio_demora",
+    "hora_emova": "17:03",
+    "stations": null
+  },
+  {
+    "id": "1819105615840530789",
+    "datetime": "2024-08-01T20:19:10.000Z",
+    "text": "#LíneaB - Ya funciona con su frecuencia habitual. 17:19",
+    "user": "emova_arg",
+    "_lote": "2024-08",
+    "line": "B",
+    "kind": "fin",
+    "hora_emova": "17:19",
+    "stations": null
+  },
+  {
+    "id": "1819296485965521388",
+    "datetime": "2024-08-02T08:57:37.000Z",
+    "text": "#LíneaB - Los trenes no se detienen en la estación Florida. 05:57",
+    "user": "emova_arg",
+    "_lote": "2024-08",
+    "line": "B",
+    "kind": "inicio_estacion_cerrada",
+    "hora_emova": "05:57",
+    "stations": "Florida"
+  },
+  {
+    "id": "1819307812909953363",
+    "datetime": "2024-08-02T09:42:38.000Z",
+    "text": "#LíneaB - Ya se detienen en todas las estaciones. 06:42",
+    "user": "emova_arg",
+    "_lote": "2024-08",
+    "line": "B",
+    "kind": "fin",
+    "hora_emova": "06:42",
+    "stations": null
+  },
+  {
+    "id": "1819490569468391827",
+    "datetime": "2024-08-02T21:48:50.000Z",
+    "text": "#LíneaB - Circula con demora. 18:48",
+    "user": "emova_arg",
+    "_lote": "2024-08",
+    "line": "B",
+    "kind": "inicio_demora",
+    "hora_emova": "18:48",
+    "stations": null
+  },
+  {
+    "id": "1819495603946111114",
+    "datetime": "2024-08-02T22:08:51.000Z",
+    "text": "#LíneaB - Circula con servicio limitado entre las estaciones Juan Manuel de Rosas y Dorrego. 19:08",
+    "user": "emova_arg",
+    "_lote": "2024-08",
+    "line": "B",
+    "kind": "inicio_limitado",
+    "hora_emova": "19:08",
+    "stations": "Juan Manuel de Rosas y Dorrego"
+  },
+  {
+    "id": "1819522791336538358",
+    "datetime": "2024-08-02T23:56:53.000Z",
+    "text": "#LíneaB - Presta su servicio completo entre cabeceras normalizando su frecuencia habitual. 20:56",
+    "user": "emova_arg",
+    "_lote": "2024-08",
+    "line": "B",
+    "kind": "fin",
+    "hora_emova": "20:56",
+    "stations": null
+  },
+  {
+    "id": "1819667091181482494",
+    "datetime": "2024-08-03T09:30:16.000Z",
+    "text": "#LíneaB - Los trenes no se detienen en la estación Pasteur con destino a Juan Manuel de Rosas. 06:30",
+    "user": "emova_arg",
+    "_lote": "2024-08",
+    "line": "B",
+    "kind": "inicio_estacion_cerrada",
+    "hora_emova": "06:30",
+    "stations": "Pasteur con destino a Juan Manuel de Rosas"
+  },
+  {
+    "id": "1819694530775392767",
+    "datetime": "2024-08-03T11:19:19.000Z",
+    "text": "#LíneaB - Ya se detienen en todas las estaciones. 08:19",
+    "user": "emova_arg",
+    "_lote": "2024-08",
+    "line": "B",
+    "kind": "fin",
+    "hora_emova": "08:19",
+    "stations": null
+  },
+  {
+    "id": "1820605938748805567",
+    "datetime": "2024-08-05T23:40:55.000Z",
+    "text": "#LíneaB - Los trenes no se detienen en la estación Pasteur con destino a Juan Manuel de Rosas. 20:40",
+    "user": "emova_arg",
+    "_lote": "2024-08",
+    "line": "B",
+    "kind": "inicio_estacion_cerrada",
+    "hora_emova": "20:40",
+    "stations": "Pasteur con destino a Juan Manuel de Rosas"
+  },
+  {
+    "id": "1820610469771505904",
+    "datetime": "2024-08-05T23:58:55.000Z",
+    "text": "#LíneaB - Ya se detienen en todas las estaciones. 20:58",
+    "user": "emova_arg",
+    "_lote": "2024-08",
+    "line": "B",
+    "kind": "fin",
+    "hora_emova": "20:58",
+    "stations": null
+  },
+  {
+    "id": "1822944947844112704",
+    "datetime": "2024-08-12T10:35:18.000Z",
+    "text": "#LíneaB - Servicio con demora. 07:35",
+    "user": "emova_arg",
+    "_lote": "2024-08",
+    "line": "B",
+    "kind": "inicio_demora",
+    "hora_emova": "07:35",
+    "stations": null
+  },
+  {
+    "id": "1822948473370526051",
+    "datetime": "2024-08-12T10:49:19.000Z",
+    "text": "#LíneaB - Ya funciona con su frecuencia habitual. 07:49",
+    "user": "emova_arg",
+    "_lote": "2024-08",
+    "line": "B",
+    "kind": "fin",
+    "hora_emova": "07:49",
+    "stations": null
+  },
+  {
+    "id": "1823323609537847504",
+    "datetime": "2024-08-13T11:39:58.000Z",
+    "text": "#LíneaB - Circula con demora. 08:39",
+    "user": "emova_arg",
+    "_lote": "2024-08",
+    "line": "B",
+    "kind": "inicio_demora",
+    "hora_emova": "08:39",
+    "stations": null
+  },
+  {
+    "id": "1823335440654442955",
+    "datetime": "2024-08-13T12:26:59.000Z",
+    "text": "#LíneaB - Ya funciona con su frecuencia habitual. 09:26",
+    "user": "emova_arg",
+    "_lote": "2024-08",
+    "line": "B",
+    "kind": "fin",
+    "hora_emova": "09:26",
+    "stations": null
+  },
+  {
+    "id": "1826016534021443860",
+    "datetime": "2024-08-20T22:00:42.000Z",
+    "text": "#LíneaB - Servicio limitado: J.M.Rosas y C. Pellegrini debido a un usuario que requiere asistencia. 19:00",
+    "user": "emova_arg",
+    "_lote": "2024-08",
+    "line": "B",
+    "kind": "inicio_limitado",
+    "hora_emova": "19:00",
+    "stations": null
+  },
+  {
+    "id": "1826017793357078701",
+    "datetime": "2024-08-20T22:05:42.000Z",
+    "text": "#LíneaB - Presta su servicio completo entre cabeceras normalizando su frecuencia habitual. 19:05",
+    "user": "emova_arg",
+    "_lote": "2024-08",
+    "line": "B",
+    "kind": "fin",
+    "hora_emova": "19:05",
+    "stations": null
+  },
+  {
+    "id": "1826051271414952109",
+    "datetime": "2024-08-21T00:18:44.000Z",
+    "text": "#LíneaB - Circula con demora. 21:18",
+    "user": "emova_arg",
+    "_lote": "2024-08",
+    "line": "B",
+    "kind": "inicio_demora",
+    "hora_emova": "21:18",
+    "stations": null
+  },
+  {
+    "id": "1826052530238836947",
+    "datetime": "2024-08-21T00:23:44.000Z",
+    "text": "#LíneaB - Circula con servicio limitado entre las estaciones Leandro N. Alem y Los Incas. 21:23",
+    "user": "emova_arg",
+    "_lote": "2024-08",
+    "line": "B",
+    "kind": "inicio_limitado",
+    "hora_emova": "21:23",
+    "stations": "Leandro N"
+  },
+  {
+    "id": "1826054041660489837",
+    "datetime": "2024-08-21T00:29:44.000Z",
+    "text": "#LíneaB - Presta su servicio completo entre cabeceras normalizando su frecuencia habitual. 21:29",
+    "user": "emova_arg",
+    "_lote": "2024-08",
+    "line": "B",
+    "kind": "fin",
+    "hora_emova": "21:29",
+    "stations": null
+  },
+  {
+    "id": "1826678953710379340",
+    "datetime": "2024-08-22T17:52:55.000Z",
+    "text": "#LíneaB - Servicio con demora. 14:52",
+    "user": "emova_arg",
+    "_lote": "2024-08",
+    "line": "B",
+    "kind": "inicio_demora",
+    "hora_emova": "14:52",
+    "stations": null
+  },
+  {
+    "id": "1826682476686627140",
+    "datetime": "2024-08-22T18:06:55.000Z",
+    "text": "#LíneaB - Ya funciona con su frecuencia habitual. 15:06",
+    "user": "emova_arg",
+    "_lote": "2024-08",
+    "line": "B",
+    "kind": "fin",
+    "hora_emova": "15:06",
+    "stations": null
+  },
+  {
+    "id": "1826733579507749169",
+    "datetime": "2024-08-22T21:29:59.000Z",
+    "text": "#LíneaB - Circula con demora. 18:29",
+    "user": "emova_arg",
+    "_lote": "2024-08",
+    "line": "B",
+    "kind": "inicio_demora",
+    "hora_emova": "18:29",
+    "stations": null
+  },
+  {
+    "id": "1826738363207938286",
+    "datetime": "2024-08-22T21:48:59.000Z",
+    "text": "#LíneaB - Ya funciona con su frecuencia habitual. 18:48",
+    "user": "emova_arg",
+    "_lote": "2024-08",
+    "line": "B",
+    "kind": "fin",
+    "hora_emova": "18:48",
+    "stations": null
+  },
+  {
+    "id": "1829309205414543510",
+    "datetime": "2024-08-30T00:04:36.000Z",
+    "text": "#LíneaB - Circula con servicio limitado entre las estaciones Juan Manuel de Rosas y Carlos Pellegrini. 21:04",
+    "user": "emova_arg",
+    "_lote": "2024-08",
+    "line": "B",
+    "kind": "inicio_limitado",
+    "hora_emova": "21:04",
+    "stations": "Juan Manuel de Rosas y Carlos Pellegrini"
+  },
+  {
+    "id": "1829313229668880402",
+    "datetime": "2024-08-30T00:20:35.000Z",
+    "text": "#LíneaB - Presta su servicio completo entre cabeceras normalizando su frecuencia habitual. 21:20",
+    "user": "emova_arg",
+    "_lote": "2024-08",
+    "line": "B",
+    "kind": "fin",
+    "hora_emova": "21:20",
+    "stations": null
+  },
+  {
+    "id": "1829485473414234142",
+    "datetime": "2024-08-30T11:45:01.000Z",
+    "text": "#LíneaB - Servicio con demora. 08:45",
+    "user": "emova_arg",
+    "_lote": "2024-08",
+    "line": "B",
+    "kind": "inicio_demora",
+    "hora_emova": "08:45",
+    "stations": null
+  },
+  {
+    "id": "1829494284036211192",
+    "datetime": "2024-08-30T12:20:02.000Z",
+    "text": "#LíneaB - Ya funciona con su frecuencia habitual. 09:20",
+    "user": "emova_arg",
+    "_lote": "2024-08",
+    "line": "B",
+    "kind": "fin",
+    "hora_emova": "09:20",
+    "stations": null
+  },
+  {
+    "id": "1829601270081978624",
+    "datetime": "2024-08-30T19:25:09.000Z",
+    "text": "#LíneaB - Circula con demora. 16:25",
+    "user": "emova_arg",
+    "_lote": "2024-08",
+    "line": "B",
+    "kind": "inicio_demora",
+    "hora_emova": "16:25",
+    "stations": null
+  },
+  {
+    "id": "1829602024414986544",
+    "datetime": "2024-08-30T19:28:09.000Z",
+    "text": "#LíneaB - Circula con servicio limitado entre las estaciones Juan Manuel de Rosas y Carlos Pellegrini. 16:28",
+    "user": "emova_arg",
+    "_lote": "2024-08",
+    "line": "B",
+    "kind": "inicio_limitado",
+    "hora_emova": "16:28",
+    "stations": "Juan Manuel de Rosas y Carlos Pellegrini"
+  },
+  {
+    "id": "1829604541701947425",
+    "datetime": "2024-08-30T19:38:09.000Z",
+    "text": "#LíneaB - Presta su servicio completo entre cabeceras normalizando su frecuencia habitual. 16:38",
+    "user": "emova_arg",
+    "_lote": "2024-08",
+    "line": "B",
+    "kind": "fin",
+    "hora_emova": "16:38",
+    "stations": null
+  },
+  {
+    "id": "1830201258147262698",
+    "datetime": "2024-09-01T11:09:18.000Z",
+    "text": "#LíneaB - Servicio con demora. 08:09",
+    "user": "emova_arg",
+    "_lote": "2024-09",
+    "line": "B",
+    "kind": "inicio_demora",
+    "hora_emova": "08:09",
+    "stations": null
+  },
+  {
+    "id": "1830203776088547804",
+    "datetime": "2024-09-01T11:19:18.000Z",
+    "text": "#LíneaB - Circula con servicio limitado entre las estaciones Leandro N. Alem y Los Incas. 08:19",
+    "user": "emova_arg",
+    "_lote": "2024-09",
+    "line": "B",
+    "kind": "inicio_limitado",
+    "hora_emova": "08:19",
+    "stations": "Leandro N"
+  },
+  {
+    "id": "1830205790138913097",
+    "datetime": "2024-09-01T11:27:18.000Z",
+    "text": "#LíneaB - Presta su servicio completo entre cabeceras normalizando su frecuencia habitual. 08:27",
+    "user": "emova_arg",
+    "_lote": "2024-09",
+    "line": "B",
+    "kind": "fin",
+    "hora_emova": "08:27",
+    "stations": null
+  },
+  {
+    "id": "1830210826973634896",
+    "datetime": "2024-09-01T11:47:19.000Z",
+    "text": "#LíneaB - Servicio con demora. 08:47",
+    "user": "emova_arg",
+    "_lote": "2024-09",
+    "line": "B",
+    "kind": "inicio_demora",
+    "hora_emova": "08:47",
+    "stations": null
+  },
+  {
+    "id": "1830215358495531184",
+    "datetime": "2024-09-01T12:05:19.000Z",
+    "text": "#LíneaB - Ya funciona con su frecuencia habitual. 09:05",
+    "user": "emova_arg",
+    "_lote": "2024-09",
+    "line": "B",
+    "kind": "fin",
+    "hora_emova": "09:05",
+    "stations": null
+  },
+  {
+    "id": "1830553239634251788",
+    "datetime": "2024-09-02T10:27:57.000Z",
+    "text": "#LíneaB - Servicio con demora por medida de fuerza gremial. 07:27",
+    "user": "emova_arg",
+    "_lote": "2024-09",
+    "line": "B",
+    "kind": "inicio_paro",
+    "hora_emova": "07:27",
+    "stations": null
+  },
+  {
+    "id": "1830554245956845780",
+    "datetime": "2024-09-02T10:31:56.000Z",
+    "text": "#LíneaB - Ya funciona con su frecuencia habitual. 07:31",
+    "user": "emova_arg",
+    "_lote": "2024-09",
+    "line": "B",
+    "kind": "fin",
+    "hora_emova": "07:31",
+    "stations": null
+  },
+  {
+    "id": "1830573378547180017",
+    "datetime": "2024-09-02T11:47:58.000Z",
+    "text": "#LíneaB - Circula con demora. 08:47",
+    "user": "emova_arg",
+    "_lote": "2024-09",
+    "line": "B",
+    "kind": "inicio_demora",
+    "hora_emova": "08:47",
+    "stations": null
+  },
+  {
+    "id": "1830576650427285914",
+    "datetime": "2024-09-02T12:00:58.000Z",
+    "text": "#LíneaB - Ya funciona con su frecuencia habitual. 09:00",
+    "user": "emova_arg",
+    "_lote": "2024-09",
+    "line": "B",
+    "kind": "fin",
+    "hora_emova": "09:00",
+    "stations": null
+  },
+  {
+    "id": "1830892387045888000",
+    "datetime": "2024-09-03T08:55:36.000Z",
+    "text": "#LíneaB - Los trenes no se detienen en la estación Callao. 05:55",
+    "user": "emova_arg",
+    "_lote": "2024-09",
+    "line": "B",
+    "kind": "inicio_estacion_cerrada",
+    "hora_emova": "05:55",
+    "stations": "Callao"
+  },
+  {
+    "id": "1830893642325639534",
+    "datetime": "2024-09-03T09:00:35.000Z",
+    "text": "#LíneaB - Ya se detienen en todas las estaciones. 06:00",
+    "user": "emova_arg",
+    "_lote": "2024-09",
+    "line": "B",
+    "kind": "fin",
+    "hora_emova": "06:00",
+    "stations": null
+  },
+  {
+    "id": "1831612289402777956",
+    "datetime": "2024-09-05T08:36:14.000Z",
+    "text": "#LíneaB - Circula con servicio limitado entre las estaciones Juan Manuel de Rosas y Carlos Pellegrini. 05:36",
+    "user": "emova_arg",
+    "_lote": "2024-09",
+    "line": "B",
+    "kind": "inicio_limitado",
+    "hora_emova": "05:36",
+    "stations": "Juan Manuel de Rosas y Carlos Pellegrini"
+  },
+  {
+    "id": "1831621852923314247",
+    "datetime": "2024-09-05T09:14:14.000Z",
+    "text": "#LíneaB - Presta su servicio completo entre cabeceras normalizando su frecuencia habitual. 06:14",
+    "user": "emova_arg",
+    "_lote": "2024-09",
+    "line": "B",
+    "kind": "fin",
+    "hora_emova": "06:14",
+    "stations": null
+  },
+  {
+    "id": "1833086893669405161",
+    "datetime": "2024-09-09T10:15:47.000Z",
+    "text": "#LíneaB - Servicio con demora. 07:15",
+    "user": "emova_arg",
+    "_lote": "2024-09",
+    "line": "B",
+    "kind": "inicio_demora",
+    "hora_emova": "07:15",
+    "stations": null
+  },
+  {
+    "id": "1833101996754141621",
+    "datetime": "2024-09-09T11:15:48.000Z",
+    "text": "#LíneaB - Ya funciona con su frecuencia habitual. 08:15",
+    "user": "emova_arg",
+    "_lote": "2024-09",
+    "line": "B",
+    "kind": "fin",
+    "hora_emova": "08:15",
+    "stations": null
+  },
+  {
+    "id": "1833423266980958281",
+    "datetime": "2024-09-10T08:32:24.000Z",
+    "text": "#LíneaB - Circula con servicio limitado entre las estaciones Juan Manuel de Rosas y Carlos Pellegrini. 05:32",
+    "user": "emova_arg",
+    "_lote": "2024-09",
+    "line": "B",
+    "kind": "inicio_limitado",
+    "hora_emova": "05:32",
+    "stations": "Juan Manuel de Rosas y Carlos Pellegrini"
+  },
+  {
+    "id": "1833423766824550823",
+    "datetime": "2024-09-10T08:34:24.000Z",
+    "text": "#LíneaB - Presta su servicio completo entre cabeceras normalizando su frecuencia habitual. 05:34",
+    "user": "emova_arg",
+    "_lote": "2024-09",
+    "line": "B",
+    "kind": "fin",
+    "hora_emova": "05:34",
+    "stations": null
+  },
+  {
+    "id": "1833814520424222741",
+    "datetime": "2024-09-11T10:27:06.000Z",
+    "text": "#LíneaB - Servicio con demora. 07:27",
+    "user": "emova_arg",
+    "_lote": "2024-09",
+    "line": "B",
+    "kind": "inicio_demora",
+    "hora_emova": "07:27",
+    "stations": null
+  },
+  {
+    "id": "1833840952168923515",
+    "datetime": "2024-09-11T12:12:08.000Z",
+    "text": "#LíneaB - Ya funciona con su frecuencia habitual. 09:12",
+    "user": "emova_arg",
+    "_lote": "2024-09",
+    "line": "B",
+    "kind": "fin",
+    "hora_emova": "09:12",
+    "stations": null
+  },
+  {
+    "id": "1834334404908404986",
+    "datetime": "2024-09-12T20:52:57.000Z",
+    "text": "#LíneaB - Circula con demora. 17:52",
+    "user": "emova_arg",
+    "_lote": "2024-09",
+    "line": "B",
+    "kind": "inicio_demora",
+    "hora_emova": "17:52",
+    "stations": null
+  },
+  {
+    "id": "1834337425356632252",
+    "datetime": "2024-09-12T21:04:57.000Z",
+    "text": "#LíneaB - Ya funciona con su frecuencia habitual. 18:04",
+    "user": "emova_arg",
+    "_lote": "2024-09",
+    "line": "B",
+    "kind": "fin",
+    "hora_emova": "18:04",
+    "stations": null
+  },
+  {
+    "id": "1834354293253517349",
+    "datetime": "2024-09-12T22:11:58.000Z",
+    "text": "#LíneaB - Circula con demora. 19:11",
+    "user": "emova_arg",
+    "_lote": "2024-09",
+    "line": "B",
+    "kind": "inicio_demora",
+    "hora_emova": "19:11",
+    "stations": null
+  },
+  {
+    "id": "1834361591933833536",
+    "datetime": "2024-09-12T22:40:58.000Z",
+    "text": "#LíneaB - Ya funciona con su frecuencia habitual. 19:40",
+    "user": "emova_arg",
+    "_lote": "2024-09",
+    "line": "B",
+    "kind": "fin",
+    "hora_emova": "19:40",
+    "stations": null
+  },
+  {
+    "id": "1836841369660543079",
+    "datetime": "2024-09-19T18:54:44.000Z",
+    "text": "Hola, la #LineaB circula con normalidad.",
+    "user": "emova_arg",
+    "_lote": "2024-09",
+    "line": "B",
+    "kind": "otro",
+    "hora_emova": null,
+    "stations": null
+  },
+  {
+    "id": "1837278598970945839",
+    "datetime": "2024-09-20T23:52:07.000Z",
+    "text": "#LíneaB - Servicio con demora debido a un usuario que requiere asistencia. 20:52",
+    "user": "emova_arg",
+    "_lote": "2024-09",
+    "line": "B",
+    "kind": "inicio_demora",
+    "hora_emova": "20:52",
+    "stations": null
+  },
+  {
+    "id": "1837281619519918394",
+    "datetime": "2024-09-21T00:04:07.000Z",
+    "text": "#LíneaB - Ya funciona con su frecuencia habitual. 21:04",
+    "user": "emova_arg",
+    "_lote": "2024-09",
+    "line": "B",
+    "kind": "fin",
+    "hora_emova": "21:04",
+    "stations": null
+  },
+  {
+    "id": "1838652750579519905",
+    "datetime": "2024-09-24T18:52:30.000Z",
+    "text": "#LíneaB - Circula con demora. 15:52",
+    "user": "emova_arg",
+    "_lote": "2024-09",
+    "line": "B",
+    "kind": "inicio_demora",
+    "hora_emova": "15:52",
+    "stations": null
+  },
+  {
+    "id": "1838657028354392118",
+    "datetime": "2024-09-24T19:09:30.000Z",
+    "text": "#LíneaB - Servicio interrumpido. 16:09",
+    "user": "emova_arg",
+    "_lote": "2024-09",
+    "line": "B",
+    "kind": "inicio_interrumpido",
+    "hora_emova": "16:09",
+    "stations": null
+  },
+  {
+    "id": "1838658538752643197",
+    "datetime": "2024-09-24T19:15:30.000Z",
+    "text": "#LíneaB - Circula con servicio limitado entre las estaciones Juan Manuel de Rosas y Dorrego. 16:15",
+    "user": "emova_arg",
+    "_lote": "2024-09",
+    "line": "B",
+    "kind": "inicio_limitado",
+    "hora_emova": "16:15",
+    "stations": "Juan Manuel de Rosas y Dorrego"
+  },
+  {
+    "id": "1838659294280945840",
+    "datetime": "2024-09-24T19:18:31.000Z",
+    "text": "#LíneaB - Presta su servicio completo entre cabeceras normalizando su frecuencia habitual. 16:18",
+    "user": "emova_arg",
+    "_lote": "2024-09",
+    "line": "B",
+    "kind": "fin",
+    "hora_emova": "16:18",
+    "stations": null
+  },
+  {
+    "id": "1839779959960645800",
+    "datetime": "2024-09-27T21:31:38.000Z",
+    "text": "#LíneaB - Circula con demora. 18:31",
+    "user": "emova_arg",
+    "_lote": "2024-09",
+    "line": "B",
+    "kind": "inicio_demora",
+    "hora_emova": "18:31",
+    "stations": null
+  },
+  {
+    "id": "1839787259379278219",
+    "datetime": "2024-09-27T22:00:38.000Z",
+    "text": "#LíneaB - Ya funciona con su frecuencia habitual. 19:00",
+    "user": "emova_arg",
+    "_lote": "2024-09",
+    "line": "B",
+    "kind": "fin",
+    "hora_emova": "19:00",
+    "stations": null
+  },
+  {
+    "id": "1841247860295163989",
+    "datetime": "2024-10-01T22:44:33.000Z",
+    "text": "#LíneaB - Circula con demora. 19:44",
+    "user": "emova_arg",
+    "_lote": "2024-10",
+    "line": "B",
+    "kind": "inicio_demora",
+    "hora_emova": "19:44",
+    "stations": null
+  },
+  {
+    "id": "1841249873540059534",
+    "datetime": "2024-10-01T22:52:33.000Z",
+    "text": "#LíneaB - Ya funciona con su frecuencia habitual. 19:52",
+    "user": "emova_arg",
+    "_lote": "2024-10",
+    "line": "B",
+    "kind": "fin",
+    "hora_emova": "19:52",
+    "stations": null
+  },
+  {
+    "id": "1841786188111200271",
+    "datetime": "2024-10-03T10:23:40.000Z",
+    "text": "#LíneaB - Servicio interrumpido. 07:23",
+    "user": "emova_arg",
+    "_lote": "2024-10",
+    "line": "B",
+    "kind": "inicio_interrumpido",
+    "hora_emova": "07:23",
+    "stations": null
+  },
+  {
+    "id": "1841789711053992084",
+    "datetime": "2024-10-03T10:37:40.000Z",
+    "text": "#LíneaB - Presta su servicio completo entre cabeceras normalizando su frecuencia habitual. 07:37",
+    "user": "emova_arg",
+    "_lote": "2024-10",
+    "line": "B",
+    "kind": "fin",
+    "hora_emova": "07:37",
+    "stations": null
+  },
+  {
+    "id": "1843383123934908715",
+    "datetime": "2024-10-07T20:09:19.000Z",
+    "text": "#LíneaB - Circula con servicio limitado entre las estaciones Juan Manuel de Rosas y Carlos Pellegrini. 17:09",
+    "user": "emova_arg",
+    "_lote": "2024-10",
+    "line": "B",
+    "kind": "inicio_limitado",
+    "hora_emova": "17:09",
+    "stations": "Juan Manuel de Rosas y Carlos Pellegrini"
+  },
+  {
+    "id": "1843386397190660132",
+    "datetime": "2024-10-07T20:22:20.000Z",
+    "text": "#LíneaB - Presta su servicio completo entre cabeceras normalizando su frecuencia habitual. 17:22",
+    "user": "emova_arg",
+    "_lote": "2024-10",
+    "line": "B",
+    "kind": "fin",
+    "hora_emova": "17:22",
+    "stations": null
+  },
+  {
+    "id": "1844427775429525798",
+    "datetime": "2024-10-10T17:20:24.000Z",
+    "text": "#LíneaB - Circula con demora. 14:20",
+    "user": "emova_arg",
+    "_lote": "2024-10",
+    "line": "B",
+    "kind": "inicio_demora",
+    "hora_emova": "14:20",
+    "stations": null
+  },
+  {
+    "id": "1844448671795904590",
+    "datetime": "2024-10-10T18:43:26.000Z",
+    "text": "#LíneaB - Ya funciona con su frecuencia habitual. 15:43",
+    "user": "emova_arg",
+    "_lote": "2024-10",
+    "line": "B",
+    "kind": "fin",
+    "hora_emova": "15:43",
+    "stations": null
+  },
+  {
+    "id": "1846586288310267980",
+    "datetime": "2024-10-16T16:17:33.000Z",
+    "text": "#LíneaB - Circula con demora. 13:17",
+    "user": "emova_arg",
+    "_lote": "2024-10",
+    "line": "B",
+    "kind": "inicio_demora",
+    "hora_emova": "13:17",
+    "stations": null
+  },
+  {
+    "id": "1846598120425091564",
+    "datetime": "2024-10-16T17:04:34.000Z",
+    "text": "#LíneaB - Ya funciona con su frecuencia habitual. 14:04",
+    "user": "emova_arg",
+    "_lote": "2024-10",
+    "line": "B",
+    "kind": "fin",
+    "hora_emova": "14:04",
+    "stations": null
+  },
+  {
+    "id": "1847976389690974657",
+    "datetime": "2024-10-20T12:21:19.000Z",
+    "text": "#LíneaB - Servicio con demora. 09:21",
+    "user": "emova_arg",
+    "_lote": "2024-10",
+    "line": "B",
+    "kind": "inicio_demora",
+    "hora_emova": "09:21",
+    "stations": null
+  },
+  {
+    "id": "1847982179193622812",
+    "datetime": "2024-10-20T12:44:20.000Z",
+    "text": "#LíneaB - Ya funciona con su frecuencia habitual. 09:44",
+    "user": "emova_arg",
+    "_lote": "2024-10",
+    "line": "B",
+    "kind": "fin",
+    "hora_emova": "09:44",
+    "stations": null
+  },
+  {
+    "id": "1848163437135659115",
+    "datetime": "2024-10-21T00:44:35.000Z",
+    "text": "#LíneaB - Servicio limitado: Rosas y Dorrego debido a un usuario que requiere asistencia. 21:44",
+    "user": "emova_arg",
+    "_lote": "2024-10",
+    "line": "B",
+    "kind": "inicio_limitado",
+    "hora_emova": "21:44",
+    "stations": null
+  },
+  {
+    "id": "1848304970858115302",
+    "datetime": "2024-10-21T10:06:59.000Z",
+    "text": "#LíneaB - Circula con servicio limitado entre las estaciones Leandro N. Alem y Federico Lacroze. 07:06",
+    "user": "emova_arg",
+    "_lote": "2024-10",
+    "line": "B",
+    "kind": "inicio_limitado",
+    "hora_emova": "07:06",
+    "stations": "Leandro N"
+  },
+  {
+    "id": "1848307740109648110",
+    "datetime": "2024-10-21T10:17:59.000Z",
+    "text": "#LíneaB - Presta su servicio completo entre cabeceras normalizando su frecuencia habitual. 07:17",
+    "user": "emova_arg",
+    "_lote": "2024-10",
+    "line": "B",
+    "kind": "fin",
+    "hora_emova": "07:17",
+    "stations": null
+  },
+  {
+    "id": "1849445806383747231",
+    "datetime": "2024-10-24T13:40:15.000Z",
+    "text": "#LíneaB - Circula con demora. 10:40",
+    "user": "emova_arg",
+    "_lote": "2024-10",
+    "line": "B",
+    "kind": "inicio_demora",
+    "hora_emova": "10:40",
+    "stations": null
+  },
+  {
+    "id": "1849447317549584742",
+    "datetime": "2024-10-24T13:46:16.000Z",
+    "text": "#LíneaB - Ya funciona con su frecuencia habitual. 10:46",
+    "user": "emova_arg",
+    "_lote": "2024-10",
+    "line": "B",
+    "kind": "fin",
+    "hora_emova": "10:46",
+    "stations": null
+  },
+  {
+    "id": "1852738879889023216",
+    "datetime": "2024-11-02T15:45:45.000Z",
+    "text": "#LíneaB - Circula con servicio limitado entre las estaciones Juan Manuel de Rosas y Dorrego. 12:45",
+    "user": "emova_arg",
+    "_lote": "2024-11",
+    "line": "B",
+    "kind": "inicio_limitado",
+    "hora_emova": "12:45",
+    "stations": "Juan Manuel de Rosas y Dorrego"
+  },
+  {
+    "id": "1852745173056311562",
+    "datetime": "2024-11-02T16:10:46.000Z",
+    "text": "#LíneaB - Presta su servicio completo entre cabeceras normalizando su frecuencia habitual. 13:10",
+    "user": "emova_arg",
+    "_lote": "2024-11",
+    "line": "B",
+    "kind": "fin",
+    "hora_emova": "13:10",
+    "stations": null
+  },
+  {
+    "id": "1858115179977802083",
+    "datetime": "2024-11-17T11:49:15.000Z",
+    "text": "#LíneaB - Circula con servicio limitado entre las estaciones Leandro N. Alem y Los Incas. 08:49",
+    "user": "emova_arg",
+    "_lote": "2024-11",
+    "line": "B",
+    "kind": "inicio_limitado",
+    "hora_emova": "08:49",
+    "stations": "Leandro N"
+  },
+  {
+    "id": "1858124495162114356",
+    "datetime": "2024-11-17T12:26:16.000Z",
+    "text": "#LíneaB - Presta su servicio completo entre cabeceras normalizando su frecuencia habitual. 09:26",
+    "user": "emova_arg",
+    "_lote": "2024-11",
+    "line": "B",
+    "kind": "fin",
+    "hora_emova": "09:26",
+    "stations": null
+  },
+  {
+    "id": "1858149167501107465",
+    "datetime": "2024-11-17T14:04:18.000Z",
+    "text": "#LíneaB - Circula con servicio limitado entre las estaciones Leandro N. Alem y Los Incas. 11:04",
+    "user": "emova_arg",
+    "_lote": "2024-11",
+    "line": "B",
+    "kind": "inicio_limitado",
+    "hora_emova": "11:04",
+    "stations": "Leandro N"
+  },
+  {
+    "id": "1858152943653982591",
+    "datetime": "2024-11-17T14:19:19.000Z",
+    "text": "#LíneaB - Presta su servicio completo entre cabeceras normalizando su frecuencia habitual. 11:19",
+    "user": "emova_arg",
+    "_lote": "2024-11",
+    "line": "B",
+    "kind": "fin",
+    "hora_emova": "11:19",
+    "stations": null
+  },
+  {
+    "id": "1859221510499557866",
+    "datetime": "2024-11-20T13:05:25.000Z",
+    "text": "#LíneaB - Servicio interrumpido por medida de fuerza gremial. 10:05",
+    "user": "emova_arg",
+    "_lote": "2024-11",
+    "line": "B",
+    "kind": "inicio_paro",
+    "hora_emova": "10:05",
+    "stations": null
+  },
+  {
+    "id": "1859250964663800297",
+    "datetime": "2024-11-20T15:02:27.000Z",
+    "text": "#LíneaB - Presta su servicio completo entre cabeceras normalizando su frecuencia habitual. 12:02",
+    "user": "emova_arg",
+    "_lote": "2024-11",
+    "line": "B",
+    "kind": "fin",
+    "hora_emova": "12:02",
+    "stations": null
+  },
+  {
+    "id": "1860481599734796323",
+    "datetime": "2024-11-24T00:32:34.000Z",
+    "text": "#LíneaB - Los trenes no se detienen en la estación Carlos Pellegrini. 21:32",
+    "user": "emova_arg",
+    "_lote": "2024-11",
+    "line": "B",
+    "kind": "inicio_estacion_cerrada",
+    "hora_emova": "21:32",
+    "stations": "Carlos Pellegrini"
+  },
+  {
+    "id": "1860759068333199380",
+    "datetime": "2024-11-24T18:55:07.000Z",
+    "text": "#LíneaB - Los trenes no se detienen en la estación Carlos Pellegrini. 15:55",
+    "user": "emova_arg",
+    "_lote": "2024-11",
+    "line": "B",
+    "kind": "inicio_estacion_cerrada",
+    "hora_emova": "15:55",
+    "stations": "Carlos Pellegrini"
+  },
+  {
+    "id": "1860822001520173360",
+    "datetime": "2024-11-24T23:05:12.000Z",
+    "text": "#LíneaB - Ya se detienen en todas las estaciones. 20:05",
+    "user": "emova_arg",
+    "_lote": "2024-11",
+    "line": "B",
+    "kind": "fin",
+    "hora_emova": "20:05",
+    "stations": null
+  },
+  {
+    "id": "1861789063579062624",
+    "datetime": "2024-11-27T15:07:57.000Z",
+    "text": "#LíneaB - Circula con demora. 12:07",
+    "user": "emova_arg",
+    "_lote": "2024-11",
+    "line": "B",
+    "kind": "inicio_demora",
+    "hora_emova": "12:07",
+    "stations": null
+  },
+  {
+    "id": "1861796868297990149",
+    "datetime": "2024-11-27T15:38:58.000Z",
+    "text": "#LíneaB - Ya funciona con su frecuencia habitual. 12:38",
+    "user": "emova_arg",
+    "_lote": "2024-11",
+    "line": "B",
+    "kind": "fin",
+    "hora_emova": "12:38",
+    "stations": null
+  },
+  {
+    "id": "1863019691129569319",
+    "datetime": "2024-12-01T00:38:02.000Z",
+    "text": "#LíneaB - Circula con servicio limitado entre las estaciones Juan Manuel de Rosas y Dorrego. 21:38",
+    "user": "emova_arg",
+    "_lote": "2024-12",
+    "line": "B",
+    "kind": "inicio_limitado",
+    "hora_emova": "21:38",
+    "stations": "Juan Manuel de Rosas y Dorrego"
+  },
+  {
+    "id": "1863045618907709688",
+    "datetime": "2024-12-01T02:21:03.000Z",
+    "text": "#LíneaB - Presta su servicio completo entre cabeceras normalizando su frecuencia habitual. 23:21",
+    "user": "emova_arg",
+    "_lote": "2024-12",
+    "line": "B",
+    "kind": "fin",
+    "hora_emova": "23:21",
+    "stations": null
+  },
+  {
+    "id": "1864276132356342222",
+    "datetime": "2024-12-04T11:50:41.000Z",
+    "text": "#LíneaB - Circula con demora. 08:50",
+    "user": "emova_arg",
+    "_lote": "2024-12",
+    "line": "B",
+    "kind": "inicio_demora",
+    "hora_emova": "08:50",
+    "stations": null
+  },
+  {
+    "id": "1864279655852773806",
+    "datetime": "2024-12-04T12:04:41.000Z",
+    "text": "#LíneaB - Ya funciona con su frecuencia habitual. 09:04",
+    "user": "emova_arg",
+    "_lote": "2024-12",
+    "line": "B",
+    "kind": "fin",
+    "hora_emova": "09:04",
+    "stations": null
+  },
+  {
+    "id": "1864758561353429430",
+    "datetime": "2024-12-05T19:47:41.000Z",
+    "text": "#LíneaB - Servicio con demora. 16:47",
+    "user": "emova_arg",
+    "_lote": "2024-12",
+    "line": "B",
+    "kind": "inicio_demora",
+    "hora_emova": "16:47",
+    "stations": null
+  },
+  {
+    "id": "1864761833384444191",
+    "datetime": "2024-12-05T20:00:41.000Z",
+    "text": "#LíneaB - Ya funciona con su frecuencia habitual. 17:00",
+    "user": "emova_arg",
+    "_lote": "2024-12",
+    "line": "B",
+    "kind": "fin",
+    "hora_emova": "17:00",
+    "stations": null
+  },
+  {
+    "id": "1865018441033265298",
+    "datetime": "2024-12-06T13:00:21.000Z",
+    "text": "¡Atención usuarios! Los viernes 6, 13, 20 y 27 de diciembre, la #LíneaB prestará un servicio especial nocturno. Mirá cuáles serán los horarios y las estaciones habilitadas para viajar",
+    "user": "emova_arg",
+    "_lote": "2024-12",
+    "line": "B",
+    "kind": "otro",
+    "hora_emova": null,
+    "stations": null
+  },
+  {
+    "id": "1865214811937640807",
+    "datetime": "2024-12-07T02:00:39.000Z",
+    "text": "#LíneaB - Circula con servicio limitado entre las estaciones Leandro N. Alem y Los Incas. 23:00",
+    "user": "emova_arg",
+    "_lote": "2024-12",
+    "line": "B",
+    "kind": "inicio_limitado",
+    "hora_emova": "23:00",
+    "stations": "Leandro N"
+  },
+  {
+    "id": "1865223623671165264",
+    "datetime": "2024-12-07T02:35:40.000Z",
+    "text": "#LíneaB - Servicio interrumpido por medida de fuerza gremial. 23:35",
+    "user": "emova_arg",
+    "_lote": "2024-12",
+    "line": "B",
+    "kind": "inicio_paro",
+    "hora_emova": "23:35",
+    "stations": null
+  },
+  {
+    "id": "1867331447251521644",
+    "datetime": "2024-12-12T22:11:25.000Z",
+    "text": "#LíneaB - Circula con servicio limitado entre las estaciones Juan Manuel de Rosas y Carlos Pellegrini. 19:11",
+    "user": "emova_arg",
+    "_lote": "2024-12",
+    "line": "B",
+    "kind": "inicio_limitado",
+    "hora_emova": "19:11",
+    "stations": "Juan Manuel de Rosas y Carlos Pellegrini"
+  },
+  {
+    "id": "1867333210738229525",
+    "datetime": "2024-12-12T22:18:25.000Z",
+    "text": "#LíneaB - Presta su servicio completo entre cabeceras normalizando su frecuencia habitual. 19:18",
+    "user": "emova_arg",
+    "_lote": "2024-12",
+    "line": "B",
+    "kind": "fin",
+    "hora_emova": "19:18",
+    "stations": null
+  },
+  {
+    "id": "1867570170417328246",
+    "datetime": "2024-12-13T14:00:01.000Z",
+    "text": "¡Atención usuarios! Los viernes 13, 20 y 27 de diciembre, la #LíneaB prestará un servicio especial nocturno hasta la 1:30 horas. Mirá cuáles serán las estaciones habilitadas para viajar",
+    "user": "emova_arg",
+    "_lote": "2024-12",
+    "line": "B",
+    "kind": "otro",
+    "hora_emova": null,
+    "stations": null
+  },
+  {
+    "id": "1869095567843815693",
+    "datetime": "2024-12-17T19:01:24.000Z",
+    "text": "#LíneaB - Circula con servicio limitado entre las estaciones Leandro N. Alem y Federico Lacroze. 16:01",
+    "user": "emova_arg",
+    "_lote": "2024-12",
+    "line": "B",
+    "kind": "inicio_limitado",
+    "hora_emova": "16:01",
+    "stations": "Leandro N"
+  },
+  {
+    "id": "1869097077898105235",
+    "datetime": "2024-12-17T19:07:24.000Z",
+    "text": "#LíneaB - Presta su servicio completo entre cabeceras normalizando su frecuencia habitual. 16:07",
+    "user": "emova_arg",
+    "_lote": "2024-12",
+    "line": "B",
+    "kind": "fin",
+    "hora_emova": "16:07",
+    "stations": null
+  },
+  {
+    "id": "1870095579252207956",
+    "datetime": "2024-12-20T13:15:05.000Z",
+    "text": "¡Atención usuarios! Los viernes 20 y 27 de diciembre, la #LíneaB prestará un servicio especial nocturno hasta la 1:30 horas. Mirá cuáles serán las estaciones habilitadas para viajar",
+    "user": "emova_arg",
+    "_lote": "2024-12",
+    "line": "B",
+    "kind": "otro",
+    "hora_emova": null,
+    "stations": null
+  },
+  {
+    "id": "1872643597431894473",
+    "datetime": "2024-12-27T14:00:00.000Z",
+    "text": "¡Atención usuarios! El viernes 27 de diciembre la #LíneaB prestará un servicio especial nocturno hasta la 1:30 horas. Mirá cuáles serán las estaciones habilitadas para viajar",
+    "user": "emova_arg",
+    "_lote": "2024-12",
+    "line": "B",
+    "kind": "otro",
+    "hora_emova": null,
+    "stations": null
+  },
+  {
+    "id": "1872769125581263310",
+    "datetime": "2024-12-27T22:18:48.000Z",
+    "text": "#LíneaB - Viernes de diciembre con horario extendido. Estaciones habilitadas en http:// buenosaires.gob.ar. 19:18",
+    "user": "emova_arg",
+    "_lote": "2024-12",
+    "line": "B",
+    "kind": "info_horario",
+    "hora_emova": "19:18",
+    "stations": null
+  },
+  {
+    "id": "1874920150073245844",
+    "datetime": "2025-01-02T20:46:12.000Z",
+    "text": "#LíneaB - Circula con servicio limitado entre las estaciones Leandro N. Alem y Federico Lacroze. 17:46",
+    "user": "emova_arg",
+    "_lote": "2025-01",
+    "line": "B",
+    "kind": "inicio_limitado",
+    "hora_emova": "17:46",
+    "stations": "Leandro N"
+  },
+  {
+    "id": "1874936011710501375",
+    "datetime": "2025-01-02T21:49:14.000Z",
+    "text": "#LíneaB - Presta su servicio completo entre cabeceras normalizando su frecuencia habitual. 18:49",
+    "user": "emova_arg",
+    "_lote": "2025-01",
+    "line": "B",
+    "kind": "fin",
+    "hora_emova": "18:49",
+    "stations": null
+  },
+  {
+    "id": "1875206949534609713",
+    "datetime": "2025-01-03T15:45:51.000Z",
+    "text": "¡Atención usuarios! Este viernes 3 de enero la #LíneaB prestará un servicio especial nocturno hasta la 1:30 horas. Mirá cuáles serán las estaciones habilitadas para viajar",
+    "user": "emova_arg",
+    "_lote": "2025-01",
+    "line": "B",
+    "kind": "otro",
+    "hora_emova": null,
+    "stations": null
+  },
+  {
+    "id": "1875653109608751173",
+    "datetime": "2025-01-04T21:18:43.000Z",
+    "text": "#LíneaB - Servicio con demora debido a un usuario que requiere asistencia. 18:18",
+    "user": "emova_arg",
+    "_lote": "2025-01",
+    "line": "B",
+    "kind": "inicio_demora",
+    "hora_emova": "18:18",
+    "stations": null
+  },
+  {
+    "id": "1875655878394745079",
+    "datetime": "2025-01-04T21:29:44.000Z",
+    "text": "#LíneaB - Ya funciona con su frecuencia habitual. 18:29",
+    "user": "emova_arg",
+    "_lote": "2025-01",
+    "line": "B",
+    "kind": "fin",
+    "hora_emova": "18:29",
+    "stations": null
+  },
+  {
+    "id": "1876345496475672826",
+    "datetime": "2025-01-06T19:10:01.000Z",
+    "text": "¡Atención usuarios! Desde este martes 7 de enero la estación Pueyrredón de la #LíneaB estará cerrada por obras de renovación.",
+    "user": "emova_arg",
+    "_lote": "2025-01",
+    "line": "B",
+    "kind": "cierre_programado",
+    "hora_emova": null,
+    "stations": null
+  },
+  {
+    "id": "1876348627603640326",
+    "datetime": "2025-01-06T19:22:28.000Z",
+    "text": "¡Hola! Desde este martes 7 de enero la estación Pueyrredón de la #LíneaB estará cerrada por obras de renovación. Te compartimos toda la información: https:// x.com/Emova_arg/stat us/1876345496475672826 … ¡Saludos!",
+    "user": "emova_arg",
+    "_lote": "2025-01",
+    "line": "B",
+    "kind": "cierre_programado",
+    "hora_emova": null,
+    "stations": null
+  },
+  {
+    "id": "1876571435050901857",
+    "datetime": "2025-01-07T10:07:49.000Z",
+    "text": "#LíneaB - Estación Pueyrredón cerrada por obras de renovación integral.",
+    "user": "emova_arg",
+    "_lote": "2025-01",
+    "line": "B",
+    "kind": "cierre_programado",
+    "hora_emova": null,
+    "stations": "Pueyrredón"
+  },
+  {
+    "id": "1876773548489953463",
+    "datetime": "2025-01-07T23:30:57.000Z",
+    "text": "#LíneaB - Servicio con demora debido a un usuario que requiere asistencia. 20:30",
+    "user": "emova_arg",
+    "_lote": "2025-01",
+    "line": "B",
+    "kind": "inicio_demora",
+    "hora_emova": "20:30",
+    "stations": null
+  },
+  {
+    "id": "1876777073278087375",
+    "datetime": "2025-01-07T23:44:57.000Z",
+    "text": "#LíneaB - Ya funciona con su frecuencia habitual. 20:44",
+    "user": "emova_arg",
+    "_lote": "2025-01",
+    "line": "B",
+    "kind": "fin",
+    "hora_emova": "20:44",
+    "stations": null
+  },
+  {
+    "id": "1876779086497849667",
+    "datetime": "2025-01-07T23:52:57.000Z",
+    "text": "#LíneaB - Estacion Pueyrredon cerrada por obras de renovacion integral. 20:52",
+    "user": "emova_arg",
+    "_lote": "2025-01",
+    "line": "B",
+    "kind": "cierre_programado",
+    "hora_emova": "20:52",
+    "stations": "Pueyrredon"
+  },
+  {
+    "id": "1877692375910253012",
+    "datetime": "2025-01-10T12:22:02.000Z",
+    "text": "¡Atención usuarios! Este viernes 10 de enero la #LíneaB prestará un servicio especial nocturno hasta la 1:30 horas. Mirá cuáles serán las estaciones habilitadas para viajar",
+    "user": "emova_arg",
+    "_lote": "2025-01",
+    "line": "B",
+    "kind": "otro",
+    "hora_emova": null,
+    "stations": null
+  },
+  {
+    "id": "1877766601769963667",
+    "datetime": "2025-01-10T17:16:59.000Z",
+    "text": "#LíneaB - Estacion Pueyrredon cerrada por obras de renovacion integral. 14:16",
+    "user": "emova_arg",
+    "_lote": "2025-01",
+    "line": "B",
+    "kind": "cierre_programado",
+    "hora_emova": "14:16",
+    "stations": "Pueyrredon"
+  },
+  {
+    "id": "1877912870534451676",
+    "datetime": "2025-01-11T02:58:12.000Z",
+    "text": "#LíneaB - Viernes de enero con horario extendido. Estaciones habilitadas en http:// buenosaires.gob.ar. 23:58",
+    "user": "emova_arg",
+    "_lote": "2025-01",
+    "line": "B",
+    "kind": "info_horario",
+    "hora_emova": "23:58",
+    "stations": null
+  },
+  {
+    "id": "1877973847795798295",
+    "datetime": "2025-01-11T07:00:31.000Z",
+    "text": "#LíneaB - Estacion Pueyrredon cerrada por obras de renovacion integral. 04:00",
+    "user": "emova_arg",
+    "_lote": "2025-01",
+    "line": "B",
+    "kind": "cierre_programado",
+    "hora_emova": "04:00",
+    "stations": "Pueyrredon"
+  },
+  {
+    "id": "1880241056039727293",
+    "datetime": "2025-01-17T13:09:35.000Z",
+    "text": "¡Atención usuarios! Este viernes 17 de enero la #LíneaB prestará un servicio especial nocturno hasta la 1:30 horas. Mirá cuáles serán las estaciones habilitadas para viajar",
+    "user": "emova_arg",
+    "_lote": "2025-01",
+    "line": "B",
+    "kind": "otro",
+    "hora_emova": null,
+    "stations": null
+  },
+  {
+    "id": "1882190633563005017",
+    "datetime": "2025-01-22T22:16:31.000Z",
+    "text": "#LíneaB - Servicio limitado: L.N. Alem y Los Incas debido a un usuario que requiere asistencia. 19:16",
+    "user": "emova_arg",
+    "_lote": "2025-01",
+    "line": "B",
+    "kind": "inicio_limitado",
+    "hora_emova": "19:16",
+    "stations": null
+  },
+  {
+    "id": "1882194911581090045",
+    "datetime": "2025-01-22T22:33:31.000Z",
+    "text": "#LíneaB - Presta su servicio completo entre cabeceras normalizando su frecuencia habitual. 19:33",
+    "user": "emova_arg",
+    "_lote": "2025-01",
+    "line": "B",
+    "kind": "fin",
+    "hora_emova": "19:33",
+    "stations": null
+  },
+  {
+    "id": "1882197428977180807",
+    "datetime": "2025-01-22T22:43:31.000Z",
+    "text": "#LíneaB - Estacion Pueyrredon cerrada por obras de renovacion integral. 19:43",
+    "user": "emova_arg",
+    "_lote": "2025-01",
+    "line": "B",
+    "kind": "cierre_programado",
+    "hora_emova": "19:43",
+    "stations": "Pueyrredon"
+  },
+  {
+    "id": "1882491277209420057",
+    "datetime": "2025-01-23T18:11:10.000Z",
+    "text": "#LíneaB - Estacion Pueyrredon cerrada por obras de renovacion integral. 15:11",
+    "user": "emova_arg",
+    "_lote": "2025-01",
+    "line": "B",
+    "kind": "cierre_programado",
+    "hora_emova": "15:11",
+    "stations": "Pueyrredon"
+  },
+  {
+    "id": "1882563779830943753",
+    "datetime": "2025-01-23T22:59:16.000Z",
+    "text": "#LíneaB - Estacion Pueyrredon cerrada por obras de renovacion integral. 19:59",
+    "user": "emova_arg",
+    "_lote": "2025-01",
+    "line": "B",
+    "kind": "cierre_programado",
+    "hora_emova": "19:59",
+    "stations": "Pueyrredon"
+  },
+  {
+    "id": "1882773856882147753",
+    "datetime": "2025-01-24T12:54:02.000Z",
+    "text": "¡Atención usuarios! Este viernes 24 de enero la #LíneaB prestará un servicio especial nocturno hasta la 1:30 horas. Mirá cuáles serán las estaciones habilitadas para viajar",
+    "user": "emova_arg",
+    "_lote": "2025-01",
+    "line": "B",
+    "kind": "otro",
+    "hora_emova": null,
+    "stations": null
+  },
+  {
+    "id": "1883298474877227422",
+    "datetime": "2025-01-25T23:38:41.000Z",
+    "text": "#LíneaB - Servicio con demora debido a un usuario que requiere asistencia. 20:38",
+    "user": "emova_arg",
+    "_lote": "2025-01",
+    "line": "B",
+    "kind": "inicio_demora",
+    "hora_emova": "20:38",
+    "stations": null
+  },
+  {
+    "id": "1883301496168542689",
+    "datetime": "2025-01-25T23:50:41.000Z",
+    "text": "#LíneaB - Servicio limitado: Rosas y Dorrego debido a un usuario que requiere asistencia. 20:50",
+    "user": "emova_arg",
+    "_lote": "2025-01",
+    "line": "B",
+    "kind": "inicio_limitado",
+    "hora_emova": "20:50",
+    "stations": null
+  },
+  {
+    "id": "1883310559300350423",
+    "datetime": "2025-01-26T00:26:42.000Z",
+    "text": "#LíneaB - Presta su servicio completo entre cabeceras normalizando su frecuencia habitual. 21:26",
+    "user": "emova_arg",
+    "_lote": "2025-01",
+    "line": "B",
+    "kind": "fin",
+    "hora_emova": "21:26",
+    "stations": null
+  },
+  {
+    "id": "1883311313104912394",
+    "datetime": "2025-01-26T00:29:41.000Z",
+    "text": "#LíneaB - Estacion Pueyrredon cerrada por obras de renovacion integral. 21:29",
+    "user": "emova_arg",
+    "_lote": "2025-01",
+    "line": "B",
+    "kind": "cierre_programado",
+    "hora_emova": "21:29",
+    "stations": "Pueyrredon"
+  },
+  {
+    "id": "1884262832792801770",
+    "datetime": "2025-01-28T15:30:41.000Z",
+    "text": "#LíneaB - Circula con demora. 12:30",
+    "user": "emova_arg",
+    "_lote": "2025-01",
+    "line": "B",
+    "kind": "inicio_demora",
+    "hora_emova": "12:30",
+    "stations": null
+  },
+  {
+    "id": "1884266609226756177",
+    "datetime": "2025-01-28T15:45:42.000Z",
+    "text": "#LíneaB - Ya funciona con su frecuencia habitual. 12:45",
+    "user": "emova_arg",
+    "_lote": "2025-01",
+    "line": "B",
+    "kind": "fin",
+    "hora_emova": "12:45",
+    "stations": null
+  },
+  {
+    "id": "1884267868600082690",
+    "datetime": "2025-01-28T15:50:42.000Z",
+    "text": "#LíneaB - Estacion Pueyrredon cerrada por obras de renovacion integral. 12:50",
+    "user": "emova_arg",
+    "_lote": "2025-01",
+    "line": "B",
+    "kind": "cierre_programado",
+    "hora_emova": "12:50",
+    "stations": "Pueyrredon"
+  },
+  {
+    "id": "1884540559630422200",
+    "datetime": "2025-01-29T09:54:17.000Z",
+    "text": "#LíneaB - Circula con servicio limitado entre las estaciones Leandro N. Alem y Los Incas. 06:54",
+    "user": "emova_arg",
+    "_lote": "2025-01",
+    "line": "B",
+    "kind": "inicio_limitado",
+    "hora_emova": "06:54",
+    "stations": "Leandro N"
+  },
+  {
+    "id": "1884541818655666543",
+    "datetime": "2025-01-29T09:59:17.000Z",
+    "text": "#LíneaB - Presta su servicio completo entre cabeceras normalizando su frecuencia habitual. 06:59",
+    "user": "emova_arg",
+    "_lote": "2025-01",
+    "line": "B",
+    "kind": "fin",
+    "hora_emova": "06:59",
+    "stations": null
+  },
+  {
+    "id": "1884542574188261688",
+    "datetime": "2025-01-29T10:02:17.000Z",
+    "text": "#LíneaB - Estacion Pueyrredon cerrada por obras de renovacion integral. 07:02",
+    "user": "emova_arg",
+    "_lote": "2025-01",
+    "line": "B",
+    "kind": "cierre_programado",
+    "hora_emova": "07:02",
+    "stations": "Pueyrredon"
+  },
+  {
+    "id": "1885322515959976035",
+    "datetime": "2025-01-31T13:41:30.000Z",
+    "text": "¡Atención usuarios! Este viernes 31 de enero la #LíneaB prestará un servicio especial nocturno hasta la 1:30 horas. Mirá cuáles serán las estaciones habilitadas para viajar",
+    "user": "emova_arg",
+    "_lote": "2025-01",
+    "line": "B",
+    "kind": "otro",
+    "hora_emova": null,
+    "stations": null
+  },
+  {
+    "id": "1885342478070428068",
+    "datetime": "2025-01-31T15:00:49.000Z",
+    "text": "#LíneaB - Viernes de enero con horario extendido. Estaciones habilitadas en http:// buenosaires.gob.ar. 12:00",
+    "user": "emova_arg",
+    "_lote": "2025-01",
+    "line": "B",
+    "kind": "info_horario",
+    "hora_emova": "12:00",
+    "stations": null
+  },
+  {
+    "id": "1885344744185741813",
+    "datetime": "2025-01-31T15:09:49.000Z",
+    "text": "#LíneaB - Estacion Pueyrredon cerrada por obras de renovacion integral. 12:09",
+    "user": "emova_arg",
+    "_lote": "2025-01",
+    "line": "B",
+    "kind": "cierre_programado",
+    "hora_emova": "12:09",
+    "stations": "Pueyrredon"
+  },
+  {
+    "id": "1885521218301767697",
+    "datetime": "2025-02-01T02:51:04.000Z",
+    "text": "#LíneaB - Viernes de enero con horario extendido. Estaciones habilitadas en http:// buenosaires.gob.ar. 23:51",
+    "user": "emova_arg",
+    "_lote": "2025-02",
+    "line": "B",
+    "kind": "info_horario",
+    "hora_emova": "23:51",
+    "stations": null
+  },
+  {
+    "id": "1885522981197152422",
+    "datetime": "2025-02-01T02:58:04.000Z",
+    "text": "#LíneaB - Servicio finalizado. 23:58",
+    "user": "emova_arg",
+    "_lote": "2025-02",
+    "line": "B",
+    "kind": "info_horario",
+    "hora_emova": "23:58",
+    "stations": null
+  },
+  {
+    "id": "1885583959343382851",
+    "datetime": "2025-02-01T07:00:23.000Z",
+    "text": "#LíneaB - Estacion Pueyrredon cerrada por obras de renovacion integral. 04:00",
+    "user": "emova_arg",
+    "_lote": "2025-02",
+    "line": "B",
+    "kind": "cierre_programado",
+    "hora_emova": "04:00",
+    "stations": "Pueyrredon"
+  },
+  {
+    "id": "1886031611075928388",
+    "datetime": "2025-02-02T12:39:11.000Z",
+    "text": "#LíneaB - Circula con servicio limitado entre las estaciones Leandro N. Alem y Federico Lacroze. 09:39",
+    "user": "emova_arg",
+    "_lote": "2025-02",
+    "line": "B",
+    "kind": "inicio_limitado",
+    "hora_emova": "09:39",
+    "stations": "Leandro N"
+  },
+  {
+    "id": "1886038407505137699",
+    "datetime": "2025-02-02T13:06:11.000Z",
+    "text": "#LíneaB - Presta su servicio completo entre cabeceras normalizando su frecuencia habitual. 10:06",
+    "user": "emova_arg",
+    "_lote": "2025-02",
+    "line": "B",
+    "kind": "fin",
+    "hora_emova": "10:06",
+    "stations": null
+  },
+  {
+    "id": "1886039918167605607",
+    "datetime": "2025-02-02T13:12:12.000Z",
+    "text": "#LíneaB - Estacion Pueyrredon cerrada por obras de renovacion integral. 10:12",
+    "user": "emova_arg",
+    "_lote": "2025-02",
+    "line": "B",
+    "kind": "cierre_programado",
+    "hora_emova": "10:12",
+    "stations": "Pueyrredon"
+  },
+  {
+    "id": "1887325805694374110",
+    "datetime": "2025-02-06T02:21:51.000Z",
+    "text": "#LíneaB - Estacion Pueyrredon cerrada por obras de renovacion integral. 23:21",
+    "user": "emova_arg",
+    "_lote": "2025-02",
+    "line": "B",
+    "kind": "cierre_programado",
+    "hora_emova": "23:21",
+    "stations": "Pueyrredon"
+  },
+  {
+    "id": "1887848792592130288",
+    "datetime": "2025-02-07T13:00:01.000Z",
+    "text": "¡Atención usuarios! Todos los viernes de febrero la #LíneaB prestará un servicio nocturno hasta la 1:30 horas. Mirá cuáles serán las estaciones habilitadas para viajar",
+    "user": "emova_arg",
+    "_lote": "2025-02",
+    "line": "B",
+    "kind": "otro",
+    "hora_emova": null,
+    "stations": null
+  },
+  {
+    "id": "1888057233767804948",
+    "datetime": "2025-02-08T02:48:17.000Z",
+    "text": "#LíneaB - Viernes de enero con horario extendido. Estaciones habilitadas en http:// buenosaires.gob.ar. 23:48",
+    "user": "emova_arg",
+    "_lote": "2025-02",
+    "line": "B",
+    "kind": "info_horario",
+    "hora_emova": "23:48",
+    "stations": null
+  },
+  {
+    "id": "1888120729473872129",
+    "datetime": "2025-02-08T07:00:36.000Z",
+    "text": "#LíneaB - Estacion Pueyrredon cerrada por obras de renovacion integral. 04:00",
+    "user": "emova_arg",
+    "_lote": "2025-02",
+    "line": "B",
+    "kind": "cierre_programado",
+    "hora_emova": "04:00",
+    "stations": "Pueyrredon"
+  },
+  {
+    "id": "1888173592614973721",
+    "datetime": "2025-02-08T10:30:39.000Z",
+    "text": "#LíneaB - Circula con servicio limitado entre las estaciones Juan Manuel de Rosas y Dorrego. 07:30",
+    "user": "emova_arg",
+    "_lote": "2025-02",
+    "line": "B",
+    "kind": "inicio_limitado",
+    "hora_emova": "07:30",
+    "stations": "Juan Manuel de Rosas y Dorrego"
+  },
+  {
+    "id": "1888177117420048653",
+    "datetime": "2025-02-08T10:44:40.000Z",
+    "text": "#LíneaB - Presta su servicio completo entre cabeceras normalizando su frecuencia habitual. 07:44",
+    "user": "emova_arg",
+    "_lote": "2025-02",
+    "line": "B",
+    "kind": "fin",
+    "hora_emova": "07:44",
+    "stations": null
+  },
+  {
+    "id": "1888179886075867614",
+    "datetime": "2025-02-08T10:55:40.000Z",
+    "text": "#LíneaB - Estacion Pueyrredon cerrada por obras de renovacion integral. 07:55",
+    "user": "emova_arg",
+    "_lote": "2025-02",
+    "line": "B",
+    "kind": "cierre_programado",
+    "hora_emova": "07:55",
+    "stations": "Pueyrredon"
+  },
+  {
+    "id": "1890133652715053335",
+    "datetime": "2025-02-13T20:19:14.000Z",
+    "text": "#LíneaB - Circula con demora. 17:19",
+    "user": "emova_arg",
+    "_lote": "2025-02",
+    "line": "B",
+    "kind": "inicio_demora",
+    "hora_emova": "17:19",
+    "stations": null
+  },
+  {
+    "id": "1890137428758782217",
+    "datetime": "2025-02-13T20:34:14.000Z",
+    "text": "#LíneaB - Ya funciona con su frecuencia habitual. 17:34",
+    "user": "emova_arg",
+    "_lote": "2025-02",
+    "line": "B",
+    "kind": "fin",
+    "hora_emova": "17:34",
+    "stations": null
+  },
+  {
+    "id": "1890138687456923800",
+    "datetime": "2025-02-13T20:39:14.000Z",
+    "text": "#LíneaB - Estacion Pueyrredon cerrada por obras de renovacion integral. 17:39",
+    "user": "emova_arg",
+    "_lote": "2025-02",
+    "line": "B",
+    "kind": "cierre_programado",
+    "hora_emova": "17:39",
+    "stations": "Pueyrredon"
+  },
+  {
+    "id": "1890321001579233535",
+    "datetime": "2025-02-14T08:43:41.000Z",
+    "text": "#LíneaB - Circula con servicio limitado entre las estaciones Juan Manuel de Rosas y Carlos Pellegrini. 05:43",
+    "user": "emova_arg",
+    "_lote": "2025-02",
+    "line": "B",
+    "kind": "inicio_limitado",
+    "hora_emova": "05:43",
+    "stations": "Juan Manuel de Rosas y Carlos Pellegrini"
+  },
+  {
+    "id": "1890342397621539292",
+    "datetime": "2025-02-14T10:08:43.000Z",
+    "text": "#LíneaB - Presta su servicio completo entre cabeceras normalizando su frecuencia habitual. 07:08",
+    "user": "emova_arg",
+    "_lote": "2025-02",
+    "line": "B",
+    "kind": "fin",
+    "hora_emova": "07:08",
+    "stations": null
+  },
+  {
+    "id": "1890348188818661634",
+    "datetime": "2025-02-14T10:31:43.000Z",
+    "text": "#LíneaB - Estacion Pueyrredon cerrada por obras de renovacion integral. 07:31",
+    "user": "emova_arg",
+    "_lote": "2025-02",
+    "line": "B",
+    "kind": "cierre_programado",
+    "hora_emova": "07:31",
+    "stations": "Pueyrredon"
+  },
+  {
+    "id": "1890357251480637782",
+    "datetime": "2025-02-14T11:07:44.000Z",
+    "text": "#LíneaB - Circula con demora. 08:07",
+    "user": "emova_arg",
+    "_lote": "2025-02",
+    "line": "B",
+    "kind": "inicio_demora",
+    "hora_emova": "08:07",
+    "stations": null
+  },
+  {
+    "id": "1890366061674889570",
+    "datetime": "2025-02-14T11:42:45.000Z",
+    "text": "#LíneaB - Ya funciona con su frecuencia habitual. 08:42",
+    "user": "emova_arg",
+    "_lote": "2025-02",
+    "line": "B",
+    "kind": "fin",
+    "hora_emova": "08:42",
+    "stations": null
+  },
+  {
+    "id": "1890368076329189410",
+    "datetime": "2025-02-14T11:50:45.000Z",
+    "text": "#LíneaB - Estacion Pueyrredon cerrada por obras de renovacion integral. 08:50",
+    "user": "emova_arg",
+    "_lote": "2025-02",
+    "line": "B",
+    "kind": "cierre_programado",
+    "hora_emova": "08:50",
+    "stations": "Pueyrredon"
+  },
+  {
+    "id": "1890464217397907809",
+    "datetime": "2025-02-14T18:12:47.000Z",
+    "text": "¡Atención usuarios! Este viernes 14 de febrero la #LíneaB prestará un servicio especial nocturno hasta la 1:30 horas. Mirá cuáles serán las estaciones habilitadas para viajar",
+    "user": "emova_arg",
+    "_lote": "2025-02",
+    "line": "B",
+    "kind": "otro",
+    "hora_emova": null,
+    "stations": null
+  },
+  {
+    "id": "1890543031008330217",
+    "datetime": "2025-02-14T23:25:57.000Z",
+    "text": "#LíneaB - Servicio con demora debido a un usuario que requiere asistencia. 20:25",
+    "user": "emova_arg",
+    "_lote": "2025-02",
+    "line": "B",
+    "kind": "inicio_demora",
+    "hora_emova": "20:25",
+    "stations": null
+  },
+  {
+    "id": "1890544541943349610",
+    "datetime": "2025-02-14T23:31:58.000Z",
+    "text": "#LíneaB - Servicio limitado: Rosas y Dorrego debido a un usuario que requiere asistencia. 20:31",
+    "user": "emova_arg",
+    "_lote": "2025-02",
+    "line": "B",
+    "kind": "inicio_limitado",
+    "hora_emova": "20:31",
+    "stations": null
+  },
+  {
+    "id": "1890545044957909145",
+    "datetime": "2025-02-14T23:33:58.000Z",
+    "text": "#LíneaB - Presta su servicio completo entre cabeceras normalizando su frecuencia habitual. 20:33",
+    "user": "emova_arg",
+    "_lote": "2025-02",
+    "line": "B",
+    "kind": "fin",
+    "hora_emova": "20:33",
+    "stations": null
+  },
+  {
+    "id": "1890546807706390579",
+    "datetime": "2025-02-14T23:40:58.000Z",
+    "text": "#LíneaB - Estacion Pueyrredon cerrada por obras de renovacion integral. 20:40",
+    "user": "emova_arg",
+    "_lote": "2025-02",
+    "line": "B",
+    "kind": "cierre_programado",
+    "hora_emova": "20:40",
+    "stations": "Pueyrredon"
+  },
+  {
+    "id": "1890595895101505894",
+    "datetime": "2025-02-15T02:56:01.000Z",
+    "text": "#LíneaB - Viernes de enero con horario extendido. Estaciones habilitadas en http:// buenosaires.gob.ar. 23:56",
+    "user": "emova_arg",
+    "_lote": "2025-02",
+    "line": "B",
+    "kind": "info_horario",
+    "hora_emova": "23:56",
+    "stations": null
+  },
+  {
+    "id": "1890657377663275177",
+    "datetime": "2025-02-15T07:00:20.000Z",
+    "text": "#LíneaB - Estacion Pueyrredon cerrada por obras de renovacion integral. 04:00",
+    "user": "emova_arg",
+    "_lote": "2025-02",
+    "line": "B",
+    "kind": "cierre_programado",
+    "hora_emova": "04:00",
+    "stations": "Pueyrredon"
+  },
+  {
+    "id": "1892943745638609125",
+    "datetime": "2025-02-21T14:25:32.000Z",
+    "text": "¡Atención usuarios! Este viernes 21 de febrero la #LíneaB prestará un servicio nocturno hasta la 1:30 horas. Mirá cuáles serán las estaciones habilitadas para viajar",
+    "user": "emova_arg",
+    "_lote": "2025-02",
+    "line": "B",
+    "kind": "otro",
+    "hora_emova": null,
+    "stations": null
+  },
+  {
+    "id": "1893034594741432668",
+    "datetime": "2025-02-21T20:26:32.000Z",
+    "text": "#LíneaB - Estación Pueyrredón cerrada por obras de renovación integral. 17:26",
+    "user": "emova_arg",
+    "_lote": "2025-02",
+    "line": "B",
+    "kind": "cierre_programado",
+    "hora_emova": "17:26",
+    "stations": "Pueyrredón"
+  },
+  {
+    "id": "1894401754407596442",
+    "datetime": "2025-02-25T14:59:09.000Z",
+    "text": "#LíneaB - Estacion Pueyrredon cerrada por obras de renovacion integral. 11:59",
+    "user": "emova_arg",
+    "_lote": "2025-02",
+    "line": "B",
+    "kind": "cierre_programado",
+    "hora_emova": "11:59",
+    "stations": "Pueyrredon"
+  },
+  {
+    "id": "1895461735416332629",
+    "datetime": "2025-02-28T13:11:08.000Z",
+    "text": "#LíneaB - Viernes de febrero con horario extendido. Estaciones habilitadas en http:// buenosaires.gob.ar. 10:11",
+    "user": "emova_arg",
+    "_lote": "2025-02",
+    "line": "B",
+    "kind": "info_horario",
+    "hora_emova": "10:11",
+    "stations": null
+  },
+  {
+    "id": "1895519636059230615",
+    "datetime": "2025-02-28T17:01:12.000Z",
+    "text": "#LíneaB - Estacion Pueyrredon cerrada por obras de renovacion integral. 14:01",
+    "user": "emova_arg",
+    "_lote": "2025-02",
+    "line": "B",
+    "kind": "cierre_programado",
+    "hora_emova": "14:01",
+    "stations": "Pueyrredon"
+  },
+  {
+    "id": "1895586902864257481",
+    "datetime": "2025-02-28T21:28:30.000Z",
+    "text": "¡Atención usuarios! Todos los viernes y sábados, la #LíneaB prestará un servicio nocturno hasta la 1:30 horas. Mirá cuáles serán las estaciones habilitadas para viajar",
+    "user": "emova_arg",
+    "_lote": "2025-02",
+    "line": "B",
+    "kind": "info_horario",
+    "hora_emova": null,
+    "stations": null
+  },
+  {
+    "id": "1995912600878456855",
+    "datetime": "2025-12-02T17:47:00.000Z",
+    "text": "#LíneaB - Reabrió Carlos Gardel. Uruguay continúa cerrada por obras. 14:47",
+    "user": "emova_arg",
+    "line": "B",
+    "kind": "fin",
+    "stations": "Carlos Gardel",
+    "hashtags": [
+      "#líneab"
+    ],
+    "hora_emova": "14:47"
+  },
+  {
+    "id": "1996894537986236424",
+    "datetime": "2025-12-05T10:48:53.000Z",
+    "text": "#LíneaB - Circula con demora. 07:48",
+    "user": "emova_arg",
+    "line": "B",
+    "kind": "inicio_demora",
+    "stations": null,
+    "hashtags": [
+      "#líneab"
+    ],
+    "hora_emova": "07:48"
+  },
+  {
+    "id": "1996903096941752602",
+    "datetime": "2025-12-05T11:22:53.000Z",
+    "text": "#LíneaB - Ya funciona con su frecuencia habitual. 08:22",
+    "user": "emova_arg",
+    "line": "B",
+    "kind": "fin",
+    "stations": null,
+    "hashtags": [
+      "#líneab"
+    ],
+    "hora_emova": "08:22"
+  },
+  {
+    "id": "1996904355446854055",
+    "datetime": "2025-12-05T11:27:53.000Z",
+    "text": "#LíneaB - Reabrió Carlos Gardel. Uruguay continúa cerrada por obras. 08:27",
+    "user": "emova_arg",
+    "line": "B",
+    "kind": "fin",
+    "stations": "Carlos Gardel",
+    "hashtags": [
+      "#líneab"
+    ],
+    "hora_emova": "08:27"
+  },
+  {
+    "id": "1997018135925534756",
+    "datetime": "2025-12-05T19:00:01.000Z",
+    "text": "¡Atención usuarios! Desde el martes 9 de diciembre la estación Malabia - Osvaldo Pugliese de la #LíneaB estará cerrada por obras de renovación.",
+    "user": "emova_arg",
+    "line": "B",
+    "kind": "cierre_programado",
+    "stations": null,
+    "hashtags": [
+      "#líneab"
+    ],
+    "hora_emova": null
+  },
+  {
+    "id": "1997088373425521130",
+    "datetime": "2025-12-05T23:39:06.000Z",
+    "text": "#LíneaB - Uruguay cerrada por obras. Viernes y sabado con horario extendido. 20:39",
+    "user": "emova_arg",
+    "line": "B",
+    "kind": "info_horario",
+    "stations": null,
+    "hashtags": [
+      "#líneab"
+    ],
+    "hora_emova": "20:39"
+  },
+  {
+    "id": "1997199445205700804",
+    "datetime": "2025-12-06T07:00:28.000Z",
+    "text": "#LíneaB - A partir del 09/12 estación Malabia cerrada por obras de renovación integral. 04:00",
+    "user": "emova_arg",
+    "line": "B",
+    "kind": "cierre_programado",
+    "stations": "Malabia",
+    "hashtags": [
+      "#líneab"
+    ],
+    "hora_emova": "04:00"
+  },
+  {
+    "id": "1997441362384277619",
+    "datetime": "2025-12-06T23:01:46.000Z",
+    "text": "#LíneaB - Viernes y Sábado con horario extendido. Uruguay cerrada por obras. 20:01",
+    "user": "emova_arg",
+    "line": "B",
+    "kind": "info_horario",
+    "stations": null,
+    "hashtags": [
+      "#líneab"
+    ],
+    "hora_emova": "20:01"
+  },
+  {
+    "id": "1997561748841173100",
+    "datetime": "2025-12-07T07:00:08.000Z",
+    "text": "#LíneaB - A partir del 09/12 estación Malabia cerrada por obras de renovación integral. 04:00",
+    "user": "emova_arg",
+    "line": "B",
+    "kind": "cierre_programado",
+    "stations": "Malabia",
+    "hashtags": [
+      "#líneab"
+    ],
+    "hora_emova": "04:00"
+  },
+  {
+    "id": "1998309513439445353",
+    "datetime": "2025-12-09T08:31:29.000Z",
+    "text": "#LíneaB - Malabia y Uruguay cerradas por obras de renovación integral. 05:31",
+    "user": "emova_arg",
+    "line": "B",
+    "kind": "cierre_programado",
+    "stations": null,
+    "hashtags": [
+      "#líneab"
+    ],
+    "hora_emova": "05:31"
+  },
+  {
+    "id": "1998346903637897595",
+    "datetime": "2025-12-09T11:00:03.000Z",
+    "text": "¡Atención usuarios! La estación Malabia - Osvaldo Pugliese de la #LíneaB se encuentra cerrada por obras de renovación.",
+    "user": "emova_arg",
+    "line": "B",
+    "kind": "cierre_programado",
+    "stations": null,
+    "hashtags": [
+      "#líneab"
+    ],
+    "hora_emova": null
+  },
+  {
+    "id": "1998507371836960943",
+    "datetime": "2025-12-09T21:37:42.000Z",
+    "text": "#LíneaB - Circula con demora. 18:37",
+    "user": "emova_arg",
+    "line": "B",
+    "kind": "inicio_demora",
+    "stations": null,
+    "hashtags": [
+      "#líneab"
+    ],
+    "hora_emova": "18:37"
+  },
+  {
+    "id": "1998516182878486605",
+    "datetime": "2025-12-09T22:12:43.000Z",
+    "text": "#LíneaB - Ya funciona con su frecuencia habitual. 19:12",
+    "user": "emova_arg",
+    "line": "B",
+    "kind": "fin",
+    "stations": null,
+    "hashtags": [
+      "#líneab"
+    ],
+    "hora_emova": "19:12"
+  },
+  {
+    "id": "1998520714152784171",
+    "datetime": "2025-12-09T22:30:43.000Z",
+    "text": "#LíneaB - Malabia y Uruguay cerradas por obras de renovación integral. 19:30",
+    "user": "emova_arg",
+    "line": "B",
+    "kind": "cierre_programado",
+    "stations": null,
+    "hashtags": [
+      "#líneab"
+    ],
+    "hora_emova": "19:30"
+  },
+  {
+    "id": "1998563004913242384",
+    "datetime": "2025-12-10T01:18:46.000Z",
+    "text": "#LíneaB - Circula con demora. 22:18",
+    "user": "emova_arg",
+    "line": "B",
+    "kind": "inicio_demora",
+    "stations": null,
+    "hashtags": [
+      "#líneab"
+    ],
+    "hora_emova": "22:18"
+  },
+  {
+    "id": "1998565521386582121",
+    "datetime": "2025-12-10T01:28:46.000Z",
+    "text": "#LíneaB - Ya funciona con su frecuencia habitual. 22:28",
+    "user": "emova_arg",
+    "line": "B",
+    "kind": "fin",
+    "stations": null,
+    "hashtags": [
+      "#líneab"
+    ],
+    "hora_emova": "22:28"
+  },
+  {
+    "id": "1998566780281712705",
+    "datetime": "2025-12-10T01:33:46.000Z",
+    "text": "#LíneaB - Malabia y Uruguay cerradas por obras de renovación integral. 22:33",
+    "user": "emova_arg",
+    "line": "B",
+    "kind": "cierre_programado",
+    "stations": null,
+    "hashtags": [
+      "#líneab"
+    ],
+    "hora_emova": "22:33"
+  },
+  {
+    "id": "1999266462167421064",
+    "datetime": "2025-12-11T23:54:03.000Z",
+    "text": "#LíneaB - Circula con demora. 20:54",
+    "user": "emova_arg",
+    "line": "B",
+    "kind": "inicio_demora",
+    "stations": null,
+    "hashtags": [
+      "#líneab"
+    ],
+    "hora_emova": "20:54"
+  },
+  {
+    "id": "1999271999571411134",
+    "datetime": "2025-12-12T00:16:04.000Z",
+    "text": "#LíneaB - Circula con servicio limitado entre las estaciones Leandro N. Alem y Angel Gallardo. 21:16",
+    "user": "emova_arg",
+    "line": "B",
+    "kind": "inicio_limitado",
+    "stations": "Leandro N",
+    "hashtags": [
+      "#líneab"
+    ],
+    "hora_emova": "21:16"
+  },
+  {
+    "id": "1999275020535693669",
+    "datetime": "2025-12-12T00:28:04.000Z",
+    "text": "#LíneaB - Presta su servicio completo entre cabeceras normalizando su frecuencia habitual. 21:28",
+    "user": "emova_arg",
+    "line": "B",
+    "kind": "fin",
+    "stations": null,
+    "hashtags": [
+      "#líneab"
+    ],
+    "hora_emova": "21:28"
+  },
+  {
+    "id": "1999280810612900298",
+    "datetime": "2025-12-12T00:51:04.000Z",
+    "text": "#LíneaB - Malabia y Uruguay cerradas por obras de renovación integral. 21:51",
+    "user": "emova_arg",
+    "line": "B",
+    "kind": "cierre_programado",
+    "stations": null,
+    "hashtags": [
+      "#líneab"
+    ],
+    "hora_emova": "21:51"
+  },
+  {
+    "id": "1999396916874866763",
+    "datetime": "2025-12-12T08:32:26.000Z",
+    "text": "#LíneaB - Viernes y Sábado con horario extendido. Malabia y Uruguay cerradas por obras. 05:32",
+    "user": "emova_arg",
+    "line": "B",
+    "kind": "info_horario",
+    "stations": null,
+    "hashtags": [
+      "#líneab"
+    ],
+    "hora_emova": "05:32"
+  },
+  {
+    "id": "2000098608515867105",
+    "datetime": "2025-12-14T07:00:42.000Z",
+    "text": "#LíneaB - Malabia y Uruguay cerradas por obras de renovación integral. 04:00",
+    "user": "emova_arg",
+    "line": "B",
+    "kind": "cierre_programado",
+    "stations": null,
+    "hashtags": [
+      "#líneab"
+    ],
+    "hora_emova": "04:00"
+  },
+  {
+    "id": "2001570699836629470",
+    "datetime": "2025-12-18T08:30:16.000Z",
+    "text": "#LíneaB - Malabia y Uruguay cerradas por obras de renovación integral. 05:30",
+    "user": "emova_arg",
+    "line": "B",
+    "kind": "cierre_programado",
+    "stations": null,
+    "hashtags": [
+      "#líneab"
+    ],
+    "hora_emova": "05:30"
+  },
+  {
+    "id": "2001747913437745496",
+    "datetime": "2025-12-18T20:14:27.000Z",
+    "text": "#LíneaB - Malabia y Uruguay cerradas por obras de renovación integral. 17:14",
+    "user": "emova_arg",
+    "line": "B",
+    "kind": "cierre_programado",
+    "stations": null,
+    "hashtags": [
+      "#líneab"
+    ],
+    "hora_emova": "17:14"
+  },
+  {
+    "id": "2002635169442771301",
+    "datetime": "2025-12-21T07:00:06.000Z",
+    "text": "#LíneaB - Malabia y Uruguay cerradas por obras de renovación integral. 04:00",
+    "user": "emova_arg",
+    "line": "B",
+    "kind": "cierre_programado",
+    "stations": null,
+    "hashtags": [
+      "#líneab"
+    ],
+    "hora_emova": "04:00"
+  },
+  {
+    "id": "2003915365282169185",
+    "datetime": "2025-12-24T19:47:08.000Z",
+    "text": "#LíneaB - Malabia y Uruguay cerradas por obras de renovación integral. 16:47",
+    "user": "emova_arg",
+    "line": "B",
+    "kind": "cierre_programado",
+    "stations": null,
+    "hashtags": [
+      "#líneab"
+    ],
+    "hora_emova": "16:47"
+  },
+  {
+    "id": "2004481610087801085",
+    "datetime": "2025-12-26T09:17:11.000Z",
+    "text": "#LíneaB - Malabia y Uruguay cerradas por obras de renovación integral. 06:17",
+    "user": "emova_arg",
+    "line": "B",
+    "kind": "cierre_programado",
+    "stations": null,
+    "hashtags": [
+      "#líneab"
+    ],
+    "hora_emova": "06:17"
+  },
+  {
+    "id": "2004677199215931497",
+    "datetime": "2025-12-26T22:14:24.000Z",
+    "text": "#LíneaB - Viernes y Sábado con horario extendido. Malabia y Uruguay cerradas por obras. 19:14",
+    "user": "emova_arg",
+    "line": "B",
+    "kind": "info_horario",
+    "stations": null,
+    "hashtags": [
+      "#líneab"
+    ],
+    "hora_emova": "19:14"
+  },
+  {
+    "id": "2005171955561828805",
+    "datetime": "2025-12-28T07:00:23.000Z",
+    "text": "#LíneaB - Malabia y Uruguay cerradas por obras de renovación integral. 04:00",
+    "user": "emova_arg",
+    "line": "B",
+    "kind": "cierre_programado",
+    "stations": null,
+    "hashtags": [
+      "#líneab"
+    ],
+    "hora_emova": "04:00"
+  },
+  {
+    "id": "2006411871067226555",
+    "datetime": "2025-12-31T17:07:22.000Z",
+    "text": "#LíneaB - Malabia y Uruguay cerradas por obras de renovación integral. 14:07",
+    "user": "emova_arg",
+    "line": "B",
+    "kind": "cierre_programado",
+    "stations": null,
+    "hashtags": [
+      "#líneab"
+    ],
+    "hora_emova": "14:07"
+  },
+  {
+    "id": "2007007318588739962",
+    "datetime": "2026-01-02T08:33:27.000Z",
+    "text": "#LíneaB - Hoy funcionará con horario extendido. Malabia y Uruguay cerradas por obras. 05:33",
+    "user": "emova_arg",
+    "line": "B",
+    "kind": "info_horario",
+    "stations": null,
+    "hashtags": [
+      "#líneab"
+    ],
+    "hora_emova": "05:33"
+  },
+  {
+    "id": "2007346286366728569",
+    "datetime": "2026-01-03T07:00:24.000Z",
+    "text": "#LíneaB - Hoy funcionará con horario extendido. Malabia y Uruguay cerradas por obras. 04:00",
+    "user": "emova_arg",
+    "line": "B",
+    "kind": "info_horario",
+    "stations": null,
+    "hashtags": [
+      "#líneab"
+    ],
+    "hora_emova": "04:00"
+  },
+  {
+    "id": "2007708821003624603",
+    "datetime": "2026-01-04T07:00:59.000Z",
+    "text": "#LíneaB - Malabia y Uruguay cerradas por obras de renovación integral. 04:00",
+    "user": "emova_arg",
+    "line": "B",
+    "kind": "cierre_programado",
+    "stations": null,
+    "hashtags": [
+      "#líneab"
+    ],
+    "hora_emova": "04:00"
+  },
+  {
+    "id": "2008534836676317626",
+    "datetime": "2026-01-06T13:43:16.000Z",
+    "text": "#LíneaB - Circula con demora. 10:43",
+    "user": "emova_arg",
+    "line": "B",
+    "kind": "inicio_demora",
+    "stations": null,
+    "hashtags": [
+      "#líneab"
+    ],
+    "hora_emova": "10:43"
+  },
+  {
+    "id": "2008542388076056734",
+    "datetime": "2026-01-06T14:13:16.000Z",
+    "text": "#LíneaB - Ya funciona con su frecuencia habitual. 11:13",
+    "user": "emova_arg",
+    "line": "B",
+    "kind": "fin",
+    "stations": null,
+    "hashtags": [
+      "#líneab"
+    ],
+    "hora_emova": "11:13"
+  },
+  {
+    "id": "2008543394939736268",
+    "datetime": "2026-01-06T14:17:16.000Z",
+    "text": "#LíneaB - Malabia y Uruguay cerradas por obras de renovación integral. 11:17",
+    "user": "emova_arg",
+    "line": "B",
+    "kind": "cierre_programado",
+    "stations": null,
+    "hashtags": [
+      "#líneab"
+    ],
+    "hora_emova": "11:17"
+  },
+  {
+    "id": "2009543657423020138",
+    "datetime": "2026-01-09T08:31:58.000Z",
+    "text": "#LíneaB - Viernes y Sábado con horario extendido. Malabia y Uruguay cerradas por obras. 05:31",
+    "user": "emova_arg",
+    "line": "B",
+    "kind": "info_horario",
+    "stations": null,
+    "hashtags": [
+      "#líneab"
+    ],
+    "hora_emova": "05:31"
+  },
+  {
+    "id": "2010245326129549684",
+    "datetime": "2026-01-11T07:00:08.000Z",
+    "text": "#LíneaB - Malabia y Uruguay cerradas por obras de renovación integral. 04:00",
+    "user": "emova_arg",
+    "line": "B",
+    "kind": "cierre_programado",
+    "stations": null,
+    "hashtags": [
+      "#líneab"
+    ],
+    "hora_emova": "04:00"
+  },
+  {
+    "id": "2012080920237379672",
+    "datetime": "2026-01-16T08:34:08.000Z",
+    "text": "#LíneaB - Hoy funcionará con horario extendido. Malabia y Uruguay cerradas por obras. 05:34",
+    "user": "emova_arg",
+    "line": "B",
+    "kind": "info_horario",
+    "stations": null,
+    "hashtags": [
+      "#líneab"
+    ],
+    "hora_emova": "05:34"
+  },
+  {
+    "id": "2012081674410930314",
+    "datetime": "2026-01-16T08:37:08.000Z",
+    "text": "#LíneaB - Viernes y Sábado con horario extendido. Malabia y Uruguay cerradas por obras. 05:37",
+    "user": "emova_arg",
+    "line": "B",
+    "kind": "info_horario",
+    "stations": null,
+    "hashtags": [
+      "#líneab"
+    ],
+    "hora_emova": "05:37"
+  },
+  {
+    "id": "2012782079017202055",
+    "datetime": "2026-01-18T07:00:17.000Z",
+    "text": "#LíneaB - Malabia y Uruguay cerradas por obras de renovación integral. 04:00",
+    "user": "emova_arg",
+    "line": "B",
+    "kind": "cierre_programado",
+    "stations": null,
+    "hashtags": [
+      "#líneab"
+    ],
+    "hora_emova": "04:00"
+  },
+  {
+    "id": "2014616918502588686",
+    "datetime": "2026-01-23T08:31:17.000Z",
+    "text": "#LíneaB - Viernes y Sábado con horario extendido. Malabia y Uruguay cerradas por obras. 05:31",
+    "user": "emova_arg",
+    "line": "B",
+    "kind": "info_horario",
+    "stations": null,
+    "hashtags": [
+      "#líneab"
+    ],
+    "hora_emova": "05:31"
+  },
+  {
+    "id": "2015318835516125440",
+    "datetime": "2026-01-25T07:00:27.000Z",
+    "text": "#LíneaB - Malabia y Uruguay cerradas por obras de renovación integral. 04:00",
+    "user": "emova_arg",
+    "line": "B",
+    "kind": "cierre_programado",
+    "stations": null,
+    "hashtags": [
+      "#líneab"
+    ],
+    "hora_emova": "04:00"
+  },
+  {
+    "id": "2017159213093355679",
+    "datetime": "2026-01-30T08:53:28.000Z",
+    "text": "#LíneaB - Viernes y Sábado con horario extendido. Malabia y Uruguay cerradas por obras. 05:53",
+    "user": "emova_arg",
+    "line": "B",
+    "kind": "info_horario",
+    "stations": null,
+    "hashtags": [
+      "#líneab"
+    ],
+    "hora_emova": "05:53"
+  },
+  {
+    "id": "2017855596616176126",
+    "datetime": "2026-02-01T07:00:38.000Z",
+    "text": "#LíneaB - Malabia y Uruguay cerradas por obras de renovación integral. 04:00",
+    "user": "emova_arg",
+    "line": "B",
+    "kind": "cierre_programado",
+    "stations": null,
+    "hashtags": [
+      "#líneab"
+    ],
+    "hora_emova": "04:00"
+  },
+  {
+    "id": "2018217881113137376",
+    "datetime": "2026-02-02T07:00:14.000Z",
+    "text": "#LíneaB - Malabia y Uruguay cerradas por obras de renovación integral. 04:00",
+    "user": "emova_arg",
+    "line": "B",
+    "kind": "cierre_programado",
+    "stations": null,
+    "hashtags": [
+      "#líneab"
+    ],
+    "hora_emova": "04:00"
+  },
+  {
+    "id": "2019305125911654584",
+    "datetime": "2026-02-05T07:00:33.000Z",
+    "text": "#LíneaB - Malabia y Uruguay cerradas por obras de renovación integral. 04:00",
+    "user": "emova_arg",
+    "line": "B",
+    "kind": "cierre_programado",
+    "stations": null,
+    "hashtags": [
+      "#líneab"
+    ],
+    "hora_emova": "04:00"
+  },
+  {
+    "id": "2019691322626510931",
+    "datetime": "2026-02-06T08:35:10.000Z",
+    "text": "#LíneaB - Viernes y Sábado con horario extendido. Malabia y Uruguay cerradas por obras. 05:35",
+    "user": "emova_arg",
+    "line": "B",
+    "kind": "info_horario",
+    "stations": null,
+    "hashtags": [
+      "#líneab"
+    ],
+    "hora_emova": "05:35"
+  },
+  {
+    "id": "2020029945930506647",
+    "datetime": "2026-02-07T07:00:44.000Z",
+    "text": "#LíneaB - Malabia y Uruguay cerradas por obras de renovación integral. 04:00",
+    "user": "emova_arg",
+    "line": "B",
+    "kind": "cierre_programado",
+    "stations": null,
+    "hashtags": [
+      "#líneab"
+    ],
+    "hora_emova": "04:00"
+  },
+  {
+    "id": "2020060404001517697",
+    "datetime": "2026-02-07T09:01:45.000Z",
+    "text": "#LíneaB - Viernes y Sábado con horario extendido. Malabia y Uruguay cerradas por obras. 06:01",
+    "user": "emova_arg",
+    "line": "B",
+    "kind": "info_horario",
+    "stations": null,
+    "hashtags": [
+      "#líneab"
+    ],
+    "hora_emova": "06:01"
+  },
+  {
+    "id": "2021780642267111504",
+    "datetime": "2026-02-12T02:57:22.000Z",
+    "text": "#LíneaB - Malabia y Uruguay cerradas por obras de renovación integral. 23:57",
+    "user": "emova_arg",
+    "line": "B",
+    "kind": "cierre_programado",
+    "stations": null,
+    "hashtags": [
+      "#líneab"
+    ],
+    "hora_emova": "23:57"
+  },
+  {
+    "id": "2022227062962933764",
+    "datetime": "2026-02-13T08:31:17.000Z",
+    "text": "#LíneaB - Viernes y Sábado con horario extendido. Malabia y Uruguay cerradas por obras. 05:31",
+    "user": "emova_arg",
+    "line": "B",
+    "kind": "info_horario",
+    "stations": null,
+    "hashtags": [
+      "#líneab"
+    ],
+    "hora_emova": "05:31"
+  },
+  {
+    "id": "2022594377869144451",
+    "datetime": "2026-02-14T08:50:52.000Z",
+    "text": "#LíneaB - Viernes y sábado con horario extendido. Malabia y Uruguay cerradas por obras. 05:50",
+    "user": "emova_arg",
+    "line": "B",
+    "kind": "info_horario",
+    "stations": null,
+    "hashtags": [
+      "#líneab"
+    ],
+    "hora_emova": "05:50"
+  },
+  {
+    "id": "2022928972623876242",
+    "datetime": "2026-02-15T07:00:25.000Z",
+    "text": "#LíneaB - Malabia y Uruguay cerradas por obras de renovación integral. 04:00",
+    "user": "emova_arg",
+    "line": "B",
+    "kind": "cierre_programado",
+    "stations": null,
+    "hashtags": [
+      "#líneab"
+    ],
+    "hora_emova": "04:00"
+  },
+  {
+    "id": "2023291257087287397",
+    "datetime": "2026-02-16T07:00:01.000Z",
+    "text": "#LíneaB - Malabia y Uruguay cerradas por obras de renovación integral. 04:00",
+    "user": "emova_arg",
+    "line": "B",
+    "kind": "cierre_programado",
+    "stations": null,
+    "hashtags": [
+      "#líneab"
+    ],
+    "hora_emova": "04:00"
+  },
+  {
+    "id": "2024740903630291283",
+    "datetime": "2026-02-20T07:00:23.000Z",
+    "text": "#LíneaB - Malabia y Uruguay cerradas por obras de renovación integral. 04:00",
+    "user": "emova_arg",
+    "line": "B",
+    "kind": "cierre_programado",
+    "stations": null,
+    "hashtags": [
+      "#líneab"
+    ],
+    "hora_emova": "04:00"
+  },
+  {
+    "id": "2024763303940002001",
+    "datetime": "2026-02-20T08:29:24.000Z",
+    "text": "#LíneaB - Hoy funcionará con horario extendido. Malabia y Uruguay cerradas por obras. 05:29",
+    "user": "emova_arg",
+    "line": "B",
+    "kind": "info_horario",
+    "stations": null,
+    "hashtags": [
+      "#líneab"
+    ],
+    "hora_emova": "05:29"
+  },
+  {
+    "id": "2025465729303056724",
+    "datetime": "2026-02-22T07:00:35.000Z",
+    "text": "#LíneaB - Malabia y Uruguay cerradas por obras de renovación integral. 04:00",
+    "user": "emova_arg",
+    "line": "B",
+    "kind": "cierre_programado",
+    "stations": null,
+    "hashtags": [
+      "#líneab"
+    ],
+    "hora_emova": "04:00"
+  },
+  {
+    "id": "2026361965535260951",
+    "datetime": "2026-02-24T18:21:55.000Z",
+    "text": "¡Atención usuarios! Desde este miércoles 25 de febrero, la estación Uruguay de la #LíneaB estará operativa.",
+    "user": "emova_arg",
+    "line": "B",
+    "kind": "fin",
+    "stations": null,
+    "hashtags": [
+      "#líneab"
+    ],
+    "hora_emova": null
+  },
+  {
+    "id": "2026577006297579662",
+    "datetime": "2026-02-25T08:36:24.000Z",
+    "text": "#LíneaB - Reabrió la estación Uruguay. Malabia continúa cerrada por obras. 05:36",
+    "user": "emova_arg",
+    "line": "B",
+    "kind": "fin",
+    "stations": "Uruguay. Malabia continúa",
+    "hashtags": [
+      "#líneab"
+    ],
+    "hora_emova": "05:36"
+  },
+  {
+    "id": "2026612248530071799",
+    "datetime": "2026-02-25T10:56:27.000Z",
+    "text": "#LíneaB - Circula con demora. 07:56",
+    "user": "emova_arg",
+    "line": "B",
+    "kind": "inicio_demora",
+    "stations": null,
+    "hashtags": [
+      "#líneab"
+    ],
+    "hora_emova": "07:56"
+  },
+  {
+    "id": "2026619547780812941",
+    "datetime": "2026-02-25T11:25:27.000Z",
+    "text": "#LíneaB - Servicio con demora. 08:25",
+    "user": "emova_arg",
+    "line": "B",
+    "kind": "inicio_demora",
+    "stations": null,
+    "hashtags": [
+      "#líneab"
+    ],
+    "hora_emova": "08:25"
+  },
+  {
+    "id": "2026627602518053232",
+    "datetime": "2026-02-25T11:57:28.000Z",
+    "text": "#LíneaB - Ya funciona con su frecuencia habitual. 08:57",
+    "user": "emova_arg",
+    "line": "B",
+    "kind": "fin",
+    "stations": null,
+    "hashtags": [
+      "#líneab"
+    ],
+    "hora_emova": "08:57"
+  },
+  {
+    "id": "2026628250601136250",
+    "datetime": "2026-02-25T12:00:02.000Z",
+    "text": "¡Atención usuarios! La estación Uruguay de la #LíneaB ya se encuentra operativa.",
+    "user": "emova_arg",
+    "line": "B",
+    "kind": "fin",
+    "stations": null,
+    "hashtags": [
+      "#líneab"
+    ],
+    "hora_emova": null
+  },
+  {
+    "id": "2027482650693292356",
+    "datetime": "2026-02-27T20:35:07.000Z",
+    "text": "#LíneaB - Hoy funcionará con horario extendido. Malabia cerrada por obras de renovación. 17:35",
+    "user": "emova_arg",
+    "line": "B",
+    "kind": "info_horario",
+    "stations": null,
+    "hashtags": [
+      "#líneab"
+    ],
+    "hora_emova": "17:35"
+  },
+  {
+    "id": "2027504015525945743",
+    "datetime": "2026-02-27T22:00:01.000Z",
+    "text": "¡Atención usuarios! Todos los viernes y sábados, la #LíneaB presta servicio nocturno hasta la 1:30 horas. Mirá cuáles serán las estaciones habilitadas para viajar desde este viernes 27 de febrero",
+    "user": "emova_arg",
+    "line": "B",
+    "kind": "info_horario",
+    "stations": null,
+    "hashtags": [
+      "#líneab"
+    ],
+    "hora_emova": null
+  },
+  {
+    "id": "2027640054735134902",
+    "datetime": "2026-02-28T07:00:35.000Z",
+    "text": "#LíneaB - Viernes y Sábado con horario extendido. Malabia cerrada por obras de renovación. 04:00",
+    "user": "emova_arg",
+    "line": "B",
+    "kind": "info_horario",
+    "stations": null,
+    "hashtags": [
+      "#líneab"
+    ],
+    "hora_emova": "04:00"
+  },
+  {
+    "id": "2027682343415152651",
+    "datetime": "2026-02-28T09:48:37.000Z",
+    "text": "#LíneaB - Reabrió la estación Uruguay. Malabia continúa cerrada por obras. 06:48",
+    "user": "emova_arg",
+    "line": "B",
+    "kind": "fin",
+    "stations": "Uruguay. Malabia continúa",
+    "hashtags": [
+      "#líneab"
+    ],
+    "hora_emova": "06:48"
+  },
+  {
+    "id": "2027868112423449019",
+    "datetime": "2026-02-28T22:06:48.000Z",
+    "text": "#LíneaB - Viernes y Sábado con horario extendido. Malabia cerrada por obras de renovación. 19:06",
+    "user": "emova_arg",
+    "line": "B",
+    "kind": "info_horario",
+    "stations": null,
+    "hashtags": [
+      "#líneab"
+    ],
+    "hora_emova": "19:06"
+  },
+  {
+    "id": "2028002341081800807",
+    "datetime": "2026-03-01T07:00:11.000Z",
+    "text": "#LíneaB - Reabrió la estación Uruguay. Malabia continúa cerrada por obras. 04:00",
+    "user": "emova_arg",
+    "line": "B",
+    "kind": "fin",
+    "stations": "Uruguay. Malabia continúa",
+    "hashtags": [
+      "#líneab"
+    ],
+    "hora_emova": "04:00"
+  },
+  {
+    "id": "2028405412236611642",
+    "datetime": "2026-03-02T09:41:50.000Z",
+    "text": "#LíneaB - Estación Malabia cerrada por obras de renovación integral. 06:41",
+    "user": "emova_arg",
+    "line": "B",
+    "kind": "cierre_programado",
+    "stations": "Malabia",
+    "hashtags": [
+      "#líneab"
+    ],
+    "hora_emova": "06:41"
+  },
+  {
+    "id": "2028551163172343869",
+    "datetime": "2026-03-02T19:21:00.000Z",
+    "text": "#LíneaB - Circula con demora. 16:21",
+    "user": "emova_arg",
+    "line": "B",
+    "kind": "inicio_demora",
+    "stations": null,
+    "hashtags": [
+      "#líneab"
+    ],
+    "hora_emova": "16:21"
+  },
+  {
+    "id": "2028558966377083165",
+    "datetime": "2026-03-02T19:52:01.000Z",
+    "text": "#LíneaB - Ya funciona con su frecuencia habitual. 16:52",
+    "user": "emova_arg",
+    "line": "B",
+    "kind": "fin",
+    "stations": null,
+    "hashtags": [
+      "#líneab"
+    ],
+    "hora_emova": "16:52"
+  },
+  {
+    "id": "2028561735645348040",
+    "datetime": "2026-03-02T20:03:01.000Z",
+    "text": "#LíneaB - Estación Malabia cerrada por obras de renovación integral. 17:03",
+    "user": "emova_arg",
+    "line": "B",
+    "kind": "cierre_programado",
+    "stations": "Malabia",
+    "hashtags": [
+      "#líneab"
+    ],
+    "hora_emova": "17:03"
+  },
+  {
+    "id": "2029366734247846025",
+    "datetime": "2026-03-05T01:21:47.000Z",
+    "text": "#LíneaB - Estación Malabia cerrada por obras de renovación integral. 22:21",
+    "user": "emova_arg",
+    "line": "B",
+    "kind": "cierre_programado",
+    "stations": "Malabia",
+    "hashtags": [
+      "#líneab"
+    ],
+    "hora_emova": "22:21"
+  },
+  {
+    "id": "2029944786518470961",
+    "datetime": "2026-03-06T15:38:46.000Z",
+    "text": "#LíneaB - Viernes y Sábado con horario extendido. Malabia cerrada por obras de renovación. 12:38",
+    "user": "emova_arg",
+    "line": "B",
+    "kind": "info_horario",
+    "stations": null,
+    "hashtags": [
+      "#líneab"
+    ],
+    "hora_emova": "12:38"
+  },
+  {
+    "id": "2030377066089107559",
+    "datetime": "2026-03-07T20:16:29.000Z",
+    "text": "#LíneaB - Servicio con demora. 17:16",
+    "user": "emova_arg",
+    "line": "B",
+    "kind": "inicio_demora",
+    "stations": null,
+    "hashtags": [
+      "#líneab"
+    ],
+    "hora_emova": "17:16"
+  },
+  {
+    "id": "2030379834904310007",
+    "datetime": "2026-03-07T20:27:29.000Z",
+    "text": "#LíneaB - Circula con servicio limitado entre las estaciones Leandro N. Alem y Federico Lacroze. 17:27",
+    "user": "emova_arg",
+    "line": "B",
+    "kind": "inicio_limitado",
+    "stations": "Leandro N",
+    "hashtags": [
+      "#líneab"
+    ],
+    "hora_emova": "17:27"
+  },
+  {
+    "id": "2030396700779536399",
+    "datetime": "2026-03-07T21:34:31.000Z",
+    "text": "#LíneaB - Presta su servicio completo entre cabeceras normalizando su frecuencia habitual. 18:34",
+    "user": "emova_arg",
+    "line": "B",
+    "kind": "fin",
+    "stations": null,
+    "hashtags": [
+      "#líneab"
+    ],
+    "hora_emova": "18:34"
+  },
+  {
+    "id": "2030399218012094466",
+    "datetime": "2026-03-07T21:44:31.000Z",
+    "text": "#LíneaB - Viernes y Sábado con horario extendido. Malabia cerrada por obras de renovación. 18:44",
+    "user": "emova_arg",
+    "line": "B",
+    "kind": "info_horario",
+    "stations": null,
+    "hashtags": [
+      "#líneab"
+    ],
+    "hora_emova": "18:44"
+  },
+  {
+    "id": "2030539239339761856",
+    "datetime": "2026-03-08T07:00:54.000Z",
+    "text": "#LíneaB - Estación Malabia cerrada por obras de renovación integral. 04:00",
+    "user": "emova_arg",
+    "line": "B",
+    "kind": "cierre_programado",
+    "stations": "Malabia",
+    "hashtags": [
+      "#líneab"
+    ],
+    "hora_emova": "04:00"
+  },
+  {
+    "id": "2032373880791159102",
+    "datetime": "2026-03-13T08:31:07.000Z",
+    "text": "#LíneaB - Viernes y Sábado con horario extendido. Malabia cerrada por obras de renovación. 05:31",
+    "user": "emova_arg",
+    "line": "B",
+    "kind": "info_horario",
+    "stations": null,
+    "hashtags": [
+      "#líneab"
+    ],
+    "hora_emova": "05:31"
+  },
+  {
+    "id": "2033075807904543048",
+    "datetime": "2026-03-15T07:00:19.000Z",
+    "text": "#LíneaB - Estación Malabia cerrada por obras de renovación integral. 04:00",
+    "user": "emova_arg",
+    "line": "B",
+    "kind": "cierre_programado",
+    "stations": "Malabia",
+    "hashtags": [
+      "#líneab"
+    ],
+    "hora_emova": "04:00"
+  },
+  {
+    "id": "2033335590532284478",
+    "datetime": "2026-03-16T00:12:36.000Z",
+    "text": "#LíneaB - Circula con demora. 21:12",
+    "user": "emova_arg",
+    "line": "B",
+    "kind": "inicio_demora",
+    "stations": null,
+    "hashtags": [
+      "#líneab"
+    ],
+    "hora_emova": "21:12"
+  },
+  {
+    "id": "2033338107974631579",
+    "datetime": "2026-03-16T00:22:37.000Z",
+    "text": "#LíneaB - Circula con servicio limitado entre las estaciones Juan Manuel de Rosas y Medrano. 21:22",
+    "user": "emova_arg",
+    "line": "B",
+    "kind": "inicio_limitado",
+    "stations": "Juan Manuel de Rosas y Medrano",
+    "hashtags": [
+      "#líneab"
+    ],
+    "hora_emova": "21:22"
+  },
+  {
+    "id": "2033344904655507647",
+    "datetime": "2026-03-16T00:49:37.000Z",
+    "text": "#LíneaB - Presta su servicio completo entre cabeceras normalizando su frecuencia habitual. 21:49",
+    "user": "emova_arg",
+    "line": "B",
+    "kind": "fin",
+    "stations": null,
+    "hashtags": [
+      "#líneab"
+    ],
+    "hora_emova": "21:49"
+  },
+  {
+    "id": "2033345659797934549",
+    "datetime": "2026-03-16T00:52:37.000Z",
+    "text": "#LíneaB - Estación Malabia cerrada por obras de renovación integral. 21:52",
+    "user": "emova_arg",
+    "line": "B",
+    "kind": "cierre_programado",
+    "stations": "Malabia",
+    "hashtags": [
+      "#líneab"
+    ],
+    "hora_emova": "21:52"
+  },
+  {
+    "id": "2034975647743778909",
+    "datetime": "2026-03-20T12:49:37.000Z",
+    "text": "#LíneaB - Viernes y Sábado con horario extendido. Malabia cerrada por obras de renovación. 09:49",
+    "user": "emova_arg",
+    "line": "B",
+    "kind": "info_horario",
+    "stations": null,
+    "hashtags": [
+      "#líneab"
+    ],
+    "hora_emova": "09:49"
+  },
+  {
+    "id": "2035612665951781012",
+    "datetime": "2026-03-22T07:00:54.000Z",
+    "text": "#LíneaB - Estación Malabia cerrada por obras de renovación integral. 04:00",
+    "user": "emova_arg",
+    "line": "B",
+    "kind": "cierre_programado",
+    "stations": "Malabia",
+    "hashtags": [
+      "#líneab"
+    ],
+    "hora_emova": "04:00"
+  },
+  {
+    "id": "2037447401582055437",
+    "datetime": "2026-03-27T08:31:29.000Z",
+    "text": "#LíneaB - Viernes y Sábado con horario extendido. Malabia cerrada por obras de renovación. 05:31",
+    "user": "emova_arg",
+    "line": "B",
+    "kind": "info_horario",
+    "stations": null,
+    "hashtags": [
+      "#líneab"
+    ],
+    "hora_emova": "05:31"
+  },
+  {
+    "id": "2038149361142583464",
+    "datetime": "2026-03-29T07:00:49.000Z",
+    "text": "#LíneaB - Estación Malabia cerrada por obras de renovación integral. 04:00",
+    "user": "emova_arg",
+    "line": "B",
+    "kind": "cierre_programado",
+    "stations": "Malabia",
+    "hashtags": [
+      "#líneab"
+    ],
+    "hora_emova": "04:00"
+  },
+  {
+    "id": "2039370972487188574",
+    "datetime": "2026-04-01T15:55:04.000Z",
+    "text": "#LíneaB - Circula con demora. 12:55",
+    "user": "emova_arg",
+    "line": "B",
+    "kind": "inicio_demora",
+    "stations": null,
+    "hashtags": [
+      "#líneab"
+    ],
+    "hora_emova": "12:55"
+  },
+  {
+    "id": "2039373741667283284",
+    "datetime": "2026-04-01T16:06:04.000Z",
+    "text": "#LíneaB - Ya funciona con su frecuencia habitual. 13:06",
+    "user": "emova_arg",
+    "line": "B",
+    "kind": "fin",
+    "stations": null,
+    "hashtags": [
+      "#líneab"
+    ],
+    "hora_emova": "13:06"
+  },
+  {
+    "id": "2039374748468072582",
+    "datetime": "2026-04-01T16:10:04.000Z",
+    "text": "#LíneaB - Estación Malabia cerrada por obras de renovación integral. 13:10",
+    "user": "emova_arg",
+    "line": "B",
+    "kind": "cierre_programado",
+    "stations": "Malabia",
+    "hashtags": [
+      "#líneab"
+    ],
+    "hora_emova": "13:10"
+  },
+  {
+    "id": "2039391363851030999",
+    "datetime": "2026-04-01T17:16:05.000Z",
+    "text": "#LíneaB - Circula con demora. 14:16",
+    "user": "emova_arg",
+    "line": "B",
+    "kind": "inicio_demora",
+    "stations": null,
+    "hashtags": [
+      "#líneab"
+    ],
+    "hora_emova": "14:16"
+  },
+  {
+    "id": "2039394384697758207",
+    "datetime": "2026-04-01T17:28:06.000Z",
+    "text": "#LíneaB - Ya funciona con su frecuencia habitual. 14:28",
+    "user": "emova_arg",
+    "line": "B",
+    "kind": "fin",
+    "stations": null,
+    "hashtags": [
+      "#líneab"
+    ],
+    "hora_emova": "14:28"
+  },
+  {
+    "id": "2039395144005276043",
+    "datetime": "2026-04-01T17:31:07.000Z",
+    "text": "#LíneaB - Estación Malabia cerrada por obras de renovación integral. 14:31",
+    "user": "emova_arg",
+    "line": "B",
+    "kind": "cierre_programado",
+    "stations": "Malabia",
+    "hashtags": [
+      "#líneab"
+    ],
+    "hora_emova": "14:31"
+  },
+  {
+    "id": "2039514299379376302",
+    "datetime": "2026-04-02T01:24:35.000Z",
+    "text": "#LíneaB - Estación Malabia cerrada por obras de renovación integral. 22:24",
+    "user": "emova_arg",
+    "line": "B",
+    "kind": "cierre_programado",
+    "stations": "Malabia",
+    "hashtags": [
+      "#líneab"
+    ],
+    "hora_emova": "22:24"
+  },
+  {
+    "id": "2040021878899650706",
+    "datetime": "2026-04-03T11:01:32.000Z",
+    "text": "#LíneaB - Circula con servicio limitado entre las estaciones Leandro N. Alem y Los Incas. 08:01",
+    "user": "emova_arg",
+    "line": "B",
+    "kind": "inicio_limitado",
+    "stations": "Leandro N",
+    "hashtags": [
+      "#líneab"
+    ],
+    "hora_emova": "08:01"
+  },
+  {
+    "id": "2040030437595082948",
+    "datetime": "2026-04-03T11:35:32.000Z",
+    "text": "#LíneaB - Presta su servicio completo entre cabeceras normalizando su frecuencia habitual. 08:35",
+    "user": "emova_arg",
+    "line": "B",
+    "kind": "fin",
+    "stations": null,
+    "hashtags": [
+      "#líneab"
+    ],
+    "hora_emova": "08:35"
+  },
+  {
+    "id": "2040031947892641849",
+    "datetime": "2026-04-03T11:41:32.000Z",
+    "text": "#LíneaB - Estación Malabia cerrada por obras de renovación integral. 08:41",
+    "user": "emova_arg",
+    "line": "B",
+    "kind": "cierre_programado",
+    "stations": "Malabia",
+    "hashtags": [
+      "#líneab"
+    ],
+    "hora_emova": "08:41"
+  },
+  {
+    "id": "2040347677586502070",
+    "datetime": "2026-04-04T08:36:08.000Z",
+    "text": "#LíneaB - Hoy funcionará con horario extendido. Malabia cerrada por obras de renovación. 05:36",
+    "user": "emova_arg",
+    "line": "B",
+    "kind": "info_horario",
+    "stations": null,
+    "hashtags": [
+      "#líneab"
+    ],
+    "hora_emova": "05:36"
+  },
+  {
+    "id": "2040686076130381855",
+    "datetime": "2026-04-05T07:00:49.000Z",
+    "text": "#LíneaB - Estación Malabia cerrada por obras de renovación integral. 04:00",
+    "user": "emova_arg",
+    "line": "B",
+    "kind": "cierre_programado",
+    "stations": "Malabia",
+    "hashtags": [
+      "#líneab"
+    ],
+    "hora_emova": "04:00"
+  },
+  {
+    "id": "2041114830115844312",
+    "datetime": "2026-04-06T11:24:32.000Z",
+    "text": "#LíneaB - Circula con demora. 08:24",
+    "user": "emova_arg",
+    "line": "B",
+    "kind": "inicio_demora",
+    "stations": null,
+    "hashtags": [
+      "#líneab"
+    ],
+    "hora_emova": "08:24"
+  },
+  {
+    "id": "2041116340329615765",
+    "datetime": "2026-04-06T11:30:32.000Z",
+    "text": "#LíneaB - Circula con servicio limitado entre las estaciones Juan Manuel de Rosas y Carlos Pellegrini. 08:30",
+    "user": "emova_arg",
+    "line": "B",
+    "kind": "inicio_limitado",
+    "stations": "Juan Manuel de Rosas y Carlos Pellegrini",
+    "hashtags": [
+      "#líneab"
+    ],
+    "hora_emova": "08:30"
+  },
+  {
+    "id": "2041119361297957007",
+    "datetime": "2026-04-06T11:42:32.000Z",
+    "text": "#LíneaB - Ya realiza el recorrido completo entre cabeceras. 08:42",
+    "user": "emova_arg",
+    "line": "B",
+    "kind": "fin",
+    "stations": null,
+    "hashtags": [
+      "#líneab"
+    ],
+    "hora_emova": "08:42"
+  },
+  {
+    "id": "2041120871259963408",
+    "datetime": "2026-04-06T11:48:32.000Z",
+    "text": "#LíneaB - Servicio con demora. 08:48",
+    "user": "emova_arg",
+    "line": "B",
+    "kind": "inicio_demora",
+    "stations": null,
+    "hashtags": [
+      "#líneab"
+    ],
+    "hora_emova": "08:48"
+  },
+  {
+    "id": "2041126661630963712",
+    "datetime": "2026-04-06T12:11:33.000Z",
+    "text": "#LíneaB - Ya funciona con su frecuencia habitual. 09:11",
+    "user": "emova_arg",
+    "line": "B",
+    "kind": "fin",
+    "stations": null,
+    "hashtags": [
+      "#líneab"
+    ],
+    "hora_emova": "09:11"
+  },
+  {
+    "id": "2041129178880188807",
+    "datetime": "2026-04-06T12:21:33.000Z",
+    "text": "#LíneaB - Estación Malabia cerrada por obras de renovación integral. 09:21",
+    "user": "emova_arg",
+    "line": "B",
+    "kind": "cierre_programado",
+    "stations": "Malabia",
+    "hashtags": [
+      "#líneab"
+    ],
+    "hora_emova": "09:21"
+  },
+  {
+    "id": "2042520793435820517",
+    "datetime": "2026-04-10T08:31:20.000Z",
+    "text": "#LíneaB - Hoy funcionará con horario extendido. Malabia cerrada por obras de renovación. 05:31",
+    "user": "emova_arg",
+    "line": "B",
+    "kind": "info_horario",
+    "stations": null,
+    "hashtags": [
+      "#líneab"
+    ],
+    "hora_emova": "05:31"
+  },
+  {
+    "id": "2042544455878685052",
+    "datetime": "2026-04-10T10:05:21.000Z",
+    "text": "#LíneaB - Viernes y Sábado con horario extendido. Malabia cerrada por obras de renovación. 07:05",
+    "user": "emova_arg",
+    "line": "B",
+    "kind": "info_horario",
+    "stations": null,
+    "hashtags": [
+      "#líneab"
+    ],
+    "hora_emova": "07:05"
+  },
+  {
+    "id": "2043222765856072073",
+    "datetime": "2026-04-12T07:00:43.000Z",
+    "text": "#LíneaB - Estación Malabia cerrada por obras de renovación integral. 04:00",
+    "user": "emova_arg",
+    "line": "B",
+    "kind": "cierre_programado",
+    "stations": "Malabia",
+    "hashtags": [
+      "#líneab"
+    ],
+    "hora_emova": "04:00"
+  },
+  {
+    "id": "2043742405732548786",
+    "datetime": "2026-04-13T17:25:35.000Z",
+    "text": "#LíneaB - Circula con servicio limitado entre las estaciones Leandro N. Alem y Angel Gallardo. 14:25",
+    "user": "emova_arg",
+    "line": "B",
+    "kind": "inicio_limitado",
+    "stations": "Leandro N",
+    "hashtags": [
+      "#líneab"
+    ],
+    "hora_emova": "14:25"
+  },
+  {
+    "id": "2043761284500295914",
+    "datetime": "2026-04-13T18:40:36.000Z",
+    "text": "#LíneaB - Presta su servicio completo entre cabeceras normalizando su frecuencia habitual. 15:40",
+    "user": "emova_arg",
+    "line": "B",
+    "kind": "fin",
+    "stations": null,
+    "hashtags": [
+      "#líneab"
+    ],
+    "hora_emova": "15:40"
+  },
+  {
+    "id": "2043762794919555303",
+    "datetime": "2026-04-13T18:46:36.000Z",
+    "text": "#LíneaB - Estación Malabia cerrada por obras de renovación integral. 15:46",
+    "user": "emova_arg",
+    "line": "B",
+    "kind": "cierre_programado",
+    "stations": "Malabia",
+    "hashtags": [
+      "#líneab"
+    ],
+    "hora_emova": "15:46"
+  },
+  {
+    "id": "2044339137499611486",
+    "datetime": "2026-04-15T08:56:47.000Z",
+    "text": "#LíneaB - Los trenes no se detienen en la estación Medrano. 05:56",
+    "user": "emova_arg",
+    "line": "B",
+    "kind": "inicio_estacion_cerrada",
+    "stations": "Medrano",
+    "hashtags": [
+      "#líneab"
+    ],
+    "hora_emova": "05:56"
+  },
+  {
+    "id": "2044347193654497662",
+    "datetime": "2026-04-15T09:28:47.000Z",
+    "text": "#LíneaB - Los trenes no se detienen en Medrano. Malabia continúa cerrada por obras. 06:28",
+    "user": "emova_arg",
+    "line": "B",
+    "kind": "cierre_programado",
+    "stations": null,
+    "hashtags": [
+      "#líneab"
+    ],
+    "hora_emova": "06:28"
+  },
+  {
+    "id": "2044350466016915475",
+    "datetime": "2026-04-15T09:41:47.000Z",
+    "text": "#LíneaB - Los trenes no se detienen en Medrano. Malabia continúa cerrada por obras. 06:41",
+    "user": "emova_arg",
+    "line": "B",
+    "kind": "cierre_programado",
+    "stations": null,
+    "hashtags": [
+      "#líneab"
+    ],
+    "hora_emova": "06:41"
+  },
+  {
+    "id": "2044353486599393565",
+    "datetime": "2026-04-15T09:53:48.000Z",
+    "text": "#LíneaB - Los trenes no se detienen en la estación Medrano con destino a J. M. Rosas. 06:53",
+    "user": "emova_arg",
+    "line": "B",
+    "kind": "inicio_estacion_cerrada",
+    "stations": "Medrano con destino a J",
+    "hashtags": [
+      "#líneab"
+    ],
+    "hora_emova": "06:53"
+  },
+  {
+    "id": "2044356507513270492",
+    "datetime": "2026-04-15T10:05:48.000Z",
+    "text": "#LíneaB - Ya se detienen en todas las estaciones. 07:05",
+    "user": "emova_arg",
+    "line": "B",
+    "kind": "fin",
+    "stations": null,
+    "hashtags": [
+      "#líneab"
+    ],
+    "hora_emova": "07:05"
+  },
+  {
+    "id": "2044357514754400448",
+    "datetime": "2026-04-15T10:09:48.000Z",
+    "text": "#LíneaB - Estación Malabia cerrada por obras de renovación integral. 07:09",
+    "user": "emova_arg",
+    "line": "B",
+    "kind": "cierre_programado",
+    "stations": "Malabia",
+    "hashtags": [
+      "#líneab"
+    ],
+    "hora_emova": "07:09"
+  },
+  {
+    "id": "2044851774440251710",
+    "datetime": "2026-04-16T18:53:49.000Z",
+    "text": "¡Atención usuarios! Desde el viernes 17 de abril, la estación Malabia - Osvaldo Pugliese de la #LíneaB estará operativa.",
+    "user": "emova_arg",
+    "line": "B",
+    "kind": "fin",
+    "stations": null,
+    "hashtags": [
+      "#líneab"
+    ],
+    "hora_emova": null
+  },
+  {
+    "id": "2045057459220320325",
+    "datetime": "2026-04-17T08:31:08.000Z",
+    "text": "#LíneaB - Reabrió la estación Malabia luego del plan de renovación. 05:31",
+    "user": "emova_arg",
+    "line": "B",
+    "kind": "fin",
+    "stations": "Malabia",
+    "hashtags": [
+      "#líneab"
+    ],
+    "hora_emova": "05:31"
+  },
+  {
+    "id": "2045061738769346996",
+    "datetime": "2026-04-17T08:48:08.000Z",
+    "text": "#LíneaB - Reabrió la estación Malabia luego del plan de renovación. 05:48",
+    "user": "emova_arg",
+    "line": "B",
+    "kind": "fin",
+    "stations": "Malabia",
+    "hashtags": [
+      "#líneab"
+    ],
+    "hora_emova": "05:48"
+  },
+  {
+    "id": "2045094923402133951",
+    "datetime": "2026-04-17T11:00:00.000Z",
+    "text": "¡Atención usuarios! La estación Malabia - Osvaldo Pugliese de la #LíneaB ya se encuentra operativa.",
+    "user": "emova_arg",
+    "line": "B",
+    "kind": "fin",
+    "stations": null,
+    "hashtags": [
+      "#líneab"
+    ],
+    "hora_emova": null
+  },
+  {
+    "id": "2046140089739141457",
+    "datetime": "2026-04-20T08:13:07.000Z",
+    "text": "#LíneaB - Reabrió la estación Malabia luego del plan de renovación. 05:13",
+    "user": "emova_arg",
+    "line": "B",
+    "kind": "fin",
+    "stations": "Malabia",
+    "hashtags": [
+      "#líneab"
+    ],
+    "hora_emova": "05:13"
+  },
+  {
+    "id": "2046146383082570161",
+    "datetime": "2026-04-20T08:38:07.000Z",
+    "text": "#LíneaB - Reabrió la estación Malabia luego del plan de renovación. 05:38",
+    "user": "emova_arg",
+    "line": "B",
+    "kind": "fin",
+    "stations": "Malabia",
+    "hashtags": [
+      "#líneab"
+    ],
+    "hora_emova": "05:38"
+  },
+  {
+    "id": "2047594361022505235",
+    "datetime": "2026-04-24T08:31:52.000Z",
+    "text": "#LíneaB - Viernes y sábados horario extendido. Estaciones habilitadas en http:// buenosaires.gob.ar. 05:31",
+    "user": "emova_arg",
+    "line": "B",
+    "kind": "info_horario",
+    "stations": null,
+    "hashtags": [
+      "#líneab"
+    ],
+    "hora_emova": "05:31"
+  },
+  {
+    "id": "2047763276570763571",
+    "datetime": "2026-04-24T19:43:05.000Z",
+    "text": "#LíneaB - Circula con demora. 16:43",
+    "user": "emova_arg",
+    "line": "B",
+    "kind": "inicio_demora",
+    "stations": null,
+    "hashtags": [
+      "#líneab"
+    ],
+    "hora_emova": "16:43"
+  },
+  {
+    "id": "2047775107892887638",
+    "datetime": "2026-04-24T20:30:06.000Z",
+    "text": "#LíneaB - Ya funciona con su frecuencia habitual. 17:30",
+    "user": "emova_arg",
+    "line": "B",
+    "kind": "fin",
+    "stations": null,
+    "hashtags": [
+      "#líneab"
+    ],
+    "hora_emova": "17:30"
+  },
+  {
+    "id": "2047776869995417873",
+    "datetime": "2026-04-24T20:37:06.000Z",
+    "text": "#LíneaB - Viernes y sábados horario extendido. Estaciones habilitadas en http:// buenosaires.gob.ar. 17:37",
+    "user": "emova_arg",
+    "line": "B",
+    "kind": "info_horario",
+    "stations": null,
+    "hashtags": [
+      "#líneab"
+    ],
+    "hora_emova": "17:37"
+  },
+  {
+    "id": "2050188417506414644",
+    "datetime": "2026-05-01T12:19:44.000Z",
+    "text": "#LíneaB - Los trenes no se detienen en la estación Malabia. 09:19",
+    "user": "emova_arg",
+    "line": "B",
+    "kind": "inicio_estacion_cerrada",
+    "stations": "Malabia",
+    "hashtags": [
+      "#líneab"
+    ],
+    "hora_emova": "09:19"
+  },
+  {
+    "id": "2050190179814592551",
+    "datetime": "2026-05-01T12:26:44.000Z",
+    "text": "#LíneaB - Los trenes no se detienen en las estaciones Gallardo y Malabia. 09:26",
+    "user": "emova_arg",
+    "line": "B",
+    "kind": "inicio_estacion_cerrada",
+    "stations": "Gallardo y Malabia",
+    "hashtags": [
+      "#líneab"
+    ],
+    "hora_emova": "09:26"
+  },
+  {
+    "id": "2050192949095387227",
+    "datetime": "2026-05-01T12:37:44.000Z",
+    "text": "#LíneaB - Los trenes no se detienen en la estación Angel Gallardo. 09:37",
+    "user": "emova_arg",
+    "line": "B",
+    "kind": "inicio_estacion_cerrada",
+    "stations": "Angel Gallardo",
+    "hashtags": [
+      "#líneab"
+    ],
+    "hora_emova": "09:37"
+  },
+  {
+    "id": "2050205283419406635",
+    "datetime": "2026-05-01T13:26:45.000Z",
+    "text": "#LíneaB - Ya se detienen en todas las estaciones. 10:26",
+    "user": "emova_arg",
+    "line": "B",
+    "kind": "fin",
+    "stations": null,
+    "hashtags": [
+      "#líneab"
+    ],
+    "hora_emova": "10:26"
+  },
+  {
+    "id": "2050695990240301244",
+    "datetime": "2026-05-02T21:56:38.000Z",
+    "text": "#LíneaB - Hoy horario extendido. Más información en http:// buenosaires.gob.ar/subte. 18:56",
+    "user": "emova_arg",
+    "line": "B",
+    "kind": "info_horario",
+    "stations": null,
+    "hashtags": [
+      "#líneab"
+    ],
+    "hora_emova": "18:56"
+  },
+  {
+    "id": "2051091784264995008",
+    "datetime": "2026-05-04T00:09:23.000Z",
+    "text": "#LíneaB - Los trenes no se detienen en la estación Dorrego. 21:09",
+    "user": "emova_arg",
+    "line": "B",
+    "kind": "inicio_estacion_cerrada",
+    "stations": "Dorrego",
+    "hashtags": [
+      "#líneab"
+    ],
+    "hora_emova": "21:09"
+  },
+  {
+    "id": "2051106384205267329",
+    "datetime": "2026-05-04T01:07:24.000Z",
+    "text": "#LíneaB - Ya se detienen en todas las estaciones. 22:07",
+    "user": "emova_arg",
+    "line": "B",
+    "kind": "fin",
+    "stations": null,
+    "hashtags": [
+      "#líneab"
+    ],
+    "hora_emova": "22:07"
+  },
+  {
+    "id": "2052722456020844575",
+    "datetime": "2026-05-08T12:09:05.000Z",
+    "text": "#LíneaB - Viernes y sábados horario extendido. Estaciones habilitadas en http:// buenosaires.gob.ar. 09:09",
+    "user": "emova_arg",
+    "line": "B",
+    "kind": "info_horario",
+    "stations": null,
+    "hashtags": [
+      "#líneab"
+    ],
+    "hora_emova": "09:09"
+  }
+]
