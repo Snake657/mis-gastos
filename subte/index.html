@@ -132,7 +132,30 @@
     display: flex;
     gap: 6px;
     flex-wrap: wrap;
+    margin-top: 8px;
   }
+  .line-chips[hidden] { display: none; }
+  .lineas-collapsed { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+  .lineas-pill {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 8px 14px; border-radius: 999px;
+    background: var(--surface); border: 1px solid var(--border);
+    color: var(--text); font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.78rem; font-weight: 600; cursor: pointer;
+    transition: all 0.15s;
+  }
+  .lineas-pill:hover { background: var(--surface2); border-color: var(--border2); }
+  .lineas-pill[aria-expanded="true"] { border-color: var(--accent); }
+  .lineas-pill[aria-expanded="true"] .lineas-pill-arrow { transform: rotate(180deg); }
+  .lineas-pill-arrow { font-size: 0.7rem; color: var(--text2); transition: transform 0.15s; }
+  .lineas-clear {
+    background: transparent; border: 1px solid var(--border);
+    color: var(--text2); padding: 6px 10px; border-radius: 7px;
+    font-family: 'IBM Plex Mono', monospace; font-size: 0.7rem;
+    cursor: pointer; transition: all 0.15s;
+  }
+  .lineas-clear:hover { color: var(--text); border-color: var(--border2); }
+  .lineas-clear[hidden] { display: none; }
   .line-chip {
     display: inline-flex;
     align-items: center;
@@ -622,7 +645,14 @@
     <div style="display:flex;flex-direction:column;gap:14px">
       <div>
         <div class="filter-label">Líneas</div>
-        <div class="line-chips" id="line-chips"></div>
+        <div class="lineas-collapsed">
+          <button type="button" class="lineas-pill" id="lineas-pill" aria-expanded="false">
+            <span id="lineas-pill-label">🚇 Todas las líneas</span>
+            <span class="lineas-pill-arrow" aria-hidden="true">▾</span>
+          </button>
+          <button type="button" class="lineas-clear" id="lineas-clear" hidden>✕ Volver a todas</button>
+        </div>
+        <div class="line-chips" id="line-chips" hidden></div>
       </div>
       <div>
         <div class="filter-label">Días de la semana</div>
@@ -636,9 +666,9 @@
         <div class="filter-label">Horario</div>
         <div class="range-tabs" id="filter-hora">
           <button class="range-tab active" data-hora="all">Todo el día</button>
-          <button class="range-tab" data-hora="picos">Picos (7–10 + 17–20)</button>
-          <button class="range-tab" data-hora="pico-am">Pico mañana (7–10)</button>
-          <button class="range-tab" data-hora="pico-pm">Pico tarde (17–20)</button>
+          <button class="range-tab" data-hora="picos">Picos (7–11 + 16–20)</button>
+          <button class="range-tab" data-hora="pico-am">Pico mañana (7–11)</button>
+          <button class="range-tab" data-hora="pico-pm">Pico tarde (16–20)</button>
           <button class="range-tab" data-hora="off">Fuera de pico</button>
         </div>
       </div>
@@ -772,8 +802,8 @@ let _selectedDay = null;
 let _selectedMonth = null;
 
 // Definición de horarios pico (subte CABA)
-const PICO_AM = { from: 7, to: 10 }; // 7:00 a 9:59
-const PICO_PM = { from: 17, to: 20 }; // 17:00 a 19:59
+const PICO_AM = { from: 7, to: 11 };  // 7:00 a 10:59 (L-V)
+const PICO_PM = { from: 16, to: 20 }; // 16:00 a 19:59 (L-V)
 
 // Parser de fechas que evita off-by-one timezone (canuto.ar convención)
 function parseFecha(str) {
@@ -836,7 +866,7 @@ function renderFilterSummary() {
   else parts.push('línea ' + lineasActivas.join('+'));
   if (_filtroDow !== 'all') parts.push(_filtroDow === 'weekday' ? 'L–V' : 'S–D');
   if (_filtroHora !== 'all') {
-    const lbls = { 'picos':'pico AM+PM', 'pico-am':'pico AM 7–10', 'pico-pm':'pico PM 17–20', 'off':'fuera de pico' };
+    const lbls = { 'picos':'pico AM+PM', 'pico-am':'pico AM 7–11', 'pico-pm':'pico PM 16–20', 'off':'fuera de pico' };
     parts.push(lbls[_filtroHora]);
   }
   const tiposActivos = Object.keys(DATA.tipos).filter(t => _tiposOn.has(t));
@@ -928,6 +958,56 @@ function renderChips() {
     }
     wrap.appendChild(chip);
   });
+
+  // Botón "Seleccionar todas / Ninguna" al final del grupo
+  const all = document.createElement('button');
+  const todasOn = DATA.lineas_disponibles.every(L => _lineasOn.has(L));
+  all.className = 'lineas-clear';
+  all.style.marginLeft = '6px';
+  all.textContent = todasOn ? '✕ Ninguna' : '✓ Todas';
+  all.addEventListener('click', () => {
+    if (todasOn) _lineasOn = new Set();
+    else _lineasOn = new Set(DATA.lineas_disponibles);
+    renderAll();
+  });
+  wrap.appendChild(all);
+
+  // Actualizar pill (resumen + botón limpiar)
+  const pillLabel = $('lineas-pill-label');
+  const clearBtn = $('lineas-clear');
+  if (pillLabel) {
+    const total = DATA.lineas_disponibles.length;
+    const seleccionadas = DATA.lineas_disponibles.filter(L => _lineasOn.has(L));
+    if (seleccionadas.length === total) {
+      pillLabel.textContent = '🚇 Todas las líneas';
+      if (clearBtn) clearBtn.hidden = true;
+    } else if (seleccionadas.length === 0) {
+      pillLabel.textContent = '🚇 Ninguna línea';
+      if (clearBtn) clearBtn.hidden = false;
+    } else {
+      pillLabel.textContent = '🚇 Líneas: ' + seleccionadas.join(' · ');
+      if (clearBtn) clearBtn.hidden = false;
+    }
+  }
+}
+
+// Listeners del pill (se inicializan en init() — los pongo acá para mantener todo agrupado)
+function initLineasPill() {
+  const pill = $('lineas-pill');
+  const wrap = $('line-chips');
+  const clearBtn = $('lineas-clear');
+  if (!pill || !wrap) return;
+  pill.addEventListener('click', () => {
+    const open = pill.getAttribute('aria-expanded') === 'true';
+    pill.setAttribute('aria-expanded', String(!open));
+    wrap.hidden = open;
+  });
+  if (clearBtn) {
+    clearBtn.addEventListener('click', () => {
+      _lineasOn = new Set(DATA.lineas_disponibles);
+      renderAll();
+    });
+  }
 }
 
 // ─── CALENDARIO TRADICIONAL (mini-calendarios mensuales) ─────────
@@ -1690,6 +1770,7 @@ async function init() {
       $('pick-month').value = '';
       renderAll();
     });
+    initLineasPill();
     renderAll();
   } catch (e) {
     document.querySelector('main').innerHTML = `<div style="padding:40px;text-align:center;color:var(--red);font-family:'IBM Plex Mono',monospace">Error cargando datos: ${e.message}</div>`;
