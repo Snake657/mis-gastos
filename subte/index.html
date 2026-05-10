@@ -366,6 +366,46 @@
   }
   .btn-clear:hover { color: var(--text); border-color: var(--border2); }
 
+  /* ── FUENTES BADGES ── */
+  .fuente-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 0.62rem;
+    font-weight: 700;
+    font-family: 'IBM Plex Mono', monospace;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    margin-right: 4px;
+    text-decoration: none;
+    border: 1px solid transparent;
+  }
+  .fuente-badge.emova { background: rgba(34,211,238,0.12); color: #22d3ee; border-color: rgba(34,211,238,0.3); }
+  .fuente-badge.basubte { background: rgba(251,191,36,0.12); color: #fbbf24; border-color: rgba(251,191,36,0.3); }
+  .fuente-badge.ambas { background: rgba(34,197,94,0.12); color: #22c55e; border-color: rgba(34,197,94,0.3); }
+  .fuente-badge:hover { filter: brightness(1.2); }
+  .tweet-link {
+    display: inline-block;
+    font-size: 0.65rem;
+    color: var(--text3);
+    text-decoration: none;
+    padding: 1px 5px;
+    border-radius: 3px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    margin-right: 3px;
+    margin-bottom: 2px;
+    font-family: 'IBM Plex Mono', monospace;
+    transition: all 0.12s;
+  }
+  .tweet-link:hover { color: var(--accent); border-color: var(--accent); text-decoration: none; }
+  .tweet-link.bx { color: #fbbf24aa; }
+  .tweet-link.em { color: #22d3eeaa; }
+  .tweet-link.bx:hover { color: #fbbf24; border-color: #fbbf24; }
+  .tweet-link.em:hover { color: #22d3ee; border-color: #22d3ee; }
+
   /* ── TABLA INCIDENTES ── */
   .inc-table-wrap { overflow-x: auto; }
   table.inc-table {
@@ -502,9 +542,10 @@
   <div class="eyebrow">🚇 Subte CABA</div>
   <h1>Demoras, paros e interrupciones del subte</h1>
   <p class="subtitle">
-    Análisis automático de los tweets de <a href="https://x.com/Emova_arg" target="_blank" rel="noopener">@Emova_arg</a>, la concesionaria del subte porteño.
+    Análisis automático de los tweets de <a href="https://x.com/Emova_arg" target="_blank" rel="noopener">@Emova_arg</a> (concesionaria) y <a href="https://x.com/basubte" target="_blank" rel="noopener">@basubte</a> (operador GCBA).
     Cada vez que tuitean <code>Servicio con demora</code>, <code>Servicio limitado</code> o <code>Estación cerrada</code>, se registra como incidente.
     Los pareamos con sus respectivos tweets de cierre (<code>Servicio normalizado</code>, <code>Reabrió</code>, etc.) para reconstruir la duración real.
+    Cuando ambas cuentas reportan el mismo evento, queda <strong style="color:#22c55e">✓ confirmado</strong>.
   </p>
 
   <!-- KPIs -->
@@ -1194,9 +1235,29 @@ function renderDetail() {
     return;
   }
 
+  // Helper para renderizar fuentes
+  function renderFuentes(inc) {
+    const origen = inc.fuente_origen || 'Emova_arg';
+    const meta = (DATA.fuentes_meta || {})[origen] || { label: origen };
+    let badge = '';
+    if (origen === 'ambas') badge = `<span class="fuente-badge ambas" title="Confirmado por Emova y BAsubte">✓ Ambas</span>`;
+    else if (origen === 'basubte') badge = `<span class="fuente-badge basubte" title="Solo BAsubte">BA</span>`;
+    else badge = `<span class="fuente-badge emova" title="Solo Emova">E</span>`;
+    let links = '';
+    if (inc.fuentes && inc.fuentes.length) {
+      links = inc.fuentes.slice(0, 6).map(f => {
+        const cls = f.user === 'basubte' ? 'bx' : 'em';
+        const userShort = f.user === 'basubte' ? 'BA' : 'E';
+        return `<a class="tweet-link ${cls}" href="${f.url}" target="_blank" rel="noopener" title="${(f.text||'').replace(/"/g,'&quot;')}">↗ ${userShort}</a>`;
+      }).join('');
+      if (inc.fuentes.length > 6) links += `<span class="tweet-link" style="cursor:default">+${inc.fuentes.length - 6}</span>`;
+    }
+    return badge + (links ? '<div style="margin-top:4px">' + links + '</div>' : '');
+  }
+
   // Tabla
   let html = `<div class="detail-header"><div class="detail-title">${titulo}</div><div class="detail-summary">${resumen}</div></div>`;
-  html += '<div class="inc-table-wrap"><table class="inc-table"><thead><tr><th>Fecha</th><th>Hora</th><th>Línea</th><th>Tipo</th><th>Duración</th><th>Estaciones</th></tr></thead><tbody>';
+  html += '<div class="inc-table-wrap"><table class="inc-table"><thead><tr><th>Fecha</th><th>Hora</th><th>Línea</th><th>Tipo</th><th>Duración</th><th>Estaciones</th><th>Fuente</th></tr></thead><tbody>';
   filtrados.sort((a, b) => a.inicio_iso.localeCompare(b.inicio_iso));
   for (const i of filtrados) {
     const t = DATA.tipos[i.tipo] || { label: i.tipo, color: '#888' };
@@ -1210,6 +1271,7 @@ function renderDetail() {
       <td class="col-tipo" style="color:${t.color}">${t.label}</td>
       <td>${dur}</td>
       <td>${ests || '<span style="color:var(--text3)">—</span>'}</td>
+      <td>${renderFuentes(i)}</td>
     </tr>`;
   }
   html += '</tbody></table></div>';
@@ -1222,7 +1284,16 @@ function renderTop() {
   incs.sort((a, b) => b.duracion_min - a.duracion_min);
   const top = incs.slice(0, 10);
   const tbl = $('top-table');
-  let html = '<thead><tr><th>#</th><th>Fecha</th><th>Hora</th><th>Línea</th><th>Tipo</th><th>Duración</th><th>Estaciones</th></tr></thead><tbody>';
+  function renderFuentesTop(inc) {
+    const origen = inc.fuente_origen || 'Emova_arg';
+    let badge = '';
+    if (origen === 'ambas') badge = `<span class="fuente-badge ambas">✓ Ambas</span>`;
+    else if (origen === 'basubte') badge = `<span class="fuente-badge basubte">BA</span>`;
+    else badge = `<span class="fuente-badge emova">E</span>`;
+    const link = (inc.fuentes && inc.fuentes[0]) ? `<a class="tweet-link ${inc.fuentes[0].user === 'basubte' ? 'bx' : 'em'}" href="${inc.fuentes[0].url}" target="_blank" rel="noopener" title="${(inc.fuentes[0].text||'').replace(/"/g,'&quot;')}">↗</a>` : '';
+    return badge + ' ' + link;
+  }
+  let html = '<thead><tr><th>#</th><th>Fecha</th><th>Hora</th><th>Línea</th><th>Tipo</th><th>Duración</th><th>Estaciones</th><th>Fuente</th></tr></thead><tbody>';
   top.forEach((i, idx) => {
     const t = DATA.tipos[i.tipo] || { label: i.tipo, color: '#888' };
     const ests = (i.estaciones || []).slice(0, 2).map(e => `<span class="est-pill">${e}</span>`).join('');
@@ -1234,6 +1305,7 @@ function renderTop() {
       <td class="col-tipo" style="color:${t.color}">${t.label}</td>
       <td><strong style="color:var(--text)">${fmtMin(i.duracion_min)}</strong></td>
       <td>${ests || '<span style="color:var(--text3)">—</span>'}</td>
+      <td>${renderFuentesTop(i)}</td>
     </tr>`;
   });
   html += '</tbody>';
