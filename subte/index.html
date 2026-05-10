@@ -584,6 +584,13 @@
   .svc-detalle .cerrada { color: var(--text3); }
   .svc-detalle .cerrada .v { color: var(--red); }
   .svc-detalle .nota-pie { margin-top: 6px; font-size: 0.6rem; color: var(--text3); font-family: 'IBM Plex Mono', monospace; }
+  .svc-detalle .novedad {
+    color: var(--orange); font-weight: 600;
+    font-family: 'IBM Plex Sans', sans-serif; font-size: 0.7rem;
+    line-height: 1.3;
+  }
+  .svc-detalle .novedad-ok { color: var(--text3); font-size: 0.7rem; font-family: 'IBM Plex Sans', sans-serif; }
+  .svc-detalle .novedad small { display: block; color: var(--text3); font-weight: 400; font-size: 0.6rem; margin-top: 2px; }
 
   /* ── ÚLTIMOS TWEETS CIUDADANOS ── */
   .latest-tw {
@@ -1947,6 +1954,7 @@ const SVC_LINEA_COLORES = { A: '#14a1d5', B: '#e5292b', C: '#0a3a8a', D: '#00a85
 const SVC_LINEA_TXT = { A: '#fff', B: '#fff', C: '#fff', D: '#fff', E: '#fff', H: '#0d0f14', P: '#fff' };
 
 let _feriadosArg = null;  // cache de feriados argentinos del año actual
+let _alertasCache = { gcba: [], tweets: [] };  // cache para que renderServicioHoy pueda mostrar novedades por línea
 
 async function fetchFeriadosArg(year) {
   if (_feriadosArg && _feriadosArg.year === year) return _feriadosArg.list;
@@ -2063,6 +2071,21 @@ async function renderServicioHoy() {
   const noctEl = $('svc-noct');
   if (noctEl) noctEl.style.display = noctActivo ? 'inline-block' : 'none';
 
+  // Buscar novedades por línea (tomamos cualquier alerta activa: incluso info_operativa)
+  function novedadesPorLinea(linea) {
+    const items = [];
+    for (const a of (_alertasCache.gcba || [])) {
+      if (a.linea === linea) items.push((a.text || a.header || '').replace(/&/g,'&amp;').replace(/</g,'&lt;'));
+    }
+    for (const a of (_alertasCache.tweets || [])) {
+      if (a.linea === linea) {
+        const t = (a.tweets && a.tweets[0] && a.tweets[0].text) || '';
+        items.push(t.replace(/&/g,'&amp;').replace(/</g,'&lt;'));
+      }
+    }
+    return items;
+  }
+
   // Detalle por línea (siempre visible)
   const detalle = $('svc-detalle');
   const rows = ['A','B','C','D','E','H','P'].map(linea => {
@@ -2079,6 +2102,15 @@ async function renderServicioHoy() {
     const cls = yaCerrada ? 'cerrada' : '';
     const bg = SVC_LINEA_COLORES[linea];
     const txt = SVC_LINEA_TXT[linea];
+    const novedades = novedadesPorLinea(linea);
+    let novCell;
+    if (novedades.length === 0) {
+      novCell = `<span class="novedad-ok">— sin novedades</span>`;
+    } else {
+      const principal = novedades[0].length > 90 ? novedades[0].slice(0, 88) + '…' : novedades[0];
+      const restoMsg = novedades.length > 1 ? `<small>+${novedades.length - 1} más</small>` : '';
+      novCell = `<span class="novedad">⚠ ${principal}${restoMsg}</span>`;
+    }
     return `
       <tr class="${cls}">
         <td><span class="linea-badge" style="background:${bg};color:${txt}">${linea}</span></td>
@@ -2086,17 +2118,18 @@ async function renderServicioHoy() {
         <td><span class="v">${f[tipoDia.tipo]} min</span></td>
         <td><span class="v">${horas[0]}</span> ${u.cab1}</td>
         <td><span class="v">${horas[1]}</span> ${u.cab2}</td>
+        <td>${novCell}</td>
       </tr>
     `;
   }).join('');
   detalle.innerHTML = `
     <table>
       <thead><tr>
-        <th></th><th>Línea</th><th>Frec.</th><th>Último tren cab. 1</th><th>Último tren cab. 2</th>
+        <th></th><th>Línea</th><th>Frec.</th><th>Último tren cab. 1</th><th>Último tren cab. 2</th><th>Novedades</th>
       </tr></thead>
       <tbody>${rows}</tbody>
     </table>
-    <p class="nota-pie">Inicio del servicio hoy: ${apertura} · Datos de emova.com.ar (+/- 5 min tolerancia)</p>
+    <p class="nota-pie">Inicio del servicio hoy: ${apertura} · Datos de emova.com.ar (+/- 5 min tolerancia) · Novedades de API GCBA + tweets oficiales</p>
   `;
 
   banner.style.display = 'block';
@@ -2136,19 +2169,24 @@ async function init() {
     const r = await fetch('/subte/data.json', { cache: 'no-store' });
     if (!r.ok) throw new Error('HTTP ' + r.status);
     DATA = await r.json();
-    // Render del banner "Estado HOY" (independiente del worker)
-    renderServicioHoy();
-    setInterval(renderServicioHoy, 5 * 60 * 1000);  // refrescar cada 5 min para countdown / cambio de estado
-    // Bajar data del worker (silencioso si falla / si WORKER_URL está vacío)
+    // Bajar data del worker primero, así renderServicioHoy ya tiene novedades
     const wd = await fetchWorkerData();
+    _alertasCache.gcba = wd.activasGcba || [];
+    _alertasCache.tweets = wd.activasTweets || [];
     mergeWorkerWithStatic(wd.cerrados);
+    // Render del banner "Estado HOY" (con novedades por línea desde la cache)
+    renderServicioHoy();
+    setInterval(renderServicioHoy, 5 * 60 * 1000);  // refrescar countdown / cambio de estado
     renderLiveBanner(combineActivas(wd.activasGcba, wd.activasTweets, wd.quejasCiudadanas, wd.volumenCiudadano), wd.lastPolls);
     renderLatestTweets(wd.volumenCiudadano);
-    // Auto-refresh del banner cada 60s (sin bloquear la UI)
+    // Auto-refresh cada 60s (re-fetch del worker → re-render todos los banners)
     setInterval(async () => {
       const wd2 = await fetchWorkerData();
+      _alertasCache.gcba = wd2.activasGcba || [];
+      _alertasCache.tweets = wd2.activasTweets || [];
       renderLiveBanner(combineActivas(wd2.activasGcba, wd2.activasTweets, wd2.quejasCiudadanas, wd2.volumenCiudadano), wd2.lastPolls);
       renderLatestTweets(wd2.volumenCiudadano);
+      renderServicioHoy();
     }, 60000);
     _lineasOn = new Set(DATA.lineas_disponibles);
     _tiposOn = new Set(Object.keys(DATA.tipos));
