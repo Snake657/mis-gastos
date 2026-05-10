@@ -106,24 +106,36 @@ async function pollAndDiff(env) {
     if (raw) prevActivas[k.name] = JSON.parse(raw);
   }
 
-  let nuevos = 0, cerrados = 0, vistos = 0;
+  let nuevos = 0, cerrados = 0, vistos = 0, writes = 0;
+  // Para minimizar writes a KV (límite plan free: 1k/día), solo refrescamos
+  // last_seen cada LAST_SEEN_REFRESH_MS si nada más cambió.
+  const LAST_SEEN_REFRESH_MS = 5 * 60 * 1000; // 5 min
 
   // 3) Procesar alertas vivas
   for (const a of snapshot.alerts) {
     vistos++;
     const prev = prevActivas[a.id];
     if (prev) {
-      // ya estaba viva: actualizamos last_seen y mergeamos texto si cambió
-      prev.last_seen = nowIso;
-      prev.last_seen_ms = now;
-      if (a.text && a.text !== prev.text) {
-        prev.text_history = prev.text_history || [];
-        prev.text_history.push({ at: nowIso, text: a.text });
-        prev.text = a.text;
+      // ya estaba viva: detectar si hubo cambios reales
+      const textChanged = !!(a.text && a.text !== prev.text);
+      const causeChanged = a.cause && a.cause !== prev.cause;
+      const effectChanged = a.effect && a.effect !== prev.effect;
+      const lastSeenStale = (now - (prev.last_seen_ms || 0)) >= LAST_SEEN_REFRESH_MS;
+      const needsWrite = textChanged || causeChanged || effectChanged || lastSeenStale;
+
+      if (needsWrite) {
+        prev.last_seen = nowIso;
+        prev.last_seen_ms = now;
+        if (textChanged) {
+          prev.text_history = prev.text_history || [];
+          prev.text_history.push({ at: nowIso, text: a.text });
+          prev.text = a.text;
+        }
+        if (causeChanged) prev.cause = a.cause;
+        if (effectChanged) prev.effect = a.effect;
+        await env.ACTIVAS.put(a.id, JSON.stringify(prev));
+        writes++;
       }
-      if (a.cause) prev.cause = a.cause;
-      if (a.effect) prev.effect = a.effect;
-      await env.ACTIVAS.put(a.id, JSON.stringify(prev));
     } else {
       // chequeo re-window: ¿hay un cerrado reciente con el mismo id?
       const reopened = await tryReopen(env, a.id, now);
@@ -152,6 +164,7 @@ async function pollAndDiff(env) {
           route_ids: a.route_ids,
         };
         await env.ACTIVAS.put(a.id, JSON.stringify(incidente));
+        writes++;
         nuevos++;
       }
     }
@@ -174,20 +187,34 @@ async function pollAndDiff(env) {
       await archiveIncident(env, inc);
       await env.ACTIVAS.delete(id);
       cerrados++;
+      writes += 2;  // archive + delete
     }
   }
 
   // 5) Guardar metadata de la última corrida
-  await env.ACTIVAS.put('_meta', JSON.stringify({
-    last_run: nowIso,
-    last_run_ms: now,
-    alerts_vivas: vistos,
-    nuevos_en_ciclo: nuevos,
-    cerrados_en_ciclo: cerrados,
-    api_header_ts: snapshot.header_ts,
-  }));
+  // Solo escribir _meta cuando hubo cambios o cada META_REFRESH_MS para no inflar writes.
+  const META_REFRESH_MS = 10 * 60 * 1000; // 10 min
+  const hadChanges = nuevos > 0 || cerrados > 0 || writes > 0;
+  let prevMetaMs = 0;
+  try {
+    const prevMetaRaw = prevActivas['_meta'];
+    if (prevMetaRaw) prevMetaMs = prevMetaRaw.last_run_ms || 0;
+  } catch (_) {}
+  const metaStale = (now - prevMetaMs) >= META_REFRESH_MS;
+  if (hadChanges || metaStale) {
+    await env.ACTIVAS.put('_meta', JSON.stringify({
+      last_run: nowIso,
+      last_run_ms: now,
+      alerts_vivas: vistos,
+      nuevos_en_ciclo: nuevos,
+      cerrados_en_ciclo: cerrados,
+      api_header_ts: snapshot.header_ts,
+      writes_en_ciclo: writes,
+    }));
+    writes++;
+  }
 
-  return { ok: true, at: nowIso, vistos, nuevos, cerrados };
+  return { ok: true, at: nowIso, vistos, nuevos, cerrados, writes };
 }
 
 // Intentar re-abrir: si se cerró hace menos de RE_WINDOW_MS, lo recuperamos
