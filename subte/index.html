@@ -524,6 +524,75 @@
     color: var(--yellow);
   }
 
+  /* ── ESTADO HOY (banner servicio) ── */
+  .svc-banner {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 14px 16px;
+    margin-bottom: 18px;
+    border-left: 4px solid var(--svc-color, var(--green));
+  }
+  .svc-banner.cerrado { --svc-color: var(--red); }
+  .svc-banner.activo { --svc-color: var(--green); }
+  .svc-banner.ultima-hora { --svc-color: var(--yellow); }
+  .svc-row1 {
+    display: flex; align-items: center; gap: 10px;
+    flex-wrap: wrap; margin-bottom: 6px;
+  }
+  .svc-status {
+    font-family: 'IBM Plex Mono', monospace;
+    font-weight: 700; font-size: 0.8rem;
+    color: var(--svc-color);
+    letter-spacing: 0.04em; text-transform: uppercase;
+  }
+  .svc-day {
+    color: var(--text); font-size: 0.85rem;
+    text-transform: capitalize;
+  }
+  .svc-feriado-tag {
+    background: rgba(168,85,247,0.15); color: #a855f7;
+    border: 1px solid rgba(168,85,247,0.3);
+    padding: 2px 8px; border-radius: 4px;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.65rem; font-weight: 600;
+    text-transform: uppercase; letter-spacing: 0.04em;
+  }
+  .svc-row2 {
+    color: var(--text2); font-size: 0.78rem;
+    line-height: 1.55; display: flex; flex-wrap: wrap;
+    gap: 4px 14px; align-items: center;
+  }
+  .svc-row2 .label { color: var(--text3); font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.04em; margin-right: 3px; }
+  .svc-row2 .v { color: var(--text); font-weight: 600; }
+  .svc-noct-b {
+    background: rgba(251,191,36,0.12); color: var(--yellow);
+    border: 1px solid rgba(251,191,36,0.3);
+    padding: 2px 8px; border-radius: 5px;
+    font-size: 0.7rem; font-family: 'IBM Plex Mono', monospace;
+  }
+  .svc-toggle {
+    margin-left: auto; cursor: pointer;
+    background: transparent; border: 1px solid var(--border);
+    color: var(--text2); padding: 4px 10px; border-radius: 6px;
+    font-family: 'IBM Plex Mono', monospace; font-size: 0.7rem;
+    transition: all 0.15s;
+  }
+  .svc-toggle:hover { color: var(--text); border-color: var(--border2); }
+  .svc-detalle { display: none; margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--border); }
+  .svc-detalle.show { display: block; }
+  .svc-detalle table { width: 100%; border-collapse: collapse; font-size: 0.75rem; font-family: 'IBM Plex Mono', monospace; }
+  .svc-detalle th { text-align: left; padding: 6px 8px; color: var(--text3); border-bottom: 1px solid var(--border); font-weight: 600; font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.04em; }
+  .svc-detalle td { padding: 6px 8px; border-bottom: 1px solid var(--border); color: var(--text); }
+  .svc-detalle tr:last-child td { border-bottom: 0; }
+  .svc-detalle .linea-badge {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 22px; height: 22px; border-radius: 50%;
+    font-weight: 700; font-size: 0.72rem; color: #0d0f14;
+  }
+  .svc-detalle .cerrada { color: var(--text3); }
+  .svc-detalle .cerrada .v { color: var(--red); }
+
   /* ── ÚLTIMOS TWEETS CIUDADANOS ── */
   .latest-tw {
     margin: -8px 0 24px;
@@ -666,6 +735,18 @@
   <p class="subtitle">
     Demoras, paros e interrupciones registradas. Datos de <a href="https://x.com/Emova_arg" target="_blank" rel="noopener">@Emova_arg</a>, <a href="https://x.com/basubte" target="_blank" rel="noopener">@basubte</a> y la API GCBA.
   </p>
+
+  <!-- Estado del servicio HOY (datos de Emova) -->
+  <div id="svc-banner" class="svc-banner" style="display:none">
+    <div class="svc-row1">
+      <span class="svc-status" id="svc-status">—</span>
+      <span class="svc-day" id="svc-day"></span>
+      <span class="svc-feriado-tag" id="svc-feriado" style="display:none"></span>
+      <button type="button" class="svc-toggle" id="svc-toggle">▾ Detalle por línea</button>
+    </div>
+    <div class="svc-row2" id="svc-row2"></div>
+    <div class="svc-detalle" id="svc-detalle"></div>
+  </div>
 
   <!-- Banner de alertas activas (GCBA GTFS-RT en vivo) -->
   <section id="live-banner" aria-live="polite">
@@ -1840,6 +1921,218 @@ function renderLiveBanner(activas, lastPolls) {
   banner.classList.add('show');
 }
 
+// ─── ESTADO DEL SERVICIO HOY (datos de emova.com.ar/horarios) ─────
+const SVC_HORARIOS = {
+  apertura: { weekday: '05:30', sat: '06:00', sun: '08:00' },
+  // Frecuencia en minutos por línea/tipo de día
+  frecuencia: {
+    A: { weekday: 3, sat: 6, sun: 7 },
+    B: { weekday: 4, sat: 6, sun: 7 },
+    C: { weekday: 3, sat: 5, sun: 7 },
+    D: { weekday: 3, sat: 7, sun: 7 },
+    E: { weekday: 5, sat: 8, sun: 9 },
+    H: { weekday: 3, sat: 7, sun: 7 },
+    P: { weekday: 9, sat: 13, sun: 13 },
+  },
+  // Hora del último tren saliendo de cada cabecera
+  ultimoTren: {
+    A: { cab1: 'San Pedrito', cab2: 'Plaza de Mayo',
+         weekday: ['23:00','23:26'], sat: ['23:30','23:57'], sun: ['22:08','22:36'] },
+    B: { cab1: 'L.N. Alem', cab2: 'J.M. de Rosas',
+         weekday: ['23:32','23:00'], sat: ['23:56','23:25'], sun: ['22:31','22:00'] },
+    C: { cab1: 'Constitución', cab2: 'Retiro',
+         weekday: ['23:19','23:33'], sat: ['23:40','23:54'], sun: ['22:21','22:34'] },
+    D: { cab1: 'Congreso de Tucumán', cab2: 'Catedral',
+         weekday: ['23:00','23:32'], sat: ['23:30','00:01'], sun: ['22:00','22:31'] },
+    E: { cab1: 'Retiro', cab2: 'Pza. de los Virreyes',
+         weekday: ['23:30','22:56'], sat: ['23:58','23:26'], sun: ['22:28','21:56'] },
+    H: { cab1: 'Hospitales', cab2: 'F. de Derecho',
+         weekday: ['23:51','23:30'], sat: ['00:20','23:59'], sun: ['22:51','22:29'] },
+    P: { cab1: 'Int. Saguier', cab2: 'C.C. Lugano / Gral. Savio',
+         weekday: ['21:00','21:31'], sat: ['21:07','21:36'], sun: ['21:00','21:32'] },
+  },
+};
+const SVC_LINEA_COLORES = { A: '#14a1d5', B: '#e5292b', C: '#0a3a8a', D: '#00a85f', E: '#7c3f9f', H: '#f2c500', P: '#f97316' };
+const SVC_LINEA_TXT = { A: '#fff', B: '#fff', C: '#fff', D: '#fff', E: '#fff', H: '#0d0f14', P: '#fff' };
+
+let _feriadosArg = null;  // cache de feriados argentinos del año actual
+
+async function fetchFeriadosArg(year) {
+  if (_feriadosArg && _feriadosArg.year === year) return _feriadosArg.list;
+  try {
+    const r = await fetch(`https://api.argentinadatos.com/v1/feriados/${year}`, { cache: 'force-cache' });
+    if (!r.ok) throw new Error('HTTP ' + r.status);
+    const data = await r.json();
+    _feriadosArg = { year, list: data };
+    return data;
+  } catch (e) {
+    console.warn('[subte] feriados fetch fail:', e.message);
+    _feriadosArg = { year, list: [] };
+    return [];
+  }
+}
+
+// HH:MM a minutos desde medianoche
+function _hmToMin(hm) {
+  const [h, m] = hm.split(':').map(Number);
+  return h * 60 + m;
+}
+
+function _hmFromMin(min) {
+  const h = Math.floor(((min % 1440) + 1440) % 1440 / 60);
+  const m = ((min % 60) + 60) % 60;
+  return String(h).padStart(2,'0') + ':' + String(m).padStart(2,'0');
+}
+
+function _formatDuracion(min) {
+  if (min < 60) return `${min}min`;
+  const h = Math.floor(min / 60);
+  const r = min % 60;
+  return r ? `${h}h ${r}min` : `${h}h`;
+}
+
+function getTipoDia(date, feriados) {
+  const ymd = date.getFullYear() + '-' + String(date.getMonth()+1).padStart(2,'0') + '-' + String(date.getDate()).padStart(2,'0');
+  const feriado = (feriados || []).find(f => f.fecha === ymd);
+  const dow = date.getDay(); // 0=dom, 6=sáb
+  if (feriado) return { tipo: 'sun', label: 'Feriado', feriadoNombre: feriado.nombre || feriado.tipo };
+  if (dow === 0) return { tipo: 'sun', label: 'Domingo' };
+  if (dow === 6) return { tipo: 'sat', label: 'Sábado' };
+  return { tipo: 'weekday', label: ['Lunes','Martes','Miércoles','Jueves','Viernes'][dow-1] };
+}
+
+async function renderServicioHoy() {
+  const banner = $('svc-banner');
+  if (!banner) return;
+  const now = new Date();
+  const year = now.getFullYear();
+  const feriados = await fetchFeriadosArg(year);
+  const tipoDia = getTipoDia(now, feriados);
+  const apertura = SVC_HORARIOS.apertura[tipoDia.tipo];
+  const aperturaMin = _hmToMin(apertura);
+
+  // Calcular el último tren más tardío del día (cuándo "cierra el subte hoy")
+  // y el más temprano (primera línea en cerrar)
+  let ultimosCierres = [];
+  for (const linea in SVC_HORARIOS.ultimoTren) {
+    const u = SVC_HORARIOS.ultimoTren[linea];
+    const horas = u[tipoDia.tipo];
+    for (const h of horas) {
+      let mins = _hmToMin(h);
+      if (mins < 12*60) mins += 24*60;  // 00:01 = pasada medianoche
+      ultimosCierres.push({ linea, hora: h, mins });
+    }
+  }
+  ultimosCierres.sort((a, b) => a.mins - b.mins);
+  const primerCierre = ultimosCierres[0];
+  const ultimoCierre = ultimosCierres[ultimosCierres.length - 1];
+
+  const nowMin = now.getHours() * 60 + now.getMinutes();
+  // Si pasó medianoche (entre 0 y aperturaMin), considerar "todavía servicio extendido"
+  const nowMinAdj = (nowMin < aperturaMin && nowMin < 6*60) ? nowMin + 24*60 : nowMin;
+
+  let estado, statusText, infoCierre, countdown = '';
+  if (nowMinAdj < aperturaMin) {
+    estado = 'cerrado'; statusText = '🔴 Cerrado';
+    infoCierre = `Reabre a las ${apertura}`;
+    const faltan = aperturaMin - nowMin;
+    countdown = `en ${_formatDuracion(faltan)}`;
+  } else if (nowMinAdj > ultimoCierre.mins) {
+    estado = 'cerrado'; statusText = '🔴 Cerrado';
+    // próximo día: si fue sábado, mañana domingo abre 8:00. etc.
+    const tomorrow = new Date(now); tomorrow.setDate(tomorrow.getDate() + 1);
+    const tipoMañana = getTipoDia(tomorrow, feriados);
+    const aperturaMañana = SVC_HORARIOS.apertura[tipoMañana.tipo];
+    infoCierre = `Reabre mañana ${aperturaMañana} (${tipoMañana.label.toLowerCase()})`;
+  } else if ((primerCierre.mins - nowMinAdj) <= 30 && (primerCierre.mins - nowMinAdj) > 0) {
+    estado = 'ultima-hora'; statusText = '🟡 Última hora';
+    infoCierre = `Próximo cierre: ${primerCierre.hora} (Línea ${primerCierre.linea})`;
+    countdown = 'en ' + _formatDuracion(primerCierre.mins - nowMinAdj);
+  } else {
+    estado = 'activo'; statusText = '🟢 Servicio activo';
+    infoCierre = `Próximo cierre: ${primerCierre.hora} (Línea ${primerCierre.linea})`;
+    if (primerCierre.mins > nowMinAdj) countdown = 'en ' + _formatDuracion(primerCierre.mins - nowMinAdj);
+  }
+
+  banner.className = 'svc-banner ' + estado;
+  $('svc-status').textContent = statusText;
+  const fechaStr = now.toLocaleDateString('es-AR', { day: 'numeric', month: 'short', year: 'numeric' });
+  $('svc-day').textContent = `${tipoDia.label} ${fechaStr}`;
+
+  if (tipoDia.feriadoNombre) {
+    $('svc-feriado').textContent = '🎉 ' + tipoDia.feriadoNombre;
+    $('svc-feriado').style.display = 'inline-block';
+  } else {
+    $('svc-feriado').style.display = 'none';
+  }
+
+  // Línea B nocturno extendido (viernes o sábado, después de 21:30)
+  const dow = now.getDay();
+  const noctActivo = (dow === 5 || dow === 6) && nowMin >= 21*60+30 && nowMin <= 25*60+30;
+  const noctHTML = noctActivo
+    ? `<span class="svc-noct-b">🌙 Línea B nocturno hasta 1:30 (algunas estaciones)</span>` : '';
+
+  // Frecuencia promedio del día
+  const frecs = Object.values(SVC_HORARIOS.frecuencia).map(f => f[tipoDia.tipo]);
+  const frecMin = Math.min(...frecs);
+  const frecMax = Math.max(...frecs);
+
+  $('svc-row2').innerHTML = `
+    <span><span class="label">Inicio:</span><span class="v">${apertura}</span></span>
+    <span><span class="label">${infoCierre.startsWith('Reabre') ? '' : 'Próximo cierre'}</span><span class="v">${infoCierre}</span>${countdown ? ` <span style="color:var(--text3)">${countdown}</span>` : ''}</span>
+    <span><span class="label">Frec. hoy:</span><span class="v">${frecMin === frecMax ? frecMin + ' min' : frecMin + '–' + frecMax + ' min'}</span></span>
+    ${noctHTML}
+  `;
+
+  // Detalle por línea
+  const detalle = $('svc-detalle');
+  const rows = ['A','B','C','D','E','H','P'].map(linea => {
+    const u = SVC_HORARIOS.ultimoTren[linea];
+    const f = SVC_HORARIOS.frecuencia[linea];
+    const horas = u[tipoDia.tipo];
+    // ¿esta línea ya cerró?
+    let yaCerrada = true;
+    for (const h of horas) {
+      let m = _hmToMin(h);
+      if (m < 12*60) m += 24*60;
+      if (nowMinAdj <= m) yaCerrada = false;
+    }
+    const cls = yaCerrada ? 'cerrada' : '';
+    const bg = SVC_LINEA_COLORES[linea];
+    const txt = SVC_LINEA_TXT[linea];
+    return `
+      <tr class="${cls}">
+        <td><span class="linea-badge" style="background:${bg};color:${txt}">${linea === 'P' ? 'P' : linea}</span></td>
+        <td>${linea === 'P' ? 'Premetro' : 'Línea ' + linea}</td>
+        <td><span class="v">${f[tipoDia.tipo]} min</span></td>
+        <td><span class="v">${horas[0]}</span> ${u.cab1}</td>
+        <td><span class="v">${horas[1]}</span> ${u.cab2}</td>
+      </tr>
+    `;
+  }).join('');
+  detalle.innerHTML = `
+    <table>
+      <thead><tr>
+        <th></th><th>Línea</th><th>Frec.</th><th>Último tren cabecera 1</th><th>Último tren cabecera 2</th>
+      </tr></thead>
+      <tbody>${rows}</tbody>
+    </table>
+    <p style="margin-top:8px;font-size:0.65rem;color:var(--text3);font-family:'IBM Plex Mono',monospace">Datos oficiales de emova.com.ar · Pueden tener +/- 5 min de tolerancia.</p>
+  `;
+
+  // Toggle del detalle
+  const btn = $('svc-toggle');
+  if (btn && !btn._wired) {
+    btn._wired = true;
+    btn.addEventListener('click', () => {
+      const open = detalle.classList.toggle('show');
+      btn.textContent = open ? '▴ Ocultar detalle' : '▾ Detalle por línea';
+    });
+  }
+
+  banner.style.display = 'block';
+}
+
 // ─── ÚLTIMOS TWEETS CIUDADANOS ─────────────────────────────────────
 function renderLatestTweets(volumenObj) {
   const wrap = $('latest-tw');
@@ -1874,6 +2167,9 @@ async function init() {
     const r = await fetch('/subte/data.json', { cache: 'no-store' });
     if (!r.ok) throw new Error('HTTP ' + r.status);
     DATA = await r.json();
+    // Render del banner "Estado HOY" (independiente del worker)
+    renderServicioHoy();
+    setInterval(renderServicioHoy, 5 * 60 * 1000);  // refrescar cada 5 min para countdown / cambio de estado
     // Bajar data del worker (silencioso si falla / si WORKER_URL está vacío)
     const wd = await fetchWorkerData();
     mergeWorkerWithStatic(wd.cerrados);
