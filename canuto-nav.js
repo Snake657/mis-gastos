@@ -13,6 +13,7 @@
     { id: 'dolar-historico', label: 'Dólar Histórico', emoji: '📈', href: '/dolar-historico/', desc: 'Serie histórica del dólar desde 2003' },
     { id: 'inflaciona',      label: 'Inflacioná',      emoji: '🔥', href: '/inflaciona/',      desc: 'Cuánto subió un precio (AR/USA)' },
     { id: 'datos-macro',     label: 'Datos Macro',     emoji: '🏛️', href: '/datos-macro/',     desc: 'Indicadores macro de Argentina' },
+    { id: 'subte',           label: 'Subte CABA',      emoji: '🚇', href: '/subte/',           desc: 'Demoras y paros del subte porteño' },
   ];
   const CONTACT_EMAIL = 'admin.canuto.ar@gmail.com';
 
