@@ -571,27 +571,19 @@
     padding: 2px 8px; border-radius: 5px;
     font-size: 0.7rem; font-family: 'IBM Plex Mono', monospace;
   }
-  .svc-toggle {
-    margin-left: auto; cursor: pointer;
-    background: transparent; border: 1px solid var(--border);
-    color: var(--text2); padding: 4px 10px; border-radius: 6px;
-    font-family: 'IBM Plex Mono', monospace; font-size: 0.7rem;
-    transition: all 0.15s;
-  }
-  .svc-toggle:hover { color: var(--text); border-color: var(--border2); }
-  .svc-detalle { display: none; margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--border); }
-  .svc-detalle.show { display: block; }
-  .svc-detalle table { width: 100%; border-collapse: collapse; font-size: 0.75rem; font-family: 'IBM Plex Mono', monospace; }
-  .svc-detalle th { text-align: left; padding: 6px 8px; color: var(--text3); border-bottom: 1px solid var(--border); font-weight: 600; font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.04em; }
-  .svc-detalle td { padding: 6px 8px; border-bottom: 1px solid var(--border); color: var(--text); }
+  .svc-detalle { margin-top: 10px; padding-top: 10px; border-top: 1px solid var(--border); }
+  .svc-detalle table { width: 100%; border-collapse: collapse; font-size: 0.68rem; font-family: 'IBM Plex Mono', monospace; }
+  .svc-detalle th { text-align: left; padding: 4px 6px; color: var(--text3); border-bottom: 1px solid var(--border); font-weight: 600; font-size: 0.58rem; text-transform: uppercase; letter-spacing: 0.04em; }
+  .svc-detalle td { padding: 4px 6px; border-bottom: 1px solid var(--border); color: var(--text); }
   .svc-detalle tr:last-child td { border-bottom: 0; }
   .svc-detalle .linea-badge {
     display: inline-flex; align-items: center; justify-content: center;
-    width: 22px; height: 22px; border-radius: 50%;
-    font-weight: 700; font-size: 0.72rem; color: #0d0f14;
+    width: 18px; height: 18px; border-radius: 50%;
+    font-weight: 700; font-size: 0.62rem; color: #0d0f14;
   }
   .svc-detalle .cerrada { color: var(--text3); }
   .svc-detalle .cerrada .v { color: var(--red); }
+  .svc-detalle .nota-pie { margin-top: 6px; font-size: 0.6rem; color: var(--text3); font-family: 'IBM Plex Mono', monospace; }
 
   /* ── ÚLTIMOS TWEETS CIUDADANOS ── */
   .latest-tw {
@@ -742,10 +734,9 @@
       <span class="svc-status" id="svc-status">—</span>
       <span class="svc-day" id="svc-day"></span>
       <span class="svc-feriado-tag" id="svc-feriado" style="display:none"></span>
-      <button type="button" class="svc-toggle" id="svc-toggle">▾ Detalle por línea</button>
+      <span class="svc-noct-b" id="svc-noct" style="display:none">🌙 Línea B nocturno hasta 1:30</span>
     </div>
-    <div class="svc-row2" id="svc-row2"></div>
-    <div class="svc-detalle" id="svc-detalle"></div>
+    <div class="svc-detalle show" id="svc-detalle"></div>
   </div>
 
   <!-- Banner de alertas activas (GCBA GTFS-RT en vivo) -->
@@ -2069,22 +2060,10 @@ async function renderServicioHoy() {
   // Línea B nocturno extendido (viernes o sábado, después de 21:30)
   const dow = now.getDay();
   const noctActivo = (dow === 5 || dow === 6) && nowMin >= 21*60+30 && nowMin <= 25*60+30;
-  const noctHTML = noctActivo
-    ? `<span class="svc-noct-b">🌙 Línea B nocturno hasta 1:30 (algunas estaciones)</span>` : '';
+  const noctEl = $('svc-noct');
+  if (noctEl) noctEl.style.display = noctActivo ? 'inline-block' : 'none';
 
-  // Frecuencia promedio del día
-  const frecs = Object.values(SVC_HORARIOS.frecuencia).map(f => f[tipoDia.tipo]);
-  const frecMin = Math.min(...frecs);
-  const frecMax = Math.max(...frecs);
-
-  $('svc-row2').innerHTML = `
-    <span><span class="label">Inicio:</span><span class="v">${apertura}</span></span>
-    <span><span class="label">${infoCierre.startsWith('Reabre') ? '' : 'Próximo cierre'}</span><span class="v">${infoCierre}</span>${countdown ? ` <span style="color:var(--text3)">${countdown}</span>` : ''}</span>
-    <span><span class="label">Frec. hoy:</span><span class="v">${frecMin === frecMax ? frecMin + ' min' : frecMin + '–' + frecMax + ' min'}</span></span>
-    ${noctHTML}
-  `;
-
-  // Detalle por línea
+  // Detalle por línea (siempre visible)
   const detalle = $('svc-detalle');
   const rows = ['A','B','C','D','E','H','P'].map(linea => {
     const u = SVC_HORARIOS.ultimoTren[linea];
@@ -2102,7 +2081,7 @@ async function renderServicioHoy() {
     const txt = SVC_LINEA_TXT[linea];
     return `
       <tr class="${cls}">
-        <td><span class="linea-badge" style="background:${bg};color:${txt}">${linea === 'P' ? 'P' : linea}</span></td>
+        <td><span class="linea-badge" style="background:${bg};color:${txt}">${linea}</span></td>
         <td>${linea === 'P' ? 'Premetro' : 'Línea ' + linea}</td>
         <td><span class="v">${f[tipoDia.tipo]} min</span></td>
         <td><span class="v">${horas[0]}</span> ${u.cab1}</td>
@@ -2113,22 +2092,12 @@ async function renderServicioHoy() {
   detalle.innerHTML = `
     <table>
       <thead><tr>
-        <th></th><th>Línea</th><th>Frec.</th><th>Último tren cabecera 1</th><th>Último tren cabecera 2</th>
+        <th></th><th>Línea</th><th>Frec.</th><th>Último tren cab. 1</th><th>Último tren cab. 2</th>
       </tr></thead>
       <tbody>${rows}</tbody>
     </table>
-    <p style="margin-top:8px;font-size:0.65rem;color:var(--text3);font-family:'IBM Plex Mono',monospace">Datos oficiales de emova.com.ar · Pueden tener +/- 5 min de tolerancia.</p>
+    <p class="nota-pie">Inicio del servicio hoy: ${apertura} · Datos de emova.com.ar (+/- 5 min tolerancia)</p>
   `;
-
-  // Toggle del detalle
-  const btn = $('svc-toggle');
-  if (btn && !btn._wired) {
-    btn._wired = true;
-    btn.addEventListener('click', () => {
-      const open = detalle.classList.toggle('show');
-      btn.textContent = open ? '▴ Ocultar detalle' : '▾ Detalle por línea';
-    });
-  }
 
   banner.style.display = 'block';
 }
