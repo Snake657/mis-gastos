@@ -594,13 +594,9 @@
 <div id="canuto-nav"></div>
 
 <main>
-  <div class="eyebrow">🚇 Subte CABA</div>
   <h1>Demoras, paros e interrupciones del subte</h1>
   <p class="subtitle">
-    Análisis automático de los tweets de <a href="https://x.com/Emova_arg" target="_blank" rel="noopener">@Emova_arg</a> (concesionaria) y <a href="https://x.com/basubte" target="_blank" rel="noopener">@basubte</a> (operador GCBA).
-    Cada vez que tuitean <code>Servicio con demora</code>, <code>Servicio limitado</code> o <code>Estación cerrada</code>, se registra como incidente.
-    Los pareamos con sus respectivos tweets de cierre (<code>Servicio normalizado</code>, <code>Reabrió</code>, etc.) para reconstruir la duración real.
-    Cuando ambas cuentas reportan el mismo evento, queda <strong style="color:#22c55e">✓ confirmado</strong>.
+    Demoras, paros e interrupciones registradas. Datos de <a href="https://x.com/Emova_arg" target="_blank" rel="noopener">@Emova_arg</a>, <a href="https://x.com/basubte" target="_blank" rel="noopener">@basubte</a> y la API GCBA.
   </p>
 
   <!-- Banner de alertas activas (GCBA GTFS-RT en vivo) -->
@@ -612,14 +608,6 @@
     </div>
     <div class="live-list" id="live-list"></div>
   </section>
-
-  <!-- KPIs -->
-  <div class="kpi-grid" id="kpis">
-    <div class="kpi"><div class="kpi-label">Total incidentes</div><div class="kpi-value" id="kpi-total">—</div><div class="kpi-sub" id="kpi-total-sub">cargando</div></div>
-    <div class="kpi"><div class="kpi-label">Tiempo degradado</div><div class="kpi-value" id="kpi-horas">—</div><div class="kpi-sub" id="kpi-horas-sub">acumulado</div></div>
-    <div class="kpi"><div class="kpi-label">Mediana duración</div><div class="kpi-value" id="kpi-mediana">—</div><div class="kpi-sub">por incidente</div></div>
-    <div class="kpi"><div class="kpi-label">Mes peor</div><div class="kpi-value" id="kpi-peormes">—</div><div class="kpi-sub" id="kpi-peormes-sub">—</div></div>
-  </div>
 
   <!-- FILTROS -->
   <div class="section">
@@ -690,24 +678,6 @@
     </div>
   </div>
 
-  <!-- TIMELINE GRÁFICO -->
-  <div class="section">
-    <div class="section-header">
-      <div>
-        <div class="section-title">📈 Línea de tiempo</div>
-        <div class="section-desc">Cantidad de incidentes y duración total por mes. Click en una barra para ver el mes en detalle.</div>
-      </div>
-      <div class="range-tabs" id="tl-vista">
-        <button class="range-tab active" data-vista="cantidad">Cantidad</button>
-        <button class="range-tab" data-vista="duracion">Duración (hs)</button>
-      </div>
-    </div>
-    <div class="chart-wrap tall">
-      <canvas id="chart-timeline"></canvas>
-    </div>
-    <div class="chart-legend" id="chart-legend"></div>
-  </div>
-
   <!-- DETALLE / DATEPICKER -->
   <div class="section">
     <div class="section-header">
@@ -726,6 +696,24 @@
     <div id="detail-panel">
       <div class="inc-empty"><div class="big">📅</div>Elegí un día o un mes para ver el detalle.</div>
     </div>
+  </div>
+
+  <!-- TIMELINE GRÁFICO -->
+  <div class="section">
+    <div class="section-header">
+      <div>
+        <div class="section-title">📈 Línea de tiempo</div>
+        <div class="section-desc">Cantidad de incidentes y duración total por mes. Click en una barra para ver el mes en detalle.</div>
+      </div>
+      <div class="range-tabs" id="tl-vista">
+        <button class="range-tab active" data-vista="cantidad">Cantidad</button>
+        <button class="range-tab" data-vista="duracion">Duración (hs)</button>
+      </div>
+    </div>
+    <div class="chart-wrap tall">
+      <canvas id="chart-timeline"></canvas>
+    </div>
+    <div class="chart-legend" id="chart-legend"></div>
   </div>
 
   <!-- DISTRIBUCIÓN POR HORA / DOW -->
@@ -754,38 +742,12 @@
     </style>
   </div>
 
-  <!-- TOP -->
-  <div class="section">
-    <div class="section-header">
-      <div>
-        <div class="section-title">🏆 Top incidentes más largos</div>
-        <div class="section-desc">Los 10 cierres puntuales más prolongados con tweet de fin (excluye paros sin cierre).</div>
-      </div>
-    </div>
-    <div class="inc-table-wrap">
-      <table class="inc-table" id="top-table"></table>
-    </div>
-  </div>
-
   <!-- FUENTE / NOTA -->
   <div class="section">
-    <div class="section-title">📋 Sobre los datos</div>
-    <p class="nota" style="margin-top: 8px">
-      <strong>Fuente:</strong> tweets de la cuenta oficial de Emova (concesionaria del subte porteño, grupo Roggio).
-      <strong>Período cubierto:</strong> <span id="data-rango">—</span>.
-      <strong>Total tweets procesados:</strong> <span id="data-tweets">—</span>.
-      <strong>Incidentes reconstruidos:</strong> <span id="data-incidentes">—</span>.
+    <p class="nota" style="margin: 0">
+      Fuente: <a href="https://x.com/Emova_arg" target="_blank" rel="noopener">@Emova_arg</a>, <a href="https://x.com/basubte" target="_blank" rel="noopener">@basubte</a> y API GCBA. Período: <span id="data-rango">—</span>. Última actualización: <span id="data-last-update">—</span>.
     </p>
-    <div class="nota gap-warn" id="data-gaps" style="display:none"></div>
-    <p class="nota" style="margin-top: 10px">
-      <strong>Cómo se reconstruyen los incidentes:</strong> cada tweet de "Servicio con demora" / "Servicio limitado" / etc. abre un incidente.
-      Se cierra con el siguiente "Servicio normalizado" / "Ya circula con su frecuencia habitual" / "Reabrió" del mismo día.
-      Si pasan más de 4 horas sin tweet de cierre, se marca como "sin cierre tuiteado" — típicamente paros u olvidos del social media.
-      Los tweets de obras programadas, eventos especiales y horarios extendidos se filtran (no son incidentes).
-    </p>
-    <p class="nota" style="margin-top: 10px">
-      <strong>Última actualización:</strong> <span id="data-last-update">—</span>
-    </p>
+    <div class="nota gap-warn" id="data-gaps" style="display:none; margin-top:8px"></div>
   </div>
 
 </main>
@@ -1379,7 +1341,6 @@ function renderTop() {
 
 // ─── RENDER ALL ────────────────────────────────────────────────────
 function renderAll() {
-  renderKPIs();
   renderChips();
   renderTipoChips();
   renderFilterSummary();
@@ -1387,7 +1348,6 @@ function renderAll() {
   renderTimeline();
   renderDowHora();
   renderDetail();
-  renderTop();
 }
 
 // ─── WORKER LIVE: incidentes nuevos desde Cloudflare Worker ────────
