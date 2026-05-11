@@ -3,7 +3,7 @@ main = "src/index.js"
 compatibility_date = "2025-05-01"
 
 [triggers]
-crons = ["* * * * *"]
+crons = ["*/1 * * * *"]
 
 [[kv_namespaces]]
 binding = "ACTIVAS"

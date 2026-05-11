@@ -41,6 +41,13 @@ const QUEJAS_EXCLUDE_USERS = new Set(['emova_arg', 'basubte']);  // tweets propi
 const QUEJAS_WINDOW_MS = 30 * 60 * 1000;   // ventana de 30 min para clusters
 const QUEJAS_THRESHOLD = 3;                 // mínimo de señales para disparar alerta
 const QUEJAS_TTL_S = 7 * 24 * 3600;         // dejar tweets ciudadanos en KV 7 días
+// Detector de VOLUMEN (sin filtros de keywords): si hay usuarios distintos
+// arrobando a las cuentas oficiales en una ventana corta, marcar como posible incidencia.
+// Es solo un indicador en el banner, NO entra al calendario.
+const VOLUMEN_THRESHOLD_USERS = 3;          // ≥3 usuarios DISTINTOS para disparar
+const VOLUMEN_WINDOW_MS = 15 * 60 * 1000;   // ventana de 15 min (más sensible que las quejas precisas)
+const VOLUMEN_TTL_S = 7 * 24 * 3600;        // tweets de volumen en KV 7 días
+const ULTIMOS_TWEETS_N = 5;                 // cuántos tweets ciudadanos crudos mostrar al final del banner
 
 const RE_WINDOW_MS = 30 * 60 * 1000;
 const MAX_DURATION_MS = 4 * 60 * 60 * 1000;
@@ -446,9 +453,28 @@ async function pollQuejas(env) {
   }
   let nuevas = 0, writes = 0;
 
-  // Para cada tweet: si pasa filtros, guardar en QUEJAS KV
+  // Para cada tweet: guardar 2 versiones en KV
+  //  (a) "v_<tweet_id>" - todas las menciones no oficiales, para detector de VOLUMEN (sin filtros)
+  //  (b) "q_<tweet_id>" - solo las que pasan filtros de keywords + línea, para detector PRECISO
+  let nuevasVol = 0;
   for (const it of items) {
-    if (it.user && QUEJAS_EXCLUDE_USERS.has(it.user.toLowerCase())) continue;  // tweets oficiales ya los tenemos
+    if (it.user && QUEJAS_EXCLUDE_USERS.has(it.user.toLowerCase())) continue;
+
+    // Guardar para detector de volumen (todos los tweets ciudadanos)
+    const vkey = `v_${it.tweet_id}`;
+    const vExists = await env.TWEETS.get(vkey);
+    if (!vExists) {
+      await env.TWEETS.put(vkey, JSON.stringify({
+        tweet_id: it.tweet_id, user: it.user,
+        fecha_iso: it.fecha_iso, fecha_ms: it.fecha_ms,
+        text: it.text,
+        url: `https://x.com/${it.user}/status/${it.tweet_id}`,
+      }), { expirationTtl: VOLUMEN_TTL_S });
+      nuevasVol++;
+      writes++;
+    }
+
+    // Filtro fino para detector preciso
     const linea = detectLineaQueja(it.text);
     if (!linea) continue;
     const sc = scoreQueja(it.text);
@@ -494,18 +520,84 @@ async function pollQuejas(env) {
     }
   }
 
-  // Guardar snapshot en KV (no persistente histórico aún)
-  await env.TW_INCIDENTES.put('_quejas_active', JSON.stringify({
-    generated_at: nowIso, threshold: QUEJAS_THRESHOLD,
-    window_min: QUEJAS_WINDOW_MS / 60000,
-    alertas: alertasCiudadanas,
+  // Guardar snapshot solo si cambió respecto al anterior (ahorra writes en plan free)
+  const prevQuejasRaw = await env.TW_INCIDENTES.get('_quejas_active');
+  const prevQuejas = prevQuejasRaw ? JSON.parse(prevQuejasRaw) : null;
+  const sigPrevQuejas = prevQuejas ? JSON.stringify(prevQuejas.alertas || []) : '';
+  const sigNewQuejas = JSON.stringify(alertasCiudadanas);
+  if (sigPrevQuejas !== sigNewQuejas) {
+    await env.TW_INCIDENTES.put('_quejas_active', JSON.stringify({
+      generated_at: nowIso, threshold: QUEJAS_THRESHOLD,
+      window_min: QUEJAS_WINDOW_MS / 60000,
+      alertas: alertasCiudadanas,
+    }));
+    writes++;
+  }
+
+  // ─── Detector de VOLUMEN (sin filtros) + últimos tweets crudos ──
+  // Cuenta usuarios DISTINTOS arrobando a cuentas oficiales en ventana corta.
+  const volList = await env.TWEETS.list({ prefix: 'v_', limit: 1000 });
+  const usersInWindow = new Map();
+  const todosCiudadanos = [];  // lista completa para los "últimos tweets"
+  for (const k of volList.keys) {
+    const raw = await env.TWEETS.get(k.name);
+    if (!raw) continue;
+    const v = JSON.parse(raw);
+    todosCiudadanos.push(v);
+    if ((now - v.fecha_ms) > VOLUMEN_WINDOW_MS) continue;
+    const u = (v.user || '').toLowerCase();
+    if (!u) continue;
+    if (!usersInWindow.has(u)) usersInWindow.set(u, []);
+    usersInWindow.get(u).push(v);
+  }
+  let alertaVolumen = null;
+  if (usersInWindow.size >= VOLUMEN_THRESHOLD_USERS) {
+    const muestra = [];
+    let allMs = [];
+    for (const [u, tws] of usersInWindow.entries()) {
+      tws.sort((a, b) => b.fecha_ms - a.fecha_ms);
+      muestra.push({ user: u, tweet_id: tws[0].tweet_id, text: tws[0].text, url: tws[0].url, fecha_iso: tws[0].fecha_iso });
+      for (const t of tws) allMs.push(t.fecha_ms);
+    }
+    muestra.sort((a, b) => Date.parse(b.fecha_iso) - Date.parse(a.fecha_iso));
+    alertaVolumen = {
+      tipo: 'posible_incidencia',
+      usuarios_distintos: usersInWindow.size,
+      total_menciones: allMs.length,
+      primer_ms: Math.min(...allMs),
+      ultimo_ms: Math.max(...allMs),
+      muestra: muestra.slice(0, 8),
+    };
+  }
+  // Últimos N tweets ciudadanos crudos (para mostrar al final del banner como "feed")
+  todosCiudadanos.sort((a, b) => b.fecha_ms - a.fecha_ms);
+  const ultimosTweets = todosCiudadanos.slice(0, ULTIMOS_TWEETS_N).map(v => ({
+    user: v.user, tweet_id: v.tweet_id, text: v.text, url: v.url, fecha_iso: v.fecha_iso, fecha_ms: v.fecha_ms,
   }));
-  writes++;
+  // Guardar volumen sólo si cambió: usamos firma compacta (cantidad + tweet_ids + flag de alerta)
+  const prevVolRaw = await env.TW_INCIDENTES.get('_volumen_active');
+  const prevVol = prevVolRaw ? JSON.parse(prevVolRaw) : null;
+  const sigVol = (obj) => obj
+    ? `${obj.usuarios_distintos_actual}|${(obj.ultimos_tweets || []).map(t => t.tweet_id).join(',')}|${obj.alerta ? '1' : '0'}`
+    : '';
+  const newVolPayload = {
+    generated_at: nowIso,
+    threshold_users: VOLUMEN_THRESHOLD_USERS,
+    window_min: VOLUMEN_WINDOW_MS / 60000,
+    usuarios_distintos_actual: usersInWindow.size,
+    alerta: alertaVolumen,
+    ultimos_tweets: ultimosTweets,
+  };
+  if (sigVol(prevVol) !== sigVol(newVolPayload)) {
+    await env.TW_INCIDENTES.put('_volumen_active', JSON.stringify(newVolPayload));
+    writes++;
+  }
 
   result.queries = queriesResult;
   result.tweets_search = items.length;
   result.quejas_nuevas = nuevas;
   result.alertas_activas = alertasCiudadanas.length;
+  result.volumen = { usuarios_actual: usersInWindow.size, alerta: !!alertaVolumen };
   result.writes = writes;
   return result;
 }
@@ -718,6 +810,13 @@ function detectTipoTweet(text) {
   if (/realiza\s+su\s+recorrido\s+(completo|habitual)/.test(t)) return 'fin';
   if (/ya\s+se\s+detienen?\s+en\s+todas\s+las\s+estaciones/.test(t)) return 'fin';
   if (/reabri[oó]?\s+(la\s+estación|el\s+servicio)/.test(t)) return 'fin';
+
+  // OBRAS / RENOVACIÓN ESTRUCTURAL — prioritario: si el cierre es por obras crónicas,
+  // no es un incidente puntual del día sino info operativa permanente.
+  // Va antes que las reglas de inicio_estacion_cerrada para evitar falsos positivos
+  // como "Estación Tribunales cerrada por obras de renovación integral".
+  if (/(renovaci[oó]n\s+integral|obras\s+de\s+renovaci[oó]n|cerrad[ao]\s+por\s+obras|cerrad[ao]\s+por\s+trabajos|por\s+obras\s+de|trabajos\s+de\s+renovaci[oó]n|horario\s+extendido|servicio\s+ampliado)/.test(t)) return 'info_operativa';
+
   // INICIOS
   if (/(servicio\s+interrumpido|sin\s+servicio|no\s+circula|servicio\s+suspendido)/.test(t)) return 'inicio_interrumpido';
   if (/(medida\s+de\s+fuerza|paro\s+gremial|paro\s+de)/.test(t)) return 'inicio_interrumpido';
@@ -725,19 +824,21 @@ function detectTipoTweet(text) {
   if (/estaci[oó]n\s+\w+\s+cerrada/.test(t)) return 'inicio_estacion_cerrada';
   if (/servicio\s+limitado/.test(t) || /circula\s+con\s+servicio\s+limitado/.test(t)) return 'inicio_limitado';
   if (/(servicio\s+(con\s+)?demora|circula\s+con\s+demora|con\s+demoras?)/.test(t)) return 'inicio_demora';
-  if (/(horario\s+extendido|obras|trabajos)/.test(t)) return 'info_operativa';
+  if (/(obras|trabajos)/.test(t)) return 'info_operativa';
   return 'otro';
 }
 
 function detectTipoTexto(blob, effect) {
   const t = (blob || '').toLowerCase();
+  // OBRAS / RENOVACIÓN: prioritario (mismo motivo que en detectTipoTweet)
+  if (/(renovaci[oó]n\s+integral|obras\s+de\s+renovaci[oó]n|cerrad[ao]\s+por\s+obras|cerrad[ao]\s+por\s+trabajos|por\s+obras\s+de|trabajos\s+de\s+renovaci[oó]n|horario\s+extendido|servicio\s+ampliado)/.test(t)) return 'info_operativa';
   if (/(servicio\s+interrumpido|sin\s+servicio|no\s+circula|servicio\s+suspendido)/.test(t)) return 'inicio_interrumpido';
   if (/(medida\s+de\s+fuerza|paro\s+gremial|paro\s+de)/.test(t)) return 'inicio_interrumpido';
   if (/no\s+se\s+detienen?\s+en/.test(t)) return 'inicio_estacion_cerrada';
   if (/estaci[oó]n\s+\w+\s+cerrada/.test(t)) return 'inicio_estacion_cerrada';
   if (/servicio\s+limitado/.test(t)) return 'inicio_limitado';
   if (/(servicio\s+(con\s+)?demora|circula\s+con\s+demora|con\s+demoras?)/.test(t)) return 'inicio_demora';
-  if (/(horario\s+extendido|obras|trabajos|ampliaci[oó]n)/.test(t)) return 'info_operativa';
+  if (/(obras|trabajos|ampliaci[oó]n)/.test(t)) return 'info_operativa';
   if (effect === 1) return 'inicio_interrumpido';
   if (effect === 2) return 'inicio_limitado';
   if (effect === 3) return 'inicio_demora';
@@ -770,6 +871,8 @@ async function handleData(env) {
   // Quejas ciudadanas (cluster activo)
   const quejasRaw = await env.TW_INCIDENTES.get('_quejas_active');
   const quejas = quejasRaw ? JSON.parse(quejasRaw) : null;
+  const volRaw = await env.TW_INCIDENTES.get('_volumen_active');
+  const volumen = volRaw ? JSON.parse(volRaw) : null;
   // Tweets: incidentes
   const idxTwRaw = await env.TW_INCIDENTES.get('_index');
   const idxTw = idxTwRaw ? JSON.parse(idxTwRaw) : [];
@@ -794,6 +897,7 @@ async function handleData(env) {
     activas_gcba,
     activas_tweets,
     quejas_ciudadanas: quejas,
+    volumen_ciudadano: volumen,
     cerrados_gcba,
     cerrados_tweets,
     totales: {
