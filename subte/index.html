@@ -2407,7 +2407,7 @@ async function init() {
     renderFuentesMonitor(wd);
     renderLiveBanner(combineActivas(wd.activasGcba, wd.activasTweets, wd.quejasCiudadanas, wd.volumenCiudadano, wd.delaysForecast), wd.lastPolls);
     renderLatestTweets(wd.volumenCiudadano);
-    // Auto-refresh cada 60s (re-fetch del worker → re-render todos los banners)
+    // Auto-refresh cada 30s (re-fetch del worker → re-render todos los banners)
     setInterval(async () => {
       const wd2 = await fetchWorkerData();
       _alertasCache.gcba = wd2.activasGcba || [];
@@ -2416,7 +2416,7 @@ async function init() {
       renderLiveBanner(combineActivas(wd2.activasGcba, wd2.activasTweets, wd2.quejasCiudadanas, wd2.volumenCiudadano, wd2.delaysForecast), wd2.lastPolls);
       renderLatestTweets(wd2.volumenCiudadano);
       renderServicioHoy();
-    }, 60000);
+    }, 30000);
     _lineasOn = new Set(DATA.lineas_disponibles);
     _tiposOn = new Set(Object.keys(DATA.tipos));
     // Setear hmYear al año más reciente con datos
