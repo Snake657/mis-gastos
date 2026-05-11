@@ -688,6 +688,40 @@
     font-size: 0.65rem; margin-left: 6px;
   }
 
+  /* ── MONITOR DE FUENTES ── */
+  .fuentes-monitor {
+    display: flex; flex-wrap: wrap; gap: 14px;
+    padding: 10px 14px; margin: 0 0 18px;
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 8px; align-items: center;
+  }
+  .fuentes-title {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.68rem; letter-spacing: 0.08em; text-transform: uppercase;
+    color: var(--text2); margin-right: 4px;
+  }
+  .fuente-item {
+    display: inline-flex; align-items: center; gap: 6px;
+    font-size: 0.78rem; color: var(--text2);
+  }
+  .fuente-dot {
+    width: 8px; height: 8px; border-radius: 50%;
+    background: var(--green); flex-shrink: 0;
+    animation: fuentepulse 1.8s ease-in-out infinite;
+  }
+  .fuente-dot.warn { background: var(--yellow); animation: fuentepulse 2.4s ease-in-out infinite; }
+  .fuente-dot.fail { background: var(--red); animation: none; box-shadow: 0 0 6px rgba(239,68,68,0.5); }
+  @keyframes fuentepulse {
+    0%, 100% { opacity: 1; box-shadow: 0 0 0 0 currentColor; }
+    50% { opacity: 0.55; box-shadow: 0 0 0 4px transparent; }
+  }
+  .fuente-label { font-weight: 600; color: var(--text); }
+  .fuente-time { font-family: 'IBM Plex Mono', monospace; font-size: 0.7rem; color: var(--text3); }
+  @media (max-width: 540px) {
+    .fuentes-monitor { gap: 10px; padding: 8px 10px; font-size: 0.72rem; }
+    .fuentes-title { width: 100%; margin-bottom: 2px; }
+  }
+
   /* ── BANNER LIVE (alertas activas GCBA) ── */
   #live-banner { display: none; margin: 0 0 24px; }
   #live-banner.show { display: block; }
@@ -794,6 +828,31 @@
   <p class="subtitle">
     Demoras, paros e interrupciones registradas. Datos de <a href="https://x.com/Emova_arg" target="_blank" rel="noopener">@Emova_arg</a>, <a href="https://x.com/basubte" target="_blank" rel="noopener">@basubte</a> y la API GCBA.
   </p>
+
+  <!-- Monitor de fuentes (estado de cada feed que alimenta la pagina) -->
+  <div id="fuentes-monitor" class="fuentes-monitor" aria-label="Estado de las fuentes de informacion">
+    <span class="fuentes-title">Fuentes en vivo</span>
+    <div class="fuente-item" data-src="gcba">
+      <span class="fuente-dot fail" id="fdot-gcba"></span>
+      <span class="fuente-label">GCBA alertas</span>
+      <span class="fuente-time" id="ftime-gcba">—</span>
+    </div>
+    <div class="fuente-item" data-src="forecast">
+      <span class="fuente-dot fail" id="fdot-forecast"></span>
+      <span class="fuente-label">GCBA forecast</span>
+      <span class="fuente-time" id="ftime-forecast">—</span>
+    </div>
+    <div class="fuente-item" data-src="tweets">
+      <span class="fuente-dot fail" id="fdot-tweets"></span>
+      <span class="fuente-label">@Emova_arg / @basubte</span>
+      <span class="fuente-time" id="ftime-tweets">—</span>
+    </div>
+    <div class="fuente-item" data-src="ciudadano">
+      <span class="fuente-dot fail" id="fdot-ciudadano"></span>
+      <span class="fuente-label">Twitter ciudadano</span>
+      <span class="fuente-time" id="ftime-ciudadano">—</span>
+    </div>
+  </div>
 
   <!-- Estado del servicio HOY (datos de Emova) -->
   <div id="svc-banner" class="svc-banner" style="display:none">
@@ -1931,6 +1990,54 @@ const SRC_BADGES = {
   forecast:  { label: 'GCBA forecast (auto)', bg: 'rgba(244,114,182,0.18)', color: '#f472b6' },
 };
 
+function renderFuentesMonitor(wd) {
+  // wd: el objeto que devuelve fetchWorkerData(). Mirar timestamps de cada fuente y pintar verde/amarillo/rojo.
+  const now = Date.now();
+  const OK_MS = 2 * 60 * 1000;       // <2 min: verde
+  const WARN_MS = 10 * 60 * 1000;    // 2-10 min: amarillo. >10: rojo.
+
+  function classify(ts) {
+    if (!ts) return 'fail';
+    const age = now - ts;
+    if (age < OK_MS) return 'ok';
+    if (age < WARN_MS) return 'warn';
+    return 'fail';
+  }
+  function fmtAge(ts) {
+    if (!ts) return '—';
+    return _hace(ts);
+  }
+  function setSource(id, ts) {
+    const dot = document.getElementById('fdot-' + id);
+    const time = document.getElementById('ftime-' + id);
+    if (!dot) return;
+    const cls = classify(ts);
+    dot.classList.remove('warn', 'fail');
+    if (cls === 'warn') dot.classList.add('warn');
+    if (cls === 'fail') dot.classList.add('fail');
+    if (time) time.textContent = fmtAge(ts);
+  }
+
+  // GCBA alertas oficiales: last_polls.gcba.last_run_ms
+  const tsGcba = wd?.lastPolls?.gcba?.last_run_ms || null;
+  setSource('gcba', tsGcba);
+
+  // GCBA forecast (delays). El timestamp viene en el snapshot de delays_forecast.generated_at
+  // wd.delaysForecast no esta en lastPolls, lo leemos directamente
+  const tsForecast = wd?.delaysForecast?.generated_at ? Date.parse(wd.delaysForecast.generated_at) : null;
+  setSource('forecast', tsForecast);
+
+  // Twitter oficial: last_polls.tweets.last_run_ms (poolea @Emova_arg + @basubte)
+  const tsTweets = wd?.lastPolls?.tweets?.last_run_ms || null;
+  setSource('tweets', tsTweets);
+
+  // Twitter ciudadano: max entre quejas_ciudadanas.generated_at y volumen_ciudadano.generated_at
+  const tQ = wd?.quejasCiudadanas?.generated_at ? Date.parse(wd.quejasCiudadanas.generated_at) : 0;
+  const tV = wd?.volumenCiudadano?.generated_at ? Date.parse(wd.volumenCiudadano.generated_at) : 0;
+  const tsCiud = Math.max(tQ, tV) || null;
+  setSource('ciudadano', tsCiud);
+}
+
 function renderLiveBanner(activas, lastPolls) {
   const banner = $('live-banner');
   const list = $('live-list');
@@ -2283,6 +2390,7 @@ async function init() {
     // Render del banner "Estado HOY" (con novedades por línea desde la cache)
     renderServicioHoy();
     setInterval(renderServicioHoy, 5 * 60 * 1000);  // refrescar countdown / cambio de estado
+    renderFuentesMonitor(wd);
     renderLiveBanner(combineActivas(wd.activasGcba, wd.activasTweets, wd.quejasCiudadanas, wd.volumenCiudadano, wd.delaysForecast), wd.lastPolls);
     renderLatestTweets(wd.volumenCiudadano);
     // Auto-refresh cada 60s (re-fetch del worker → re-render todos los banners)
@@ -2290,6 +2398,7 @@ async function init() {
       const wd2 = await fetchWorkerData();
       _alertasCache.gcba = wd2.activasGcba || [];
       _alertasCache.tweets = wd2.activasTweets || [];
+      renderFuentesMonitor(wd2);
       renderLiveBanner(combineActivas(wd2.activasGcba, wd2.activasTweets, wd2.quejasCiudadanas, wd2.volumenCiudadano, wd2.delaysForecast), wd2.lastPolls);
       renderLatestTweets(wd2.volumenCiudadano);
       renderServicioHoy();
