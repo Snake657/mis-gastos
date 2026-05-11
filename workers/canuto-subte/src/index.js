@@ -38,14 +38,14 @@ const NITTER_HOSTS = [
 const TW_USERS = ['Emova_arg', 'basubte'];
 const QUEJAS_QUERIES = ['@Emova_arg', '@basubte'];  // search queries para detectar quejas ciudadanas (cualquier mención a las cuentas oficiales)
 const QUEJAS_EXCLUDE_USERS = new Set(['emova_arg', 'basubte']);  // tweets propios de las cuentas oficiales (los polleamos por separado)
-const QUEJAS_WINDOW_MS = 30 * 60 * 1000;   // ventana de 30 min para clusters
-const QUEJAS_THRESHOLD = 3;                 // mínimo de señales para disparar alerta
+const QUEJAS_WINDOW_MS = 10 * 60 * 1000;   // ventana de 10 min para clusters
+const QUEJAS_THRESHOLD = 2;                 // mínimo de señales para disparar alerta (quejas tienen filtro fino, threshold bajo OK)
 const QUEJAS_TTL_S = 7 * 24 * 3600;         // dejar tweets ciudadanos en KV 7 días
 // Detector de VOLUMEN (sin filtros de keywords): si hay usuarios distintos
 // arrobando a las cuentas oficiales en una ventana corta, marcar como posible incidencia.
 // Es solo un indicador en el banner, NO entra al calendario.
 const VOLUMEN_THRESHOLD_USERS = 3;          // ≥3 usuarios DISTINTOS para disparar
-const VOLUMEN_WINDOW_MS = 15 * 60 * 1000;   // ventana de 15 min (más sensible que las quejas precisas)
+const VOLUMEN_WINDOW_MS = 10 * 60 * 1000;   // ventana de 10 min (más laxo que las quejas precisas: no filtra keywords)
 const VOLUMEN_TTL_S = 7 * 24 * 3600;        // tweets de volumen en KV 7 días
 const ULTIMOS_TWEETS_N = 5;                 // cuántos tweets ciudadanos crudos mostrar al final del banner
 
@@ -85,6 +85,9 @@ export default {
     if (url.pathname === '/diag-nitter') {
       const user = url.searchParams.get('user') || 'Emova_arg';
       return cors(new Response(JSON.stringify(await diagnoseNitter(user), null, 2), { headers: { 'Content-Type': 'application/json' } }));
+    }
+    if (url.pathname === '/diag-gtfsrt') {
+      return cors(new Response(JSON.stringify(await diagnoseGtfsRt(env), null, 2), { headers: { 'Content-Type': 'application/json' } }));
     }
     if (url.pathname === '/poll' && request.method === 'POST') {
       const auth = request.headers.get('x-admin-key');
@@ -757,6 +760,69 @@ async function diagnoseNitter(user) {
       out.push({ host, status: resp.status, bytes: text.length, items: (text.match(/<item>/g) || []).length, ms: Date.now() - t0 });
     } catch (e) {
       out.push({ host, error: e.message, ms: Date.now() - t0 });
+    }
+  }
+  return out;
+}
+
+// Diagnóstico de los feeds GTFS-RT del subte (vehiclePositions, tripUpdates, forecastGTFS).
+// Llama c/u con las credenciales reales y devuelve summary: header timestamp, entity count,
+// muestra de 3 entities, y si hubo error. Sirve para decidir si vale la pena implementar
+// detectores basados en estos feeds.
+async function diagnoseGtfsRt(env) {
+  const base = 'https://apitransporte.buenosaires.gob.ar/subtes';
+  const endpoints = ['vehiclePositions', 'tripUpdates', 'forecastGTFS'];
+  const out = { at: new Date().toISOString(), endpoints: {} };
+  for (const ep of endpoints) {
+    const u = new URL(`${base}/${ep}`);
+    u.searchParams.set('json', '1');
+    u.searchParams.set('client_id', env.GCBA_CLIENT_ID);
+    u.searchParams.set('client_secret', env.GCBA_CLIENT_SECRET);
+    const t0 = Date.now();
+    try {
+      const ctrl = new AbortController();
+      const timer = setTimeout(() => ctrl.abort(), 8000);
+      const resp = await fetch(u.toString(), {
+        headers: { 'Accept': 'application/json' },
+        cf: { cacheTtl: 0 }, signal: ctrl.signal,
+      });
+      clearTimeout(timer);
+      const ms = Date.now() - t0;
+      const ct = resp.headers.get('content-type') || '';
+      const bodyText = await resp.text();
+      let parsed = null, parseError = null;
+      try { parsed = JSON.parse(bodyText); } catch (e) { parseError = e.message; }
+      const entry = { http: resp.status, content_type: ct, bytes: bodyText.length, ms };
+      if (parsed) {
+        const entities = Array.isArray(parsed.entity) ? parsed.entity : [];
+        entry.header_ts = parsed.header?.timestamp || null;
+        entry.header_ts_iso = entry.header_ts ? new Date(entry.header_ts * 1000).toISOString() : null;
+        entry.entity_count = entities.length;
+        entry.sample_3 = entities.slice(0, 3);
+        // Algunos breakdowns útiles
+        if (ep === 'vehiclePositions') {
+          const lineas = {};
+          for (const e of entities) {
+            const rid = e?.vehicle?.trip?.route_id || e?.vehicle?.vehicle?.id || 'unknown';
+            lineas[rid] = (lineas[rid] || 0) + 1;
+          }
+          entry.por_route_id = lineas;
+        }
+        if (ep === 'tripUpdates' || ep === 'forecastGTFS') {
+          const lineas = {};
+          for (const e of entities) {
+            const rid = e?.trip_update?.trip?.route_id || 'unknown';
+            lineas[rid] = (lineas[rid] || 0) + 1;
+          }
+          entry.por_route_id = lineas;
+        }
+      } else {
+        entry.parse_error = parseError;
+        entry.body_preview = bodyText.slice(0, 400);
+      }
+      out.endpoints[ep] = entry;
+    } catch (e) {
+      out.endpoints[ep] = { error: e.message, ms: Date.now() - t0 };
     }
   }
   return out;
