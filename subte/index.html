@@ -670,11 +670,16 @@
     font-weight: 400; color: var(--text3); text-transform: none;
     margin-left: auto; letter-spacing: 0;
   }
-  .latest-tw-list { display: flex; flex-direction: column; gap: 6px; }
+  .latest-tw-list { display: flex; flex-direction: column; gap: 3px; }
   .latest-tw-item {
-    font-size: 0.78rem; line-height: 1.4;
-    color: var(--text); padding: 4px 0;
+    font-size: 0.74rem; line-height: 1.35;
+    color: var(--text); padding: 3px 0;
     border-bottom: 1px dashed var(--border);
+    /* Max 2 lineas por tweet — evita que long tweets dominen el cuadrito */
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
   }
   .latest-tw-item:last-child { border-bottom: 0; }
   .latest-tw-item .user {
@@ -2359,8 +2364,8 @@ function renderLatestTweets(volumenObj) {
     wrap.style.display = 'none';
     return;
   }
-  // Tomar los 3 más recientes
-  const topTweets = tweets.slice(0, 3);
+  // Tomar los 5 más recientes (matchea ULTIMOS_TWEETS_N del worker)
+  const topTweets = tweets.slice(0, 5);
   list.innerHTML = topTweets.map(t => {
     const txt = (t.text || '').replace(/&/g, '&amp;').replace(/</g, '&lt;');
     const ago = t.fecha_ms ? _hace(t.fecha_ms) : '';
