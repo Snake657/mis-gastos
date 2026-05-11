@@ -1,0 +1,575 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex,nofollow">
+<title>Inspector subte · canuto.ar</title>
+<style>
+  :root {
+    --bg:         #0d0f14;
+    --surface:    #161922;
+    --surface2:   #1d2130;
+    --border:     #232736;
+    --border2:    #2d3245;
+    --text:       #e6e9ef;
+    --text2:      #9ca3af;
+    --text3:      #6b7280;
+    --green:      #22c55e;
+    --red:        #ef4444;
+    --yellow:     #fbbf24;
+    --orange:     #f97316;
+    --accent:     #22d3ee;
+    --purple:     #a855f7;
+    --la: #00a4d6; --lb: #ef4444; --lc: #1d4ed8; --ld: #16a34a;
+    --le: #a855f7; --lh: #eab308; --lp: #d97706;
+  }
+  * { box-sizing: border-box; }
+  body {
+    background: var(--bg); color: var(--text);
+    font-family: 'IBM Plex Sans', -apple-system, sans-serif;
+    margin: 0; padding: 20px;
+    min-height: 100vh;
+    font-size: 14px;
+    -webkit-font-smoothing: antialiased;
+  }
+  .container { max-width: 1400px; margin: 0 auto; }
+  h1 {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 1.1rem; letter-spacing: 0.05em;
+    margin: 0 0 4px;
+  }
+  .header-bar {
+    display: flex; align-items: center; gap: 16px;
+    padding: 12px 16px; margin-bottom: 18px;
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 8px;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.78rem;
+  }
+  .header-bar .right { margin-left: auto; color: var(--text3); }
+  .live-dot {
+    width: 8px; height: 8px; border-radius: 50%;
+    background: var(--green); display: inline-block;
+    animation: pulse 1.6s ease-in-out infinite;
+    margin-right: 6px;
+  }
+  @keyframes pulse {
+    0%,100% { opacity: 1; }
+    50% { opacity: 0.5; }
+  }
+  .section {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 14px 16px;
+    margin-bottom: 16px;
+  }
+  .section-title {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.72rem; letter-spacing: 0.08em;
+    text-transform: uppercase; color: var(--text2);
+    margin-bottom: 12px;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .section-title .meta {
+    margin-left: auto; color: var(--text3);
+    font-size: 0.7rem; text-transform: none; letter-spacing: 0;
+  }
+  table {
+    width: 100%; border-collapse: collapse;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.78rem;
+  }
+  th {
+    text-align: left; padding: 6px 10px;
+    color: var(--text3); font-weight: 500;
+    border-bottom: 1px solid var(--border);
+    font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.05em;
+  }
+  td {
+    padding: 8px 10px;
+    border-bottom: 1px dashed var(--border);
+  }
+  td.num { text-align: right; }
+  tr:last-child td { border-bottom: 0; }
+  tr.alerta td { background: rgba(239,68,68,0.06); }
+  tr.observacion td { background: rgba(251,191,36,0.04); }
+  .linea-badge {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 22px; height: 22px; border-radius: 50%;
+    font-weight: 700; color: #0d0f14; font-size: 0.7rem;
+  }
+  .status-pill {
+    display: inline-block; padding: 2px 8px;
+    border-radius: 4px; font-size: 0.7rem; font-weight: 600;
+  }
+  .status-pill.normal { background: rgba(34,197,94,0.15); color: var(--green); }
+  .status-pill.observacion { background: rgba(251,191,36,0.15); color: var(--yellow); }
+  .status-pill.alerta { background: rgba(239,68,68,0.18); color: var(--red); }
+  .hb-grid {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 10px;
+  }
+  .hb-card {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 10px 12px;
+    display: flex; flex-direction: column;
+    gap: 4px;
+  }
+  .hb-card .hb-title { font-size: 0.75rem; color: var(--text2); display: flex; align-items: center; gap: 6px; }
+  .hb-card .hb-time { font-family: 'IBM Plex Mono', monospace; font-size: 0.78rem; }
+  .hb-card .hb-extra { font-size: 0.7rem; color: var(--text3); font-family: 'IBM Plex Mono', monospace; }
+  .dot {
+    width: 8px; height: 8px; border-radius: 50%;
+    display: inline-block;
+  }
+  .dot.ok { background: var(--green); animation: pulse 1.8s ease-in-out infinite; }
+  .dot.warn { background: var(--yellow); }
+  .dot.fail { background: var(--red); }
+  .sparkline {
+    display: inline-block; vertical-align: middle;
+    margin-left: 6px;
+  }
+  .grid-2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+  }
+  @media (max-width: 900px) {
+    .grid-2 { grid-template-columns: 1fr; }
+  }
+  details { margin-top: 8px; }
+  details summary {
+    cursor: pointer; padding: 6px 10px;
+    background: var(--surface2);
+    border-radius: 6px;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.75rem;
+    color: var(--text2);
+  }
+  details[open] summary { margin-bottom: 8px; }
+  pre.raw {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 12px;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.7rem;
+    color: var(--text2);
+    overflow-x: auto;
+    max-height: 480px;
+    overflow-y: auto;
+    line-height: 1.5;
+  }
+  .tweet-row {
+    padding: 6px 0;
+    border-bottom: 1px dashed var(--border);
+    font-size: 0.78rem;
+    line-height: 1.4;
+  }
+  .tweet-row:last-child { border-bottom: 0; }
+  .tweet-user {
+    color: var(--accent);
+    font-family: 'IBM Plex Mono', monospace;
+    font-weight: 600;
+    margin-right: 8px;
+    text-decoration: none;
+  }
+  .tweet-time {
+    color: var(--text3);
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.7rem;
+    margin-left: 8px;
+  }
+  .nav-link {
+    color: var(--accent);
+    text-decoration: none;
+    font-size: 0.75rem;
+  }
+  .nav-link:hover { text-decoration: underline; }
+  .countdown {
+    color: var(--accent);
+    font-family: 'IBM Plex Mono', monospace;
+    font-weight: 600;
+  }
+  .err {
+    background: rgba(239,68,68,0.1);
+    border: 1px solid var(--red);
+    color: var(--red);
+    padding: 10px;
+    border-radius: 6px;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.75rem;
+  }
+  /* History sparkline mini-table */
+  .hist-table {
+    font-size: 0.7rem;
+  }
+  .hist-table td { padding: 4px 8px; }
+  .hist-table .cell-up { color: var(--red); }
+  .hist-table .cell-down { color: var(--green); }
+  .hist-table .cell-same { color: var(--text3); }
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="header-bar">
+    <span><span class="live-dot"></span> <strong>INSPECTOR SUBTE</strong> · canuto.ar</span>
+    <a href="/subte/" class="nav-link">← volver a canuto.ar/subte</a>
+    <span class="right">
+      auto-refresh cada <span class="countdown" id="refresh-int">10</span>s
+      · próximo en <span class="countdown" id="next-refresh">—</span>s
+      · último fetch: <span id="last-fetch">—</span>
+    </span>
+  </div>
+
+  <div id="error-box"></div>
+
+  <!-- HEARTBEATS DE LAS 4 FUENTES -->
+  <div class="section">
+    <div class="section-title">
+      <span>● Heartbeats de fuentes</span>
+      <span class="meta">last_run de cada poller del worker (debería ser &lt;90s siempre)</span>
+    </div>
+    <div class="hb-grid" id="hb-grid"></div>
+  </div>
+
+  <!-- ESTADO POR LINEA -->
+  <div class="section">
+    <div class="section-title">
+      <span>📊 Estado por línea — delays_forecast.por_linea</span>
+      <span class="meta" id="estado-meta">—</span>
+    </div>
+    <table id="estado-table">
+      <thead>
+        <tr>
+          <th>Línea</th>
+          <th class="num">Trips</th>
+          <th class="num">Avg delay</th>
+          <th class="num">Max delay</th>
+          <th class="num">Growth 5min</th>
+          <th class="num">Hist (samples)</th>
+          <th>Status</th>
+          <th>Trip IDs</th>
+        </tr>
+      </thead>
+      <tbody id="estado-body"></tbody>
+    </table>
+  </div>
+
+  <!-- HISTORIAL JS (de esta sesion) -->
+  <div class="section">
+    <div class="section-title">
+      <span>📈 Historial corto (esta sesión, últimos 12 fetches)</span>
+      <span class="meta">se va llenando a medida que la página corre — no persiste al recargar</span>
+    </div>
+    <table class="hist-table">
+      <thead>
+        <tr>
+          <th>Línea</th>
+          <th colspan="12" style="text-align:center">avg_delay_s en cada fetch (más nuevo a la derecha)</th>
+        </tr>
+      </thead>
+      <tbody id="hist-body"></tbody>
+    </table>
+  </div>
+
+  <!-- ALERTAS ACTIVAS OFICIALES -->
+  <div class="section">
+    <div class="section-title">
+      <span>🚨 Alertas activas (GCBA + Twitter oficial)</span>
+      <span class="meta" id="activas-meta">—</span>
+    </div>
+    <table>
+      <thead>
+        <tr>
+          <th>Origen</th>
+          <th>Línea</th>
+          <th>Tipo</th>
+          <th>Desde</th>
+          <th>Texto</th>
+        </tr>
+      </thead>
+      <tbody id="activas-body"></tbody>
+    </table>
+  </div>
+
+  <div class="grid-2">
+    <!-- ULTIMOS TWEETS CIUDADANOS -->
+    <div class="section">
+      <div class="section-title">
+        <span>💬 Últimos tweets ciudadanos (volumen_ciudadano.ultimos_tweets)</span>
+      </div>
+      <div id="tweets-list"></div>
+    </div>
+
+    <!-- QUEJAS / VOLUMEN CIUDADANO ALERTAS -->
+    <div class="section">
+      <div class="section-title">
+        <span>📣 Quejas + volumen agregado</span>
+      </div>
+      <div id="quejas-summary"></div>
+    </div>
+  </div>
+
+  <!-- DETALLE DE TRIPS POR LINEA -->
+  <div class="section">
+    <div class="section-title">
+      <span>🚇 Detalle de trips visibles por línea (trips_sample)</span>
+      <span class="meta">cada viaje actualmente en el feed forecastGTFS</span>
+    </div>
+    <div id="trips-detail"></div>
+  </div>
+
+  <!-- RAW JSON -->
+  <details>
+    <summary>🧬 Ver JSON raw de /data.json (debug)</summary>
+    <pre class="raw" id="raw-json">—</pre>
+  </details>
+
+  <details>
+    <summary>🧬 Ver respuesta raw de /diag-gtfsrt (debug)</summary>
+    <pre class="raw" id="raw-diag">click para cargar...</pre>
+  </details>
+</div>
+
+<script>
+const WORKER_URL = 'https://canuto-subte.lenzimartin.workers.dev';
+const REFRESH_INTERVAL_S = 10;
+let nextRefreshIn = REFRESH_INTERVAL_S;
+let intervalId = null;
+const historialJS = { A:[], B:[], C:[], D:[], E:[], H:[], P:[] };
+const MAX_HIST = 12;
+
+function $(id) { return document.getElementById(id); }
+function fmtAge(ms) {
+  if (!ms) return '—';
+  const diff = Date.now() - ms;
+  const s = Math.floor(diff/1000);
+  if (s < 60) return `hace ${s}s`;
+  const m = Math.floor(s/60);
+  if (m < 60) return `hace ${m}min ${s%60}s`;
+  const h = Math.floor(m/60);
+  return `hace ${h}h ${m%60}min`;
+}
+function fmtAgeShort(ms) {
+  if (!ms) return '—';
+  const s = Math.floor((Date.now() - ms)/1000);
+  if (s < 90) return s + 's';
+  return Math.floor(s/60) + 'm ' + (s%60) + 's';
+}
+function classifyHB(ms) {
+  if (!ms) return 'fail';
+  const age = Date.now() - ms;
+  if (age < 120000) return 'ok';
+  if (age < 600000) return 'warn';
+  return 'fail';
+}
+
+async function fetchData() {
+  try {
+    const r = await fetch(WORKER_URL + '/data.json?ts=' + Date.now(), { cache: 'no-store' });
+    if (!r.ok) throw new Error('HTTP ' + r.status);
+    const j = await r.json();
+    $('error-box').innerHTML = '';
+    return j;
+  } catch (e) {
+    $('error-box').innerHTML = `<div class="err">Error fetching data: ${e.message}</div>`;
+    return null;
+  }
+}
+
+function render(j) {
+  if (!j) return;
+
+  // === Heartbeats ===
+  const lp = j.last_polls || {};
+  const sources = [
+    { id: 'gcba',     label: 'GCBA alertas',        extra: (m) => `vivas:${m?.alerts_vivas??'?'} writes:${m?.writes_en_ciclo??'?'}` },
+    { id: 'forecast', label: 'GCBA forecast',       extra: (m) => `trips:${m?.total_trips??'?'} alertas:${m?.alertas_activas??'?'}` },
+    { id: 'tweets',   label: '@Emova_arg/@basubte', extra: (m) => `users:${(m?.users_polled||[]).join(',')} nuevos:${m?.tweets_nuevos??'?'}` },
+    { id: 'quejas',   label: 'Twitter ciudadano',   extra: (m) => `vol_users:${m?.usuarios_actual??'?'} alertas:${m?.alertas_activas??'?'}` },
+  ];
+  $('hb-grid').innerHTML = sources.map(s => {
+    const m = lp[s.id] || {};
+    const ms = m.last_run_ms;
+    const cls = classifyHB(ms);
+    return `<div class="hb-card">
+      <div class="hb-title"><span class="dot ${cls}"></span> ${s.label}</div>
+      <div class="hb-time">${fmtAge(ms)}</div>
+      <div class="hb-extra">${s.extra(m)}</div>
+      <div class="hb-extra" style="color:var(--text3)">last_run: ${m.last_run || '—'}</div>
+    </div>`;
+  }).join('');
+
+  // === Estado por linea ===
+  const df = j.delays_forecast || {};
+  $('estado-meta').textContent = df.generated_at ? `generated_at: ${df.generated_at} · header_ts: ${df.header_ts_iso || '—'} · total_trips: ${df.total_trips || 0}` : '—';
+  const lineas = ['A','B','C','D','E','H','P'];
+  const por = df.por_linea || {};
+  $('estado-body').innerHTML = lineas.map(k => {
+    const v = por[k];
+    if (!v) {
+      return `<tr style="opacity:0.4"><td><span class="linea-badge" style="background:var(--l${k.toLowerCase()})">${k}</span></td><td colspan="7" style="color:var(--text3)">sin datos en el feed</td></tr>`;
+    }
+    const avgMin = (v.avg_delay_s / 60).toFixed(1);
+    const maxMin = (v.max_delay_s / 60).toFixed(1);
+    const g = v.delay_growth_5min_s;
+    let growthCell = '<span style="color:var(--text3)">sin historial</span>';
+    if (g !== null && g !== undefined) {
+      const sign = g >= 0 ? '+' : '';
+      const col = g >= 90 ? 'var(--red)' : (g <= -90 ? 'var(--green)' : 'var(--text2)');
+      growthCell = `<span style="color:${col}">${sign}${(g/60).toFixed(1)}min</span>`;
+    }
+    const tripsStr = (v.trips_sample || []).map(t => `${t.trip_id}/d${t.direction}`).join(' ');
+    return `<tr class="${v.status}">
+      <td><span class="linea-badge" style="background:var(--l${k.toLowerCase()})">${k}</span></td>
+      <td class="num">${v.trips_count || 0}</td>
+      <td class="num">${v.avg_delay_s}s (${avgMin}m)</td>
+      <td class="num">${v.max_delay_s}s (${maxMin}m)</td>
+      <td class="num">${growthCell}</td>
+      <td class="num">${v.delay_growth_samples || 0}</td>
+      <td><span class="status-pill ${v.status}">${v.status}</span></td>
+      <td style="color:var(--text3);font-size:0.72rem">${tripsStr}</td>
+    </tr>`;
+  }).join('');
+
+  // === Historial JS-side: append nuevo valor ===
+  for (const k of lineas) {
+    const v = por[k];
+    historialJS[k].push(v ? v.avg_delay_s : null);
+    if (historialJS[k].length > MAX_HIST) historialJS[k].shift();
+  }
+  $('hist-body').innerHTML = lineas.map(k => {
+    const arr = historialJS[k];
+    const cells = [];
+    for (let i = 0; i < MAX_HIST; i++) {
+      const cur = arr[i];
+      const prev = i > 0 ? arr[i-1] : null;
+      let cls = 'cell-same';
+      if (cur !== null && prev !== null) {
+        if (cur > prev + 30) cls = 'cell-up';
+        else if (cur < prev - 30) cls = 'cell-down';
+      }
+      const text = cur === null || cur === undefined ? '—' : cur + 's';
+      cells.push(`<td class="num ${cls}">${text}</td>`);
+    }
+    return `<tr><td><span class="linea-badge" style="background:var(--l${k.toLowerCase()})">${k}</span></td>${cells.join('')}</tr>`;
+  }).join('');
+
+  // === Activas oficiales (GCBA + tweets) ===
+  const gcba = j.activas_gcba || [];
+  const tw = j.activas_tweets || [];
+  $('activas-meta').textContent = `GCBA: ${gcba.length} activas · Tweets: ${tw.length} activos`;
+  const rowsActivas = [];
+  for (const a of gcba) {
+    rowsActivas.push(`<tr>
+      <td><span class="status-pill" style="background:rgba(34,211,238,0.15);color:var(--accent)">GCBA</span></td>
+      <td><span class="linea-badge" style="background:var(--l${(a.linea||'a').toLowerCase()})">${a.linea||'?'}</span></td>
+      <td>${a.tipo || '?'}</td>
+      <td style="color:var(--text3);font-size:0.72rem">${a.first_seen || '?'}</td>
+      <td>${(a.text || a.header || '').slice(0,200)}</td>
+    </tr>`);
+  }
+  for (const a of tw) {
+    const text = (a.tweets && a.tweets[0] && a.tweets[0].text) || '';
+    rowsActivas.push(`<tr>
+      <td><span class="status-pill" style="background:rgba(168,85,247,0.15);color:var(--purple)">Twitter</span></td>
+      <td><span class="linea-badge" style="background:var(--l${(a.linea||'a').toLowerCase()})">${a.linea||'?'}</span></td>
+      <td>${a.tipo || '?'}</td>
+      <td style="color:var(--text3);font-size:0.72rem">${a.fecha_inicio_iso || '?'}</td>
+      <td>${text.slice(0,200)}</td>
+    </tr>`);
+  }
+  $('activas-body').innerHTML = rowsActivas.join('') || '<tr><td colspan="5" style="text-align:center;color:var(--text3);padding:20px">sin alertas activas</td></tr>';
+
+  // === Tweets ciudadanos ===
+  const tweets = (j.volumen_ciudadano && j.volumen_ciudadano.ultimos_tweets) || [];
+  $('tweets-list').innerHTML = tweets.slice(0, 10).map(t => `<div class="tweet-row">
+    <a class="tweet-user" href="${t.url}" target="_blank" rel="noopener">@${t.user}</a>
+    ${(t.text || '').replace(/&/g,'&amp;').replace(/</g,'&lt;')}
+    <span class="tweet-time">${fmtAgeShort(t.fecha_ms)} · ${t.fecha_iso}</span>
+  </div>`).join('') || '<div style="color:var(--text3);padding:10px">sin tweets en cache</div>';
+
+  // === Quejas + volumen summary ===
+  const q = j.quejas_ciudadanas || {};
+  const vol = j.volumen_ciudadano || {};
+  $('quejas-summary').innerHTML = `
+    <table>
+      <tr><td style="color:var(--text3)">quejas.threshold</td><td><strong>${q.threshold ?? '?'}</strong> en ${q.window_min ?? '?'} min</td></tr>
+      <tr><td style="color:var(--text3)">quejas.alertas activas</td><td><strong>${(q.alertas||[]).length}</strong> ${(q.alertas||[]).map(a => '['+a.linea+': '+a.cantidad+']').join(' ')}</td></tr>
+      <tr><td style="color:var(--text3)">quejas.generated_at</td><td style="font-size:0.72rem;color:var(--text3)">${q.generated_at || '—'}</td></tr>
+      <tr><td style="color:var(--text3)">volumen.threshold</td><td><strong>${vol.threshold_users ?? '?'}</strong> usuarios distintos en ${vol.window_min ?? '?'} min</td></tr>
+      <tr><td style="color:var(--text3)">volumen.usuarios_actual</td><td><strong>${vol.usuarios_distintos_actual ?? 0}</strong></td></tr>
+      <tr><td style="color:var(--text3)">volumen.alerta</td><td>${vol.alerta ? '<span class="status-pill alerta">DISPARADA</span>' : '<span class="status-pill normal">sin alerta</span>'}</td></tr>
+      <tr><td style="color:var(--text3)">volumen.generated_at</td><td style="font-size:0.72rem;color:var(--text3)">${vol.generated_at || '—'}</td></tr>
+    </table>`;
+
+  // === Detalle de trips por linea ===
+  $('trips-detail').innerHTML = lineas.map(k => {
+    const v = por[k];
+    if (!v || !(v.trips_sample || []).length) return '';
+    return `<details>
+      <summary><span class="linea-badge" style="background:var(--l${k.toLowerCase()});margin-right:8px">${k}</span> ${v.trips_count} trips visible</summary>
+      <table>
+        <thead><tr><th>Trip ID</th><th>Dir</th><th class="num">Max delay</th><th class="num">Last delay</th></tr></thead>
+        <tbody>${v.trips_sample.map(t => `<tr>
+          <td>${t.trip_id}</td>
+          <td>d${t.direction}</td>
+          <td class="num">${t.max_delay_s}s (${(t.max_delay_s/60).toFixed(1)}min)</td>
+          <td class="num">${t.last_delay_s}s (${(t.last_delay_s/60).toFixed(1)}min)</td>
+        </tr>`).join('')}</tbody>
+      </table>
+    </details>`;
+  }).join('');
+
+  // === Raw JSON ===
+  $('raw-json').textContent = JSON.stringify(j, null, 2);
+
+  // === Header timestamp ===
+  $('last-fetch').textContent = new Date().toLocaleTimeString('es-AR');
+}
+
+async function tick() {
+  const j = await fetchData();
+  render(j);
+  nextRefreshIn = REFRESH_INTERVAL_S;
+}
+
+// Countdown
+setInterval(() => {
+  nextRefreshIn -= 1;
+  if (nextRefreshIn <= 0) {
+    nextRefreshIn = REFRESH_INTERVAL_S;
+    tick();
+  }
+  $('next-refresh').textContent = nextRefreshIn;
+}, 1000);
+
+// Cargar diag-gtfsrt cuando se expande el details
+document.querySelector('summary:nth-of-type(1)'); // no-op
+const diagDetails = Array.from(document.querySelectorAll('details')).find(d => d.querySelector('summary')?.textContent?.includes('diag-gtfsrt'));
+if (diagDetails) {
+  let loaded = false;
+  diagDetails.addEventListener('toggle', async () => {
+    if (diagDetails.open && !loaded) {
+      loaded = true;
+      try {
+        const r = await fetch(WORKER_URL + '/diag-gtfsrt?ts=' + Date.now(), { cache: 'no-store' });
+        const txt = await r.text();
+        $('raw-diag').textContent = txt;
+      } catch (e) {
+        $('raw-diag').textContent = 'Error: ' + e.message;
+      }
+    }
+  });
+}
+
+// Primer fetch
+tick();
+</script>
+</body>
+</html>
