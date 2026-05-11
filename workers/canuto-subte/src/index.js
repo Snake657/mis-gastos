@@ -49,6 +49,13 @@ const VOLUMEN_WINDOW_MS = 10 * 60 * 1000;   // ventana de 10 min (más laxo que 
 const VOLUMEN_TTL_S = 7 * 24 * 3600;        // tweets de volumen en KV 7 días
 const ULTIMOS_TWEETS_N = 5;                 // cuántos tweets ciudadanos crudos mostrar al final del banner
 
+// Detector de delays via forecastGTFS (signal mas fuerte: directo del API GCBA, en segundos por viaje).
+const FORECAST_API = 'https://apitransporte.buenosaires.gob.ar/subtes/forecastGTFS';
+const DELAY_OBS_S = 180;       // 3 min: viaje considerado "con observacion"
+const DELAY_ALERT_S = 360;     // 6 min: viaje considerado "con alerta"
+const DELAY_MIN_TRIPS = 2;     // minimo de viajes en esa categoria para que la LINEA entera dispare
+const DELAYS_REFRESH_MS = 10 * 60 * 1000;  // forzar rewrite cada 10 min para que generated_at quede fresco
+
 const RE_WINDOW_MS = 30 * 60 * 1000;
 const MAX_DURATION_MS = 4 * 60 * 60 * 1000;
 const HISTORICOS_LIMIT = 5000;
@@ -74,7 +81,7 @@ const EFFECT_CODES = {
 
 export default {
   async scheduled(event, env, ctx) {
-    ctx.waitUntil(Promise.all([pollGCBA(env), pollTweets(env), pollQuejas(env)]));
+    ctx.waitUntil(Promise.all([pollGCBA(env), pollTweets(env), pollQuejas(env), pollForecast(env)]));
   },
 
   async fetch(request, env) {
@@ -97,6 +104,7 @@ export default {
       if (which === 'all' || which === 'gcba') out.gcba = await pollGCBA(env);
       if (which === 'all' || which === 'tweets') out.tweets = await pollTweets(env);
       if (which === 'all' || which === 'quejas') out.quejas = await pollQuejas(env);
+      if (which === 'all' || which === 'forecast') out.forecast = await pollForecast(env);
       return cors(new Response(JSON.stringify(out, null, 2), { headers: { 'Content-Type': 'application/json' } }));
     }
     return cors(new Response('canuto-subte v3. Endpoints: /data.json, /status', { status: 404 }));
@@ -765,6 +773,136 @@ async function diagnoseNitter(user) {
   return out;
 }
 
+
+// ============================================================
+//  Forecast (delays en tiempo real desde GCBA forecastGTFS)
+// ============================================================
+// Fetch el feed forecastGTFS (shape no estandar: Header + Entity[], con Linea.Estaciones[].arrival.delay
+// en segundos). Agrega por linea: total_trips, delay promedio, delay maximo, viajes en observacion y alerta.
+// Persiste snapshot en TW_INCIDENTES._delays_active. Solo rewrite si cambia el status por linea
+// (o pasaron mas de DELAYS_REFRESH_MS) para no quemar writes de KV.
+
+async function pollForecast(env) {
+  const now = Date.now();
+  const nowIso = new Date(now).toISOString();
+  const result = { ok: true, at: nowIso };
+
+  const u = new URL(FORECAST_API);
+  u.searchParams.set('json', '1');
+  u.searchParams.set('client_id', env.GCBA_CLIENT_ID);
+  u.searchParams.set('client_secret', env.GCBA_CLIENT_SECRET);
+  let data;
+  try {
+    const resp = await fetch(u.toString(), {
+      headers: { 'Accept': 'application/json' },
+      cf: { cacheTtl: 0 },
+    });
+    if (!resp.ok) return { ok: false, error: `HTTP ${resp.status}`, at: nowIso };
+    data = await resp.json();
+  } catch (e) {
+    return { ok: false, error: e.message, at: nowIso };
+  }
+
+  const headerTs = data?.Header?.timestamp || null;
+  const entities = Array.isArray(data?.Entity) ? data.Entity : [];
+
+  // Agrupar viajes por linea (A/B/C/D/E/H/P)
+  const porLinea = {};
+  for (const ent of entities) {
+    const linea = ent?.Linea;
+    if (!linea) continue;
+    const routeId = linea.Route_Id || 'unknown';
+    let lineaKey = 'X';
+    const m = /linea\s*([abcdeh])/i.exec(routeId);
+    if (m) lineaKey = m[1].toUpperCase();
+    else if (/premetro/i.test(routeId)) lineaKey = 'P';
+    else lineaKey = routeId;
+
+    if (!porLinea[lineaKey]) porLinea[lineaKey] = { trips: [], routeId };
+
+    const estaciones = Array.isArray(linea.Estaciones) ? linea.Estaciones : [];
+    let maxDelay = 0;
+    let lastDelay = 0; // delay de la ultima estacion (proxy del estado actual)
+    for (const est of estaciones) {
+      const dA = est?.arrival?.delay ?? 0;
+      const dD = est?.departure?.delay ?? 0;
+      if (dA > maxDelay) maxDelay = dA;
+      if (dD > maxDelay) maxDelay = dD;
+      lastDelay = Math.max(dA, dD);
+    }
+    porLinea[lineaKey].trips.push({
+      trip_id: linea.Trip_Id,
+      direction: linea.Direction_ID,
+      max_delay_s: maxDelay,
+      last_delay_s: lastDelay,
+    });
+  }
+
+  // Sumario por linea + status
+  const lineaSummary = {};
+  const alertas = [];
+  for (const k of Object.keys(porLinea).sort()) {
+    const trips = porLinea[k].trips;
+    const delays = trips.map(t => t.max_delay_s);
+    const sum = delays.reduce((a, b) => a + b, 0);
+    const avg = trips.length ? Math.round(sum / trips.length) : 0;
+    const max = delays.length ? Math.max(...delays) : 0;
+    const tObs = trips.filter(t => t.max_delay_s >= DELAY_OBS_S).length;
+    const tAlert = trips.filter(t => t.max_delay_s >= DELAY_ALERT_S).length;
+
+    let status = 'normal';
+    if (tAlert >= DELAY_MIN_TRIPS) status = 'alerta';
+    else if (tObs >= DELAY_MIN_TRIPS || avg >= DELAY_OBS_S) status = 'observacion';
+
+    lineaSummary[k] = {
+      route_id: porLinea[k].routeId,
+      trips_count: trips.length,
+      avg_delay_s: avg,
+      max_delay_s: max,
+      trips_obs: tObs,
+      trips_alerta: tAlert,
+      status,
+      trips_sample: trips.slice(0, 5),
+    };
+    if (status === 'alerta') {
+      alertas.push({ linea: k, route_id: porLinea[k].routeId, avg_delay_s: avg, max_delay_s: max, trips_alerta: tAlert });
+    }
+  }
+
+  const newPayload = {
+    generated_at: nowIso,
+    header_ts: headerTs,
+    header_ts_iso: headerTs ? new Date(headerTs * 1000).toISOString() : null,
+    threshold_obs_s: DELAY_OBS_S,
+    threshold_alert_s: DELAY_ALERT_S,
+    threshold_min_trips: DELAY_MIN_TRIPS,
+    total_trips: entities.length,
+    por_linea: lineaSummary,
+    alertas,
+  };
+
+  // Firma: status por linea (no escribir cada minuto si nada cambio)
+  const sigOf = (p) => p && p.por_linea
+    ? Object.keys(p.por_linea).sort().map(k => k + ':' + p.por_linea[k].status).join('|') + '|' + ((p.alertas || []).length)
+    : '';
+  const prevRaw = await env.TW_INCIDENTES.get('_delays_active');
+  const prev = prevRaw ? JSON.parse(prevRaw) : null;
+  const prevTs = prev?.generated_at ? Date.parse(prev.generated_at) : 0;
+  const stale = (now - prevTs) > DELAYS_REFRESH_MS;
+  let writes = 0;
+  if (sigOf(prev) !== sigOf(newPayload) || stale) {
+    await env.TW_INCIDENTES.put('_delays_active', JSON.stringify(newPayload));
+    writes++;
+  }
+
+  result.header_ts = headerTs;
+  result.total_trips = entities.length;
+  result.lineas_count = Object.keys(lineaSummary).length;
+  result.alertas_activas = alertas.length;
+  result.writes = writes;
+  return result;
+}
+
 // Diagnóstico de los feeds GTFS-RT del subte (vehiclePositions, tripUpdates, forecastGTFS).
 // Llama c/u con las credenciales reales y devuelve summary: header timestamp, entity count,
 // muestra de 3 entities, y si hubo error. Sirve para decidir si vale la pena implementar
@@ -799,6 +937,24 @@ async function diagnoseGtfsRt(env) {
         entry.header_ts_iso = entry.header_ts ? new Date(entry.header_ts * 1000).toISOString() : null;
         entry.entity_count = entities.length;
         entry.sample_3 = entities.slice(0, 3);
+        // Diagnostico extra: top-level keys cuando no hay entities GTFS-RT estandar
+        entry.top_level_keys = Object.keys(parsed);
+        if (entities.length === 0) {
+          if (Array.isArray(parsed)) {
+            entry.is_array = true;
+            entry.array_length = parsed.length;
+            entry.sample_array_3 = parsed.slice(0, 3);
+          } else {
+            entry.top_level_sample = {};
+            for (const k of Object.keys(parsed).slice(0, 10)) {
+              const v = parsed[k];
+              if (Array.isArray(v)) entry.top_level_sample[k] = { type: 'array', len: v.length, sample: v.slice(0, 2) };
+              else if (v && typeof v === 'object') entry.top_level_sample[k] = { type: 'object', keys: Object.keys(v).slice(0, 10) };
+              else entry.top_level_sample[k] = v;
+            }
+          }
+          entry.body_preview = bodyText.slice(0, 800);
+        }
         // Algunos breakdowns útiles
         if (ep === 'vehiclePositions') {
           const lineas = {};
@@ -939,6 +1095,9 @@ async function handleData(env) {
   const quejas = quejasRaw ? JSON.parse(quejasRaw) : null;
   const volRaw = await env.TW_INCIDENTES.get('_volumen_active');
   const volumen = volRaw ? JSON.parse(volRaw) : null;
+  // Delays calculados desde forecastGTFS
+  const delaysRaw = await env.TW_INCIDENTES.get('_delays_active');
+  const delays = delaysRaw ? JSON.parse(delaysRaw) : null;
   // Tweets: incidentes
   const idxTwRaw = await env.TW_INCIDENTES.get('_index');
   const idxTw = idxTwRaw ? JSON.parse(idxTwRaw) : [];
@@ -964,6 +1123,7 @@ async function handleData(env) {
     activas_tweets,
     quejas_ciudadanas: quejas,
     volumen_ciudadano: volumen,
+    delays_forecast: delays,
     cerrados_gcba,
     cerrados_tweets,
     totales: {

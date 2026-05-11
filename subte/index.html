@@ -1682,7 +1682,7 @@ function renderAll() {
 const WORKER_URL = 'https://canuto-subte.lenzimartin.workers.dev';
 
 async function fetchWorkerData() {
-  const empty = { activasGcba: [], activasTweets: [], quejasCiudadanas: null, volumenCiudadano: null, cerrados: [], lastPolls: null };
+  const empty = { activasGcba: [], activasTweets: [], quejasCiudadanas: null, volumenCiudadano: null, delaysForecast: null, cerrados: [], lastPolls: null };
   if (!WORKER_URL) return empty;
   try {
     const r = await fetch(WORKER_URL.replace(/\/$/, '') + '/data.json', { cache: 'no-store' });
@@ -1695,6 +1695,7 @@ async function fetchWorkerData() {
       activasTweets: j.activas_tweets || [],
       quejasCiudadanas: j.quejas_ciudadanas || null,
       volumenCiudadano: j.volumen_ciudadano || null,
+      delaysForecast: j.delays_forecast || null,
       cerrados: [...cerrGcba, ...cerrTw],
       lastPolls: j.last_polls || null,
     };
@@ -1816,6 +1817,7 @@ const TIPO_LBL_LIVE = {
   'reporte_ciudadano':       'Reporte ciudadano (no oficial)',
   'posible_incidencia':      'Posible incidencia en curso (sin confirmar)',
   'otro':                    'Alerta',
+  atraso_detectado: 'Demoras detectadas',
 };
 
 function _hace(ms) {
@@ -1831,7 +1833,7 @@ function _hace(ms) {
 }
 
 // Unifica activas de GCBA + tweets + quejas ciudadanas + volumen. Deduplica por (línea, tipo) cercanos en tiempo (<30 min).
-function combineActivas(actGcba, actTw, quejasObj, volumenObj) {
+function combineActivas(actGcba, actTw, quejasObj, volumenObj, delaysObj) {
   const W = 30 * 60 * 1000;
   const out = [];
   for (const t of (actTw || [])) {
@@ -1874,6 +1876,35 @@ function combineActivas(actGcba, actTw, quejasObj, volumenObj) {
   // El distintivo visual de urgencia se hace en renderLiveBanner según el tipo.
   const filtradas = out.sort((a,b) => (a.linea||'').localeCompare(b.linea||''));
 
+  // Detector de delays vía forecastGTFS: si hay línea(s) con status 'alerta' en el feed forecast,
+  // agregarlas como cards. Si ya hay una alerta oficial/tweet/ciudadana de esa línea, sumar como corroboración.
+  if (delaysObj && Array.isArray(delaysObj.alertas)) {
+    for (const d of delaysObj.alertas) {
+      const dup = filtradas.find(o => o.linea === d.linea);
+      if (dup) {
+        // Corroboración: tagear con info de delay
+        dup._forecast_avg_s = d.avg_delay_s;
+        dup._forecast_max_s = d.max_delay_s;
+        dup._forecast_trips = d.trips_alerta;
+        continue;
+      }
+      // Standalone: detección automática sin otra señal
+      const avgMin = Math.round(d.avg_delay_s / 60);
+      const maxMin = Math.round(d.max_delay_s / 60);
+      filtradas.push({
+        _src: 'forecast',
+        linea: d.linea,
+        tipo: 'atraso_detectado',
+        text: `Detección automática: ${d.trips_alerta} viajes con demoras significativas. Promedio ${avgMin} min, máximo ${maxMin} min vs horario teórico.`,
+        sinceMs: Date.now(),
+        tweets: [],
+        _forecast_avg_s: d.avg_delay_s,
+        _forecast_max_s: d.max_delay_s,
+        _forecast_trips: d.trips_alerta,
+      });
+    }
+  }
+
   // Detector de VOLUMEN (sin filtros): si hay cluster de usuarios distintos arrobando a las cuentas oficiales
   // y NO hay otra alerta activa, agregar una "posible incidencia" general (sin línea identificada).
   if (volumenObj && volumenObj.alerta) {
@@ -1897,6 +1928,7 @@ const SRC_BADGES = {
   ambas:     { label: 'GCBA+Twitter',  bg: 'rgba(34,197,94,0.18)',   color: '#22c55e' },
   ciudadana: { label: 'Reporte ciudadano', bg: 'rgba(251,191,36,0.18)', color: '#fbbf24' },
   volumen:   { label: 'Volumen ciudadano', bg: 'rgba(249,115,22,0.18)', color: '#f97316' },
+  forecast:  { label: 'GCBA forecast (auto)', bg: 'rgba(244,114,182,0.18)', color: '#f472b6' },
 };
 
 function renderLiveBanner(activas, lastPolls) {
@@ -1952,8 +1984,13 @@ function renderLiveBanner(activas, lastPolls) {
     const desde = new Date(a.sinceMs);
     const horaInicio = String(desde.getHours()).padStart(2,'0') + ':' + String(desde.getMinutes()).padStart(2,'0');
     const badge = SRC_BADGES[a._src] || SRC_BADGES.gcba;
-    // Si oficial + tiene corroboración ciudadana, agregar contador
-    const corrob = a._ciudadana_count ? ` · 👥 ${a._ciudadana_count} reportes ciudadanos` : '';
+    // Si oficial + tiene corroboración ciudadana o de forecast, agregar contadores
+    let corrob = '';
+    if (a._ciudadana_count) corrob += ` · 👥 ${a._ciudadana_count} reportes`;
+    if (a._forecast_avg_s) {
+      const avgMin = Math.round(a._forecast_avg_s / 60);
+      corrob += ` · ⏱ ${a._forecast_trips} viajes con +${avgMin}min demora`;
+    }
     const allTweets = (a.tweets || []).concat(a._ciudadana_tweets || []);
     const tweetsLinks = allTweets.length
       ? allTweets.slice(0, 3).map(t => `<a href="${t.url}" target="_blank" rel="noopener" style="color:${badge.color};text-decoration:none;font-size:0.7rem;margin-right:6px">↗ @${t.user}</a>`).join('')
@@ -2246,14 +2283,14 @@ async function init() {
     // Render del banner "Estado HOY" (con novedades por línea desde la cache)
     renderServicioHoy();
     setInterval(renderServicioHoy, 5 * 60 * 1000);  // refrescar countdown / cambio de estado
-    renderLiveBanner(combineActivas(wd.activasGcba, wd.activasTweets, wd.quejasCiudadanas, wd.volumenCiudadano), wd.lastPolls);
+    renderLiveBanner(combineActivas(wd.activasGcba, wd.activasTweets, wd.quejasCiudadanas, wd.volumenCiudadano, wd.delaysForecast), wd.lastPolls);
     renderLatestTweets(wd.volumenCiudadano);
     // Auto-refresh cada 60s (re-fetch del worker → re-render todos los banners)
     setInterval(async () => {
       const wd2 = await fetchWorkerData();
       _alertasCache.gcba = wd2.activasGcba || [];
       _alertasCache.tweets = wd2.activasTweets || [];
-      renderLiveBanner(combineActivas(wd2.activasGcba, wd2.activasTweets, wd2.quejasCiudadanas, wd2.volumenCiudadano), wd2.lastPolls);
+      renderLiveBanner(combineActivas(wd2.activasGcba, wd2.activasTweets, wd2.quejasCiudadanas, wd2.volumenCiudadano, wd2.delaysForecast), wd2.lastPolls);
       renderLatestTweets(wd2.volumenCiudadano);
       renderServicioHoy();
     }, 60000);
