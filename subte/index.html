@@ -652,6 +652,67 @@
     .svc-banner { padding: 12px 12px; }
   }
 
+  /* ── ESTADO EN VIVO (delays por linea desde forecastGTFS) ── */
+  .estado-vivo {
+    margin: -8px 0 18px;
+    padding: 10px 14px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+  }
+  .estado-title {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.7rem; letter-spacing: 0.06em; text-transform: uppercase;
+    color: var(--text2); margin-bottom: 8px;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .estado-title .meta {
+    font-weight: 400; color: var(--text3); text-transform: none;
+    margin-left: auto; letter-spacing: 0;
+  }
+  .estado-row { display: flex; flex-wrap: wrap; gap: 8px; }
+  .linea-chip {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 5px 10px;
+    background: var(--surface2, rgba(255,255,255,0.03));
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.78rem;
+  }
+  .linea-chip .letra {
+    width: 22px; height: 22px; border-radius: 50%;
+    display: inline-flex; align-items: center; justify-content: center;
+    font-weight: 700; font-size: 0.72rem; color: #0d0f14;
+  }
+  .linea-chip .delay { font-weight: 600; color: var(--text); }
+  .linea-chip .dot {
+    width: 7px; height: 7px; border-radius: 50%;
+    flex-shrink: 0;
+  }
+  .linea-chip .dot.ok { background: var(--green); }
+  .linea-chip .dot.warn { background: var(--yellow); }
+  .linea-chip .dot.high { background: #f97316; box-shadow: 0 0 4px rgba(249,115,22,0.4); }
+  .linea-chip .dot.bad { background: var(--red); box-shadow: 0 0 6px rgba(239,68,68,0.5); animation: estadopulse 1.6s ease-in-out infinite; }
+  @keyframes estadopulse {
+    0%,100% { opacity: 1; }
+    50% { opacity: 0.55; }
+  }
+  .linea-chip .trend {
+    font-size: 0.7rem; color: var(--text3);
+    font-weight: 600;
+  }
+  .linea-chip .trend.up { color: var(--red); }
+  .linea-chip .trend.down { color: var(--green); }
+  .linea-chip.nodata { opacity: 0.45; }
+  .linea-chip.nodata .delay { color: var(--text3); }
+  @media (max-width: 540px) {
+    .estado-row { gap: 6px; }
+    .linea-chip { padding: 4px 7px; font-size: 0.72rem; gap: 4px; }
+    .linea-chip .letra { width: 18px; height: 18px; font-size: 0.65rem; }
+    .estado-title .meta { display: none; }
+  }
+
   /* ── ÚLTIMOS TWEETS CIUDADANOS ── */
   .latest-tw {
     margin: -8px 0 24px;
@@ -879,6 +940,15 @@
     </div>
     <div class="live-list" id="live-list"></div>
   </section>
+
+  <!-- Estado en vivo por linea (delays desde forecastGTFS GCBA) -->
+  <div id="estado-vivo" class="estado-vivo" style="display:none">
+    <div class="estado-title">
+      <span>📊 Estado en vivo</span>
+      <span class="meta">Demoras vs horario teórico · <span id="estado-time">—</span></span>
+    </div>
+    <div class="estado-row" id="estado-row"></div>
+  </div>
 
   <!-- Últimos tweets ciudadanos arrobando a las cuentas oficiales -->
   <div id="latest-tw" class="latest-tw" style="display:none">
@@ -2363,6 +2433,56 @@ async function renderServicioHoy() {
 }
 
 // ─── ÚLTIMOS TWEETS CIUDADANOS ─────────────────────────────────────
+function renderEstadoVivo(wd) {
+  // Renderiza una fila con un chip por linea mostrando avg_delay y trend.
+  // Lineas sin data del feed (C/H/P actualmente) aparecen en gris con "?".
+  const wrap = document.getElementById('estado-vivo');
+  const row = document.getElementById('estado-row');
+  const timeEl = document.getElementById('estado-time');
+  if (!wrap || !row) return;
+  const df = wd && wd.delaysForecast;
+  if (!df || !df.por_linea) {
+    wrap.style.display = 'none';
+    return;
+  }
+  const allLines = ['A', 'B', 'C', 'D', 'E', 'H', 'P'];
+  row.innerHTML = allLines.map(k => {
+    const v = df.por_linea[k];
+    if (!v) {
+      return `<div class="linea-chip nodata" title="Sin datos en el feed forecastGTFS">
+        <span class="letra" style="background:var(--l${k.toLowerCase()})">${k}</span>
+        <span class="delay">sin datos</span>
+      </div>`;
+    }
+    const avg = v.avg_delay_s || 0;
+    const avgMin = Math.round(avg / 60);
+    let dotClass = 'ok';
+    if (avg >= 900) dotClass = 'bad';
+    else if (avg >= 600) dotClass = 'high';
+    else if (avg >= 300) dotClass = 'warn';
+    // Override: si status=alerta (growth-based), forzar rojo pulsante
+    if (v.status === 'alerta') dotClass = 'bad';
+    const g = v.delay_growth_5min_s;
+    let trend = '→', trendClass = '';
+    if (g !== null && g !== undefined) {
+      if (g >= 90) { trend = `↑${Math.round(g/60)||1}m`; trendClass = 'up'; }
+      else if (g <= -90) { trend = `↓${Math.abs(Math.round(g/60))||1}m`; trendClass = 'down'; }
+    }
+    const titleAttr = `Linea ${k}: ${avgMin} min de delay vs horario teorico. Status: ${v.status}. Growth en 5 min: ${g !== null ? (g/60).toFixed(1)+'min' : 'sin historial'}.`;
+    return `<div class="linea-chip" title="${titleAttr}">
+      <span class="letra" style="background:var(--l${k.toLowerCase()})">${k}</span>
+      <span class="delay">+${avgMin}m</span>
+      <span class="dot ${dotClass}"></span>
+      <span class="trend ${trendClass}">${trend}</span>
+    </div>`;
+  }).join('');
+  if (df.generated_at && timeEl) {
+    const ms = Date.parse(df.generated_at);
+    timeEl.textContent = _hace(ms);
+  }
+  wrap.style.display = 'block';
+}
+
 function renderLatestTweets(volumenObj) {
   const wrap = $('latest-tw');
   const list = $('latest-tw-list');
@@ -2406,6 +2526,7 @@ async function init() {
     setInterval(renderServicioHoy, 5 * 60 * 1000);  // refrescar countdown / cambio de estado
     renderFuentesMonitor(wd);
     renderLiveBanner(combineActivas(wd.activasGcba, wd.activasTweets, wd.quejasCiudadanas, wd.volumenCiudadano, wd.delaysForecast), wd.lastPolls);
+    renderEstadoVivo(wd);
     renderLatestTweets(wd.volumenCiudadano);
     // Auto-refresh cada 30s (re-fetch del worker → re-render todos los banners)
     setInterval(async () => {
@@ -2414,6 +2535,7 @@ async function init() {
       _alertasCache.tweets = wd2.activasTweets || [];
       renderFuentesMonitor(wd2);
       renderLiveBanner(combineActivas(wd2.activasGcba, wd2.activasTweets, wd2.quejasCiudadanas, wd2.volumenCiudadano, wd2.delaysForecast), wd2.lastPolls);
+      renderEstadoVivo(wd2);
       renderLatestTweets(wd2.volumenCiudadano);
       renderServicioHoy();
     }, 30000);
