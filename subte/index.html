@@ -1946,25 +1946,30 @@ function combineActivas(actGcba, actTw, quejasObj, volumenObj, delaysObj) {
     for (const d of delaysObj.alertas) {
       const dup = filtradas.find(o => o.linea === d.linea);
       if (dup) {
-        // Corroboración: tagear con info de delay
+        // Corroboracion: tagear con info de delay + crecimiento
         dup._forecast_avg_s = d.avg_delay_s;
         dup._forecast_max_s = d.max_delay_s;
         dup._forecast_trips = d.trips_alerta;
+        dup._forecast_growth_s = d.delay_growth_5min_s;
         continue;
       }
-      // Standalone: detección automática sin otra señal
+      // Standalone: deteccion automatica por CRECIMIENTO de delay (probable incidente en curso)
       const avgMin = Math.round(d.avg_delay_s / 60);
-      const maxMin = Math.round(d.max_delay_s / 60);
+      const growMin = d.delay_growth_5min_s != null ? Math.round(d.delay_growth_5min_s / 60) : null;
+      const txt = growMin != null
+        ? `Demoras en aumento. Trenes con +${avgMin} min de retraso vs horario, subió ${growMin} min en los últimos 5 min.`
+        : `Demoras observadas. Trenes con +${avgMin} min de retraso vs horario teórico.`;
       filtradas.push({
         _src: 'forecast',
         linea: d.linea,
         tipo: 'atraso_detectado',
-        text: `Detección automática: ${d.trips_alerta} viajes con demoras significativas. Promedio ${avgMin} min, máximo ${maxMin} min vs horario teórico.`,
+        text: txt,
         sinceMs: Date.now(),
         tweets: [],
         _forecast_avg_s: d.avg_delay_s,
         _forecast_max_s: d.max_delay_s,
         _forecast_trips: d.trips_alerta,
+        _forecast_growth_s: d.delay_growth_5min_s,
       });
     }
   }
@@ -2099,9 +2104,13 @@ function renderLiveBanner(activas, lastPolls) {
     // Si oficial + tiene corroboración ciudadana o de forecast, agregar contadores
     let corrob = '';
     if (a._ciudadana_count) corrob += ` · 👥 ${a._ciudadana_count} reportes`;
-    if (a._forecast_avg_s) {
+    if (a._forecast_growth_s != null) {
+      const growMin = Math.round(a._forecast_growth_s / 60);
+      const avgMin = Math.round((a._forecast_avg_s || 0) / 60);
+      corrob += ` · ⏱ +${avgMin}min delay creciendo (+${growMin}min en 5min)`;
+    } else if (a._forecast_avg_s) {
       const avgMin = Math.round(a._forecast_avg_s / 60);
-      corrob += ` · ⏱ ${a._forecast_trips} viajes con +${avgMin}min demora`;
+      corrob += ` · ⏱ +${avgMin}min delay vs horario`;
     }
     const allTweets = (a.tweets || []).concat(a._ciudadana_tweets || []);
     const tweetsLinks = allTweets.length
