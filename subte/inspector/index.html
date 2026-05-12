@@ -253,6 +253,7 @@
           <th class="num">Growth 5min</th>
           <th class="num">Hist (samples)</th>
           <th>Status</th>
+          <th>🛑 Stuck</th>
           <th>Trip IDs</th>
         </tr>
       </thead>
@@ -436,7 +437,7 @@ function render(j) {
   $('estado-body').innerHTML = lineas.map(k => {
     const v = por[k];
     if (!v) {
-      return `<tr style="opacity:0.4"><td><span class="linea-badge" style="background:var(--l${k.toLowerCase()})">${k}</span></td><td colspan="7" style="color:var(--text3)">sin datos en el feed</td></tr>`;
+      return `<tr style="opacity:0.4"><td><span class="linea-badge" style="background:var(--l${k.toLowerCase()})">${k}</span></td><td colspan="8" style="color:var(--text3)">sin datos en el feed</td></tr>`;
     }
     const avgMin = (v.avg_delay_s / 60).toFixed(1);
     const maxMin = (v.max_delay_s / 60).toFixed(1);
@@ -456,6 +457,7 @@ function render(j) {
       <td class="num">${growthCell}</td>
       <td class="num">${v.delay_growth_samples || 0}</td>
       <td><span class="status-pill ${v.status}">${v.status}</span></td>
+      <td style="font-size:0.72rem">${(v.stuck_trains || []).length === 0 ? '<span style="color:var(--text3)">—</span>' : (v.stuck_trains || []).map(st => `<div style="color:var(--red);font-weight:600">🛑 ${st.stop_name} (~${st.stuck_minutes}min)</div>`).join('')}</td>
       <td style="color:var(--text3);font-size:0.72rem">${tripsStr}</td>
     </tr>`;
   }).join('');

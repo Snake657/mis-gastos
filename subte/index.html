@@ -705,6 +705,11 @@
   .linea-chip .trend.up { color: var(--red); }
   .linea-chip .trend.down { color: var(--green); }
   .linea-chip .freq-ast { color: var(--yellow); margin-left: 1px; cursor: help; font-weight: 700; }
+  .linea-chip .stuck-icon { font-size: 0.85rem; line-height: 1; animation: stuckpulse 1.4s ease-in-out infinite; cursor: help; }
+  @keyframes stuckpulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.6; transform: scale(0.9); }
+  }
   .estado-legend { margin-top: 10px; }
   .estado-legend > summary {
     cursor: pointer; font-size: 0.72rem; color: var(--text3);
@@ -986,6 +991,7 @@
           <li><span class="trend up" style="display:inline-block">↑</span> <strong>Flecha arriba</strong>: la frecuencia está empeorando (trenes más espaciados)</li>
           <li><span class="trend down" style="display:inline-block">↓</span> <strong>Flecha abajo</strong>: el sistema está recuperándose</li>
           <li><span class="freq-ast" style="display:inline-block">*</span> <strong>Asterisco</strong>: solo estimación del horario oficial, sin medición en vivo (líneas C, H, P)</li>
+          <li>🛑 <strong>Ícono parado</strong>: hay un tren que no avanzó por más de 3 minutos en una estación específica (probable tren detenido por incidente)</li>
         </ul>
         <p class="legend-source">Datos: GCBA <code>forecastGTFS</code> + horario oficial GTFS. Se actualiza cada minuto.</p>
       </div>
@@ -2529,11 +2535,17 @@ function renderEstadoVivo(wd) {
     if (!hasFeed) titleParts.push(`Sin medición en vivo — frecuencia estimada del horario oficial`);
     if (hasFeed && v.avg_delay_s !== null) titleParts.push(`Delay vs horario (medido): +${Math.round((v.avg_delay_s||0)/60)} min`);
     if (g !== null && g !== undefined) titleParts.push(`Tendencia 5 min: ${(g/60).toFixed(1)} min`);
+    const stuck = v.stuck_trains || [];
+    if (stuck.length > 0) {
+      titleParts.push(`🛑 ${stuck.length} tren${stuck.length>1?'es':''} parado${stuck.length>1?'s':''}: ${stuck.map(s => s.stop_name + ' (~' + s.stuck_minutes + 'min)').join('; ')}`);
+    }
     titleParts.push(`Status: ${v.status}`);
     const titleAttr = titleParts.join(' · ').replace(/"/g,'&quot;');
+    const stuckIcon = stuck.length > 0 ? `<span class="stuck-icon" title="${stuck.length} tren${stuck.length>1?'es':''} parado${stuck.length>1?'s':''}">🛑</span>` : '';
     return `<div class="linea-chip" title="${titleAttr}">
       <span class="letra" style="background:var(--l${k.toLowerCase()})">${k}</span>
       <span class="delay">${freqDisplay}</span>
+      ${stuckIcon}
       <span class="dot ${dotClass}"></span>
       ${trend ? `<span class="trend ${trendClass}">${trend}</span>` : ''}
     </div>`;
