@@ -704,6 +704,7 @@
   }
   .linea-chip .trend.up { color: var(--red); }
   .linea-chip .trend.down { color: var(--green); }
+  .linea-chip .freq-ast { color: var(--yellow); margin-left: 1px; cursor: help; font-weight: 700; }
   .linea-chip.nodata { opacity: 0.45; }
   .linea-chip.nodata .delay { color: var(--text3); }
   @media (max-width: 540px) {
@@ -945,7 +946,7 @@
   <div id="estado-vivo" class="estado-vivo" style="display:none">
     <div class="estado-title">
       <span>📊 Estado en vivo</span>
-      <span class="meta">Demoras vs horario teórico · <span id="estado-time">—</span></span>
+      <span class="meta">Frecuencia teórica (GTFS) · <span id="estado-time">—</span></span>
     </div>
     <div class="estado-row" id="estado-row"></div>
   </div>
@@ -2434,8 +2435,8 @@ async function renderServicioHoy() {
 
 // ─── ÚLTIMOS TWEETS CIUDADANOS ─────────────────────────────────────
 function renderEstadoVivo(wd) {
-  // Renderiza una fila con un chip por linea mostrando avg_delay y trend.
-  // Lineas sin data del feed (C/H/P actualmente) aparecen en gris con "?".
+  // Renderiza un chip por linea con: frecuencia teorica (GTFS publico) y status growth detector.
+  // Mostrar siempre que tengamos scheduled_freq_s. El dot color por status. La flecha solo si hay growth.
   const wrap = document.getElementById('estado-vivo');
   const row = document.getElementById('estado-row');
   const timeEl = document.getElementById('estado-time');
@@ -2446,34 +2447,51 @@ function renderEstadoVivo(wd) {
     return;
   }
   const allLines = ['A', 'B', 'C', 'D', 'E', 'H', 'P'];
+  function fmtFreq(s) {
+    if (s === null || s === undefined) return null;
+    const m = Math.floor(s / 60);
+    const sec = s % 60;
+    if (sec === 0) return `${m}'`;
+    return `${m}'${String(sec).padStart(2,'0')}''`;
+  }
   row.innerHTML = allLines.map(k => {
     const v = df.por_linea[k];
     if (!v) {
-      return `<div class="linea-chip nodata" title="Sin datos en el feed forecastGTFS">
+      return `<div class="linea-chip nodata" title="Linea ${k} no disponible">
         <span class="letra" style="background:var(--l${k.toLowerCase()})">${k}</span>
-        <span class="delay">sin datos</span>
+        <span class="delay">—</span>
       </div>`;
     }
-    const avg = v.avg_delay_s || 0;
-    const avgMin = Math.round(avg / 60);
+    const freq = v.scheduled_freq_s;
+    const hasFeed = !v.from_schedule_only;
+    const freqText = fmtFreq(freq);
+    // Status dot color
     let dotClass = 'ok';
-    if (avg >= 900) dotClass = 'bad';
-    else if (avg >= 600) dotClass = 'high';
-    else if (avg >= 300) dotClass = 'warn';
-    // Override: si status=alerta (growth-based), forzar rojo pulsante
     if (v.status === 'alerta') dotClass = 'bad';
+    else if (v.status === 'observacion') dotClass = 'warn';
+    // Trend arrow solo si hay growth significativo
     const g = v.delay_growth_5min_s;
-    let trend = '→', trendClass = '';
+    let trend = '', trendClass = '';
     if (g !== null && g !== undefined) {
       if (g >= 90) { trend = `↑${Math.round(g/60)||1}m`; trendClass = 'up'; }
       else if (g <= -90) { trend = `↓${Math.abs(Math.round(g/60))||1}m`; trendClass = 'down'; }
     }
-    const titleAttr = `Linea ${k}: ${avgMin} min de delay vs horario teorico. Status: ${v.status}. Growth en 5 min: ${g !== null ? (g/60).toFixed(1)+'min' : 'sin historial'}.`;
+    // Si linea no tiene feed (GTFS only), agregar asterisco al freq
+    const freqDisplay = freqText
+      ? `~${freqText}${!hasFeed ? '<span class="freq-ast" title="Estimado del GTFS oficial, sin medición en vivo">*</span>' : ''}`
+      : '<span style="color:var(--text3)">cerrado</span>';
+    const titleParts = [`Línea ${k}`];
+    if (freq !== null && freq !== undefined) titleParts.push(`Frecuencia teórica: cada ${freqText}`);
+    if (!hasFeed) titleParts.push(`Sin medición en vivo — solo estimación del horario oficial`);
+    if (hasFeed && v.avg_delay_s !== null) titleParts.push(`Delay vs horario (medido): +${Math.round((v.avg_delay_s||0)/60)} min`);
+    if (g !== null && g !== undefined) titleParts.push(`Tendencia 5 min: ${(g/60).toFixed(1)} min`);
+    titleParts.push(`Status: ${v.status}`);
+    const titleAttr = titleParts.join(' · ').replace(/"/g,'&quot;');
     return `<div class="linea-chip" title="${titleAttr}">
       <span class="letra" style="background:var(--l${k.toLowerCase()})">${k}</span>
-      <span class="delay">+${avgMin}m</span>
+      <span class="delay">${freqDisplay}</span>
       <span class="dot ${dotClass}"></span>
-      <span class="trend ${trendClass}">${trend}</span>
+      ${trend ? `<span class="trend ${trendClass}">${trend}</span>` : ''}
     </div>`;
   }).join('');
   if (df.generated_at && timeEl) {
