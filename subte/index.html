@@ -2590,8 +2590,13 @@ async function init() {
     renderLiveBanner(combineActivas(wd.activasGcba, wd.activasTweets, wd.quejasCiudadanas, wd.volumenCiudadano, wd.delaysForecast), wd.lastPolls);
     renderEstadoVivo(wd);
     renderLatestTweets(wd.volumenCiudadano);
-    // Auto-refresh cada 30s (re-fetch del worker → re-render todos los banners)
-    setInterval(async () => {
+    // Auto-refresh cada 30s + countdown visible
+    const REFRESH_INTERVAL = 30;
+    let _refreshSec = REFRESH_INTERVAL;
+    const _cdEl = document.getElementById('refresh-countdown');
+    const _dotEl = document.querySelector('.refresh-dot');
+    async function _doRefresh() {
+      if (_dotEl) _dotEl.classList.add('active');
       const wd2 = await fetchWorkerData();
       _alertasCache.gcba = wd2.activasGcba || [];
       _alertasCache.tweets = wd2.activasTweets || [];
@@ -2600,7 +2605,16 @@ async function init() {
       renderEstadoVivo(wd2);
       renderLatestTweets(wd2.volumenCiudadano);
       renderServicioHoy();
-    }, 30000);
+      setTimeout(() => { if (_dotEl) _dotEl.classList.remove('active'); }, 800);
+    }
+    setInterval(() => {
+      _refreshSec--;
+      if (_cdEl) _cdEl.textContent = _refreshSec;
+      if (_refreshSec <= 0) {
+        _refreshSec = REFRESH_INTERVAL;
+        _doRefresh();
+      }
+    }, 1000);
     _lineasOn = new Set(DATA.lineas_disponibles);
     _tiposOn = new Set(Object.keys(DATA.tipos));
     // Setear hmYear al año más reciente con datos
@@ -2675,6 +2689,30 @@ async function init() {
     document.querySelector('main').innerHTML = `<div style="padding:40px;text-align:center;color:var(--red);font-family:'IBM Plex Mono',monospace">Error cargando datos: ${e.message}</div>`;
   }
 }
+
+// Scroll preservation: guardar tu posición antes de salir y restaurarla al volver.
+if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
+window.addEventListener('beforeunload', () => {
+  try { sessionStorage.setItem('subteScrollY', String(window.scrollY)); } catch (e) {}
+});
+window.addEventListener('load', () => {
+  try {
+    const saved = sessionStorage.getItem('subteScrollY');
+    if (saved && parseInt(saved, 10) > 0) {
+      const y = parseInt(saved, 10);
+      const tryRestore = (attempt) => {
+        if (document.documentElement.scrollHeight >= y + window.innerHeight) {
+          window.scrollTo(0, y);
+        } else if (attempt < 20) {
+          setTimeout(() => tryRestore(attempt + 1), 100);
+        } else {
+          window.scrollTo(0, Math.min(y, Math.max(0, document.documentElement.scrollHeight - window.innerHeight)));
+        }
+      };
+      setTimeout(() => tryRestore(0), 200);
+    }
+  } catch (e) {}
+});
 
 init();
 </script>
