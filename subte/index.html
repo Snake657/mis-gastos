@@ -705,6 +705,32 @@
   .linea-chip .trend.up { color: var(--red); }
   .linea-chip .trend.down { color: var(--green); }
   .linea-chip .freq-ast { color: var(--yellow); margin-left: 1px; cursor: help; font-weight: 700; }
+  .estado-legend { margin-top: 10px; }
+  .estado-legend > summary {
+    cursor: pointer; font-size: 0.72rem; color: var(--text3);
+    font-family: 'IBM Plex Mono', monospace;
+    padding: 4px 0;
+    list-style: none;
+  }
+  .estado-legend > summary::-webkit-details-marker { display: none; }
+  .estado-legend > summary::before { content: '▸ '; }
+  .estado-legend[open] > summary::before { content: '▾ '; }
+  .estado-legend > summary:hover { color: var(--text2); }
+  .legend-content {
+    margin-top: 6px; padding: 8px 12px;
+    background: var(--surface2, rgba(255,255,255,0.02));
+    border-radius: 6px;
+    font-size: 0.76rem; line-height: 1.55;
+    color: var(--text2);
+  }
+  .legend-content p { margin: 0 0 6px; }
+  .legend-content ul { margin: 6px 0; padding-left: 0; list-style: none; }
+  .legend-content li { padding: 3px 0; display: flex; align-items: center; gap: 8px; }
+  .legend-content li .dot,
+  .legend-content li .trend,
+  .legend-content li .freq-ast { flex-shrink: 0; min-width: 14px; text-align: center; font-weight: 700; }
+  .legend-source { font-size: 0.7rem; color: var(--text3); margin-top: 8px !important; }
+  .legend-content code { background: var(--bg); padding: 1px 4px; border-radius: 3px; font-size: 0.72rem; }
   .linea-chip.nodata { opacity: 0.45; }
   .linea-chip.nodata .delay { color: var(--text3); }
   @media (max-width: 540px) {
@@ -949,6 +975,21 @@
       <span class="meta">Frecuencia teórica (GTFS) · <span id="estado-time">—</span></span>
     </div>
     <div class="estado-row" id="estado-row"></div>
+    <details class="estado-legend">
+      <summary>¿Qué significa cada cosa?</summary>
+      <div class="legend-content">
+        <p><strong>El número</strong> es la frecuencia estimada AHORA — cada cuánto pasa un tren en este momento. Se ajusta automáticamente si detectamos que el sistema empeora o mejora.</p>
+        <ul>
+          <li><span class="dot ok" style="display:inline-block"></span> <strong>Verde</strong>: servicio en operación normal</li>
+          <li><span class="dot warn" style="display:inline-block"></span> <strong>Amarillo</strong>: observación — el delay está creciendo levemente</li>
+          <li><span class="dot bad" style="display:inline-block;animation:none"></span> <strong>Rojo</strong>: alerta — probable incidente en curso (delay creciendo &gt;3 min en 5 min)</li>
+          <li><span class="trend up" style="display:inline-block">↑</span> <strong>Flecha arriba</strong>: la frecuencia está empeorando (trenes más espaciados)</li>
+          <li><span class="trend down" style="display:inline-block">↓</span> <strong>Flecha abajo</strong>: el sistema está recuperándose</li>
+          <li><span class="freq-ast" style="display:inline-block">*</span> <strong>Asterisco</strong>: solo estimación del horario oficial, sin medición en vivo (líneas C, H, P)</li>
+        </ul>
+        <p class="legend-source">Datos: GCBA <code>forecastGTFS</code> + horario oficial GTFS. Se actualiza cada minuto.</p>
+      </div>
+    </details>
   </div>
 
   <!-- Últimos tweets ciudadanos arrobando a las cuentas oficiales -->
@@ -2435,8 +2476,7 @@ async function renderServicioHoy() {
 
 // ─── ÚLTIMOS TWEETS CIUDADANOS ─────────────────────────────────────
 function renderEstadoVivo(wd) {
-  // Renderiza un chip por linea con: frecuencia teorica (GTFS publico) y status growth detector.
-  // Mostrar siempre que tengamos scheduled_freq_s. El dot color por status. La flecha solo si hay growth.
+  // Chip por linea: muestra freq_efectiva (ajustada por tendencia del delay), con dot status y flecha si hay growth.
   const wrap = document.getElementById('estado-vivo');
   const row = document.getElementById('estado-row');
   const timeEl = document.getElementById('estado-time');
@@ -2462,27 +2502,31 @@ function renderEstadoVivo(wd) {
         <span class="delay">—</span>
       </div>`;
     }
-    const freq = v.scheduled_freq_s;
+    const teorica = v.scheduled_freq_s;
+    const efectiva = v.effective_freq_s;
+    const display = efectiva !== null && efectiva !== undefined ? efectiva : teorica;
     const hasFeed = !v.from_schedule_only;
-    const freqText = fmtFreq(freq);
+    const freqText = fmtFreq(display);
     // Status dot color
     let dotClass = 'ok';
     if (v.status === 'alerta') dotClass = 'bad';
     else if (v.status === 'observacion') dotClass = 'warn';
-    // Trend arrow solo si hay growth significativo
+    // Trend arrow: solo si efectiva difiere significativamente de teorica
     const g = v.delay_growth_5min_s;
     let trend = '', trendClass = '';
-    if (g !== null && g !== undefined) {
-      if (g >= 90) { trend = `↑${Math.round(g/60)||1}m`; trendClass = 'up'; }
-      else if (g <= -90) { trend = `↓${Math.abs(Math.round(g/60))||1}m`; trendClass = 'down'; }
+    if (g !== null && g !== undefined && teorica) {
+      const diffMin = (efectiva && teorica) ? (efectiva - teorica) / 60 : (g / 60);
+      if (diffMin >= 1) { trend = `↑${Math.round(diffMin)}m`; trendClass = 'up'; }
+      else if (diffMin <= -1) { trend = `↓${Math.abs(Math.round(diffMin))}m`; trendClass = 'down'; }
     }
     // Si linea no tiene feed (GTFS only), agregar asterisco al freq
     const freqDisplay = freqText
       ? `~${freqText}${!hasFeed ? '<span class="freq-ast" title="Estimado del GTFS oficial, sin medición en vivo">*</span>' : ''}`
       : '<span style="color:var(--text3)">cerrado</span>';
     const titleParts = [`Línea ${k}`];
-    if (freq !== null && freq !== undefined) titleParts.push(`Frecuencia teórica: cada ${freqText}`);
-    if (!hasFeed) titleParts.push(`Sin medición en vivo — solo estimación del horario oficial`);
+    if (efectiva !== null && efectiva !== undefined) titleParts.push(`Frecuencia ahora: cada ${fmtFreq(efectiva)}`);
+    if (teorica !== null && teorica !== undefined) titleParts.push(`Frecuencia teórica (horario): cada ${fmtFreq(teorica)}`);
+    if (!hasFeed) titleParts.push(`Sin medición en vivo — frecuencia estimada del horario oficial`);
     if (hasFeed && v.avg_delay_s !== null) titleParts.push(`Delay vs horario (medido): +${Math.round((v.avg_delay_s||0)/60)} min`);
     if (g !== null && g !== undefined) titleParts.push(`Tendencia 5 min: ${(g/60).toFixed(1)} min`);
     titleParts.push(`Status: ${v.status}`);
