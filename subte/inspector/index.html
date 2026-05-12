@@ -324,6 +324,29 @@
     <div id="trips-detail"></div>
   </div>
 
+  <!-- LOG DE ALERTAS DETECTADAS -->
+  <div class="section">
+    <div class="section-title">
+      <span>🚨 Eventos detectados (historial)</span>
+      <span class="meta" id="alertas-log-meta">—</span>
+    </div>
+    <table>
+      <thead>
+        <tr>
+          <th>Línea</th>
+          <th>Inicio (BA)</th>
+          <th>Fin (BA)</th>
+          <th class="num">Duración</th>
+          <th class="num">Peak growth</th>
+          <th class="num">Peak avg delay</th>
+          <th class="num">Peak freq efect.</th>
+          <th class="num">Snaps</th>
+        </tr>
+      </thead>
+      <tbody id="alertas-log-body"></tbody>
+    </table>
+  </div>
+
   <!-- RAW JSON -->
   <details>
     <summary>🧬 Ver JSON raw de /data.json (debug)</summary>
@@ -525,6 +548,61 @@ function render(j) {
       </table>
     </details>`;
   }).join('');
+
+  // === Log de alertas detectadas ===
+  const log = (j.alertas_log || []);
+  const lbody = $('alertas-log-body');
+  const lmeta = $('alertas-log-meta');
+  if (lmeta) lmeta.textContent = `${log.length} eventos · rolling 50 últimos`;
+  function parseTs(s) {
+    if (!s) return null;
+    try { return new Date(s); } catch { return null; }
+  }
+  function fmtBA(d) {
+    if (!d) return '—';
+    // BA = UTC-3
+    const baMs = d.getTime() - 3*3600*1000;
+    const b = new Date(baMs);
+    const dd = String(b.getUTCDate()).padStart(2,'0');
+    const mm = String(b.getUTCMonth()+1).padStart(2,'0');
+    const hh = String(b.getUTCHours()).padStart(2,'0');
+    const mi = String(b.getUTCMinutes()).padStart(2,'0');
+    return `${dd}/${mm} ${hh}:${mi}`;
+  }
+  function fmtSecMin(s) {
+    if (s === null || s === undefined) return '—';
+    const m = s / 60;
+    return m >= 0 ? `+${m.toFixed(1)}min` : `${m.toFixed(1)}min`;
+  }
+  function fmtFreq(s) {
+    if (!s) return '—';
+    const m = Math.floor(s / 60);
+    const sec = s % 60;
+    if (sec === 0) return `${m}'`;
+    return `${m}'${String(sec).padStart(2,'0')}''`;
+  }
+  if (lbody) {
+    if (log.length === 0) {
+      lbody.innerHTML = `<tr><td colspan="8" style="text-align:center;color:var(--text3);padding:20px">sin eventos registrados todavía</td></tr>`;
+    } else {
+      lbody.innerHTML = log.map(e => {
+        const start = parseTs(e.start_iso);
+        const end = parseTs(e.end_iso);
+        const isActive = !end;
+        const k = e.linea || '?';
+        return `<tr class="${isActive ? 'alerta' : ''}">
+          <td><span class="linea-badge" style="background:var(--l${k.toLowerCase()})">${k}</span></td>
+          <td style="font-size:0.72rem">${fmtBA(start)}</td>
+          <td style="font-size:0.72rem">${isActive ? '<span class="status-pill alerta">en curso</span>' : fmtBA(end)}</td>
+          <td class="num">${e.duration_min !== undefined ? e.duration_min + ' min' : '—'}</td>
+          <td class="num" style="color:var(--red);font-weight:600">${fmtSecMin(e.peak_growth_s)}</td>
+          <td class="num">${fmtSecMin(e.peak_avg_delay_s)}</td>
+          <td class="num">${fmtFreq(e.peak_eff_freq_s)}</td>
+          <td class="num">${e.snapshots_count ?? '—'}</td>
+        </tr>`;
+      }).join('');
+    }
+  }
 
   // === Raw JSON ===
   $('raw-json').textContent = JSON.stringify(j, null, 2);
