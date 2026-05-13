@@ -4,9 +4,9 @@
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
 <title>canuto.ar — Herramientas financieras gratis para Argentina</title>
-<meta name="description" content="Calculadoras, dashboards y simuladores financieros gratis pensados para Argentina. Calculá tu retiro, la inflación de cualquier precio y mirá los indicadores macroeconómicos del país. Sin registro, sin publicidad."/>
+<meta name="description" content="Calculadoras, dashboards y simuladores financieros gratis pensados para Argentina. Cotización del dólar minuto a minuto, indicadores macroeconómicos, estado del subte en vivo y más. Sin registro, sin publicidad."/>
 <meta property="og:title" content="canuto.ar — Herramientas financieras gratis para Argentina"/>
-<meta property="og:description" content="Calculadoras y dashboards financieros pensados para Argentina. Retiro, inflación, datos macro. Gratis."/>
+<meta property="og:description" content="Calculadoras y dashboards financieros pensados para Argentina. Dólar intradía, datos macro, subte en vivo. Gratis."/>
 <meta property="og:type" content="website"/>
 <meta name="theme-color" content="#0d0f14"/>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
@@ -43,11 +43,11 @@ body{
 ::-webkit-scrollbar{width:6px;}
 ::-webkit-scrollbar-thumb{background:#2d3245;border-radius:3px;}
 
-main{max-width:1080px;margin:0 auto;padding:48px 20px 60px;}
+main{max-width:1080px;margin:0 auto;padding:28px 20px 40px;}
 
 /* ── HERO ───────────────────────────────────────────────────────────── */
 .hero{
-  position:relative;padding:32px 0 48px 0;
+  position:relative;padding:8px 0 22px 0;
   text-align:left;
 }
 .hero::before{
@@ -64,10 +64,10 @@ main{max-width:1080px;margin:0 auto;padding:48px 20px 60px;}
 }
 .hero-eyebrow{
   display:inline-flex;align-items:center;gap:8px;
-  font-family:'IBM Plex Mono',monospace;font-size:.7rem;
+  font-family:'IBM Plex Mono',monospace;font-size:.68rem;
   text-transform:uppercase;letter-spacing:.14em;
-  color:var(--green);margin-bottom:18px;
-  padding:5px 11px;border:1px solid rgba(74,222,128,0.22);
+  color:var(--green);margin-bottom:12px;
+  padding:4px 10px;border:1px solid rgba(74,222,128,0.22);
   border-radius:99px;background:rgba(74,222,128,0.06);
 }
 .hero-eyebrow .pulse{
@@ -80,43 +80,133 @@ main{max-width:1080px;margin:0 auto;padding:48px 20px 60px;}
   50%{opacity:1;transform:scale(1.25);}
 }
 .hero-title{
-  font-size:clamp(2.4rem,7vw,4.4rem);
+  font-size:clamp(2rem,5.5vw,3.4rem);
   font-weight:700;letter-spacing:-.045em;line-height:1;
-  margin-bottom:14px;
+  margin-bottom:10px;
 }
 .hero-title .accent{color:var(--green);}
 .hero-tagline{
-  font-size:clamp(1.05rem,2.4vw,1.3rem);
+  font-size:clamp(1rem,2vw,1.15rem);
   color:var(--text);font-weight:500;line-height:1.4;
-  margin-bottom:14px;max-width:680px;letter-spacing:-.01em;
+  margin-bottom:0;max-width:680px;letter-spacing:-.01em;
 }
 .hero-sub{
-  font-size:.95rem;color:var(--text2);line-height:1.65;
-  max-width:620px;
+  font-size:.92rem;color:var(--text2);line-height:1.55;
+  max-width:680px;margin-top:8px;
 }
 .hero-sub strong{color:var(--text);font-weight:600;}
 
-/* ── TOOLS SECTION ──────────────────────────────────────────────────── */
-.tools-section{margin-top:40px;}
+/* ── FEATURED — 3 BOTONES GRANDES DESTACADOS ────────────────────────── */
+.featured-section{
+  margin-top:8px;margin-bottom:20px;
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:14px;
+}
+.featured-card{
+  display:flex;flex-direction:column;
+  text-decoration:none;color:inherit;
+  background:var(--surface);
+  border:1.5px solid var(--border);border-radius:16px;
+  padding:18px 18px 16px 18px;
+  min-height:170px;
+  position:relative;overflow:hidden;
+  transition:all .25s cubic-bezier(.4,0,.2,1);
+  isolation:isolate;
+}
+.featured-card::before{
+  content:'';position:absolute;inset:0;
+  background:radial-gradient(circle at 100% 0%,var(--feat-color,var(--green)) 0%,transparent 50%);
+  opacity:.06;z-index:-1;transition:opacity .25s;
+}
+.featured-card::after{
+  content:'';position:absolute;top:0;left:0;right:0;height:4px;
+  background:var(--feat-color,var(--green));
+  opacity:.6;transition:opacity .25s;
+}
+.featured-card:hover{
+  transform:translateY(-4px);
+  border-color:var(--feat-color,var(--green));
+  box-shadow:
+    0 20px 50px -15px rgba(0,0,0,.55),
+    0 0 60px -20px var(--feat-color,var(--green)),
+    0 0 0 1px rgba(255,255,255,.04);
+}
+.featured-card:hover::before{opacity:.14;}
+.featured-card:hover::after{opacity:1;}
+.featured-card[data-feat="amber"]{--feat-color:var(--amber);}
+.featured-card[data-feat="violet"]{--feat-color:var(--violet);}
+.featured-card[data-feat="green"]{--feat-color:var(--green);}
+
+.fc-top{
+  display:flex;flex-direction:row;align-items:center;gap:12px;
+  margin-bottom:10px;
+}
+.fc-emoji{
+  width:44px;height:44px;border-radius:11px;
+  background:rgba(255,255,255,0.04);
+  display:flex;align-items:center;justify-content:center;
+  font-size:1.55rem;
+  border:1.5px solid var(--border);
+  flex-shrink:0;
+}
+.featured-card[data-feat="amber"] .fc-emoji{background:rgba(251,191,36,0.12);border-color:rgba(251,191,36,0.3);}
+.featured-card[data-feat="violet"] .fc-emoji{background:rgba(167,139,250,0.12);border-color:rgba(167,139,250,0.3);}
+.featured-card[data-feat="green"] .fc-emoji{background:rgba(74,222,128,0.12);border-color:rgba(74,222,128,0.3);}
+.fc-title-wrap{flex:1;min-width:0;}
+.fc-name{
+  font-family:'IBM Plex Mono',monospace;
+  font-size:clamp(1.05rem,1.6vw,1.2rem);
+  font-weight:700;letter-spacing:-.025em;line-height:1.05;
+  color:var(--text);margin-bottom:3px;
+}
+.fc-tag{
+  display:inline-flex;align-items:center;gap:5px;
+  font-family:'IBM Plex Mono',monospace;font-size:.58rem;
+  text-transform:uppercase;letter-spacing:.12em;
+  color:var(--feat-color,var(--text3));font-weight:700;
+}
+.fc-tag .live-dot{
+  width:6px;height:6px;border-radius:50%;
+  background:var(--feat-color,var(--green));
+  box-shadow:0 0 8px var(--feat-color,var(--green));
+  animation:pulse 1.8s ease-in-out infinite;
+}
+.fc-desc{
+  font-size:.83rem;color:var(--text2);line-height:1.5;
+  margin-bottom:auto;padding-bottom:10px;
+}
+.fc-cta{
+  display:inline-flex;align-items:center;gap:7px;
+  font-family:'IBM Plex Mono',monospace;font-size:.72rem;
+  font-weight:700;color:var(--feat-color,var(--green));
+  letter-spacing:.02em;
+  transition:gap .2s;
+}
+.featured-card:hover .fc-cta{gap:11px;}
+.fc-cta-arrow{font-size:.95rem;line-height:1;}
+
+/* ── TOOLS SECTION (otras herramientas) ─────────────────────────────── */
+.tools-section{margin-top:14px;}
 .section-label{
   display:flex;align-items:center;gap:12px;
-  font-family:'IBM Plex Mono',monospace;font-size:.7rem;
+  font-family:'IBM Plex Mono',monospace;font-size:.66rem;
   text-transform:uppercase;letter-spacing:.13em;
-  color:var(--text3);margin-bottom:18px;
+  color:var(--text3);margin-bottom:12px;
 }
 .section-label::after{
   content:'';flex:1;height:1px;background:var(--border);
 }
 .tools-grid{
   display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
-  gap:14px;
+  grid-template-columns:repeat(4,1fr);
+  gap:10px;
 }
 .tool-card{
   display:block;text-decoration:none;
   background:var(--surface);
-  border:1px solid var(--border);border-radius:16px;
-  padding:24px 22px;
+  border:1px solid var(--border);border-radius:14px;
+  padding:14px 14px 14px 14px;
   transition:all .2s cubic-bezier(.4,0,.2,1);
   position:relative;overflow:hidden;
   color:inherit;
@@ -141,13 +231,13 @@ main{max-width:1080px;margin:0 auto;padding:48px 20px 60px;}
 .tool-card[data-color="sky"]{--card-color:var(--sky);}
 
 .tc-head{
-  display:flex;align-items:flex-start;gap:14px;margin-bottom:14px;
+  display:flex;align-items:center;gap:10px;margin-bottom:9px;
 }
 .tc-emoji{
-  width:48px;height:48px;border-radius:12px;
+  width:36px;height:36px;border-radius:10px;
   background:rgba(255,255,255,0.04);
   display:flex;align-items:center;justify-content:center;
-  font-size:1.6rem;flex-shrink:0;
+  font-size:1.2rem;flex-shrink:0;
   border:1px solid var(--border);
 }
 .tool-card[data-color="teal"] .tc-emoji{background:rgba(45,212,191,0.10);border-color:rgba(45,212,191,0.22);}
@@ -156,33 +246,25 @@ main{max-width:1080px;margin:0 auto;padding:48px 20px 60px;}
 .tool-card[data-color="rose"] .tc-emoji{background:rgba(251,113,133,0.10);border-color:rgba(251,113,133,0.22);}
 .tool-card[data-color="amber"] .tc-emoji{background:rgba(251,191,36,0.10);border-color:rgba(251,191,36,0.22);}
 .tool-card[data-color="sky"] .tc-emoji{background:rgba(56,189,248,0.10);border-color:rgba(56,189,248,0.22);}
-.tc-head-text{flex:1;min-width:0;padding-top:2px;}
+.tc-head-text{flex:1;min-width:0;}
 .tc-name{
-  font-family:'IBM Plex Mono',monospace;font-size:1.05rem;
+  font-family:'IBM Plex Mono',monospace;font-size:.92rem;
   font-weight:700;letter-spacing:-.02em;line-height:1.1;
-  margin-bottom:4px;color:var(--text);
+  margin-bottom:2px;color:var(--text);
 }
 .tc-tag{
-  font-family:'IBM Plex Mono',monospace;font-size:.65rem;
+  font-family:'IBM Plex Mono',monospace;font-size:.56rem;
   text-transform:uppercase;letter-spacing:.1em;
   color:var(--card-color,var(--text3));font-weight:600;
 }
 .tc-desc{
-  font-size:.86rem;color:var(--text2);line-height:1.6;
-  margin-bottom:18px;
+  font-size:.76rem;color:var(--text2);line-height:1.45;
+  margin-bottom:0;
 }
-.tc-cta{
-  display:inline-flex;align-items:center;gap:7px;
-  font-family:'IBM Plex Mono',monospace;font-size:.74rem;
-  font-weight:700;color:var(--card-color,var(--green));
-  letter-spacing:.02em;
-  transition:gap .2s;
-}
-.tool-card:hover .tc-cta{gap:11px;}
-.tc-cta-arrow{font-size:.95rem;line-height:1;}
+.tc-cta{display:none;}
 
 /* ── INDICADORES SECTION ────────────────────────────────────────────── */
-.indicators-section{margin-top:38px;}
+.indicators-section{margin-top:22px;}
 .indicators-section .section-label .ind-count{
   font-family:'IBM Plex Mono',monospace;font-size:.68rem;color:var(--text3);font-weight:500;letter-spacing:.05em;margin-left:4px;
 }
@@ -222,7 +304,7 @@ main{max-width:1080px;margin:0 auto;padding:48px 20px 60px;}
 
 /* ── ABOUT BLOCK ────────────────────────────────────────────────────── */
 .about{
-  margin-top:48px;padding:24px 24px;
+  margin-top:32px;padding:22px 22px;
   background:var(--surface);border:1px solid var(--border);
   border-radius:14px;
 }
@@ -290,13 +372,18 @@ main{max-width:1080px;margin:0 auto;padding:48px 20px 60px;}
 }
 .footer-meta span{color:var(--green);}
 
+@media (max-width:860px){
+  .tools-grid{grid-template-columns:repeat(2,1fr);}
+}
+@media (max-width:680px){
+  .featured-section{grid-template-columns:1fr;gap:10px;}
+  .featured-card{min-height:auto;}
+}
 @media (max-width:540px){
-  main{padding:32px 16px 40px;}
-  .hero{padding:18px 0 32px 0;}
+  main{padding:22px 16px 30px;}
+  .hero{padding:6px 0 16px 0;}
   .tools-grid{grid-template-columns:1fr;}
-  .tc-head{gap:12px;}
-  .tc-emoji{width:42px;height:42px;font-size:1.4rem;}
-  .about{padding:20px;}
+  .about{padding:18px;}
 }
 </style>
 </head>
@@ -311,7 +398,98 @@ main{max-width:1080px;margin:0 auto;padding:48px 20px 60px;}
     <div class="hero-eyebrow"><span class="pulse"></span>argentina · finanzas · gratis</div>
     <h1 class="hero-title">canuto<span class="accent">.ar</span></h1>
     <p class="hero-tagline">Herramientas financieras pensadas para argentinos.</p>
-    <p class="hero-sub">Calculadoras, dashboards y simuladores que te ayudan a entender tu plata: cuánta necesitás para retirarte, cuánto subió un precio con la inflación, y cómo va la macro del país. <strong>Todo gratis, sin registro, sin publicidad y sin tracking.</strong></p>
+    <p class="hero-sub">Calculadoras, dashboards y simuladores que te ayudan a entender tu plata y la macro del país: cuánto está el dólar minuto a minuto, cómo van los indicadores económicos y hasta cómo está funcionando el subte ahora mismo. <strong>Todo gratis, sin registro, sin publicidad y sin tracking.</strong></p>
+  </section>
+
+  <!-- FEATURED — 3 BOTONES GRANDES -->
+  <section class="featured-section" aria-label="Herramientas destacadas">
+    <a href="/dolar-intradia/" class="featured-card" data-feat="amber">
+      <div class="fc-top">
+        <div class="fc-emoji">💵</div>
+        <div class="fc-title-wrap">
+          <div class="fc-name">Dólar Intradía</div>
+          <div class="fc-tag"><span class="live-dot"></span>En vivo</div>
+        </div>
+      </div>
+      <p class="fc-desc">Cotización del dólar minuto a minuto: Oficial, Blue, MEP, CCL y Mayorista. Gráfico intra-día y brecha cambiaria en vivo.</p>
+      <span class="fc-cta">Ver cotizaciones <span class="fc-cta-arrow">→</span></span>
+    </a>
+
+    <a href="/datos-macro/" class="featured-card" data-feat="violet">
+      <div class="fc-top">
+        <div class="fc-emoji">🏛️</div>
+        <div class="fc-title-wrap">
+          <div class="fc-name">Datos Macro</div>
+          <div class="fc-tag">Indicadores de Argentina</div>
+        </div>
+      </div>
+      <p class="fc-desc">Indicadores macro del país en una sola página: reservas, deuda, riesgo, inflación, tasa, UVA, desocupación, pobreza y más.</p>
+      <span class="fc-cta">Ver el dashboard <span class="fc-cta-arrow">→</span></span>
+    </a>
+
+    <a href="/subte/" class="featured-card" data-feat="green">
+      <div class="fc-top">
+        <div class="fc-emoji">🚇</div>
+        <div class="fc-title-wrap">
+          <div class="fc-name">Subte</div>
+          <div class="fc-tag"><span class="live-dot"></span>En vivo</div>
+        </div>
+      </div>
+      <p class="fc-desc">Estado del subte de Buenos Aires ahora mismo: demoras y paros detectados automáticamente desde el feed oficial GTFS y X.</p>
+      <span class="fc-cta">Ver el subte <span class="fc-cta-arrow">→</span></span>
+    </a>
+  </section>
+
+  <!-- TOOLS GRID — otras herramientas -->
+  <section class="tools-section">
+    <div class="section-label">Más herramientas del sitio</div>
+    <div class="tools-grid">
+
+      <a href="/inflaciona/" class="tool-card" data-color="orange">
+        <div class="tc-head">
+          <div class="tc-emoji">🔥</div>
+          <div class="tc-head-text">
+            <div class="tc-name">Inflacioná</div>
+            <div class="tc-tag">Calculadora</div>
+          </div>
+        </div>
+        <p class="tc-desc">¿Cuánto valía algo antes y cuánto hoy? Ajustá por inflación oficial Argentina o EE.UU.</p>
+      </a>
+
+      <a href="/dolar-historico/" class="tool-card" data-color="sky">
+        <div class="tc-head">
+          <div class="tc-emoji">📈</div>
+          <div class="tc-head-text">
+            <div class="tc-name">Dólar Histórico</div>
+            <div class="tc-tag">Serie diaria</div>
+          </div>
+        </div>
+        <p class="tc-desc">Cotización diaria desde 2003 — Oficial, Blue, MEP, CCL y Mayorista. Gráfico interactivo por rangos.</p>
+      </a>
+
+      <a href="/gastos/" class="tool-card" data-color="rose">
+        <div class="tc-head">
+          <div class="tc-emoji">💳</div>
+          <div class="tc-head-text">
+            <div class="tc-name">Mis Gastos</div>
+            <div class="tc-tag">Presupuesto mensual</div>
+          </div>
+        </div>
+        <p class="tc-desc">Cargá ingresos y gastos fijos en pesos y dólares, replicá meses con un clic, sync opcional con Google.</p>
+      </a>
+
+      <a href="/retiro/" class="tool-card" data-color="teal">
+        <div class="tc-head">
+          <div class="tc-emoji">🏖️</div>
+          <div class="tc-head-text">
+            <div class="tc-name">Mi Retiro</div>
+            <div class="tc-tag">Independencia financiera</div>
+          </div>
+        </div>
+        <p class="tc-desc">¿Cuánto necesitás para no trabajar nunca más? Regla del 4% y simulador interactivo.</p>
+      </a>
+
+    </div>
   </section>
 
   <!-- INDICADORES MACRO — accesos directos a cada dashboard -->
@@ -411,93 +589,13 @@ main{max-width:1080px;margin:0 auto;padding:48px 20px 60px;}
     </div>
   </section>
 
-  <!-- TOOLS GRID -->
-  <section class="tools-section">
-    <div class="section-label">Herramientas disponibles</div>
-    <div class="tools-grid">
-
-      <a href="/datos-macro/" class="tool-card" data-color="violet">
-        <div class="tc-head">
-          <div class="tc-emoji">🏛️</div>
-          <div class="tc-head-text">
-            <div class="tc-name">Datos Macro</div>
-            <div class="tc-tag">Indicadores de Argentina</div>
-          </div>
-        </div>
-        <p class="tc-desc">Dashboard con los indicadores macro de Argentina: reservas del BCRA, vencimientos de deuda externa, riesgo país, inflación, tasa, UVA, desocupación y pobreza. Datos en vivo desde fuentes oficiales (BCRA, INDEC, OPC).</p>
-        <span class="tc-cta">Ver el dashboard <span class="tc-cta-arrow">→</span></span>
-      </a>
-
-      <a href="/dolar-en-vivo/" class="tool-card" data-color="amber">
-        <div class="tc-head">
-          <div class="tc-emoji">💵</div>
-          <div class="tc-head-text">
-            <div class="tc-name">Dólar en Vivo</div>
-            <div class="tc-tag">Cotización al instante</div>
-          </div>
-        </div>
-        <p class="tc-desc">Cinco cotizaciones del dólar actualizadas en vivo: Minorista BNA, Blue, MEP, CCL y Mayorista. Compra y venta, variación del día, brecha cambiaria entre tipos y refresh automático cada minuto. Ticker animado arriba.</p>
-        <span class="tc-cta">Ver cotizaciones <span class="tc-cta-arrow">→</span></span>
-      </a>
-
-      <a href="/dolar-historico/" class="tool-card" data-color="sky">
-        <div class="tc-head">
-          <div class="tc-emoji">📈</div>
-          <div class="tc-head-text">
-            <div class="tc-name">Dólar Histórico</div>
-            <div class="tc-tag">Serie histórica</div>
-          </div>
-        </div>
-        <p class="tc-desc">Serie histórica diaria del dólar desde 2003 — Oficial, Blue, MEP, CCL y Mayorista. Gráfico interactivo con rangos predefinidos (1S / 1M / 3M / 6M / 1A) y tarjetas con el último valor, el máximo y el mínimo del período seleccionado.</p>
-        <span class="tc-cta">Ver el histórico <span class="tc-cta-arrow">→</span></span>
-      </a>
-
-      <a href="/inflaciona/" class="tool-card" data-color="orange">
-        <div class="tc-head">
-          <div class="tc-emoji">🔥</div>
-          <div class="tc-head-text">
-            <div class="tc-name">Inflacioná</div>
-            <div class="tc-tag">Calculadora de inflación</div>
-          </div>
-        </div>
-        <p class="tc-desc">¿Cuánto valía algo antes y cuánto vale hoy? Ingresá un precio y dos fechas, y calculamos a cuánto equivale ajustado por inflación oficial. Elegís el país: Argentina (IPC INDEC desde 1943) o Estados Unidos (CPI BLS desde 1913).</p>
-        <span class="tc-cta">Calcular inflación <span class="tc-cta-arrow">→</span></span>
-      </a>
-
-      <a href="/gastos/" class="tool-card" data-color="rose">
-        <div class="tc-head">
-          <div class="tc-emoji">💳</div>
-          <div class="tc-head-text">
-            <div class="tc-name">Mis Gastos</div>
-            <div class="tc-tag">Gastos fijos del mes</div>
-          </div>
-        </div>
-        <p class="tc-desc">Cargá tus ingresos y gastos fijos en pesos y dólares, mirá tu balance del mes y replicá la planilla a meses futuros con un clic. Tiene resumen anual, alerta de vencidos y opción de sincronizar entre dispositivos con tu cuenta de Google.</p>
-        <span class="tc-cta">Armar mi mes <span class="tc-cta-arrow">→</span></span>
-      </a>
-
-      <a href="/retiro/" class="tool-card" data-color="teal">
-        <div class="tc-head">
-          <div class="tc-emoji">🏖️</div>
-          <div class="tc-head-text">
-            <div class="tc-name">Mi Retiro</div>
-            <div class="tc-tag">Independencia financiera</div>
-          </div>
-        </div>
-        <p class="tc-desc">Calculá cuánto necesitás acumulado en dólares para no trabajar nunca más. Usa la regla del 4%, te muestra en cuántos años llegás según cuánto ahorrás, y simulá distintos rendimientos e inflación. Incluye gráfico interactivo, escenarios "¿y si?" y exportador del análisis en imagen.</p>
-        <span class="tc-cta">Calcular mi número <span class="tc-cta-arrow">→</span></span>
-      </a>
-
-    </div>
-  </section>
-
   <!-- ABOUT -->
   <section class="about">
     <h3>Qué es canuto.ar</h3>
     <p>Un proyecto independiente y gratuito que junta calculadoras y dashboards útiles para entender la economía personal y la del país. La idea es simple: <strong>herramientas honestas, sin pop-ups, sin tracking, sin venta de cursos</strong>. Solo lo que necesitás para hacer un cálculo y entender un dato.</p>
-    <p>Todo el código corre en tu navegador y los datos se actualizan desde fuentes oficiales (INDEC, BCRA, Bureau of Labor Statistics). No guardamos información personal ni mostramos avisos.</p>
+    <p>Todo el código corre en tu navegador y los datos se actualizan desde fuentes oficiales (INDEC, BCRA, OPC, Bureau of Labor Statistics, GCBA). No guardamos información personal ni mostramos avisos.</p>
     <div class="about-stats">
-      <div class="about-stat"><div class="as-num">6</div><div class="as-lbl">Herramientas</div></div>
+      <div class="about-stat"><div class="as-num">7</div><div class="as-lbl">Herramientas</div></div>
       <div class="about-stat"><div class="as-num">$0</div><div class="as-lbl">Costo</div></div>
       <div class="about-stat"><div class="as-num">100%</div><div class="as-lbl">Gratis y sin registro</div></div>
       <div class="about-stat"><div class="as-num">0</div><div class="as-lbl">Trackers o ads</div></div>
