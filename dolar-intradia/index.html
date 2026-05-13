@@ -604,12 +604,313 @@
     .hist-modal-confirm:hover {
       background: rgba(74,222,128,0.22);
     }
+
+    /* ─────────────────────────────────────────────────────────────────
+       TABS BAR — Intra-día / Cotizaciones en Vivo
+    ─────────────────────────────────────────────────────────────────── */
+    .tabs-bar {
+      display: flex;
+      gap: 4px;
+      margin-bottom: 18px;
+      border-bottom: 1px solid var(--border);
+      flex-wrap: wrap;
+    }
+    .tabs-bar .tab-btn {
+      background: transparent;
+      border: none;
+      color: var(--text2);
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.84rem;
+      font-weight: 600;
+      padding: 10px 16px 12px;
+      cursor: pointer;
+      border-bottom: 2px solid transparent;
+      margin-bottom: -1px;
+      transition: color 0.15s, border-color 0.15s;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      letter-spacing: -0.005em;
+    }
+    .tabs-bar .tab-btn:hover { color: var(--text); }
+    .tabs-bar .tab-btn.is-active {
+      color: var(--accent);
+      border-bottom-color: var(--accent);
+    }
+    .tabs-bar .tab-btn .tab-dot {
+      width: 7px; height: 7px;
+      border-radius: 50%;
+      background: var(--accent);
+      box-shadow: 0 0 8px var(--accent);
+      flex-shrink: 0;
+      animation: tabDot 1.6s ease-in-out infinite;
+    }
+    @keyframes tabDot {
+      0%,100% { opacity:1; transform:scale(1); }
+      50%      { opacity:0.35; transform:scale(0.6); }
+    }
+    .tab-pane[hidden] { display: none !important; }
+
+    /* ─────────────────────────────────────────────────────────────────
+       #tab-envivo — Cotizaciones en Vivo (todo scopeado)
+    ─────────────────────────────────────────────────────────────────── */
+    #tab-envivo .ticker-band {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      overflow: hidden;
+      height: 34px;
+      display: flex;
+      align-items: center;
+      margin-bottom: 18px;
+    }
+    #tab-envivo .ticker-track {
+      display: flex;
+      animation: ev-ticker 24s linear infinite;
+      white-space: nowrap;
+    }
+    #tab-envivo .ticker-band:hover .ticker-track { animation-play-state: paused; }
+    @keyframes ev-ticker { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
+    #tab-envivo .ticker-item {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 0 24px;
+      border-right: 1px solid var(--border);
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.7rem;
+    }
+    #tab-envivo .t-name { color: var(--text3); letter-spacing: 0.08em; font-weight: 600; }
+    #tab-envivo .t-val  { color: var(--text); font-weight: 600; }
+    #tab-envivo .t-var.pos { color: var(--green); }
+    #tab-envivo .t-var.neg { color: var(--red); }
+    #tab-envivo .t-var.neu { color: var(--text3); }
+
+    #tab-envivo .ev-header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 16px;
+      flex-wrap: wrap;
+    }
+    #tab-envivo .ev-title {
+      display: flex; align-items: center; gap: 10px;
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: clamp(1.3rem, 4vw, 1.7rem);
+      font-weight: 700;
+      letter-spacing: -0.04em;
+      line-height: 1.05;
+      color: var(--text);
+    }
+    #tab-envivo .ev-title em { font-style: normal; color: var(--green); }
+    #tab-envivo .live-dot {
+      width: 8px; height: 8px; border-radius: 50%;
+      background: var(--green);
+      animation: ev-pulse 2s ease-in-out infinite;
+      flex-shrink: 0;
+    }
+    @keyframes ev-pulse {
+      0%,100% { opacity:1; transform:scale(1); }
+      50%      { opacity:0.3; transform:scale(0.6); }
+    }
+    #tab-envivo .ev-header-right { text-align: right; flex-shrink: 0; }
+    #tab-envivo .refresh-status {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.7rem; color: var(--text3);
+      margin-bottom: 5px;
+    }
+    #tab-envivo .refresh-bar-wrap {
+      width: 100px; height: 2px;
+      background: var(--surface2); border-radius: 2px;
+      overflow: hidden; margin-left: auto;
+    }
+    #tab-envivo .refresh-bar {
+      height: 100%; background: var(--green);
+      border-radius: 2px; width: 100%;
+      transition: width 1s linear;
+    }
+    #tab-envivo .last-update {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.65rem; color: var(--text3); margin-top: 5px;
+    }
+
+    #tab-envivo .market-status {
+      display: inline-flex; align-items: center; gap: 6px;
+      padding: 5px 12px; border-radius: 6px;
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.68rem; font-weight: 600;
+      margin-bottom: 18px;
+    }
+    #tab-envivo .market-status.open  { background: rgba(74,222,128,0.10); color: var(--green); }
+    #tab-envivo .market-status.closed { background: var(--surface2); color: var(--text3); }
+    #tab-envivo .market-status .ms-dot { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; }
+    #tab-envivo .market-status.open  .ms-dot { background: var(--green); animation: ev-pulse 2s infinite; }
+    #tab-envivo .market-status.closed .ms-dot { background: var(--text3); }
+
+    #tab-envivo .cards-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+      margin-bottom: 24px;
+    }
+    @media (min-width: 700px) { #tab-envivo .cards-grid { grid-template-columns: repeat(3, 1fr); } }
+    @media (max-width: 520px) { #tab-envivo .cards-grid { grid-template-columns: 1fr; } }
+
+    #tab-envivo .dolar-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 14px 14px 10px;
+      position: relative; overflow: hidden;
+      transition: border-color 0.2s, transform 0.15s;
+      cursor: pointer;
+    }
+    #tab-envivo .dolar-card:hover { border-color: var(--border2); transform: translateY(-1px); }
+    #tab-envivo .dolar-card::before {
+      content: ''; position: absolute;
+      top: 0; left: 0; right: 0; height: 3px;
+      border-radius: 14px 14px 0 0;
+    }
+    #tab-envivo .dolar-card.oficial::before   { background: var(--green); }
+    #tab-envivo .dolar-card.blue::before      { background: var(--blue); }
+    #tab-envivo .dolar-card.mep::before       { background: var(--orange); }
+    #tab-envivo .dolar-card.ccl::before       { background: var(--purple); }
+    #tab-envivo .dolar-card.mayorista::before { background: var(--teal); }
+
+    #tab-envivo .card-top {
+      display: flex; justify-content: space-between; align-items: flex-start;
+      margin-bottom: 8px;
+    }
+    #tab-envivo .dolar-card .card-name {
+      display: block;
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.74rem; font-weight: 700;
+      letter-spacing: 0.1em; text-transform: uppercase;
+    }
+    #tab-envivo .dolar-card.oficial   .card-name { color: var(--green); }
+    #tab-envivo .dolar-card.blue      .card-name { color: var(--blue); }
+    #tab-envivo .dolar-card.mep       .card-name { color: var(--orange); }
+    #tab-envivo .dolar-card.ccl       .card-name { color: var(--purple); }
+    #tab-envivo .dolar-card.mayorista .card-name { color: var(--teal); }
+
+    #tab-envivo .card-badge {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.7rem; padding: 3px 7px;
+      border-radius: 4px; font-weight: 600;
+    }
+    #tab-envivo .badge-pos { background: rgba(74,222,128,0.12); color: var(--green); }
+    #tab-envivo .badge-neg { background: rgba(248,113,113,0.12); color: var(--red); }
+    #tab-envivo .badge-neu { background: var(--surface2); color: var(--text3); }
+
+    #tab-envivo .card-prices { display: flex; gap: 14px; margin-bottom: 8px; align-items: flex-end; }
+    #tab-envivo .price-label {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.68rem; color: var(--text2);
+      text-transform: uppercase; letter-spacing: 0.08em;
+      margin-bottom: 2px;
+    }
+    #tab-envivo .price-value {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: clamp(1.3rem, 3.5vw, 1.85rem);
+      font-weight: 700; color: var(--text);
+      letter-spacing: -0.03em; line-height: 1;
+    }
+    #tab-envivo .price-value.secondary {
+      font-size: clamp(1rem, 2.5vw, 1.3rem);
+      color: var(--text2); font-weight: 500;
+    }
+    #tab-envivo .card-meta {
+      display: flex; justify-content: space-between;
+      border-top: 1px solid var(--border);
+      padding-top: 6px;
+    }
+    #tab-envivo .card-source, #tab-envivo .card-time {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.68rem; color: var(--text3);
+    }
+    #tab-envivo .card-watermark {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.78rem; font-weight: 600;
+      letter-spacing: 0.04em;
+      color: rgba(255,255,255,0.16);
+      pointer-events: none; user-select: none;
+      line-height: 1;
+    }
+    #tab-envivo .card-top-left  { display: flex; flex-direction: column; gap: 6px; }
+    #tab-envivo .card-top-right {
+      display: flex; flex-direction: column;
+      align-items: flex-end; gap: 4px; max-width: 60%;
+    }
+    #tab-envivo .price-ayer {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.66rem; color: var(--text2);
+      line-height: 1.2; min-height: 0.9rem;
+      text-align: right;
+    }
+    #tab-envivo .ayer-up   { color: var(--green); }
+    #tab-envivo .ayer-down { color: var(--red); }
+
+    #tab-envivo .shimmer {
+      background: linear-gradient(90deg, var(--surface2) 25%, #1e2230 50%, var(--surface2) 75%);
+      background-size: 200% 100%;
+      animation: ev-shimmer 1.4s infinite;
+      border-radius: 4px;
+      display: inline-block;
+    }
+    @keyframes ev-shimmer { to { background-position: -200% 0; } }
+    #tab-envivo .sv { width: 100px; height: 1.85rem; }
+    #tab-envivo .ss { width: 60px;  height: 1.2rem; }
+
+    #tab-envivo .dolar-card.brechas { cursor: default; }
+    #tab-envivo .dolar-card.brechas:hover { transform: none; border-color: var(--border); }
+    #tab-envivo .dolar-card.brechas::before { background: #fbbf24; }
+    #tab-envivo .dolar-card.brechas .card-name { color: #fbbf24; }
+    #tab-envivo .brechas-list {
+      display: flex; flex-direction: column; gap: 6px;
+      margin-top: 4px;
+    }
+    #tab-envivo .brechas-list .brecha-row {
+      display: flex; justify-content: space-between; align-items: baseline;
+      padding: 6px 8px;
+      background: var(--surface2);
+      border: none;
+      border-radius: 6px;
+    }
+    #tab-envivo .brecha-label {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.7rem; color: var(--text2);
+      text-transform: uppercase; letter-spacing: 0.08em;
+    }
+    #tab-envivo .brecha-value {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.95rem; font-weight: 700;
+      color: #fbbf24;
+    }
+    #tab-envivo .brecha-value.ok     { color: var(--green); }
+    #tab-envivo .brecha-value.warn   { color: var(--orange); }
+    #tab-envivo .brecha-value.danger { color: var(--red); }
   </style>
 </head>
 <body>
 <div id="canuto-nav"></div>
 
 <main>
+
+  <!-- TABS BAR ─────────────────────────────────────────────────── -->
+  <div class="tabs-bar" role="tablist" aria-label="Vista del dólar">
+    <button class="tab-btn is-active" type="button"
+            role="tab" aria-selected="true" aria-controls="tab-intradia"
+            data-tab="intradia">
+      <span>Intra-día</span>
+    </button>
+    <button class="tab-btn" type="button"
+            role="tab" aria-selected="false" aria-controls="tab-envivo"
+            data-tab="envivo">
+      <span class="tab-dot" aria-hidden="true"></span>
+      <span>Cotizaciones en Vivo</span>
+    </button>
+  </div>
+
+  <div id="tab-intradia" class="tab-pane" role="tabpanel" aria-labelledby="tab-btn-intradia">
   <div class="page-top">
     <div class="page-top-left">
       <div class="eyebrow">HERRAMIENTA</div>
@@ -645,6 +946,122 @@
   </div>
 
   <div class="grid" id="grid"></div>
+  </div><!-- /#tab-intradia -->
+
+  <!-- ─────────────────────────────────────────────────────────────
+       #tab-envivo — Cotizaciones en Vivo
+  ───────────────────────────────────────────────────────────────── -->
+  <div id="tab-envivo" class="tab-pane" role="tabpanel" aria-labelledby="tab-btn-envivo" hidden>
+
+    <!-- TICKER -->
+    <div class="ticker-band" aria-hidden="true">
+      <div class="ticker-track" id="ev-ticker-track">
+        <span class="ticker-item"><span class="t-name">OFICIAL</span><span class="t-val" id="ev-tk-of-v">—</span><span class="t-var neu" id="ev-tk-of-d">—</span></span>
+        <span class="ticker-item"><span class="t-name">BLUE</span><span class="t-val" id="ev-tk-bl-v">—</span><span class="t-var neu" id="ev-tk-bl-d">—</span></span>
+        <span class="ticker-item"><span class="t-name">MEP</span><span class="t-val" id="ev-tk-me-v">—</span><span class="t-var neu" id="ev-tk-me-d">—</span></span>
+        <span class="ticker-item"><span class="t-name">CCL</span><span class="t-val" id="ev-tk-cc-v">—</span><span class="t-var neu" id="ev-tk-cc-d">—</span></span>
+        <span class="ticker-item"><span class="t-name">OFICIAL</span><span class="t-val" id="ev-tk-of-v2">—</span><span class="t-var neu" id="ev-tk-of-d2">—</span></span>
+        <span class="ticker-item"><span class="t-name">BLUE</span><span class="t-val" id="ev-tk-bl-v2">—</span><span class="t-var neu" id="ev-tk-bl-d2">—</span></span>
+        <span class="ticker-item"><span class="t-name">MEP</span><span class="t-val" id="ev-tk-me-v2">—</span><span class="t-var neu" id="ev-tk-me-d2">—</span></span>
+        <span class="ticker-item"><span class="t-name">CCL</span><span class="t-val" id="ev-tk-cc-v2">—</span><span class="t-var neu" id="ev-tk-cc-d2">—</span></span>
+      </div>
+    </div>
+
+    <!-- HEADER -->
+    <div class="ev-header">
+      <div class="ev-title"><span class="live-dot"></span>Cotizaciones <em>en Vivo</em></div>
+      <div class="ev-header-right">
+        <div class="refresh-status" id="ev-refresh-status">Cargando…</div>
+        <div class="refresh-bar-wrap"><div class="refresh-bar" id="ev-refresh-bar"></div></div>
+        <div class="last-update" id="ev-last-update">—</div>
+      </div>
+    </div>
+
+    <div class="market-status closed" id="ev-market-status">
+      <span class="ms-dot"></span>
+      <span id="ev-market-text">Verificando…</span>
+    </div>
+
+    <!-- CARDS — cada card linkea al gráfico intradía via data-go-intradia -->
+    <div class="cards-grid">
+
+      <div class="dolar-card oficial"   id="ev-card-oficial"   data-go-intradia="oficial">
+        <div class="card-top">
+          <div class="card-top-left"><div class="card-name">Minorista BNA</div><div class="card-watermark">canuto.ar</div></div>
+          <div class="card-top-right"><div class="card-badge badge-neu" id="ev-badge-oficial">—</div><div class="price-ayer" id="ev-ayer-oficial"></div></div>
+        </div>
+        <div class="card-prices">
+          <div><div class="price-label">Venta</div><div class="price-value" id="ev-v-oficial-venta"><span class="shimmer sv"></span></div></div>
+          <div><div class="price-label">Compra</div><div class="price-value secondary" id="ev-v-oficial-compra"><span class="shimmer ss"></span></div></div>
+        </div>
+        <div class="card-meta"><span class="card-source">Fuente: BNA</span><span class="card-time" id="ev-t-oficial">—</span></div>
+      </div>
+
+      <div class="dolar-card blue"      id="ev-card-blue"      data-go-intradia="blue">
+        <div class="card-top">
+          <div class="card-top-left"><div class="card-name">Blue</div><div class="card-watermark">canuto.ar</div></div>
+          <div class="card-top-right"><div class="card-badge badge-neu" id="ev-badge-blue">—</div><div class="price-ayer" id="ev-ayer-blue"></div></div>
+        </div>
+        <div class="card-prices">
+          <div><div class="price-label">Venta</div><div class="price-value" id="ev-v-blue-venta"><span class="shimmer sv"></span></div></div>
+          <div><div class="price-label">Compra</div><div class="price-value secondary" id="ev-v-blue-compra"><span class="shimmer ss"></span></div></div>
+        </div>
+        <div class="card-meta"><span class="card-source">Mercado informal</span><span class="card-time" id="ev-t-blue">—</span></div>
+      </div>
+
+      <div class="dolar-card mep"       id="ev-card-mep"       data-go-intradia="mep">
+        <div class="card-top">
+          <div class="card-top-left"><div class="card-name">MEP / Bolsa</div><div class="card-watermark">canuto.ar</div></div>
+          <div class="card-top-right"><div class="card-badge badge-neu" id="ev-badge-mep">—</div><div class="price-ayer" id="ev-ayer-mep"></div></div>
+        </div>
+        <div class="card-prices">
+          <div><div class="price-label">Venta</div><div class="price-value" id="ev-v-mep-venta"><span class="shimmer sv"></span></div></div>
+          <div><div class="price-label">Compra</div><div class="price-value secondary" id="ev-v-mep-compra"><span class="shimmer ss"></span></div></div>
+        </div>
+        <div class="card-meta"><span class="card-source">Mercado bursátil</span><span class="card-time" id="ev-t-mep">—</span></div>
+      </div>
+
+      <div class="dolar-card ccl"       id="ev-card-ccl"       data-go-intradia="ccl">
+        <div class="card-top">
+          <div class="card-top-left"><div class="card-name">CCL</div><div class="card-watermark">canuto.ar</div></div>
+          <div class="card-top-right"><div class="card-badge badge-neu" id="ev-badge-ccl">—</div><div class="price-ayer" id="ev-ayer-ccl"></div></div>
+        </div>
+        <div class="card-prices">
+          <div><div class="price-label">Venta</div><div class="price-value" id="ev-v-ccl-venta"><span class="shimmer sv"></span></div></div>
+          <div><div class="price-label">Compra</div><div class="price-value secondary" id="ev-v-ccl-compra"><span class="shimmer ss"></span></div></div>
+        </div>
+        <div class="card-meta"><span class="card-source">Contado con liqui</span><span class="card-time" id="ev-t-ccl">—</span></div>
+      </div>
+
+      <div class="dolar-card mayorista" id="ev-card-mayorista" data-go-intradia="mayorista">
+        <div class="card-top">
+          <div class="card-top-left"><div class="card-name">Mayorista</div><div class="card-watermark">canuto.ar</div></div>
+          <div class="card-top-right"><div class="card-badge badge-neu" id="ev-badge-mayorista">—</div><div class="price-ayer" id="ev-ayer-mayorista"></div></div>
+        </div>
+        <div class="card-prices">
+          <div><div class="price-label">Venta</div><div class="price-value" id="ev-v-mayorista-venta"><span class="shimmer sv"></span></div></div>
+          <div><div class="price-label">Compra</div><div class="price-value secondary" id="ev-v-mayorista-compra"><span class="shimmer ss"></span></div></div>
+        </div>
+        <div class="card-meta"><span class="card-source">Mercado mayorista</span><span class="card-time" id="ev-t-mayorista">—</span></div>
+      </div>
+
+      <!-- Card de brechas vs oficial -->
+      <div class="dolar-card brechas" id="ev-card-brechas">
+        <div class="card-top">
+          <div class="card-top-left"><div class="card-name">Brecha vs Oficial</div><div class="card-watermark">canuto.ar</div></div>
+        </div>
+        <div class="brechas-list">
+          <div class="brecha-row"><span class="brecha-label">Blue</span><span class="brecha-value" id="ev-brecha-blue">—</span></div>
+          <div class="brecha-row"><span class="brecha-label">MEP</span><span class="brecha-value" id="ev-brecha-mep">—</span></div>
+          <div class="brecha-row"><span class="brecha-label">CCL</span><span class="brecha-value" id="ev-brecha-ccl">—</span></div>
+          <div class="brecha-row"><span class="brecha-label">Mayorista</span><span class="brecha-value" id="ev-brecha-mayorista">—</span></div>
+        </div>
+      </div>
+
+    </div>
+
+  </div><!-- /#tab-envivo -->
+
 </main>
 
 <div class="modal" id="modal" role="dialog" aria-modal="true" aria-hidden="true">
@@ -1620,6 +2037,337 @@ function _wireDayPicker() {
   await recargar();
   startAutoRefreshBar();
   setInterval(_tickAutoRefresh, AUTO_REFRESH_MS);
+})();
+
+// ════════════════════════════════════════════════════════════════════
+// TABS — Intra-día / Cotizaciones en Vivo
+// ════════════════════════════════════════════════════════════════════
+(function initTabs(){
+  const btns  = Array.from(document.querySelectorAll('.tabs-bar .tab-btn'));
+  const panes = {
+    intradia: document.getElementById('tab-intradia'),
+    envivo:   document.getElementById('tab-envivo'),
+  };
+  if (!btns.length || !panes.intradia || !panes.envivo) return;
+
+  function setTab(name){
+    if (!panes[name]) return;
+    // Botones
+    btns.forEach(b => {
+      const active = b.dataset.tab === name;
+      b.classList.toggle('is-active', active);
+      b.setAttribute('aria-selected', active ? 'true' : 'false');
+    });
+    // Panes
+    Object.entries(panes).forEach(([k,el]) => {
+      if (k === name) el.removeAttribute('hidden');
+      else            el.setAttribute('hidden','');
+    });
+    // Hash en URL (sin scroll)
+    try {
+      const hash = name === 'envivo' ? '#envivo' : '';
+      if (hash !== window.location.hash) {
+        history.replaceState(null, '', window.location.pathname + window.location.search + hash);
+      }
+    } catch(_){}
+    // Avisar al módulo de en-vivo para refrescar inmediatamente
+    if (name === 'envivo' && typeof window._evWake === 'function') window._evWake();
+  }
+
+  btns.forEach(b => b.addEventListener('click', () => setTab(b.dataset.tab)));
+
+  // Tab inicial: desde el hash o por defecto intradia
+  const initial = (window.location.hash === '#envivo') ? 'envivo' : 'intradia';
+  setTab(initial);
+
+  // Exponer para que un click en card del tab en-vivo pueda saltar a intradia
+  window._setDolarTab = setTab;
+})();
+
+// ════════════════════════════════════════════════════════════════════
+// EN VIVO — Cotizaciones spot, ticker, brechas, refresh countdown
+// Todo aislado en IIFE para no chocar con globals de intradia.
+// ════════════════════════════════════════════════════════════════════
+(function initEnVivo(){
+  const REFRESH = 60;
+  const HIST_API = 'https://api.argentinadatos.com/v1/cotizaciones/dolares/';
+  const HIST_KEY = { oficial:'oficial', blue:'blue', mep:'bolsa', ccl:'contadoconliqui', mayorista:'mayorista' };
+  // Mapeo a los IDs que usa la grilla del tab intra-día (para scroll-to-card)
+  const MAP_INTRADIA = { oficial:'oficial', blue:'blue', mep:'bolsa', ccl:'contadoconliqui', mayorista:'mayorista' };
+
+  let _ayer    = {};
+  let _ayerYmd = null;
+  let _prev    = {};
+  let _todoCongelado = false;
+  let _cdTimer = null;
+  let _refreshTimer = null;
+  let _running = false;
+
+  function fmt(n){
+    if (n == null || isNaN(n)) return '—';
+    return '$' + Number(n).toLocaleString('es-AR', { minimumFractionDigits:0, maximumFractionDigits:0 });
+  }
+  function fmtPct(n){
+    if (n == null) return '—';
+    return (n >= 0 ? '+' : '') + n.toFixed(2) + '%';
+  }
+  function fmtTime(s){
+    if (!s) return '—';
+    const d  = new Date(s);
+    const dd = String(d.getDate()).padStart(2,'0');
+    const mm = String(d.getMonth()+1).padStart(2,'0');
+    const yy = d.getFullYear();
+    const hh = String(d.getHours()).padStart(2,'0');
+    const mi = String(d.getMinutes()).padStart(2,'0');
+    return `${dd}/${mm}/${yy} ${hh}:${mi}`;
+  }
+  function hoyArgYmd(){
+    return new Date().toLocaleDateString('sv-SE', { timeZone:'America/Argentina/Buenos_Aires' });
+  }
+
+  async function fetchAyer(){
+    const arg = new Date(new Date().toLocaleString('en-US', { timeZone:'America/Argentina/Buenos_Aires' }));
+    arg.setDate(arg.getDate() - 1);
+    const fecha = `${arg.getFullYear()}-${String(arg.getMonth()+1).padStart(2,'0')}-${String(arg.getDate()).padStart(2,'0')}`;
+    const hoyStr = hoyArgYmd();
+    const tipos = ['oficial','blue','mep','ccl','mayorista'];
+    await Promise.all(tipos.map(async tipo => {
+      try {
+        let res = await fetch(`${HIST_API}${HIST_KEY[tipo]}/${fecha}`, { cache:'no-store' });
+        if (res.ok) {
+          const d = await res.json();
+          if (d && d.venta) { _ayer[tipo] = d.venta; return; }
+        }
+        res = await fetch(`${HIST_API}${HIST_KEY[tipo]}`, { cache:'no-store' });
+        if (!res.ok) return;
+        const serie = await res.json();
+        const previos = serie.filter(d => d.fecha.slice(0,10) < hoyStr && d.venta > 0);
+        if (previos.length) _ayer[tipo] = previos[previos.length - 1].venta;
+      } catch(_){}
+    }));
+    _ayerYmd = hoyStr;
+  }
+
+  function congeladaEnOtraFecha(d){
+    if (!d || !d._frozen || !d.fechaActualizacion) return false;
+    const dt = new Date(d.fechaActualizacion);
+    if (isNaN(dt.getTime())) return false;
+    const todayYmd = new Date().toLocaleDateString('sv-SE', { timeZone:'America/Argentina/Buenos_Aires' });
+    const faYmd    = dt.toLocaleDateString('sv-SE', { timeZone:'America/Argentina/Buenos_Aires' });
+    return faYmd !== todayYmd;
+  }
+
+  function varPct(tipo, d){
+    if (congeladaEnOtraFecha(d)) return 0;
+    const cur = d && d.venta;
+    const b   = _ayer[tipo];
+    return (b && cur) ? ((cur - b) / b) * 100 : null;
+  }
+
+  function updateMarket(){
+    const arg = new Date(new Date().toLocaleString('en-US', { timeZone:'America/Argentina/Buenos_Aires' }));
+    const day = arg.getDay(), h = arg.getHours(), m = arg.getMinutes();
+    const t = h * 60 + m;
+    const el = document.getElementById('ev-market-status');
+    const txt = document.getElementById('ev-market-text');
+    if (!el || !txt) return;
+    let open = false, msg = '';
+    const habil = window.CanutoDolar && window.CanutoDolar.esDiaHabilArg
+      ? window.CanutoDolar.esDiaHabilArg() : (day !== 0 && day !== 6);
+    const enBanner = window.CanutoDolar && window.CanutoDolar.isMercadoBanner
+      ? window.CanutoDolar.isMercadoBanner()
+      : (habil && t >= (10*60+30) && t <= 17*60);
+    if (enBanner) { open = true; msg = 'Mercado abierto · cierra 17:00 hs'; }
+    else if (!habil) msg = (day === 0 || day === 6) ? 'Fin de semana — mercado cerrado' : 'Feriado — mercado cerrado';
+    else if (t < 10*60+30) msg = 'Abre a las 10:30 hs';
+    else msg = 'Mercado cerrado — reabre el próximo día hábil';
+    el.className = `market-status ${open ? 'open' : 'closed'}`;
+    txt.textContent = msg;
+  }
+
+  function renderCard(id, merged){
+    const casaMap = { oficial:'oficial', blue:'blue', mep:'bolsa', ccl:'contadoconliqui', mayorista:'mayorista' };
+    const d = merged.find(x => x.casa === casaMap[id] || x._tipo === id);
+    if (!d) return;
+    const vp = varPct(id, d);
+    const $v = document.getElementById(`ev-v-${id}-venta`);
+    const $c = document.getElementById(`ev-v-${id}-compra`);
+    const $t = document.getElementById(`ev-t-${id}`);
+    if ($v) $v.textContent = fmt(d.venta);
+    if ($c) $c.textContent = fmt(d.compra);
+    if ($t) $t.textContent = fmtTime(d.fechaActualizacion);
+
+    const ayerEl  = document.getElementById(`ev-ayer-${id}`);
+    const ayerVal = _ayer[id];
+    if (ayerEl) {
+      if (congeladaEnOtraFecha(d)) {
+        ayerEl.innerHTML = 'sin cambios vs cierre anterior';
+      } else if (ayerVal && d.venta) {
+        const diff = d.venta - ayerVal;
+        if (Math.abs(diff) < 0.005) {
+          ayerEl.innerHTML = 'sin cambios vs cierre anterior';
+        } else {
+          const verbo = diff > 0 ? 'subió' : 'bajó';
+          const arrow = diff > 0 ? '↑' : '↓';
+          const cls   = diff > 0 ? 'ayer-up' : 'ayer-down';
+          ayerEl.innerHTML = `<span class="${cls}">${arrow} ${verbo} ${fmt(Math.abs(diff))}</span> vs cierre anterior`;
+        }
+      } else {
+        ayerEl.textContent = '';
+      }
+    }
+
+    const badge = document.getElementById(`ev-badge-${id}`);
+    if (badge) {
+      if (vp !== null) {
+        badge.textContent = fmtPct(vp);
+        badge.className   = `card-badge ${vp > 0 ? 'badge-pos' : vp < 0 ? 'badge-neg' : 'badge-neu'}`;
+      } else {
+        badge.textContent = 'cargando…';
+        badge.className   = 'card-badge badge-neu';
+      }
+    }
+
+    if (_prev[id] && _prev[id] !== d.venta) {
+      const card = document.getElementById(`ev-card-${id}`);
+      if (card) {
+        card.style.background = '#1a2e1a';
+        setTimeout(() => card.style.background = '', 600);
+      }
+    }
+    _prev[id] = d.venta;
+  }
+
+  function renderTicker(merged){
+    const items = [
+      { id:'of', tipo:'oficial' },
+      { id:'bl', tipo:'blue'   },
+      { id:'me', tipo:'mep'    },
+      { id:'cc', tipo:'ccl'    },
+    ];
+    for (const it of items) {
+      const d  = merged.find(x => x._tipo === it.tipo);
+      if (!d) continue;
+      const vp  = varPct(it.tipo, d);
+      const vs  = vp !== null ? fmtPct(vp) : '—';
+      const cls = vp === null ? 'neu' : vp > 0 ? 'pos' : vp < 0 ? 'neg' : 'neu';
+      for (const sfx of ['','2']) {
+        const ve = document.getElementById(`ev-tk-${it.id}-v${sfx}`);
+        const de = document.getElementById(`ev-tk-${it.id}-d${sfx}`);
+        if (ve) ve.textContent = fmt(d.venta);
+        if (de) { de.textContent = vs; de.className = `t-var ${cls}`; }
+      }
+    }
+  }
+
+  function renderBrechas(merged){
+    const of = merged.find(x => x._tipo === 'oficial');
+    if (!of || !of.venta) return;
+    const pairs = [
+      { id:'blue',      tipo:'blue' },
+      { id:'mep',       tipo:'mep'  },
+      { id:'ccl',       tipo:'ccl'  },
+      { id:'mayorista', tipo:'mayorista' },
+    ];
+    for (const p of pairs) {
+      const d  = merged.find(x => x._tipo === p.tipo);
+      const el = document.getElementById(`ev-brecha-${p.id}`);
+      if (el && d && d.venta) {
+        const b = ((d.venta - of.venta) / of.venta) * 100;
+        el.textContent = fmtPct(b);
+        let cls = '';
+        if (b < 0)        cls = 'ok';
+        else if (b >= 7)  cls = 'danger';
+        else if (b >= 5)  cls = 'warn';
+        el.className = `brecha-value ${cls}`;
+      }
+    }
+  }
+
+  async function fetchData(){
+    try {
+      const hoy = hoyArgYmd();
+      if (_ayerYmd && _ayerYmd !== hoy) fetchAyer();
+
+      const merged = await window.CanutoDolar.fetchLiveCotizaciones();
+      if (!merged || !merged.length) throw new Error('Sin datos');
+
+      ['oficial','blue','mep','ccl','mayorista'].forEach(id => renderCard(id, merged));
+      renderBrechas(merged);
+      renderTicker(merged);
+      _todoCongelado = merged.length > 0 && merged.every(c => c._frozen);
+
+      const _n = new Date();
+      const _ts = `${String(_n.getDate()).padStart(2,'0')}/${String(_n.getMonth()+1).padStart(2,'0')}/${_n.getFullYear()} ${String(_n.getHours()).padStart(2,'0')}:${String(_n.getMinutes()).padStart(2,'0')}`;
+      const lu = document.getElementById('ev-last-update');
+      if (lu) lu.textContent = `últ. actualización: ${_ts}`;
+    } catch(_){
+      const r = document.getElementById('ev-refresh-status');
+      if (r) r.textContent = 'Error — reintentando…';
+    }
+  }
+
+  function startCountdown(){
+    let cd = REFRESH;
+    const bar = document.getElementById('ev-refresh-bar');
+    const txt = document.getElementById('ev-refresh-status');
+    if (_cdTimer) clearInterval(_cdTimer);
+    if (_todoCongelado) {
+      if (bar) bar.style.width = '100%';
+      if (txt) txt.textContent = 'Mercado cerrado · cotizaciones fijadas';
+      return;
+    }
+    _cdTimer = setInterval(() => {
+      cd--;
+      if (bar) bar.style.width = (cd / REFRESH * 100) + '%';
+      if (txt) txt.textContent = `Próximo refresh en ${cd}s`;
+      if (cd <= 0) clearInterval(_cdTimer);
+    }, 1000);
+  }
+
+  function tick(){
+    fetchData().then(startCountdown);
+  }
+
+  function start(){
+    if (_running) return;
+    _running = true;
+    updateMarket();
+    setInterval(updateMarket, 60_000);
+    fetchAyer().finally(() => {
+      tick();
+      _refreshTimer = setInterval(tick, REFRESH * 1000);
+    });
+  }
+
+  // wake() — fuerza un refresh inmediato cuando el usuario abre el tab.
+  // Si todavía no arrancó, lo arranca.
+  window._evWake = function(){
+    if (!_running) { start(); return; }
+    // Si está corriendo, refrescamos ya y reiniciamos el countdown.
+    fetchData().then(startCountdown);
+  };
+
+  // Cards clickeables → llevan al gráfico intra-día (cambio de tab + scroll a card)
+  document.querySelectorAll('#tab-envivo [data-go-intradia]').forEach(el => {
+    el.addEventListener('click', function(){
+      const tipo = this.getAttribute('data-go-intradia');
+      const idIntra = MAP_INTRADIA[tipo] || tipo;
+      if (typeof window._setDolarTab === 'function') window._setDolarTab('intradia');
+      // Pequeño delay para que el tab se muestre antes de hacer scroll
+      setTimeout(() => {
+        const card = document.getElementById('card-' + idIntra);
+        if (card) {
+          card.scrollIntoView({ behavior:'smooth', block:'center' });
+          card.classList.add('card-highlight');
+          setTimeout(() => card.classList.remove('card-highlight'), 1800);
+        }
+      }, 60);
+    });
+  });
+
+  // Arranque automático si entran directo al tab en-vivo (vía #envivo en URL)
+  if (window.location.hash === '#envivo') start();
 })();
 </script>
 
