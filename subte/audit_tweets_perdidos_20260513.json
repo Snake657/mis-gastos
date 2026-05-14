@@ -1,0 +1,1202 @@
+{
+  "generated_at": "2026-05-13T12:30:44.070880+00:00",
+  "rango": "2024-01 a 2026-05",
+  "total_perdidos": 132,
+  "patrones": {
+    "otro": 70,
+    "operativo_policial": 38,
+    "obras_mantenimiento": 12,
+    "usuario_asistencia": 1,
+    "medida_gremial": 11
+  },
+  "tweets_perdidos": [
+    {
+      "datetime_arg": "2024-01-24 14:28",
+      "linea": "A",
+      "kind": "inicio_estacion_cerrada",
+      "text": "#LíneaA - Trenes no se detienen en Congreso y http:// S.Peña por operativo de seguridad en vía pública. 14:28",
+      "user": "emova_arg",
+      "tweet_id": "1750208993887174734",
+      "url": "https://x.com/emova_arg/status/1750208993887174734"
+    },
+    {
+      "datetime_arg": "2024-01-24 15:04",
+      "linea": "A",
+      "kind": "inicio_estacion_cerrada",
+      "text": "#LíneaA - Los trenes no se detienen en las estaciones Lima, Saenz Peña y Congreso. 15:04",
+      "user": "emova_arg",
+      "tweet_id": "1750218055752257677",
+      "url": "https://x.com/emova_arg/status/1750218055752257677"
+    },
+    {
+      "datetime_arg": "2024-01-24 16:23",
+      "linea": "A",
+      "kind": "inicio_estacion_cerrada",
+      "text": "#LíneaA - Trenes no se detienen en Congreso y http:// S.Peña por operativo de seguridad en vía pública. 16:23",
+      "user": "emova_arg",
+      "tweet_id": "1750237941673136532",
+      "url": "https://x.com/emova_arg/status/1750237941673136532"
+    },
+    {
+      "datetime_arg": "2024-01-24 16:30",
+      "linea": "A",
+      "kind": "inicio_estacion_cerrada",
+      "text": "#LíneaA - Los trenes no se detienen en Congreso por operativo de seguridad en vía pública. 16:30",
+      "user": "emova_arg",
+      "tweet_id": "1750239703687708955",
+      "url": "https://x.com/emova_arg/status/1750239703687708955"
+    },
+    {
+      "datetime_arg": "2024-02-08 13:52",
+      "linea": "E",
+      "kind": "inicio_limitado",
+      "text": "#LíneaE - Circula con servicio limitado entre las estaciones Retiro y Entre Ríos. 13:52",
+      "user": "emova_arg",
+      "tweet_id": "1755635606175023120",
+      "url": "https://x.com/emova_arg/status/1755635606175023120"
+    },
+    {
+      "datetime_arg": "2024-02-08 14:18",
+      "linea": "H",
+      "kind": "inicio_limitado",
+      "text": "#LíneaH - Circula con servicio limitado entre las estaciones Facultad de Derecho y Parque Patricios. 14:18",
+      "user": "emova_arg",
+      "tweet_id": "1755642154163093848",
+      "url": "https://x.com/emova_arg/status/1755642154163093848"
+    },
+    {
+      "datetime_arg": "2024-02-08 14:26",
+      "linea": "C",
+      "kind": "inicio_limitado",
+      "text": "#LíneaC - Circula con servicio limitado entre las estaciones Diagonal Norte y Constitución. 14:26",
+      "user": "emova_arg",
+      "tweet_id": "1755644166464242115",
+      "url": "https://x.com/emova_arg/status/1755644166464242115"
+    },
+    {
+      "datetime_arg": "2024-02-08 14:27",
+      "linea": "E",
+      "kind": "inicio_limitado",
+      "text": "#LíneaE - Servicio limitado entre las estaciones Retiro y Entre Ríos y no se detienen en Correo Central. 14:27",
+      "user": "emova_arg",
+      "tweet_id": "1755644419183648875",
+      "url": "https://x.com/emova_arg/status/1755644419183648875"
+    },
+    {
+      "datetime_arg": "2024-02-08 14:34",
+      "linea": "H",
+      "kind": "inicio_limitado",
+      "text": "#LíneaH - Servicio limitado entre las estaciones http:// F.de derecho-Parque Patricios y no se detiene en Santa Fé. 14:34",
+      "user": "emova_arg",
+      "tweet_id": "1755646180799717555",
+      "url": "https://x.com/emova_arg/status/1755646180799717555"
+    },
+    {
+      "datetime_arg": "2024-02-08 14:55",
+      "linea": "E",
+      "kind": "inicio_limitado",
+      "text": "#LíneaE - Circula con servicio limitado entre las estaciones Retiro - Entre Ríos y Boedo - Plaza de los Virreyes. 14:55",
+      "user": "emova_arg",
+      "tweet_id": "1755651470865670502",
+      "url": "https://x.com/emova_arg/status/1755651470865670502"
+    },
+    {
+      "datetime_arg": "2024-02-08 16:10",
+      "linea": "E",
+      "kind": "inicio_estacion_cerrada",
+      "text": "#Subte | Línea E: Los trenes no se detienen en la estación Correo Central",
+      "user": "basubte",
+      "tweet_id": "1755670473415758251",
+      "url": "https://x.com/basubte/status/1755670473415758251"
+    },
+    {
+      "datetime_arg": "2024-02-08 16:42",
+      "linea": "A",
+      "kind": "inicio_limitado",
+      "text": "#LíneaA - Circula con servicio limitado entre las estaciones Río de Janeiroy San Pedrito. 16:42",
+      "user": "emova_arg",
+      "tweet_id": "1755678408099447252",
+      "url": "https://x.com/emova_arg/status/1755678408099447252"
+    },
+    {
+      "datetime_arg": "2024-02-08 16:46",
+      "linea": "A",
+      "kind": "inicio_limitado",
+      "text": "#Subte | Línea A: Servicio limitado entre las estaciones Río de Janeiroy San Pedrito",
+      "user": "basubte",
+      "tweet_id": "1755679596165341390",
+      "url": "https://x.com/basubte/status/1755679596165341390"
+    },
+    {
+      "datetime_arg": "2024-02-09 18:54",
+      "linea": "Premetro",
+      "kind": "inicio_demora",
+      "text": "Hola, somos Emova, la concesionaria del Subte y Premetro. Por el momento la Línea E circula con normalidad. Eventualmente alguna formación podría sufrir una demora puntual por la afluencia de usuarios en este horario. En nuestra web podés ver en tiempo real el estado del",
+      "user": "emova_arg",
+      "tweet_id": "1756074057710063851",
+      "url": "https://x.com/emova_arg/status/1756074057710063851"
+    },
+    {
+      "datetime_arg": "2024-03-01 08:20",
+      "linea": "A",
+      "kind": "inicio_estacion_cerrada",
+      "text": "#LíneaA - Los trenes no se detienen en Perú por operativo de seguridad en vía pública. 08:20",
+      "user": "emova_arg",
+      "tweet_id": "1763524647901941799",
+      "url": "https://x.com/emova_arg/status/1763524647901941799"
+    },
+    {
+      "datetime_arg": "2024-03-07 11:42",
+      "linea": "C",
+      "kind": "inicio_limitado",
+      "text": "#LíneaC - Circula con servicio limitado entre las estaciones Diagonal Norte y Constitución. 11:42",
+      "user": "emova_arg",
+      "tweet_id": "1765749800970899754",
+      "url": "https://x.com/emova_arg/status/1765749800970899754"
+    },
+    {
+      "datetime_arg": "2024-03-15 11:07",
+      "linea": "Premetro",
+      "kind": "inicio_demora",
+      "text": "#Premetro | Servicio con demora",
+      "user": "basubte",
+      "tweet_id": "1768640070976766306",
+      "url": "https://x.com/basubte/status/1768640070976766306"
+    },
+    {
+      "datetime_arg": "2024-03-20 10:34",
+      "linea": "D",
+      "kind": "inicio_estacion_cerrada",
+      "text": "#LíneaD - Los trenes no se detienen en Tribunales F. de Medicina y Scalabrini Ortiz. 10:25",
+      "user": "emova_arg",
+      "tweet_id": "1770443717033202152",
+      "url": "https://x.com/emova_arg/status/1770443717033202152"
+    },
+    {
+      "datetime_arg": "2024-03-20 10:43",
+      "linea": "D",
+      "kind": "inicio_estacion_cerrada",
+      "text": "#LíneaD - Los trenes no se detienen en Tribunales F. de Medicina y Scalabrini Ortiz. 10:43",
+      "user": "emova_arg",
+      "tweet_id": "1770446102434599260",
+      "url": "https://x.com/emova_arg/status/1770446102434599260"
+    },
+    {
+      "datetime_arg": "2024-03-20 10:48",
+      "linea": "D",
+      "kind": "inicio_estacion_cerrada",
+      "text": "#Subte | Línea D: Los trenes no se detienen en Tribunales F. de Medicina y Scalabrini Ortiz",
+      "user": "basubte",
+      "tweet_id": "1770447360822272484",
+      "url": "https://x.com/basubte/status/1770447360822272484"
+    },
+    {
+      "datetime_arg": "2024-03-20 11:27",
+      "linea": "D",
+      "kind": "inicio_limitado",
+      "text": "#LíneaD - Servicio limitado entre las estaciones Catedral - Agüero Palermo - Congreso de Tucumán. 11:27",
+      "user": "emova_arg",
+      "tweet_id": "1770457181868925394",
+      "url": "https://x.com/emova_arg/status/1770457181868925394"
+    },
+    {
+      "datetime_arg": "2024-03-24 13:40",
+      "linea": "E",
+      "kind": "inicio_estacion_cerrada",
+      "text": "#LíneaE - Los trenes no se detienen en Bolívar por operativo de seguridad en la vía pública. 13:40",
+      "user": "emova_arg",
+      "tweet_id": "1771940102278705343",
+      "url": "https://x.com/emova_arg/status/1771940102278705343"
+    },
+    {
+      "datetime_arg": "2024-04-10 12:20",
+      "linea": "C",
+      "kind": "inicio_estacion_cerrada",
+      "text": "#LíneaC - Los trenes no se detienen en Av. de Mayo por operativo de seguridad en la vía pública. 12:20",
+      "user": "emova_arg",
+      "tweet_id": "1778080559735935065",
+      "url": "https://x.com/emova_arg/status/1778080559735935065"
+    },
+    {
+      "datetime_arg": "2024-04-19 06:45",
+      "linea": "E",
+      "kind": "inicio_estacion_cerrada",
+      "text": "#LíneaE - Los trenes no se detienen en estación Moreno.",
+      "user": "emova_arg",
+      "tweet_id": "1781257910535794747",
+      "url": "https://x.com/emova_arg/status/1781257910535794747"
+    },
+    {
+      "datetime_arg": "2024-04-21 08:35",
+      "linea": "Premetro",
+      "kind": "inicio_interrumpido",
+      "text": "#Premetro - Servicio interrumpido por trabajos de la empresa de agua y saneamientos.",
+      "user": "emova_arg",
+      "tweet_id": "1782010208849375261",
+      "url": "https://x.com/emova_arg/status/1782010208849375261"
+    },
+    {
+      "datetime_arg": "2024-04-22 08:00",
+      "linea": "Premetro",
+      "kind": "inicio_demora",
+      "text": "Ani, por el momento las Líneas de Subte funcionan con normalidad. El servicio del Premetro se encuentra interrumpido debido a factores climáticos. Eventualmente alguna formación podría sufrir una demora puntual por la afluencia de usuarios en este horario. En nuestra web podés",
+      "user": "emova_arg",
+      "tweet_id": "1782363930855092270",
+      "url": "https://x.com/emova_arg/status/1782363930855092270"
+    },
+    {
+      "datetime_arg": "2024-04-23 15:50",
+      "linea": "A",
+      "kind": "inicio_estacion_cerrada",
+      "text": "#LíneaA - Los trenes no se detienen en Congreso por operativo de seguridad en vía pública. 15:50",
+      "user": "emova_arg",
+      "tweet_id": "1782844605379014697",
+      "url": "https://x.com/emova_arg/status/1782844605379014697"
+    },
+    {
+      "datetime_arg": "2024-04-23 16:48",
+      "linea": "A",
+      "kind": "inicio_estacion_cerrada",
+      "text": "#LíneaA - Trenes no se detienen en Congreso y http:// S.Peña por operativo de seguridad en vía pública. 16:48",
+      "user": "emova_arg",
+      "tweet_id": "1782859210478268827",
+      "url": "https://x.com/emova_arg/status/1782859210478268827"
+    },
+    {
+      "datetime_arg": "2024-04-23 17:13",
+      "linea": "E",
+      "kind": "inicio_estacion_cerrada",
+      "text": "#LíneaE - Los trenes no se detienen en Bolívar por operativo de seguridad en la vía pública. 17:13",
+      "user": "emova_arg",
+      "tweet_id": "1782865504203407731",
+      "url": "https://x.com/emova_arg/status/1782865504203407731"
+    },
+    {
+      "datetime_arg": "2024-04-23 18:12",
+      "linea": "A",
+      "kind": "inicio_demora",
+      "text": "#LíneaA - Los trenes no se detienen en Congreso y Saenz Peña y circulan con demora. 18:12",
+      "user": "emova_arg",
+      "tweet_id": "1782880358297460873",
+      "url": "https://x.com/emova_arg/status/1782880358297460873"
+    },
+    {
+      "datetime_arg": "2024-04-23 18:58",
+      "linea": "E",
+      "kind": "inicio_estacion_cerrada",
+      "text": "#LíneaE - Los trenes no se detienen en Belgrano y Bolivar por operativo de seguridad. 18:58",
+      "user": "emova_arg",
+      "tweet_id": "1782891941450989613",
+      "url": "https://x.com/emova_arg/status/1782891941450989613"
+    },
+    {
+      "datetime_arg": "2024-04-23 19:33",
+      "linea": "D",
+      "kind": "inicio_demora",
+      "text": "#LíneaD - Servicio limitado entre las estaciones C de Tucuman - 9 de Julio y circula con demora. 19:33",
+      "user": "emova_arg",
+      "tweet_id": "1782900754484806045",
+      "url": "https://x.com/emova_arg/status/1782900754484806045"
+    },
+    {
+      "datetime_arg": "2024-04-23 19:35",
+      "linea": "A",
+      "kind": "inicio_limitado",
+      "text": "#LíneaA - Circula con servicio limitado entre las estaciones Plaza Miserere y San Pedrito. 19:35",
+      "user": "emova_arg",
+      "tweet_id": "1782901256329085008",
+      "url": "https://x.com/emova_arg/status/1782901256329085008"
+    },
+    {
+      "datetime_arg": "2024-04-23 19:38",
+      "linea": "D",
+      "kind": "inicio_limitado",
+      "text": "#LíneaD - Circula con servicio limitado entre las estaciones 9 de Julio y C. de Tucumán. 19:38",
+      "user": "emova_arg",
+      "tweet_id": "1782902011064623479",
+      "url": "https://x.com/emova_arg/status/1782902011064623479"
+    },
+    {
+      "datetime_arg": "2024-04-25 16:17",
+      "linea": "A",
+      "kind": "inicio_demora",
+      "text": "#LíneaA - Servivicio con demora debido a un usuario que requiere asistencia. 16:17",
+      "user": "emova_arg",
+      "tweet_id": "1783576135302889633",
+      "url": "https://x.com/emova_arg/status/1783576135302889633"
+    },
+    {
+      "datetime_arg": "2024-04-26 16:07",
+      "linea": "Premetro",
+      "kind": "inicio_interrumpido",
+      "text": "Hola Yami, el Premetro continúa interrumpido debido a factores climáticos. En http:// emova.com.ar podes encontrar el estado del servicio en tiempo real.",
+      "user": "emova_arg",
+      "tweet_id": "1783935947760967992",
+      "url": "https://x.com/emova_arg/status/1783935947760967992"
+    },
+    {
+      "datetime_arg": "2024-04-29 18:21",
+      "linea": "B",
+      "kind": "inicio_interrumpido",
+      "text": "#LíneaB - Servicio interrumpido. 18:21",
+      "user": "emova_arg",
+      "tweet_id": "1785056797943853292",
+      "url": "https://x.com/emova_arg/status/1785056797943853292"
+    },
+    {
+      "datetime_arg": "2024-05-07 18:22",
+      "linea": "D",
+      "kind": "inicio_demora",
+      "text": "#LíneaD - Funciona momentáneamente con demora. 18:22",
+      "user": "emova_arg",
+      "tweet_id": "1787956277886231023",
+      "url": "https://x.com/emova_arg/status/1787956277886231023"
+    },
+    {
+      "datetime_arg": "2024-05-29 12:44",
+      "linea": "Premetro",
+      "kind": "inicio_interrumpido",
+      "text": "#Premetro - Servicio interrumpido. 12:44",
+      "user": "emova_arg",
+      "tweet_id": "1795843713152716986",
+      "url": "https://x.com/emova_arg/status/1795843713152716986"
+    },
+    {
+      "datetime_arg": "2024-06-12 17:52",
+      "linea": "A",
+      "kind": "inicio_estacion_cerrada",
+      "text": "#LíneaA - Los trenes no se detienen en Saenz Peña por operativo policial en la vía pública. 17:52",
+      "user": "emova_arg",
+      "tweet_id": "1800994491253297586",
+      "url": "https://x.com/emova_arg/status/1800994491253297586"
+    },
+    {
+      "datetime_arg": "2024-06-12 18:24",
+      "linea": "Premetro",
+      "kind": "inicio_interrumpido",
+      "text": "#Premetro | Interrumpida debido a la presencia de un vehículo en zona de vías.",
+      "user": "basubte",
+      "tweet_id": "1801002582246076760",
+      "url": "https://x.com/basubte/status/1801002582246076760"
+    },
+    {
+      "datetime_arg": "2024-06-19 17:09",
+      "linea": "Premetro",
+      "kind": "inicio_interrumpido",
+      "text": "#Premetro - Servicio interrumpido por medida de fuerza gremial. 17:09",
+      "user": "emova_arg",
+      "tweet_id": "1803520561525489797",
+      "url": "https://x.com/emova_arg/status/1803520561525489797"
+    },
+    {
+      "datetime_arg": "2024-06-19 17:43",
+      "linea": "Premetro",
+      "kind": "inicio_interrumpido",
+      "text": "Hola, las Líneas B, E y Premetro están interrumpidas por una medida de fuerza gremial anunciada hasta las 19. Cabe destacar que este tipo de medidas no son decisión de la compañía y lamentamos que afecte la movilidad de los usuarios en un horario tan sensible. Toda la información",
+      "user": "emova_arg",
+      "tweet_id": "1803529132850155576",
+      "url": "https://x.com/emova_arg/status/1803529132850155576"
+    },
+    {
+      "datetime_arg": "2024-06-19 17:47",
+      "linea": "Premetro",
+      "kind": "inicio_interrumpido",
+      "text": "Hola, las Líneas B, E y Premetro están interrumpidas por una medida de fuerza gremial anunciada hasta las 19. Cabe destacar que este tipo de medidas no son decisión de la compañía y lamentamos que afecte la movilidad de los usuarios en un horario tan sensible. Toda la información",
+      "user": "emova_arg",
+      "tweet_id": "1803529963745976504",
+      "url": "https://x.com/emova_arg/status/1803529963745976504"
+    },
+    {
+      "datetime_arg": "2024-06-19 18:06",
+      "linea": "Premetro",
+      "kind": "inicio_interrumpido",
+      "text": "Hola, las Líneas B, E y Premetro están interrumpidas por una medida de fuerza gremial anunciada hasta las 19. Cabe destacar que este tipo de medidas no son decisión de la compañía y lamentamos que afecte la movilidad de los usuarios en un horario tan sensible. Toda la información",
+      "user": "emova_arg",
+      "tweet_id": "1803534806824767848",
+      "url": "https://x.com/emova_arg/status/1803534806824767848"
+    },
+    {
+      "datetime_arg": "2024-06-19 18:22",
+      "linea": "Premetro",
+      "kind": "inicio_interrumpido",
+      "text": "Hola, las Líneas B, E y Premetro están interrumpidas por una medida de fuerza gremial anunciada hasta las 19. Cabe destacar que este tipo de medidas no son decisión de la compañía y lamentamos que afecte la movilidad de los usuarios en un horario tan sensible. Toda la información",
+      "user": "emova_arg",
+      "tweet_id": "1803538807368851814",
+      "url": "https://x.com/emova_arg/status/1803538807368851814"
+    },
+    {
+      "datetime_arg": "2024-06-19 18:58",
+      "linea": "Premetro",
+      "kind": "inicio_interrumpido",
+      "text": "Hola, las Líneas B, E y Premetro están interrumpidas por una medida de fuerza gremial anunciada hasta las 19. Cabe destacar que este tipo de medidas no son decisión de la compañía y lamentamos que afecte la movilidad de los usuarios en un horario tan sensible. Toda la información",
+      "user": "emova_arg",
+      "tweet_id": "1803547959889465578",
+      "url": "https://x.com/emova_arg/status/1803547959889465578"
+    },
+    {
+      "datetime_arg": "2024-06-27 13:45",
+      "linea": "A",
+      "kind": "inicio_estacion_cerrada",
+      "text": "#Subte | Línea A: Los trenes no se detienen en la estación Congreso por operativo policial",
+      "user": "basubte",
+      "tweet_id": "1806368351926517806",
+      "url": "https://x.com/basubte/status/1806368351926517806"
+    },
+    {
+      "datetime_arg": "2024-07-17 16:10",
+      "linea": "Premetro",
+      "kind": "inicio_interrumpido",
+      "text": "Hola Belen, somos Emova, la concesionaria del Subte y Premetro. El Premetro está interrumpido por una medida de fuerza gremial. Este tipo de medidas no son decisión de la compañía y lamentamos que afecte la movilidad de los usuarios en un horario tan sensible. Toda la información",
+      "user": "emova_arg",
+      "tweet_id": "1813652517257101460",
+      "url": "https://x.com/emova_arg/status/1813652517257101460"
+    },
+    {
+      "datetime_arg": "2024-08-02 19:08",
+      "linea": "B",
+      "kind": "inicio_limitado",
+      "text": "#LíneaB - Circula con servicio limitado entre las estaciones Juan Manuel de Rosas y Dorrego. 19:08",
+      "user": "emova_arg",
+      "tweet_id": "1819495603946111114",
+      "url": "https://x.com/emova_arg/status/1819495603946111114"
+    },
+    {
+      "datetime_arg": "2024-09-07 18:23",
+      "linea": "A",
+      "kind": "inicio_limitado",
+      "text": "#LíneaA - Circula con servicio limitado entre las estaciones Río de Janeiro y San Pedrito. 18:23",
+      "user": "emova_arg",
+      "tweet_id": "1832530210907930822",
+      "url": "https://x.com/emova_arg/status/1832530210907930822"
+    },
+    {
+      "datetime_arg": "2024-09-07 18:29",
+      "linea": "A",
+      "kind": "inicio_limitado",
+      "text": "#LíneaA - Circula con servicio limitado entre las estaciones Plaza Miserere y San Pedrito. 18:29",
+      "user": "emova_arg",
+      "tweet_id": "1832531721067077769",
+      "url": "https://x.com/emova_arg/status/1832531721067077769"
+    },
+    {
+      "datetime_arg": "2024-09-10 06:03",
+      "linea": "D",
+      "kind": "inicio_estacion_cerrada",
+      "text": "#LíneaD - Los trenes no se detienen en Carranza destino Catedral. 06:03",
+      "user": "emova_arg",
+      "tweet_id": "1833431069615366396",
+      "url": "https://x.com/emova_arg/status/1833431069615366396"
+    },
+    {
+      "datetime_arg": "2024-09-11 11:29",
+      "linea": "A",
+      "kind": "inicio_estacion_cerrada",
+      "text": "#LíneaA - Los trenes no se detienen en Congreso por operativo policial en vía pública. 11:29",
+      "user": "emova_arg",
+      "tweet_id": "1833875438956924948",
+      "url": "https://x.com/emova_arg/status/1833875438956924948"
+    },
+    {
+      "datetime_arg": "2024-09-24 16:15",
+      "linea": "B",
+      "kind": "inicio_limitado",
+      "text": "#LíneaB - Circula con servicio limitado entre las estaciones Juan Manuel de Rosas y Dorrego. 16:15",
+      "user": "emova_arg",
+      "tweet_id": "1838658538752643197",
+      "url": "https://x.com/emova_arg/status/1838658538752643197"
+    },
+    {
+      "datetime_arg": "2024-09-24 16:17",
+      "linea": "B",
+      "kind": "inicio_limitado",
+      "text": "#Subte | Línea B: Servicio limitado entre las estaciones Juan Manuel de Rosas y Dorrego",
+      "user": "basubte",
+      "tweet_id": "1838659122314493957",
+      "url": "https://x.com/basubte/status/1838659122314493957"
+    },
+    {
+      "datetime_arg": "2024-10-02 13:23",
+      "linea": "A",
+      "kind": "inicio_estacion_cerrada",
+      "text": "#LíneaA - Los trenes no se detienen en Congreso por operativo policial en vía pública. 13:23",
+      "user": "emova_arg",
+      "tweet_id": "1841514273811411299",
+      "url": "https://x.com/emova_arg/status/1841514273811411299"
+    },
+    {
+      "datetime_arg": "2024-10-09 10:16",
+      "linea": "A",
+      "kind": "inicio_estacion_cerrada",
+      "text": "#LíneaA - Los trenes no se detienen en Congreso por operativo policial en vía pública. 10:16",
+      "user": "emova_arg",
+      "tweet_id": "1844004034807533939",
+      "url": "https://x.com/emova_arg/status/1844004034807533939"
+    },
+    {
+      "datetime_arg": "2024-10-30 08:31",
+      "linea": "Premetro",
+      "kind": "inicio_paro",
+      "text": "Hola, ninguna de las líneas del #Subte y #Premetro prestan servicio por una medida de fuerza gremial. Cabe destacar que este tipo de medidas no son decisión de la compañía y lamentamos que afecte la movilidad de los usuarios. En http:// emova.com.ar podes encontrar el estado",
+      "user": "emova_arg",
+      "tweet_id": "1851587742968217838",
+      "url": "https://x.com/emova_arg/status/1851587742968217838"
+    },
+    {
+      "datetime_arg": "2024-11-02 17:50",
+      "linea": "A",
+      "kind": "inicio_estacion_cerrada",
+      "text": "#LíneaA - Los trenes no se detienen en Congreso por operativo policial en vía pública. 17:50",
+      "user": "emova_arg",
+      "tweet_id": "1852815661874974726",
+      "url": "https://x.com/emova_arg/status/1852815661874974726"
+    },
+    {
+      "datetime_arg": "2024-11-13 07:01",
+      "linea": "A",
+      "kind": "inicio_estacion_cerrada",
+      "text": "#LíneaA - Los trenes no se detienen en Castro Barros con destino a Plaza de Mayo. 07:01",
+      "user": "emova_arg",
+      "tweet_id": "1856638488369680563",
+      "url": "https://x.com/emova_arg/status/1856638488369680563"
+    },
+    {
+      "datetime_arg": "2024-11-21 19:32",
+      "linea": "C",
+      "kind": "inicio_limitado",
+      "text": "#LíneaC - Circula con servicio limitado entre las estaciones Diagonal Norte y Constitución. 19:32",
+      "user": "emova_arg",
+      "tweet_id": "1859726548531617874",
+      "url": "https://x.com/emova_arg/status/1859726548531617874"
+    },
+    {
+      "datetime_arg": "2024-11-29 08:18",
+      "linea": "Premetro",
+      "kind": "inicio_estacion_cerrada",
+      "text": "#Premetro - No se detienen en Ana María Janer por obras de mejora. 08:18",
+      "user": "emova_arg",
+      "tweet_id": "1862456009144307789",
+      "url": "https://x.com/emova_arg/status/1862456009144307789"
+    },
+    {
+      "datetime_arg": "2024-11-29 10:32",
+      "linea": "Premetro",
+      "kind": "inicio_interrumpido",
+      "text": "#Premetro - Servicio interrumpido. 10:32",
+      "user": "emova_arg",
+      "tweet_id": "1862489743671398890",
+      "url": "https://x.com/emova_arg/status/1862489743671398890"
+    },
+    {
+      "datetime_arg": "2024-11-29 10:47",
+      "linea": "Premetro",
+      "kind": "inicio_estacion_cerrada",
+      "text": "#Premetro - No se detienen en Ana María Janer por obras de mejora. 10:47",
+      "user": "emova_arg",
+      "tweet_id": "1862493519262232793",
+      "url": "https://x.com/emova_arg/status/1862493519262232793"
+    },
+    {
+      "datetime_arg": "2024-11-29 11:50",
+      "linea": "Premetro",
+      "kind": "inicio_estacion_cerrada",
+      "text": "#Premetro | No se detienen en Ana María Janer por obras de mejora",
+      "user": "basubte",
+      "tweet_id": "1862509386993746309",
+      "url": "https://x.com/basubte/status/1862509386993746309"
+    },
+    {
+      "datetime_arg": "2024-12-06 23:35",
+      "linea": "B",
+      "kind": "inicio_interrumpido",
+      "text": "#LíneaB - Servicio interrumpido por medida de fuerza gremial. 23:35",
+      "user": "emova_arg",
+      "tweet_id": "1865223623671165264",
+      "url": "https://x.com/emova_arg/status/1865223623671165264"
+    },
+    {
+      "datetime_arg": "2025-01-17 20:16",
+      "linea": "Premetro",
+      "kind": "inicio_interrumpido",
+      "text": "#Premetro - Servicio Interrumpido por manifestantes que impiden el servicio. 20:16",
+      "user": "emova_arg",
+      "tweet_id": "1880393672421749110",
+      "url": "https://x.com/emova_arg/status/1880393672421749110"
+    },
+    {
+      "datetime_arg": "2025-03-05 13:21",
+      "linea": "B",
+      "kind": "inicio_interrumpido",
+      "text": "#LíneaB - Servicio interrumpido por falta de suministro eléctrico externo. 13:21",
+      "user": "emova_arg",
+      "tweet_id": "1897321579974885882",
+      "url": "https://x.com/emova_arg/status/1897321579974885882"
+    },
+    {
+      "datetime_arg": "2025-03-05 13:21",
+      "linea": "E",
+      "kind": "inicio_interrumpido",
+      "text": "#LíneaE - Servicio interrumpido por falta de suministro eléctrico externo. 13:21",
+      "user": "emova_arg",
+      "tweet_id": "1897321584118857856",
+      "url": "https://x.com/emova_arg/status/1897321584118857856"
+    },
+    {
+      "datetime_arg": "2025-03-05 14:36",
+      "linea": "E",
+      "kind": "inicio_limitado",
+      "text": "#LíneaE - Circula con servicio limitado entre las estaciones Boedo y Plaza de los Virreyes.",
+      "user": "emova_arg",
+      "tweet_id": "1897340475692179889",
+      "url": "https://x.com/emova_arg/status/1897340475692179889"
+    },
+    {
+      "datetime_arg": "2025-03-19 10:14",
+      "linea": "A",
+      "kind": "inicio_estacion_cerrada",
+      "text": "#LíneaA - Los trenes no se detienen en Congreso por operativo policial en vía pública. 10:14",
+      "user": "emova_arg",
+      "tweet_id": "1902348028893434119",
+      "url": "https://x.com/emova_arg/status/1902348028893434119"
+    },
+    {
+      "datetime_arg": "2025-03-19 16:32",
+      "linea": "A",
+      "kind": "inicio_estacion_cerrada",
+      "text": "#LíneaA - Los trenes no se detienen en Congreso y Sáenz Peña por operativo policial en vía pública.",
+      "user": "emova_arg",
+      "tweet_id": "1902443106869383622",
+      "url": "https://x.com/emova_arg/status/1902443106869383622"
+    },
+    {
+      "datetime_arg": "2025-04-09 13:09",
+      "linea": "A",
+      "kind": "inicio_estacion_cerrada",
+      "text": "#LíneaA - Los trenes no se detienen en Congreso por operativo policial en vía pública. 13:09",
+      "user": "emova_arg",
+      "tweet_id": "1910002069978628138",
+      "url": "https://x.com/emova_arg/status/1910002069978628138"
+    },
+    {
+      "datetime_arg": "2025-04-30 13:33",
+      "linea": "A",
+      "kind": "inicio_estacion_cerrada",
+      "text": "#LíneaA - Los trenes no se detienen en Congreso por operativo policial en vía pública. 13:33",
+      "user": "emova_arg",
+      "tweet_id": "1917618405063971277",
+      "url": "https://x.com/emova_arg/status/1917618405063971277"
+    },
+    {
+      "datetime_arg": "2025-04-30 15:32",
+      "linea": "A",
+      "kind": "inicio_estacion_cerrada",
+      "text": "#Subte | Línea A: Los trenes no se detienen en Congreso por operativo policial en vía pública",
+      "user": "basubte",
+      "tweet_id": "1917648201823228334",
+      "url": "https://x.com/basubte/status/1917648201823228334"
+    },
+    {
+      "datetime_arg": "2025-04-30 16:39",
+      "linea": "B",
+      "kind": "inicio_limitado",
+      "text": "#LíneaB - Circula con doble servicio limitado entre las estaciones Rosas - Dorrego y Uruguay - Alem",
+      "user": "emova_arg",
+      "tweet_id": "1917665154877018483",
+      "url": "https://x.com/emova_arg/status/1917665154877018483"
+    },
+    {
+      "datetime_arg": "2025-05-07 17:17",
+      "linea": "A",
+      "kind": "inicio_estacion_cerrada",
+      "text": "#LíneaA - Los trenes no se detienen en Congreso por operativo policial en vía pública. 17:17",
+      "user": "emova_arg",
+      "tweet_id": "1920211296303165658",
+      "url": "https://x.com/emova_arg/status/1920211296303165658"
+    },
+    {
+      "datetime_arg": "2025-05-14 13:45",
+      "linea": "A",
+      "kind": "inicio_estacion_cerrada",
+      "text": "#LíneaA - Los trenes no se detienen en Congreso por operativo policial en vía pública. 13:45",
+      "user": "emova_arg",
+      "tweet_id": "1922694702442197200",
+      "url": "https://x.com/emova_arg/status/1922694702442197200"
+    },
+    {
+      "datetime_arg": "2025-05-21 12:07",
+      "linea": "A",
+      "kind": "inicio_estacion_cerrada",
+      "text": "#LíneaA - Los trenes no se detienen en Congreso por operativo policial en vía pública. 12:07",
+      "user": "emova_arg",
+      "tweet_id": "1925206804163596544",
+      "url": "https://x.com/emova_arg/status/1925206804163596544"
+    },
+    {
+      "datetime_arg": "2025-05-21 17:53",
+      "linea": "B",
+      "kind": "inicio_limitado",
+      "text": "#LíneaB - Circula con servicio limitado entre las estaciones Juan Manuel de Rosas y Dorrego. 17:53",
+      "user": "emova_arg",
+      "tweet_id": "1925293900580741365",
+      "url": "https://x.com/emova_arg/status/1925293900580741365"
+    },
+    {
+      "datetime_arg": "2025-05-25 09:19",
+      "linea": "E",
+      "kind": "inicio_estacion_cerrada",
+      "text": "#LíneaE - Los trenes no se detienen en Bolívar por operativo policial en la vía pública. 09:19",
+      "user": "emova_arg",
+      "tweet_id": "1926614177574985730",
+      "url": "https://x.com/emova_arg/status/1926614177574985730"
+    },
+    {
+      "datetime_arg": "2025-05-28 11:14",
+      "linea": "A",
+      "kind": "inicio_estacion_cerrada",
+      "text": "#LíneaA - Los trenes no se detienen en Congreso por operativo policial en vía pública. 11:14",
+      "user": "emova_arg",
+      "tweet_id": "1927730245794205795",
+      "url": "https://x.com/emova_arg/status/1927730245794205795"
+    },
+    {
+      "datetime_arg": "2025-05-28 11:24",
+      "linea": "A",
+      "kind": "inicio_estacion_cerrada",
+      "text": "#Subte | Línea A: Los trenes no se detienen en Congreso por operativo policial en vía pública",
+      "user": "basubte",
+      "tweet_id": "1927732721108865155",
+      "url": "https://x.com/basubte/status/1927732721108865155"
+    },
+    {
+      "datetime_arg": "2025-05-30 20:27",
+      "linea": "Premetro",
+      "kind": "inicio_interrumpido",
+      "text": "#Premetro - Servicio Interrumpido por manifestantes que impiden el servicio. 20:27",
+      "user": "emova_arg",
+      "tweet_id": "1928594020499959973",
+      "url": "https://x.com/emova_arg/status/1928594020499959973"
+    },
+    {
+      "datetime_arg": "2025-06-06 06:02",
+      "linea": "H",
+      "kind": "inicio_limitado",
+      "text": "#LíneaH - Circula con servicio limitado entre las estaciones Caseros y Hospitales. 06:02",
+      "user": "emova_arg",
+      "tweet_id": "1930913224695660808",
+      "url": "https://x.com/emova_arg/status/1930913224695660808"
+    },
+    {
+      "datetime_arg": "2025-06-11 10:45",
+      "linea": "A",
+      "kind": "inicio_estacion_cerrada",
+      "text": "#LíneaA - Los trenes no se detienen en Congreso por operativo policial en vía pública. 10:45",
+      "user": "emova_arg",
+      "tweet_id": "1932796210949001533",
+      "url": "https://x.com/emova_arg/status/1932796210949001533"
+    },
+    {
+      "datetime_arg": "2025-06-11 19:30",
+      "linea": "A",
+      "kind": "inicio_estacion_cerrada",
+      "text": "#LíneaA - Los trenes no se detienen en Congreso por operativo policial en vía pública. 19:30",
+      "user": "emova_arg",
+      "tweet_id": "1932928365360504912",
+      "url": "https://x.com/emova_arg/status/1932928365360504912"
+    },
+    {
+      "datetime_arg": "2025-06-18 11:28",
+      "linea": "A",
+      "kind": "inicio_estacion_cerrada",
+      "text": "#LíneaA - Los trenes no se detienen en Congreso por operativo policial en vía pública. 11:28",
+      "user": "emova_arg",
+      "tweet_id": "1935343808138322116",
+      "url": "https://x.com/emova_arg/status/1935343808138322116"
+    },
+    {
+      "datetime_arg": "2025-06-18 15:34",
+      "linea": "Premetro",
+      "kind": "inicio_limitado",
+      "text": "Hola, somos Emova, la empresa concesionaria de la Red de Subte y Premetro. La Línea A circula con servicio limitado entre las estaciones Perú y San Pedrito y no se detiene en Congreso. Toda la información sobre el estado del servicio la estamos comunicando en nuestra web:",
+      "user": "emova_arg",
+      "tweet_id": "1935405896948957414",
+      "url": "https://x.com/emova_arg/status/1935405896948957414"
+    },
+    {
+      "datetime_arg": "2025-06-18 18:22",
+      "linea": "A",
+      "kind": "inicio_estacion_cerrada",
+      "text": "#LíneaA - Los trenes no se detienen en Congreso por operativo policial en vía pública. 18:22",
+      "user": "emova_arg",
+      "tweet_id": "1935448022424449061",
+      "url": "https://x.com/emova_arg/status/1935448022424449061"
+    },
+    {
+      "datetime_arg": "2025-06-25 14:31",
+      "linea": "A",
+      "kind": "inicio_estacion_cerrada",
+      "text": "#Subte | Línea A: Los trenes no se detienen en Congreso por operativo policial en vía pública",
+      "user": "basubte",
+      "tweet_id": "1937926606703456350",
+      "url": "https://x.com/basubte/status/1937926606703456350"
+    },
+    {
+      "datetime_arg": "2025-06-25 14:31",
+      "linea": "A",
+      "kind": "inicio_estacion_cerrada",
+      "text": "#LíneaA - Los trenes no se detienen en Congreso por operativo policial en vía pública. 14:31",
+      "user": "emova_arg",
+      "tweet_id": "1937926628161552869",
+      "url": "https://x.com/emova_arg/status/1937926628161552869"
+    },
+    {
+      "datetime_arg": "2025-07-02 13:49",
+      "linea": "A",
+      "kind": "inicio_estacion_cerrada",
+      "text": "#LíneaA - Los trenes no se detienen en Congreso por operativo policial en vía pública. 13:49",
+      "user": "emova_arg",
+      "tweet_id": "1940452868638613555",
+      "url": "https://x.com/emova_arg/status/1940452868638613555"
+    },
+    {
+      "datetime_arg": "2025-07-03 09:42",
+      "linea": "C",
+      "kind": "inicio_estacion_cerrada",
+      "text": "#LíneaC - Los trenes no se detienen en San Martín por operativo de policial en la vía pública. 09:11",
+      "user": "emova_arg",
+      "tweet_id": "1940753093920239937",
+      "url": "https://x.com/emova_arg/status/1940753093920239937"
+    },
+    {
+      "datetime_arg": "2025-07-18 19:57",
+      "linea": "Premetro",
+      "kind": "inicio_interrumpido",
+      "text": "#Premetro - Servicio Interrumpido por manifestantes que impiden el servicio. 19:57",
+      "user": "emova_arg",
+      "tweet_id": "1946343502125691011",
+      "url": "https://x.com/emova_arg/status/1946343502125691011"
+    },
+    {
+      "datetime_arg": "2025-07-23 14:03",
+      "linea": "A",
+      "kind": "inicio_estacion_cerrada",
+      "text": "#LíneaA - Los trenes no se detienen en Congreso por operativo policial en vía pública. 14:03",
+      "user": "emova_arg",
+      "tweet_id": "1948066462599430553",
+      "url": "https://x.com/emova_arg/status/1948066462599430553"
+    },
+    {
+      "datetime_arg": "2025-07-30 14:28",
+      "linea": "A",
+      "kind": "inicio_estacion_cerrada",
+      "text": "#LíneaA - Los trenes no se detienen en Congreso por operativo policial en vía pública. 14:28",
+      "user": "emova_arg",
+      "tweet_id": "1950609335588909113",
+      "url": "https://x.com/emova_arg/status/1950609335588909113"
+    },
+    {
+      "datetime_arg": "2025-08-06 12:23",
+      "linea": "A",
+      "kind": "inicio_estacion_cerrada",
+      "text": "#LíneaA - Los trenes no se detienen en Congreso por operativo policial en vía pública. 12:23",
+      "user": "emova_arg",
+      "tweet_id": "1953114596014743627",
+      "url": "https://x.com/emova_arg/status/1953114596014743627"
+    },
+    {
+      "datetime_arg": "2025-08-13 15:09",
+      "linea": "A",
+      "kind": "inicio_estacion_cerrada",
+      "text": "#LíneaA - Los trenes no se detienen en Congreso por operativo policial en vía pública. 15:09",
+      "user": "emova_arg",
+      "tweet_id": "1955693180717858910",
+      "url": "https://x.com/emova_arg/status/1955693180717858910"
+    },
+    {
+      "datetime_arg": "2025-08-20 13:14",
+      "linea": "A",
+      "kind": "inicio_estacion_cerrada",
+      "text": "#LíneaA - Los trenes no se detienen en Congreso por operativo policial en vía pública. 13:14",
+      "user": "emova_arg",
+      "tweet_id": "1958201062956929215",
+      "url": "https://x.com/emova_arg/status/1958201062956929215"
+    },
+    {
+      "datetime_arg": "2025-08-27 14:43",
+      "linea": "A",
+      "kind": "inicio_estacion_cerrada",
+      "text": "#Subte | Línea A: Los trenes no se detienen en Congreso por operativo policial en vía pública",
+      "user": "basubte",
+      "tweet_id": "1960760064710439290",
+      "url": "https://x.com/basubte/status/1960760064710439290"
+    },
+    {
+      "datetime_arg": "2025-08-27 14:43",
+      "linea": "A",
+      "kind": "inicio_estacion_cerrada",
+      "text": "#LíneaA - Los trenes no se detienen en Congreso por operativo policial en vía pública. 14:43",
+      "user": "emova_arg",
+      "tweet_id": "1960760049795526956",
+      "url": "https://x.com/emova_arg/status/1960760049795526956"
+    },
+    {
+      "datetime_arg": "2025-09-10 09:23",
+      "linea": "C",
+      "kind": "inicio_demora",
+      "text": "#LíneaC - Servicio con demora. 09:23",
+      "user": "emova_arg",
+      "tweet_id": "1965753087051645114",
+      "url": "https://x.com/emova_arg/status/1965753087051645114"
+    },
+    {
+      "datetime_arg": "2025-09-10 14:58",
+      "linea": "A",
+      "kind": "inicio_estacion_cerrada",
+      "text": "#LíneaA - Los trenes no se detienen en Congreso por operativo policial en vía pública. 14:58",
+      "user": "emova_arg",
+      "tweet_id": "1965837417656570166",
+      "url": "https://x.com/emova_arg/status/1965837417656570166"
+    },
+    {
+      "datetime_arg": "2025-09-12 15:54",
+      "linea": "A",
+      "kind": "inicio_estacion_cerrada",
+      "text": "#LíneaA - Los trenes no se detienen en Congreso por operativo policial en vía pública. 15:54",
+      "user": "emova_arg",
+      "tweet_id": "1966576108402348119",
+      "url": "https://x.com/emova_arg/status/1966576108402348119"
+    },
+    {
+      "datetime_arg": "2025-09-17 13:05",
+      "linea": "A",
+      "kind": "inicio_estacion_cerrada",
+      "text": "#LíneaA - Los trenes no se detienen en Congreso por operativo policial en vía pública. 13:05",
+      "user": "emova_arg",
+      "tweet_id": "1968345571107738029",
+      "url": "https://x.com/emova_arg/status/1968345571107738029"
+    },
+    {
+      "datetime_arg": "2025-10-15 15:25",
+      "linea": "A",
+      "kind": "inicio_estacion_cerrada",
+      "text": "#LíneaA - Los trenes no se detienen en Congreso y Río de Janeiro cerrada por obras. 15:25",
+      "user": "emova_arg",
+      "tweet_id": "1978527739700211713",
+      "url": "https://x.com/emova_arg/status/1978527739700211713"
+    },
+    {
+      "datetime_arg": "2025-10-21 15:35",
+      "linea": "Premetro",
+      "kind": "inicio_interrumpido",
+      "text": "#Premetro - Servicio interrumpido. 15:35",
+      "user": "emova_arg",
+      "tweet_id": "1980704570918469876",
+      "url": "https://x.com/emova_arg/status/1980704570918469876"
+    },
+    {
+      "datetime_arg": "2025-10-22 13:47",
+      "linea": "C",
+      "kind": "inicio_interrumpido",
+      "text": "#LíneaC - Servicio interrumpido. 13:47",
+      "user": "emova_arg",
+      "tweet_id": "1981039679567765925",
+      "url": "https://x.com/emova_arg/status/1981039679567765925"
+    },
+    {
+      "datetime_arg": "2025-10-30 18:48",
+      "linea": "B",
+      "kind": "inicio_limitado",
+      "text": "#LíneaB - Servicio limitado entre las estaciones Leandro N. Alem y Federico Lacroze.",
+      "user": "emova_arg",
+      "tweet_id": "1984014567186530400",
+      "url": "https://x.com/emova_arg/status/1984014567186530400"
+    },
+    {
+      "datetime_arg": "2025-10-30 18:56",
+      "linea": "B",
+      "kind": "inicio_limitado",
+      "text": "#LíneaB - Circula con servicio limitado entre las estaciones Leandro N. Alem y Angel Gallardo. 18:56",
+      "user": "emova_arg",
+      "tweet_id": "1984016608214327337",
+      "url": "https://x.com/emova_arg/status/1984016608214327337"
+    },
+    {
+      "datetime_arg": "2025-12-11 21:15",
+      "linea": "B",
+      "kind": "inicio_limitado",
+      "text": "#Subte | Línea B: Servicio limitado entre las estaciones Leandro N. Alem y Angel Gallardo",
+      "user": "",
+      "tweet_id": "1999271954650431900",
+      "url": "https://x.com//status/1999271954650431900"
+    },
+    {
+      "datetime_arg": "2025-12-11 21:16",
+      "linea": "B",
+      "kind": "inicio_limitado",
+      "text": "#LíneaB - Circula con servicio limitado entre las estaciones Leandro N. Alem y Angel Gallardo. 21:16",
+      "user": "emova_arg",
+      "tweet_id": "1999271999571411134",
+      "url": "https://x.com/emova_arg/status/1999271999571411134"
+    },
+    {
+      "datetime_arg": "2026-01-07 09:49",
+      "linea": "Premetro",
+      "kind": "inicio_limitado",
+      "text": "#Premetro - Circula con servicio limitado entre las estaciones Int.Saguier y Gral. Savio. 09:49",
+      "user": "emova_arg",
+      "tweet_id": "2008883776936403095",
+      "url": "https://x.com/emova_arg/status/2008883776936403095"
+    },
+    {
+      "datetime_arg": "2026-02-01 08:09",
+      "linea": "A",
+      "kind": "inicio_limitado",
+      "text": "#LíneaA - Limitado: P. De Mayo- Miserere por obras en superficie. Congreso y Piedras cerradas. 08:09",
+      "user": "emova_arg",
+      "tweet_id": "2017918273229033748",
+      "url": "https://x.com/emova_arg/status/2017918273229033748"
+    },
+    {
+      "datetime_arg": "2026-02-11 16:42",
+      "linea": "Premetro",
+      "kind": "inicio_interrumpido",
+      "text": "Hola, según lo comunicado por el gremio, todas las líneas de Subte y el Premetro estarán interrumpidas por una medida de fuerza gremial desde las 21 hs y hasta el cierre del servicio. Cabe destacar que este tipo de medidas no son una decisión de la compañía y lamentamos que",
+      "user": "emova_arg",
+      "tweet_id": "2021671113034498115",
+      "url": "https://x.com/emova_arg/status/2021671113034498115"
+    },
+    {
+      "datetime_arg": "2026-02-19 13:21",
+      "linea": "B",
+      "kind": "inicio_interrumpido",
+      "text": "#Subte | Línea B: Servicio interrumpido por medida de fuerza gremial.",
+      "user": "",
+      "tweet_id": "2024519705311006745",
+      "url": "https://x.com//status/2024519705311006745"
+    },
+    {
+      "datetime_arg": "2026-02-25 08:25",
+      "linea": "B",
+      "kind": "inicio_demora",
+      "text": "#LíneaB - Servicio con demora. 08:25",
+      "user": "emova_arg",
+      "tweet_id": "2026619547780812941",
+      "url": "https://x.com/emova_arg/status/2026619547780812941"
+    },
+    {
+      "datetime_arg": "2026-03-25 08:32",
+      "linea": "A",
+      "kind": "inicio_estacion_cerrada",
+      "text": "#LíneaA - Los trenes no se detienen en Congreso por operativo policial en vía pública. 08:32",
+      "user": "emova_arg",
+      "tweet_id": "2036768064683769869",
+      "url": "https://x.com/emova_arg/status/2036768064683769869"
+    },
+    {
+      "datetime_arg": "2026-03-27 14:49",
+      "linea": "D",
+      "kind": "inicio_limitado",
+      "text": "#LíneaD - Circula con servicio limitado entre las estaciones Catedral y José Hernández. 14:49",
+      "user": "emova_arg",
+      "tweet_id": "2037587871985480063",
+      "url": "https://x.com/emova_arg/status/2037587871985480063"
+    },
+    {
+      "datetime_arg": "2026-04-15 06:28",
+      "linea": "B",
+      "kind": "inicio_estacion_cerrada",
+      "text": "#LíneaB - Los trenes no se detienen en Medrano. Malabia continúa cerrada por obras. 06:28",
+      "user": "emova_arg",
+      "tweet_id": "2044347193654497662",
+      "url": "https://x.com/emova_arg/status/2044347193654497662"
+    },
+    {
+      "datetime_arg": "2026-04-15 06:41",
+      "linea": "B",
+      "kind": "inicio_estacion_cerrada",
+      "text": "#LíneaB - Los trenes no se detienen en Medrano. Malabia continúa cerrada por obras. 06:41",
+      "user": "emova_arg",
+      "tweet_id": "2044350466016915475",
+      "url": "https://x.com/emova_arg/status/2044350466016915475"
+    },
+    {
+      "datetime_arg": "2026-04-15 06:53",
+      "linea": "B",
+      "kind": "inicio_estacion_cerrada",
+      "text": "#LíneaB - Los trenes no se detienen en la estación Medrano con destino a J. M. Rosas. 06:53",
+      "user": "emova_arg",
+      "tweet_id": "2044353486599393565",
+      "url": "https://x.com/emova_arg/status/2044353486599393565"
+    },
+    {
+      "datetime_arg": "2026-04-18 19:54",
+      "linea": "A",
+      "kind": "inicio_limitado",
+      "text": "#LíneaA - Servicio limitado San Pedrito y Lima. Piedras cerrada por obras. 19:54",
+      "user": "emova_arg",
+      "tweet_id": "2045637005661360536",
+      "url": "https://x.com/emova_arg/status/2045637005661360536"
+    },
+    {
+      "datetime_arg": "2026-04-18 20:06",
+      "linea": "E",
+      "kind": "inicio_estacion_cerrada",
+      "text": "#LíneaE - Los trenes no se detienen en Bolívar por operativo policial en la vía pública. 20:06",
+      "user": "emova_arg",
+      "tweet_id": "2045640026529140883",
+      "url": "https://x.com/emova_arg/status/2045640026529140883"
+    },
+    {
+      "datetime_arg": "2026-04-22 13:27",
+      "linea": "A",
+      "kind": "inicio_estacion_cerrada",
+      "text": "#LíneaA - Los trenes no se detienen en Congreso. Piedras cerrada por obras. 13:27",
+      "user": "emova_arg",
+      "tweet_id": "2046989323342381145",
+      "url": "https://x.com/emova_arg/status/2046989323342381145"
+    },
+    {
+      "datetime_arg": "2026-04-29 09:02",
+      "linea": "A",
+      "kind": "inicio_estacion_cerrada",
+      "text": "#Subte | Línea A: Los trenes no se detienen en Congreso por operativo policial en vía pública",
+      "user": "basubte",
+      "tweet_id": "2049459303602344224",
+      "url": "https://x.com/basubte/status/2049459303602344224"
+    },
+    {
+      "datetime_arg": "2026-04-29 09:02",
+      "linea": "A",
+      "kind": "inicio_estacion_cerrada",
+      "text": "#LíneaA - Los trenes no se detienen en Congreso por operativo policial en vía pública. 09:02",
+      "user": "emova_arg",
+      "tweet_id": "2049459243594510599",
+      "url": "https://x.com/emova_arg/status/2049459243594510599"
+    },
+    {
+      "datetime_arg": "2026-04-29 09:21",
+      "linea": "A",
+      "kind": "inicio_estacion_cerrada",
+      "text": "#Subte | Línea A: Los trenes no se detienen en Congreso. Piedras cerrada por obras.",
+      "user": "basubte",
+      "tweet_id": "2049464107166818528",
+      "url": "https://x.com/basubte/status/2049464107166818528"
+    },
+    {
+      "datetime_arg": "2026-04-29 09:22",
+      "linea": "A",
+      "kind": "inicio_estacion_cerrada",
+      "text": "#LíneaA - Los trenes no se detienen en Congreso. Piedras cerrada por obras. 09:22",
+      "user": "emova_arg",
+      "tweet_id": "2049464278885814402",
+      "url": "https://x.com/emova_arg/status/2049464278885814402"
+    },
+    {
+      "datetime_arg": "2026-05-06 12:52",
+      "linea": "A",
+      "kind": "inicio_estacion_cerrada",
+      "text": "#LíneaA - Los trenes no se detienen en Congreso. Piedras cerrada por obras. 12:52",
+      "user": "emova_arg",
+      "tweet_id": "2052053984601419849",
+      "url": "https://x.com/emova_arg/status/2052053984601419849"
+    }
+  ]
+}

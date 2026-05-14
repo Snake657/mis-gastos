@@ -42,6 +42,101 @@
   .subtitle { color: var(--text2); font-size: 0.92rem; margin-bottom: 28px; line-height: 1.6; max-width: 760px; }
   .subtitle code { font-family: 'IBM Plex Mono', monospace; background: var(--surface2); padding: 1px 6px; border-radius: 4px; color: var(--text); font-size: 0.85em; }
 
+  /* ── CARD DESTACADA "ESTADÍSTICAS" (arriba a la derecha) ── */
+  .page-head-row {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 24px;
+    flex-wrap: wrap;
+  }
+  .page-head-text { flex: 1 1 360px; min-width: 0; }
+  .stats-cta {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px 16px;
+    background: linear-gradient(135deg, rgba(45,212,191,0.10), rgba(34,211,238,0.06));
+    border: 1px solid rgba(45,212,191,0.35);
+    border-radius: 14px;
+    text-decoration: none;
+    color: var(--text);
+    box-shadow: 0 6px 24px -10px rgba(45,212,191,0.35);
+    transition: all 0.18s ease;
+    flex-shrink: 0;
+    max-width: 320px;
+    position: relative;
+    overflow: hidden;
+  }
+  .stats-cta::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, rgba(45,212,191,0.0), rgba(45,212,191,0.18));
+    opacity: 0;
+    transition: opacity 0.18s ease;
+  }
+  .stats-cta:hover {
+    border-color: rgba(45,212,191,0.7);
+    transform: translateY(-2px);
+    box-shadow: 0 12px 28px -10px rgba(45,212,191,0.55);
+    text-decoration: none;
+  }
+  .stats-cta:hover::before { opacity: 1; }
+  .stats-cta-icon {
+    font-size: 1.7rem;
+    line-height: 1;
+    flex-shrink: 0;
+    position: relative;
+    z-index: 1;
+  }
+  .stats-cta-body { position: relative; z-index: 1; min-width: 0; }
+  .stats-cta-title {
+    font-family: 'IBM Plex Sans', sans-serif;
+    font-size: 0.96rem;
+    font-weight: 600;
+    color: var(--text);
+    line-height: 1.2;
+    letter-spacing: -0.01em;
+    margin-bottom: 3px;
+  }
+  .stats-cta-desc {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.64rem;
+    color: #5eead4;
+    letter-spacing: 0.02em;
+    line-height: 1.4;
+  }
+  .stats-cta-arrow {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 1.1rem;
+    color: #2dd4bf;
+    margin-left: 4px;
+    transition: transform 0.18s ease;
+    position: relative;
+    z-index: 1;
+    flex-shrink: 0;
+  }
+  .stats-cta:hover .stats-cta-arrow { transform: translateX(4px); }
+  .stats-cta-new {
+    position: absolute;
+    top: 8px;
+    right: 10px;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.52rem;
+    font-weight: 700;
+    color: #2dd4bf;
+    background: rgba(45,212,191,0.10);
+    padding: 2px 6px;
+    border-radius: 99px;
+    letter-spacing: 0.06em;
+    border: 1px solid rgba(45,212,191,0.30);
+    z-index: 2;
+  }
+  @media (max-width: 720px) {
+    .stats-cta { width: 100%; max-width: none; }
+  }
+
   /* ── KPIs ── */
   .kpi-grid {
     display: grid;
@@ -922,10 +1017,23 @@
 <div id="canuto-nav"></div>
 
 <main>
-  <h1>Demoras, paros e interrupciones del subte</h1>
-  <p class="subtitle">
-    Demoras, paros e interrupciones registradas. Datos de <a href="https://x.com/Emova_arg" target="_blank" rel="noopener">@Emova_arg</a>, <a href="https://x.com/basubte" target="_blank" rel="noopener">@basubte</a> y la API GCBA.
-  </p>
+  <div class="page-head-row">
+    <div class="page-head-text">
+      <h1>Demoras, paros e interrupciones del subte</h1>
+      <p class="subtitle">
+        Demoras, paros e interrupciones registradas. Datos de <a href="https://x.com/Emova_arg" target="_blank" rel="noopener">@Emova_arg</a>, <a href="https://x.com/basubte" target="_blank" rel="noopener">@basubte</a> y la API GCBA.
+      </p>
+    </div>
+    <a href="/subte/estadisticas/" class="stats-cta" aria-label="Ver estadísticas de pasajeros del subte">
+      <span class="stats-cta-new">NUEVO</span>
+      <div class="stats-cta-icon">📊</div>
+      <div class="stats-cta-body">
+        <div class="stats-cta-title">Estadísticas del subte</div>
+        <div class="stats-cta-desc">Pasajeros pagos por línea · desde 2010</div>
+      </div>
+      <div class="stats-cta-arrow">→</div>
+    </a>
+  </div>
 
   <!-- Monitor de fuentes (estado de cada feed que alimenta la pagina) -->
   <div id="fuentes-monitor" class="fuentes-monitor" aria-label="Estado de las fuentes de informacion">

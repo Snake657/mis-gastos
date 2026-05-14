@@ -1,0 +1,1127 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Estadísticas del subte CABA — Pasajeros pagos · Canuto.ar</title>
+  <meta name="description" content="Pasajeros pagos del subte de Buenos Aires por línea — serie mensual desde 2010, datos oficiales (IDECBA / CNRT / SBASE)." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <script defer src="/canuto-nav.js"></script>
+
+  <style>
+    :root {
+      --bg:        #0d0f14;
+      --surface:   #13161e;
+      --surface2:  #1a1e28;
+      --surface3:  #232736;
+      --border:    #232736;
+      --border2:   #2d3245;
+      --text:      #e8eaf0;
+      --text2:     #c5c9d6;
+      --text3:     #a0a5b8;
+      --text4:     #767b91;
+
+      --green:     #4ade80;
+      --blue:      #60a5fa;
+      --orange:    #fb923c;
+      --purple:    #a78bfa;
+      --teal:      #2dd4bf;
+      --pink:      #f472b6;
+      --yellow:    #fbbf24;
+      --red:       #f87171;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'IBM Plex Sans', sans-serif;
+      min-height: 100vh;
+      -webkit-font-smoothing: antialiased;
+    }
+    a { color: var(--teal); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+
+    main { max-width: 980px; margin: 0 auto; padding: 36px 20px 80px; }
+
+    /* ── PAGE HEADER ────────────────────────────────────────────── */
+    .page-head { margin-bottom: 28px; }
+    .eyebrow {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.68rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--teal);
+      margin-bottom: 10px;
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+    }
+    h1 {
+      font-size: clamp(1.7rem, 4.5vw, 2.4rem);
+      font-weight: 600;
+      letter-spacing: -0.04em;
+      line-height: 1.05;
+    }
+    .subtitle {
+      color: var(--text2);
+      font-size: 0.92rem;
+      line-height: 1.6;
+      margin-top: 12px;
+      max-width: 720px;
+    }
+    .subtitle code {
+      font-family: 'IBM Plex Mono', monospace;
+      background: var(--surface2);
+      padding: 1px 6px;
+      border-radius: 4px;
+      color: var(--text);
+      font-size: 0.85em;
+    }
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.7rem;
+      font-weight: 600;
+      color: var(--text3);
+      padding: 5px 12px;
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      margin-top: 14px;
+      transition: all 0.15s;
+    }
+    .back-link:hover {
+      color: var(--text);
+      border-color: var(--border2);
+      background: var(--surface);
+      text-decoration: none;
+    }
+
+    /* ── INDICADOR SECTION (card) ───────────────────────────────── */
+    .ind-section {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 22px 20px 18px;
+      margin-bottom: 20px;
+      position: relative;
+      overflow: hidden;
+      scroll-margin-top: 80px;
+    }
+    .ind-section::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 3px;
+      border-radius: 16px 16px 0 0;
+      background: var(--teal);
+    }
+    .ind-header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 14px;
+      margin-bottom: 16px;
+    }
+    .ind-name {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.68rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-bottom: 6px;
+      color: var(--teal);
+    }
+    .ind-value-row { display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; }
+    .ind-value {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: clamp(1.5rem, 4vw, 2rem);
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      color: var(--text);
+    }
+    .ind-badge {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.7rem;
+      font-weight: 600;
+      padding: 3px 8px;
+      border-radius: 5px;
+    }
+    .badge-pos { background: rgba(74,222,128,0.15);  color: var(--green); }
+    .badge-neg { background: rgba(248,113,113,0.15); color: var(--red); }
+    .badge-neu { background: var(--surface2);        color: var(--text3); }
+    .ind-meta {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.62rem;
+      color: var(--text4);
+      margin-top: 4px;
+    }
+
+    /* ── STAT CARDS (mini) ───────────────────────────────────────── */
+    .ind-stats { display: flex; gap: 10px; flex-wrap: wrap; }
+    .stat-card {
+      background: var(--surface2);
+      border-radius: 10px;
+      padding: 10px 14px;
+      min-width: 95px;
+    }
+    .stat-label {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.58rem;
+      color: var(--text4);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-bottom: 4px;
+    }
+    .stat-val {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: var(--text);
+    }
+    .stat-val.pos { color: var(--green); }
+    .stat-val.neg { color: var(--red); }
+    .stat-sub {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.58rem;
+      color: var(--text4);
+      margin-top: 2px;
+    }
+
+    /* ── DIVIDER + TOOLBAR ──────────────────────────────────────── */
+    .ind-divider {
+      border: none;
+      border-top: 1px solid var(--border);
+      margin: 16px 0 14px;
+    }
+    .ind-toolbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    /* ── RANGE TABS ─────────────────────────────────────────────── */
+    .range-tabs { display: flex; gap: 4px; flex-wrap: wrap; align-items: center; }
+    .range-tab {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.68rem;
+      font-weight: 600;
+      padding: 5px 10px;
+      border-radius: 6px;
+      border: 1px solid var(--border);
+      background: transparent;
+      color: var(--text3);
+      cursor: pointer;
+      transition: all 0.12s;
+      white-space: nowrap;
+    }
+    .range-tab:hover { color: var(--text); border-color: var(--border2); }
+    .range-tab.active { border-color: transparent; color: var(--bg); background: var(--teal); }
+    .range-tabs-divider {
+      width: 1px;
+      align-self: stretch;
+      background: var(--border);
+      margin: 0 4px;
+    }
+    .range-stats {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 8px 14px;
+      margin: 10px 0 6px;
+      background: var(--surface2);
+      border-radius: 8px;
+      border-left: 3px solid var(--teal);
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.78rem;
+      flex-wrap: wrap;
+    }
+    .rs-amt    { color: var(--text2); font-weight: 600; }
+    .rs-period { color: var(--text3); font-size: 0.7rem; }
+
+    /* ── DATE RANGE INPUTS (custom) ──────────────────────────────── */
+    .date-range-wrap {
+      display: flex;
+      gap: 6px;
+      align-items: center;
+      flex-wrap: wrap;
+      margin-top: 10px;
+    }
+    .date-range-wrap input[type="date"] {
+      background: var(--surface2);
+      border: 1px solid var(--border2);
+      border-radius: 6px;
+      padding: 4px 10px;
+      color: var(--text);
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.68rem;
+      outline: none;
+      transition: border-color 0.12s;
+      height: 28px;
+    }
+    .date-range-wrap input[type="date"]:focus { border-color: var(--teal); }
+    .date-range-wrap input[type="date"]::-webkit-calendar-picker-indicator { filter: invert(0.4); cursor: pointer; }
+    .date-sep { color: var(--text4); font-size: 0.7rem; font-family: 'IBM Plex Mono', monospace; }
+
+    /* ── CHART ──────────────────────────────────────────────────── */
+    .chart-wrap { position: relative; height: 230px; margin-top: 14px; }
+    .chart-wrap.tall { height: 320px; }
+    .chart-loading {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100%;
+      color: var(--text3);
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.75rem;
+    }
+    .spinner {
+      display: inline-block;
+      width: 14px; height: 14px;
+      border: 2px solid var(--border2);
+      border-top-color: var(--teal);
+      border-radius: 50%;
+      animation: spin 0.7s linear infinite;
+      vertical-align: middle;
+      margin-right: 8px;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    .nota-fuente {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.62rem;
+      color: var(--text4);
+      font-style: italic;
+    }
+
+    /* ── TOGGLE CHIPS ─────────────────────────────────────────────── */
+    .toggle-chips {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+      margin-top: 12px;
+    }
+    .toggle-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 12px;
+      border-radius: 20px;
+      border: 1px solid var(--border);
+      background: var(--surface2);
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.68rem;
+      font-weight: 600;
+      color: var(--text3);
+      cursor: pointer;
+      transition: all 0.12s;
+      user-select: none;
+    }
+    .toggle-chip .chip-dot {
+      width: 7px; height: 7px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+    .toggle-chip.on  { color: var(--text); border-color: var(--border2); }
+    .toggle-chip.off { opacity: 0.45; }
+
+    .pos { color: var(--green); }
+    .neg { color: var(--red); }
+
+    /* ── CONTEXT BOX ─────────────────────────────────────────────── */
+    .context-box {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-left: 3px solid var(--teal);
+      border-radius: 10px;
+      padding: 16px 18px;
+      margin-bottom: 22px;
+      font-size: 0.84rem;
+      line-height: 1.6;
+      color: var(--text2);
+    }
+    .context-box .ctx-title {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.62rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--teal);
+      margin-bottom: 8px;
+      font-weight: 700;
+    }
+    .context-box p { margin-bottom: 8px; }
+    .context-box p:last-child { margin-bottom: 0; }
+    .context-box strong { color: var(--text); }
+
+    /* ── NOTA FOOTER ─────────────────────────────────────────────── */
+    .nota-final {
+      font-size: 0.74rem;
+      color: var(--text3);
+      line-height: 1.65;
+      padding: 14px 18px;
+      background: var(--surface);
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      margin-top: 24px;
+    }
+    .nota-final a { color: var(--text2); text-decoration: underline; text-underline-offset: 2px; }
+    .nota-final a:hover { color: var(--text); }
+
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 24px 20px;
+      text-align: center;
+      color: var(--text4);
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.65rem;
+    }
+    footer a { color: var(--text2); text-decoration: none; }
+    footer a:hover { color: var(--text); }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(8px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .ind-section { animation: fadeUp 0.3s ease both; }
+
+    @media (max-width: 560px) {
+      .ind-header { flex-direction: column; align-items: stretch; }
+      .ind-stats { gap: 8px; }
+      .stat-card { flex: 1; min-width: 0; }
+      main { padding: 24px 16px 60px; }
+    }
+  </style>
+</head>
+<body>
+
+<div id="canuto-nav"></div>
+
+<main>
+  <div class="page-head">
+    <div class="eyebrow">🚇 Estadísticas del subte CABA</div>
+    <h1>Pasajeros pagos del subte porteño</h1>
+    <p class="subtitle">
+      Serie mensual de pasajeros pagos por línea, desde enero de 2010. Datos oficiales del Gobierno de la Ciudad de Buenos Aires, publicados a través de <strong>IDECBA</strong> (Infraestructura de Datos Espaciales y Estadísticos de la Ciudad).
+    </p>
+    <a href="/subte/" class="back-link">← Volver a demoras e interrupciones</a>
+  </div>
+
+  <div class="context-box">
+    <div class="ctx-title">Sobre los datos</div>
+    <p>
+      Esta página muestra la cantidad de pasajeros que pagaron su boleto en cada línea del subte mes a mes. <strong>No incluye Premetro</strong> (que sí aparece como serie aparte cuando IDECBA lo publica).
+    </p>
+    <p>
+      La fuente original cambió de operador a lo largo del tiempo: hasta agosto de 2020 los datos vienen de <strong>CNRT</strong> y desde septiembre de 2020 los publica <strong>SBASE</strong>. La serie es continua y comparable, pero ese cambio explica algún quiebre metodológico menor en 2020.
+    </p>
+    <p>
+      Podés filtrar por línea, alternar entre total / por línea / apilado, ver vista mensual o anual, y comparar dos puntos cualquiera del gráfico haciendo clic sobre ellos.
+    </p>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════════════ -->
+  <!-- DASHBOARD: SUBTE CABA — Pasajeros pagos (replica de datos-macro) -->
+  <!-- ═══════════════════════════════════════════════════════════════ -->
+  <section class="ind-section" id="sec-subte">
+    <div class="ind-header">
+      <div>
+        <div class="ind-name">Subte CABA · Pasajeros pagos</div>
+        <div class="ind-value-row">
+          <div class="ind-value" id="val-subte">—</div>
+          <div class="ind-badge badge-neu" id="badge-subte">—</div>
+        </div>
+        <div class="ind-meta" id="meta-subte">Cargando…</div>
+      </div>
+      <div class="ind-stats">
+        <div class="stat-card">
+          <div class="stat-label">Var. mes</div>
+          <div class="stat-val" id="stat-subte-mes">—</div>
+          <div class="stat-sub" id="stat-subte-mes-sub">vs. mes ant.</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Var. 1 año</div>
+          <div class="stat-val" id="stat-subte-1y">—</div>
+          <div class="stat-sub" id="stat-subte-1y-sub">vs. hace 12m</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Acum. 12 meses</div>
+          <div class="stat-val" id="stat-subte-12m">—</div>
+          <div class="stat-sub" id="stat-subte-12m-sub">pasajeros</div>
+        </div>
+      </div>
+    </div>
+    <hr class="ind-divider">
+    <div class="ind-toolbar">
+      <div class="range-tabs" id="rt-subte-modo">
+        <button class="range-tab active" data-modo="total">📊 Total</button>
+        <button class="range-tab" data-modo="lineas">🚇 Por línea</button>
+        <button class="range-tab" data-modo="stack">📚 Apilado</button>
+        <span class="range-tabs-divider"></span>
+        <button class="range-tab active" data-vista="mensual">📅 Mensual</button>
+        <button class="range-tab" data-vista="anual">📆 Anual</button>
+      </div>
+      <div class="nota-fuente">IDECBA · CABA · CNRT (hasta ago-2020) y SBASE (desde sep-2020)</div>
+    </div>
+    <div class="ind-toolbar">
+      <div class="range-tabs" id="rt-subte">
+        <button class="range-tab" data-r="6M">6M</button>
+        <button class="range-tab active" data-r="1A">1A</button>
+        <button class="range-tab" data-r="2A">2A</button>
+        <button class="range-tab" data-r="5A">5A</button>
+        <button class="range-tab" data-r="10A">10A</button>
+        <button class="range-tab" data-r="TODO">Todo</button>
+        <button class="range-tab" data-r="CUSTOM">Rango</button>
+        <span class="range-tabs-divider"></span>
+        <label for="subte-mes-filtro" style="font-family:'IBM Plex Mono',monospace;font-size:0.65rem;color:var(--text3);font-weight:600;display:flex;align-items:center;gap:6px">📅 Mes:
+          <select id="subte-mes-filtro" style="background:var(--surface2);border:1px solid var(--border2);border-radius:6px;padding:3px 8px;color:var(--text);font-family:'IBM Plex Mono',monospace;font-size:0.68rem;outline:none;cursor:pointer">
+            <option value="0">Todos</option>
+            <option value="1">Enero</option>
+            <option value="2">Febrero</option>
+            <option value="3">Marzo</option>
+            <option value="4">Abril</option>
+            <option value="5">Mayo</option>
+            <option value="6">Junio</option>
+            <option value="7">Julio</option>
+            <option value="8">Agosto</option>
+            <option value="9">Septiembre</option>
+            <option value="10">Octubre</option>
+            <option value="11">Noviembre</option>
+            <option value="12">Diciembre</option>
+          </select>
+        </label>
+      </div>
+    </div>
+    <div class="date-range-wrap" id="subte-date-inputs" style="display:none">
+      <input type="date" id="subte-desde" />
+      <span class="date-sep">→</span>
+      <input type="date" id="subte-hasta" />
+    </div>
+    <div class="toggle-chips" id="subte-line-chips" style="margin-top:10px"></div>
+    <div class="range-stats" id="range-stats-subte" style="display:none"></div>
+    <div id="subte-comparador" style="margin-top:10px;padding:10px 14px;background:var(--surface2);border:1px dashed var(--border2);border-radius:10px;font-family:'IBM Plex Mono',monospace;font-size:0.72rem;color:var(--text2);display:none">
+      <div style="display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap">
+        <span id="subte-comp-msg">📍 Hacé clic en dos puntos del gráfico para comparar.</span>
+        <button id="subte-comp-reset" type="button" style="background:transparent;border:1px solid var(--border);border-radius:6px;padding:3px 10px;color:var(--text3);font-family:inherit;font-size:0.65rem;font-weight:600;cursor:pointer;display:none">Limpiar</button>
+      </div>
+      <div id="subte-comp-result" style="margin-top:8px;display:none"></div>
+    </div>
+    <div class="chart-wrap tall">
+      <div class="chart-loading" id="load-subte"><span class="spinner"></span>Cargando datos de IDECBA…</div>
+      <canvas id="chart-subte" style="display:none"></canvas>
+    </div>
+  </section>
+
+  <div class="nota-final">
+    <strong>Fuente:</strong> <a href="https://www.estadisticaciudad.gob.ar/eyc/?cat=110" target="_blank" rel="noopener">IDECBA — Estadística y Censos GCBA</a>. Operadores: CNRT (hasta agosto de 2020) y SBASE (desde septiembre de 2020). Los datos se actualizan mensualmente. Si encontrás algún error o querés sugerir mejoras, escribinos a <a href="mailto:admin.canuto.ar@gmail.com">admin.canuto.ar@gmail.com</a>.
+  </div>
+</main>
+
+<footer>
+  <p>Canuto.ar · datos del subte porteño · <a href="/">inicio</a> · <a href="/subte/">demoras del subte</a> · <a href="/datos-macro/">datos macro</a></p>
+</footer>
+
+<script>
+// ═══════════════════════════════════════════════════════════════════════════
+// HELPERS COMPARTIDOS (replicados del dashboard de datos-macro)
+// ═══════════════════════════════════════════════════════════════════════════
+function $(id) { return document.getElementById(id); }
+function setText(id, val) { const el = $(id); if (el) el.textContent = val; }
+
+function setupRangeTabs(containerId, callback) {
+  const container = $(containerId);
+  if (!container) return;
+  container.querySelectorAll('.range-tab[data-r]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      container.querySelectorAll('.range-tab[data-r]').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      callback(btn.dataset.r);
+    });
+  });
+}
+function activeRange(containerId) {
+  const el = $(containerId)?.querySelector('.range-tab.active[data-r]');
+  return el?.dataset.r || '1A';
+}
+
+// ════════════════════════════════════════════════════════════════
+// SUBTE CABA — Pasajeros pagos por línea (IDECBA, mensual)
+//     Datos cargados desde /subte/pasajeros.json
+// ════════════════════════════════════════════════════════════════
+const SUBTE_URL = '/subte/pasajeros.json';
+let subteRaw = null;            // {fuente, lineas, colores, data: [{ym,total,A,B,...}]}
+let _subteModo = 'total';       // 'total' | 'lineas' | 'stack'
+let _subteVista = 'mensual';    // 'mensual' | 'anual'
+let _subteLineasOn = null;      // Set con líneas activas (para 'lineas'/'stack')
+let _subteMesFiltro = 0;        // 0 = todos, 1..12 = solo ese mes
+let _subteCompA = null;         // {idx, ym, valor, label, año}
+let _subteCompB = null;
+
+function _subteFmtFecha(ym) {
+  const [y, m] = ym.split('-').map(Number);
+  return new Date(y, m - 1, 1).toLocaleDateString('es-AR', { month: 'short', year: 'numeric' });
+}
+function _subteFmtNum(v) {
+  if (v === null || v === undefined || isNaN(v)) return '—';
+  return Math.round(v).toLocaleString('es-AR');
+}
+function _subteFmtCompacto(v) {
+  if (v === null || v === undefined || isNaN(v)) return '—';
+  if (Math.abs(v) >= 1e9) return (v / 1e9).toFixed(2).replace('.', ',') + ' MM';
+  if (Math.abs(v) >= 1e6) return (v / 1e6).toFixed(2).replace('.', ',') + ' M';
+  if (Math.abs(v) >= 1e3) return (v / 1e3).toFixed(1).replace('.', ',') + ' k';
+  return _subteFmtNum(v);
+}
+
+function _subteLineasActivas() {
+  if (!subteRaw) return [];
+  if (!_subteLineasOn) _subteLineasOn = new Set(subteRaw.lineas);
+  return subteRaw.lineas.filter(l => _subteLineasOn.has(l));
+}
+
+function _subteValorPunto(d) {
+  if (!d) return 0;
+  if (_subteModo === 'total') return d.total || 0;
+  const activas = _subteLineasActivas();
+  if (!activas.length) return 0;
+  return activas.reduce((s, l) => s + (d[l] || 0), 0);
+}
+
+function _subteEtiquetaSerie() {
+  if (_subteModo === 'total') return 'Total';
+  const activas = _subteLineasActivas();
+  if (!activas.length) return '(sin líneas)';
+  if (activas.length === subteRaw.lineas.length) return 'Suma todas';
+  if (activas.length === 1) return 'Línea ' + activas[0];
+  return 'Líneas ' + activas.join('+');
+}
+
+function _subteRecalcComparador() {
+  if (!subteRaw) return;
+  function _recalc(pt) {
+    if (!pt) return pt;
+    if (pt.ym) {
+      const d = subteRaw.data.find(x => x.ym === pt.ym);
+      if (!d) return pt;
+      return { ...pt, valor: _subteValorPunto(d) };
+    }
+    if (pt.año) {
+      const filas = subteRaw.data.filter(x => x.ym.startsWith(pt.año + '-'));
+      if (!filas.length) return pt;
+      const valor = filas.reduce((s, d) => s + _subteValorPunto(d), 0);
+      return { ...pt, valor };
+    }
+    return pt;
+  }
+  if (_subteCompA) _subteCompA = _recalc(_subteCompA);
+  if (_subteCompB) _subteCompB = _recalc(_subteCompB);
+}
+
+function _subteAgrupaAnual(monthlyArr) {
+  const porAño = new Map();
+  for (const r of monthlyArr) {
+    const y = r.ym.slice(0, 4);
+    if (!porAño.has(y)) {
+      const base = { año: y, total: 0, meses: 0, prov: false };
+      for (const l of subteRaw.lineas) base[l] = 0;
+      porAño.set(y, base);
+    }
+    const acc = porAño.get(y);
+    acc.total += r.total || 0;
+    for (const l of subteRaw.lineas) acc[l] += r[l] || 0;
+    acc.meses += 1;
+    if (r.prov) acc.prov = true;
+  }
+  return [...porAño.values()].map(a => ({ ...a, parcial: a.meses < 12 }));
+}
+
+async function loadSubte() {
+  const r = await fetch(SUBTE_URL, { cache: 'no-store' });
+  if (!r.ok) throw new Error(`HTTP ${r.status}`);
+  subteRaw = await r.json();
+}
+
+function _subteSlice(range) {
+  if (!subteRaw) return [];
+  const data = subteRaw.data;
+  let filtered;
+  if (range === 'TODO') {
+    filtered = data.slice();
+  } else if (range === 'CUSTOM') {
+    const desde = $('subte-desde').value;
+    const hasta = $('subte-hasta').value;
+    if (!desde || !hasta) filtered = data.slice();
+    else {
+      const dYm = desde.slice(0, 7), hYm = hasta.slice(0, 7);
+      filtered = data.filter(d => d.ym >= dYm && d.ym <= hYm);
+    }
+  } else {
+    const last = data[data.length - 1];
+    if (!last) return [];
+    const [ly, lm] = last.ym.split('-').map(Number);
+    const cut = new Date(ly, lm - 1, 1);
+    if      (range === '6M')  cut.setMonth(cut.getMonth() - 6);
+    else if (range === '1A')  cut.setFullYear(cut.getFullYear() - 1);
+    else if (range === '2A')  cut.setFullYear(cut.getFullYear() - 2);
+    else if (range === '5A')  cut.setFullYear(cut.getFullYear() - 5);
+    else if (range === '10A') cut.setFullYear(cut.getFullYear() - 10);
+    else filtered = data.slice();
+    if (!filtered) {
+      const cutYm = `${cut.getFullYear()}-${String(cut.getMonth() + 1).padStart(2, '0')}`;
+      filtered = data.filter(d => d.ym >= cutYm);
+    }
+  }
+  if (_subteMesFiltro && _subteVista === 'mensual') {
+    const m = String(_subteMesFiltro).padStart(2, '0');
+    filtered = filtered.filter(d => d.ym.endsWith('-' + m));
+  }
+  return filtered;
+}
+
+function _subteRenderRangeStats(slice, range) {
+  const el = $('range-stats-subte');
+  if (!slice || !slice.length) { el.style.display = 'none'; return; }
+  const first = slice[0], last = slice[slice.length - 1];
+  if (!last.ym) { el.style.display = 'none'; return; }
+  const total = slice.reduce((s, x) => s + (x.total || 0), 0);
+  const promedio = total / slice.length;
+  const max = slice.reduce((a, b) => (b.total > a.total ? b : a));
+  const min = slice.reduce((a, b) => (b.total < a.total ? b : a));
+  const MESES_NOM = ['','Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
+  let titulo = `${_subteFmtFecha(first.ym)} → ${_subteFmtFecha(last.ym)}`;
+  if (_subteMesFiltro && _subteVista === 'mensual') {
+    titulo = `Solo ${MESES_NOM[_subteMesFiltro]} · ${titulo} · ${slice.length} año${slice.length === 1 ? '' : 's'}`;
+  }
+  el.style.display = 'flex';
+  el.innerHTML = `
+    <span class="rs-amt">Total: ${_subteFmtCompacto(total)} pasajeros</span>
+    <span class="rs-period">Prom. mensual: ${_subteFmtCompacto(promedio)}</span>
+    <span class="rs-period">Máx: ${_subteFmtCompacto(max.total)} (${_subteFmtFecha(max.ym)})</span>
+    <span class="rs-period">Mín: ${_subteFmtCompacto(min.total)} (${_subteFmtFecha(min.ym)})</span>
+    <span class="rs-period">${titulo}</span>
+  `;
+}
+
+function _subteResetComparador() {
+  _subteCompA = null;
+  _subteCompB = null;
+  const wrap = $('subte-comparador');
+  if (!wrap) return;
+  $('subte-comp-msg').textContent = '📍 Hacé clic en dos puntos del gráfico para comparar.';
+  $('subte-comp-result').style.display = 'none';
+  $('subte-comp-reset').style.display = 'none';
+}
+
+function _subteRenderComparador() {
+  const msg = $('subte-comp-msg');
+  const res = $('subte-comp-result');
+  const btn = $('subte-comp-reset');
+  if (!_subteCompA && !_subteCompB) {
+    msg.textContent = '📍 Hacé clic en dos puntos del gráfico para comparar.';
+    res.style.display = 'none';
+    btn.style.display = 'none';
+    return;
+  }
+  const serieLbl = _subteEtiquetaSerie();
+  btn.style.display = 'inline-block';
+  if (_subteCompA && !_subteCompB) {
+    msg.innerHTML = `📍 Punto A: <strong>${_subteCompA.label}</strong> · ${_subteFmtCompacto(_subteCompA.valor)} <span style="color:var(--text3)">(${serieLbl})</span>. Hacé clic en otro punto para comparar.`;
+    res.style.display = 'none';
+    return;
+  }
+  let a = _subteCompA, b = _subteCompB;
+  if (a.ym && b.ym && a.ym > b.ym) [a, b] = [b, a];
+  if (a.año && b.año && a.año > b.año) [a, b] = [b, a];
+  msg.innerHTML = `🆚 <strong>${a.label}</strong> → <strong>${b.label}</strong> <span style="color:var(--text3)">(${serieLbl})</span>`;
+  const dif = b.valor - a.valor;
+  const pct = a.valor !== 0 ? (dif / a.valor) * 100 : null;
+  let meses = null;
+  if (a.ym && b.ym) {
+    const [ay, am] = a.ym.split('-').map(Number);
+    const [by, bm] = b.ym.split('-').map(Number);
+    meses = (by - ay) * 12 + (bm - am);
+  }
+  let años = null;
+  if (a.año && b.año) años = parseInt(b.año, 10) - parseInt(a.año, 10);
+  const cls = dif > 0 ? 'pos' : dif < 0 ? 'neg' : '';
+  const signo = dif > 0 ? '+' : '';
+  const pctTxt = pct === null ? '—' : `${pct >= 0 ? '+' : ''}${pct.toFixed(1).replace('.', ',')}%`;
+  let tiempo = '';
+  if (meses !== null) {
+    const m = Math.abs(meses);
+    if (m === 0) tiempo = 'mismo mes';
+    else if (m < 12) tiempo = `${m} ${m === 1 ? 'mes' : 'meses'}`;
+    else {
+      const ay = Math.floor(m / 12), am = m % 12;
+      tiempo = ay + ' año' + (ay === 1 ? '' : 's') + (am ? ` y ${am} ${am === 1 ? 'mes' : 'meses'}` : '');
+    }
+  } else if (años !== null) {
+    tiempo = `${años} año${años === 1 ? '' : 's'}`;
+  }
+  const difFull = _subteFmtNum(Math.abs(dif));
+  res.style.display = 'flex';
+  res.style.flexWrap = 'wrap';
+  res.style.gap = '14px';
+  res.innerHTML = `
+    <span><strong style="color:var(--text)">${_subteFmtCompacto(a.valor)}</strong> → <strong style="color:var(--text)">${_subteFmtCompacto(b.valor)}</strong></span>
+    <span class="${cls}" style="font-weight:700" title="${signo}${difFull} pasajeros">Δ ${signo}${_subteFmtCompacto(dif)}</span>
+    <span class="${cls}" style="font-weight:700;font-size:0.78rem">${pctTxt}</span>
+    ${tiempo ? `<span style="color:var(--text3)">en ${tiempo}</span>` : ''}
+    <span style="color:var(--text3);font-size:0.66rem">(${signo}${difFull} pasajeros)</span>
+  `;
+}
+
+function _subteSetComparadorPoint(idx, ym, valor, label, año) {
+  const obj = { idx, ym, valor, label, año };
+  if (!_subteCompA) {
+    _subteCompA = obj;
+  } else if (!_subteCompB) {
+    if (_subteCompA.idx === idx && _subteCompA.label === label) {
+      _subteCompA = null;
+    } else {
+      _subteCompB = obj;
+    }
+  } else {
+    _subteCompA = obj;
+    _subteCompB = null;
+  }
+  _subteRenderComparador();
+}
+
+function _subteRenderLineChips() {
+  const wrap = $('subte-line-chips');
+  if (!wrap || !subteRaw) return;
+  if (_subteModo === 'total') { wrap.style.display = 'none'; return; }
+  wrap.style.display = 'flex';
+  if (!_subteLineasOn) _subteLineasOn = new Set(subteRaw.lineas);
+  wrap.innerHTML = '';
+  const allOn = subteRaw.lineas.every(l => _subteLineasOn.has(l));
+  const todasBtn = document.createElement('button');
+  todasBtn.className = 'toggle-chip on';
+  todasBtn.style.borderStyle = 'dashed';
+  todasBtn.textContent = allOn ? 'Quitar todas' : 'Todas';
+  todasBtn.addEventListener('click', () => {
+    if (allOn) _subteLineasOn = new Set();
+    else _subteLineasOn = new Set(subteRaw.lineas);
+    _subteRenderLineChips();
+    renderSubte(activeRange('rt-subte'));
+  });
+  wrap.appendChild(todasBtn);
+  for (const l of subteRaw.lineas) {
+    const on = _subteLineasOn.has(l);
+    const c = subteRaw.colores[l] || '#888';
+    const chip = document.createElement('button');
+    chip.className = 'toggle-chip ' + (on ? 'on' : 'off');
+    chip.innerHTML = `<span class="chip-dot" style="background:${c}"></span>${l}`;
+    chip.addEventListener('click', () => {
+      if (_subteLineasOn.has(l)) _subteLineasOn.delete(l);
+      else _subteLineasOn.add(l);
+      _subteRenderLineChips();
+      renderSubte(activeRange('rt-subte'));
+    });
+    wrap.appendChild(chip);
+  }
+}
+
+function renderSubte(range) {
+  if (!subteRaw) return;
+  _subteRecalcComparador();
+  _subteRenderComparador();
+  const data = subteRaw.data;
+  const slice = _subteSlice(range);
+  if (!slice.length) return;
+  const last = data[data.length - 1];
+  const prev = data[data.length - 2] || last;
+
+  setText('val-subte', _subteFmtCompacto(last.total));
+  setText('meta-subte', `Pasajeros pagos · ${_subteFmtFecha(last.ym)}${last.prov ? ' (provisorio)' : ''}`);
+  const dMes = last.total - prev.total;
+  const dMesPct = prev.total ? (dMes / prev.total) * 100 : 0;
+  const badge = $('badge-subte');
+  badge.textContent = (dMesPct >= 0 ? '+' : '') + dMesPct.toFixed(1).replace('.', ',') + '%';
+  badge.className = 'ind-badge ' + (dMesPct > 0 ? 'badge-pos' : dMesPct < 0 ? 'badge-neg' : 'badge-neu');
+
+  setText('stat-subte-mes', (dMes >= 0 ? '+' : '') + _subteFmtCompacto(dMes));
+  $('stat-subte-mes').className = 'stat-val ' + (dMes > 0 ? 'pos' : dMes < 0 ? 'neg' : '');
+  setText('stat-subte-mes-sub', 'vs. ' + _subteFmtFecha(prev.ym));
+
+  const [ly, lm] = last.ym.split('-').map(Number);
+  const ym1y = `${ly - 1}-${String(lm).padStart(2, '0')}`;
+  const ref1y = data.find(d => d.ym === ym1y);
+  if (ref1y && ref1y.total) {
+    const d1y = ((last.total - ref1y.total) / ref1y.total) * 100;
+    setText('stat-subte-1y', (d1y >= 0 ? '+' : '') + d1y.toFixed(1).replace('.', ',') + '%');
+    $('stat-subte-1y').className = 'stat-val ' + (d1y > 0 ? 'pos' : d1y < 0 ? 'neg' : '');
+    setText('stat-subte-1y-sub', `vs. ${_subteFmtFecha(ym1y)}`);
+  } else {
+    setText('stat-subte-1y', '—');
+    setText('stat-subte-1y-sub', 'sin dato a 12m');
+  }
+  const last12 = data.slice(-12);
+  const acum12 = last12.reduce((s, x) => s + (x.total || 0), 0);
+  setText('stat-subte-12m', _subteFmtCompacto(acum12));
+  setText('stat-subte-12m-sub', `${_subteFmtFecha(last12[0].ym)} → ${_subteFmtFecha(last.ym)}`);
+
+  _subteRenderRangeStats(slice, range);
+
+  $('load-subte').style.display = 'none';
+  $('chart-subte').style.display = 'block';
+  const ctx = $('chart-subte').getContext('2d');
+  const existing = Chart.getChart('chart-subte');
+  if (existing) existing.destroy();
+
+  const esAnual = _subteVista === 'anual';
+  const plotData = esAnual ? _subteAgrupaAnual(slice) : slice;
+  const labels = plotData.map(d => esAnual ? d.año + (d.parcial ? ' (parcial)' : '') : _subteFmtFecha(d.ym));
+
+  let datasets = [];
+  let chartType = 'line';
+  let stacked = false;
+
+  function _puntoBg(arr, baseColor) {
+    const out = arr.map(() => baseColor);
+    if (_subteCompA) {
+      const ymKey = _subteCompA.ym;
+      const añoKey = _subteCompA.año;
+      const i = plotData.findIndex(d => esAnual ? d.año === añoKey : d.ym === ymKey);
+      if (i >= 0) out[i] = '#fbbf24';
+    }
+    if (_subteCompB) {
+      const ymKey = _subteCompB.ym;
+      const añoKey = _subteCompB.año;
+      const i = plotData.findIndex(d => esAnual ? d.año === añoKey : d.ym === ymKey);
+      if (i >= 0) out[i] = '#fbbf24';
+    }
+    return out;
+  }
+  function _puntoR(arr) {
+    const out = arr.map(() => 0);
+    if (_subteCompA) {
+      const i = plotData.findIndex(d => esAnual ? d.año === _subteCompA.año : d.ym === _subteCompA.ym);
+      if (i >= 0) out[i] = 6;
+    }
+    if (_subteCompB) {
+      const i = plotData.findIndex(d => esAnual ? d.año === _subteCompB.año : d.ym === _subteCompB.ym);
+      if (i >= 0) out[i] = 6;
+    }
+    return out;
+  }
+
+  if (_subteModo === 'total') {
+    const baseColor = '#22d3ee';
+    const valores = plotData.map(d => d.total);
+    datasets = [{
+      label: 'Total pasajeros pagos',
+      data: valores,
+      borderColor: baseColor,
+      backgroundColor: baseColor + '22',
+      pointRadius: _puntoR(valores),
+      pointHoverRadius: 7,
+      pointBackgroundColor: _puntoBg(valores, baseColor),
+      pointBorderColor: _puntoBg(valores, baseColor),
+      borderWidth: 2,
+      fill: true,
+      tension: 0.25
+    }];
+  } else {
+    const lineasActivas = _subteLineasActivas();
+    chartType = 'line';
+    stacked = (_subteModo === 'stack');
+    datasets = lineasActivas.map(l => {
+      const c = subteRaw.colores[l] || '#888';
+      const valores = plotData.map(d => d[l]);
+      return {
+        label: 'Línea ' + l,
+        data: valores,
+        borderColor: c,
+        backgroundColor: stacked ? c + 'cc' : c + '22',
+        fill: stacked ? true : false,
+        tension: 0.25,
+        borderWidth: 2,
+        pointRadius: stacked ? 0 : 0,
+        pointHoverRadius: 5
+      };
+    });
+  }
+
+  let tendActiva = false;
+  if (_subteCompA && _subteCompB) {
+    const findIdx = pt => plotData.findIndex(d => esAnual ? d.año === pt.año : d.ym === pt.ym);
+    const iA = findIdx(_subteCompA);
+    const iB = findIdx(_subteCompB);
+    if (iA >= 0 && iB >= 0 && iA !== iB) {
+      const trendVals = plotData.map(() => null);
+      trendVals[iA] = _subteCompA.valor;
+      trendVals[iB] = _subteCompB.valor;
+      const dif = _subteCompB.valor - _subteCompA.valor;
+      const tendCol = dif > 0 ? '#22c55e' : dif < 0 ? '#ef4444' : '#fbbf24';
+      datasets.push({
+        label: 'Tendencia A→B',
+        data: trendVals,
+        borderColor: tendCol,
+        backgroundColor: 'transparent',
+        borderWidth: 2.5,
+        borderDash: [6, 4],
+        pointRadius: 0,
+        pointHoverRadius: 0,
+        fill: false,
+        spanGaps: true,
+        tension: 0,
+        order: -1,
+        yAxisID: stacked ? 'y2' : 'y'
+      });
+      tendActiva = true;
+    }
+  }
+  let _stackMaxY = 0;
+  if (stacked && tendActiva) {
+    const lineasActivas = _subteLineasActivas();
+    for (const d of plotData) {
+      const sum = lineasActivas.reduce((s, l) => s + (d[l] || 0), 0);
+      if (sum > _stackMaxY) _stackMaxY = sum;
+    }
+    _stackMaxY = Math.max(_stackMaxY, _subteCompA.valor, _subteCompB.valor);
+  }
+
+  const chartConfig = {
+    type: chartType,
+    data: { labels, datasets },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      animation: false,
+      interaction: { mode: 'index', intersect: false },
+      plugins: {
+        legend: {
+          display: (_subteModo !== 'total') || (!!_subteCompA && !!_subteCompB),
+          position: 'bottom',
+          labels: { color: '#a8a8b3', font: { family: "'IBM Plex Mono', monospace", size: 10 }, boxWidth: 10, padding: 8 }
+        },
+        tooltip: {
+          backgroundColor: 'rgba(15,15,20,0.95)',
+          borderColor: 'rgba(80,80,100,0.5)',
+          borderWidth: 1,
+          titleFont: { family: "'IBM Plex Mono', monospace", size: 11 },
+          bodyFont:  { family: "'IBM Plex Mono', monospace", size: 11 },
+          callbacks: {
+            label: c => {
+              const sufijo = (esAnual && plotData[c.dataIndex] && plotData[c.dataIndex].parcial) ? ' (parcial)' : '';
+              return c.dataset.label + ': ' + _subteFmtNum(c.parsed.y) + sufijo;
+            }
+          }
+        }
+      },
+      onClick: (evt, elements, chart) => {
+        const points = chart.getElementsAtEventForMode(evt, 'nearest', { intersect: false }, true);
+        if (!points.length) return;
+        const p = points[0];
+        const idx = p.index;
+        const d = plotData[idx];
+        if (!d) return;
+        const valor = _subteValorPunto(d);
+        const label = esAnual ? `${d.año}` : _subteFmtFecha(d.ym);
+        _subteSetComparadorPoint(idx, esAnual ? null : d.ym, valor, label, esAnual ? d.año : null);
+        renderSubte(range);
+      },
+      scales: {
+        x: {
+          stacked,
+          ticks: { color: '#9090a0', font: { family: "'IBM Plex Mono', monospace", size: 10 }, maxRotation: 0, autoSkip: true, maxTicksLimit: 10 },
+          grid: { color: 'rgba(80,80,100,0.08)' }
+        },
+        y: {
+          stacked,
+          ticks: { color: '#9090a0', font: { family: "'IBM Plex Mono', monospace", size: 10 }, callback: v => _subteFmtCompacto(v) },
+          grid: { color: 'rgba(80,80,100,0.12)' }
+        },
+        ...(stacked && tendActiva ? {
+          y2: { display: false, stacked: false, position: 'right', beginAtZero: true, min: 0, max: _stackMaxY * 1.05, grid: { drawOnChartArea: false } }
+        } : {})
+      }
+    }
+  };
+  new Chart(ctx, chartConfig);
+}
+
+function setupSubteTabs() {
+  document.querySelectorAll('#rt-subte-modo .range-tab[data-modo]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('#rt-subte-modo .range-tab[data-modo]').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      _subteModo = btn.dataset.modo;
+      _subteRenderLineChips();
+      renderSubte(activeRange('rt-subte'));
+    });
+  });
+  document.querySelectorAll('#rt-subte-modo .range-tab[data-vista]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('#rt-subte-modo .range-tab[data-vista]').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      _subteVista = btn.dataset.vista;
+      _subteResetComparador();
+      renderSubte(activeRange('rt-subte'));
+    });
+  });
+
+  const mesSel = $('subte-mes-filtro');
+  if (mesSel) {
+    mesSel.addEventListener('change', () => {
+      _subteMesFiltro = parseInt(mesSel.value, 10) || 0;
+      renderSubte(activeRange('rt-subte'));
+    });
+  }
+
+  setupRangeTabs('rt-subte', r => {
+    $('subte-date-inputs').style.display = (r === 'CUSTOM') ? 'flex' : 'none';
+    if (r !== 'CUSTOM') renderSubte(r);
+    else if ($('subte-desde').value && $('subte-hasta').value) renderSubte('CUSTOM');
+  });
+
+  if (subteRaw && subteRaw.data.length) {
+    const first = subteRaw.data[0];
+    const last  = subteRaw.data[subteRaw.data.length - 1];
+    const minDate = `${first.ym}-01`;
+    const maxDate = `${last.ym}-28`;
+    $('subte-desde').min = minDate; $('subte-desde').max = maxDate;
+    $('subte-hasta').min = minDate; $('subte-hasta').max = maxDate;
+    const [ly, lm] = last.ym.split('-').map(Number);
+    $('subte-desde').value = `${ly - 5}-${String(lm).padStart(2,'0')}-01`;
+    $('subte-hasta').value = `${last.ym}-01`;
+  }
+  $('subte-desde').addEventListener('change', () => { if (activeRange('rt-subte') === 'CUSTOM') renderSubte('CUSTOM'); });
+  $('subte-hasta').addEventListener('change', () => { if (activeRange('rt-subte') === 'CUSTOM') renderSubte('CUSTOM'); });
+
+  const btnReset = $('subte-comp-reset');
+  if (btnReset) {
+    btnReset.addEventListener('click', () => {
+      _subteResetComparador();
+      renderSubte(activeRange('rt-subte'));
+    });
+  }
+
+  $('subte-comparador').style.display = 'block';
+}
+
+async function initSubte() {
+  try {
+    await loadSubte();
+    setupSubteTabs();
+    _subteRenderLineChips();
+    renderSubte(activeRange('rt-subte'));
+  } catch (e) {
+    setText('load-subte', 'No se pudieron cargar los datos: ' + e.message);
+  }
+}
+
+initSubte();
+</script>
+
+</body>
+</html>
