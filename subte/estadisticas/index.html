@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Estadísticas del subte CABA — Pasajeros pagos · Canuto.ar</title>
-  <meta name="description" content="Pasajeros pagos del subte de Buenos Aires por línea — serie mensual desde 2010, datos oficiales (IDECBA / CNRT / SBASE)." />
+  <title>Estadísticas del subte CABA — Pasajeros y demoras · Canuto.ar</title>
+  <meta name="description" content="Estadísticas del subte de Buenos Aires: pasajeros pagos por línea desde 2010 y calendario completo de demoras, paros e interrupciones registradas." />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
@@ -398,6 +398,517 @@
       .stat-card { flex: 1; min-width: 0; }
       main { padding: 24px 16px 60px; }
     }
+
+    /* ═══════════════════════════════════════════════════════════════ */
+    /* TABS (Pasajeros / Interrupciones)                                */
+    /* ═══════════════════════════════════════════════════════════════ */
+    .tabs-bar {
+      display: flex;
+      gap: 4px;
+      margin: 4px 0 22px;
+      padding: 4px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      backdrop-filter: blur(8px);
+    }
+    .tab-btn {
+      flex: 1;
+      background: transparent;
+      border: none;
+      color: var(--text3);
+      font-family: 'IBM Plex Sans', sans-serif;
+      font-size: 0.92rem;
+      font-weight: 600;
+      padding: 12px 16px;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.15s;
+      letter-spacing: -0.01em;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+    .tab-btn:hover { color: var(--text); background: var(--surface2); }
+    .tab-btn.active { color: var(--bg); background: var(--teal); }
+    .tab-pane { display: none; }
+    .tab-pane.active { display: block; animation: fadeUp 0.25s ease both; }
+    @media (max-width: 540px) {
+      .tab-btn { font-size: 0.82rem; padding: 10px 8px; }
+    }
+
+    /* ═══════════════════════════════════════════════════════════════ */
+    /* INTERRUPCIONES — secciones generales                             */
+    /* ═══════════════════════════════════════════════════════════════ */
+    .section {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 22px 24px;
+      margin-bottom: 22px;
+    }
+    .section-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 16px;
+      margin-bottom: 14px;
+      flex-wrap: wrap;
+    }
+    .section-title {
+      font-size: 1.05rem;
+      font-weight: 600;
+      color: var(--text);
+      letter-spacing: -0.01em;
+    }
+    .section-desc {
+      color: var(--text3);
+      font-size: 0.78rem;
+      margin-top: 2px;
+    }
+
+    /* ── FILTER LABEL ── */
+    .filter-label {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.62rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--text3);
+      margin-bottom: 8px;
+      font-weight: 600;
+    }
+
+    /* ── CHIPS LÍNEA ── */
+    .line-chips {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+      margin-top: 8px;
+    }
+    .line-chips[hidden] { display: none; }
+    .lineas-collapsed { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+    .lineas-pill {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 8px 14px; border-radius: 999px;
+      background: var(--surface); border: 1px solid var(--border);
+      color: var(--text); font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.78rem; font-weight: 600; cursor: pointer;
+      transition: all 0.15s;
+    }
+    .lineas-pill:hover { background: var(--surface2); border-color: var(--border2); }
+    .lineas-pill[aria-expanded="true"] { border-color: var(--teal); }
+    .lineas-pill[aria-expanded="true"] .lineas-pill-arrow { transform: rotate(180deg); }
+    .lineas-pill-arrow { font-size: 0.7rem; color: var(--text2); transition: transform 0.15s; }
+    .lineas-clear {
+      background: transparent; border: 1px solid var(--border);
+      color: var(--text2); padding: 6px 10px; border-radius: 7px;
+      font-family: 'IBM Plex Mono', monospace; font-size: 0.7rem;
+      cursor: pointer; transition: all 0.15s;
+    }
+    .lineas-clear:hover { color: var(--text); border-color: var(--border2); }
+    .lineas-clear[hidden] { display: none; }
+    .line-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 14px;
+      border-radius: 20px;
+      border: 1px solid var(--border);
+      background: var(--surface2);
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.72rem;
+      font-weight: 600;
+      color: var(--text2);
+      cursor: pointer;
+      transition: all 0.12s;
+      user-select: none;
+    }
+    .line-chip:hover { border-color: var(--border2); }
+    .line-chip.on  { color: var(--text); border-color: var(--text); }
+    .line-chip.off { opacity: 0.45; }
+    .line-chip.disabled { opacity: 0.35; cursor: not-allowed; }
+    .line-chip .dot {
+      width: 9px; height: 9px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    /* ── INTERRUPCIONES: range-tabs custom (no choca con la versión pasajeros — más compacta) ── */
+    .int-range-tabs {
+      display: flex;
+      gap: 1px;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 3px;
+      flex-wrap: wrap;
+    }
+    .int-range-tab {
+      background: transparent;
+      border: none;
+      color: var(--text3);
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.7rem;
+      font-weight: 600;
+      padding: 6px 12px;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: all 0.12s;
+    }
+    .int-range-tab:hover { color: var(--text); }
+    .int-range-tab.active { background: var(--teal); color: var(--bg); }
+
+    /* ── CALENDARIO (mini-calendarios mensuales) ── */
+    .cal-header {
+      display: flex; align-items: center; gap: 12px;
+      flex-wrap: wrap; margin-bottom: 14px;
+    }
+    .cal-header .section-title { margin: 0; }
+    .cal-header .int-range-tabs { margin-left: auto; }
+    @media (max-width: 540px) {
+      .cal-header .int-range-tabs { margin-left: 0; width: 100%; }
+    }
+    .hm-year-title {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.95rem;
+      color: var(--text);
+      font-weight: 700;
+      margin-bottom: 16px;
+      letter-spacing: 0.05em;
+    }
+    .hm-year-title .sub {
+      font-weight: 400;
+      color: var(--text3);
+      margin-left: 10px;
+      font-size: 0.78rem;
+    }
+    .hm-months-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 12px;
+    }
+    .hm-month-card {
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 8px 10px;
+      min-width: 0;
+    }
+    .hm-month-card-title {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.7rem;
+      font-weight: 700;
+      color: var(--text);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      margin-bottom: 6px;
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+    }
+    .hm-month-card-title .count {
+      font-weight: 400;
+      font-size: 0.6rem;
+      color: var(--text3);
+      text-transform: none;
+      letter-spacing: 0;
+    }
+    .hm-cal-grid {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 2px;
+    }
+    .hm-cal-dow {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.52rem;
+      color: var(--text3);
+      text-align: center;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      padding-bottom: 2px;
+    }
+    .hm-cal-cell {
+      aspect-ratio: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 4px;
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.62rem;
+      font-weight: 600;
+      color: var(--text2);
+      background: transparent;
+      border: 1px solid transparent;
+      cursor: pointer;
+      transition: transform 0.08s, border-color 0.08s, box-shadow 0.08s;
+      user-select: none;
+      position: relative;
+    }
+    .hm-cal-cell:hover { transform: scale(1.12); border-color: var(--text); z-index: 5; box-shadow: 0 2px 8px rgba(0,0,0,0.4); }
+    .hm-cal-cell.empty { cursor: default; visibility: hidden; }
+    .hm-cal-cell.no-data {
+      color: var(--text3);
+      background: rgba(255,255,255,0.02);
+    }
+    .hm-cal-cell.no-data:hover { transform: none; border-color: transparent; box-shadow: none; }
+    .hm-cal-cell.l1 { background: rgba(251,191,36,0.65); color: #1a1300; }
+    .hm-cal-cell.l2 { background: rgba(249,115,22,0.78); color: #1f0f00; }
+    .hm-cal-cell.l3 { background: rgba(239,68,68,0.85); color: #fff; }
+    .hm-cal-cell.l4 { background: rgba(220,38,38,0.95); color: #fff; }
+    .hm-cal-cell.l5 { background: #a855f7; color: #fff; }
+    .hm-cal-cell.selected {
+      border-color: var(--teal);
+      box-shadow: 0 0 0 2px var(--bg), 0 0 0 3px var(--teal);
+      z-index: 6;
+    }
+    .hm-cal-cell.today {
+      border: 1.5px dashed var(--text);
+    }
+    .hm-cal-cell .count-dot {
+      position: absolute;
+      top: 1px;
+      right: 2px;
+      background: rgba(0,0,0,0.55);
+      color: #fff;
+      border-radius: 7px;
+      font-size: 0.48rem;
+      line-height: 1;
+      padding: 1px 3px;
+      font-weight: 700;
+      min-width: 8px;
+      text-align: center;
+    }
+    .hm-legend {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-top: 12px;
+      padding-top: 10px;
+      border-top: 1px solid var(--border);
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.6rem;
+      color: var(--text3);
+      flex-wrap: wrap;
+    }
+    .hm-legend-item { display: inline-flex; align-items: center; gap: 5px; color: var(--text2); }
+    .hm-legend-cell { width: 11px; height: 11px; border-radius: 3px; flex-shrink: 0; }
+
+    /* ── TIMELINE CHART WRAP ── */
+    .int-chart-wrap {
+      position: relative;
+      width: 100%;
+      height: 320px;
+      margin-top: 8px;
+    }
+    .int-chart-wrap.tall { height: 280px; }
+
+    /* ── DATEPICKER + DETALLES ── */
+    .picker-row {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      flex-wrap: wrap;
+      margin-bottom: 14px;
+    }
+    .picker-row input[type="date"], .picker-row input[type="month"] {
+      background: var(--surface2);
+      border: 1px solid var(--border2);
+      border-radius: 8px;
+      padding: 0 12px;
+      height: 36px;
+      color: var(--text);
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.82rem;
+      outline: none;
+      color-scheme: dark;
+    }
+    .picker-row input[type="date"]:focus, .picker-row input[type="month"]:focus { border-color: var(--teal); }
+    .picker-row label {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.7rem;
+      color: var(--text3);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+    .btn-clear {
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--text3);
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.7rem;
+      font-weight: 600;
+      padding: 6px 12px;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+    .btn-clear:hover { color: var(--text); border-color: var(--border2); }
+
+    /* ── FUENTES BADGES ── */
+    .fuente-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-size: 0.62rem;
+      font-weight: 700;
+      font-family: 'IBM Plex Mono', monospace;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      margin-right: 4px;
+      text-decoration: none;
+      border: 1px solid transparent;
+    }
+    .fuente-badge.emova { background: rgba(34,211,238,0.12); color: #22d3ee; border-color: rgba(34,211,238,0.3); }
+    .fuente-badge.basubte { background: rgba(251,191,36,0.12); color: #fbbf24; border-color: rgba(251,191,36,0.3); }
+    .fuente-badge.ambas { background: rgba(34,197,94,0.12); color: #22c55e; border-color: rgba(34,197,94,0.3); }
+    .fuente-badge:hover { filter: brightness(1.2); }
+    .int-tweet-link {
+      display: inline-block;
+      font-size: 0.65rem;
+      color: var(--text3);
+      text-decoration: none;
+      padding: 1px 5px;
+      border-radius: 3px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      margin-right: 3px;
+      margin-bottom: 2px;
+      font-family: 'IBM Plex Mono', monospace;
+      transition: all 0.12s;
+    }
+    .int-tweet-link:hover { color: var(--teal); border-color: var(--teal); text-decoration: none; }
+    .int-tweet-link.bx { color: #fbbf24aa; }
+    .int-tweet-link.em { color: #22d3eeaa; }
+    .int-tweet-link.bx:hover { color: #fbbf24; border-color: #fbbf24; }
+    .int-tweet-link.em:hover { color: #22d3ee; border-color: #22d3ee; }
+
+    /* ── TABLA INCIDENTES ── */
+    .inc-table-wrap { overflow-x: auto; }
+    table.inc-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.78rem;
+      margin-top: 6px;
+    }
+    .inc-table th {
+      text-align: left;
+      font-weight: 600;
+      color: var(--text3);
+      font-size: 0.6rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      padding: 8px 10px;
+      border-bottom: 1px solid var(--border);
+      white-space: nowrap;
+    }
+    .inc-table td {
+      padding: 10px;
+      border-bottom: 1px solid var(--border);
+      color: var(--text2);
+      vertical-align: top;
+    }
+    .inc-table tr:hover td { background: var(--surface2); color: var(--text); }
+    .inc-table .col-tipo { font-weight: 700; }
+    .inc-table .badge {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-size: 0.65rem;
+      font-weight: 700;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      color: var(--text);
+    }
+    .inc-table .est-pill {
+      display: inline-block;
+      padding: 1px 6px;
+      border-radius: 4px;
+      background: var(--surface2);
+      color: var(--text2);
+      font-size: 0.7rem;
+      margin-right: 4px;
+    }
+    .inc-empty {
+      padding: 36px 20px;
+      text-align: center;
+      color: var(--text3);
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.85rem;
+    }
+    .inc-empty .big { font-size: 2rem; margin-bottom: 8px; opacity: 0.5; }
+
+    /* ── CHART LEGEND (interrupciones) ── */
+    .int-chart-legend {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 14px;
+      margin-top: 12px;
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.7rem;
+      color: var(--text2);
+    }
+    .int-chart-legend .ck { width: 12px; height: 12px; border-radius: 3px; display: inline-block; vertical-align: middle; margin-right: 6px; }
+
+    /* ── DAY DETAIL HEADER ── */
+    .detail-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      margin-bottom: 12px;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+    .detail-title {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: var(--text);
+    }
+    .detail-summary {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.72rem;
+      color: var(--text2);
+    }
+
+    /* ── NOTA interrupciones ── */
+    .int-nota {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.7rem;
+      color: var(--text3);
+      margin-top: 6px;
+    }
+    .int-nota.gap-warn {
+      padding: 8px 12px;
+      background: rgba(251,191,36,0.08);
+      border: 1px solid rgba(251,191,36,0.25);
+      border-radius: 6px;
+      color: var(--text2);
+    }
+
+    /* ── INT LOADING ── */
+    .int-loading {
+      text-align: center;
+      padding: 60px 20px;
+      color: var(--text3);
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.85rem;
+    }
+    .int-spinner {
+      display: inline-block;
+      width: 12px; height: 12px;
+      border: 2px solid var(--border);
+      border-top-color: var(--teal);
+      border-radius: 50%;
+      margin-right: 8px;
+      animation: spin 0.8s linear infinite;
+      vertical-align: middle;
+    }
   </style>
 </head>
 <body>
@@ -407,17 +918,30 @@
 <main>
   <div class="page-head">
     <div class="eyebrow">🚇 Estadísticas del subte CABA</div>
-    <h1>Pasajeros pagos del subte porteño</h1>
+    <h1>Estadísticas del subte porteño</h1>
     <p class="subtitle">
-      Serie mensual de pasajeros pagos por línea, desde enero de 2010. Datos oficiales del Gobierno de la Ciudad de Buenos Aires, publicados a través de <strong>IDECBA</strong> (Infraestructura de Datos Espaciales y Estadísticos de la Ciudad).
+      Dos series largas sobre el subte de Buenos Aires: cuántos viajaron mes a mes desde 2010, y cuándo / dónde se rompió. Datos oficiales (IDECBA / CNRT / SBASE) y registro de demoras, paros e interrupciones desde 2024.
     </p>
-    <a href="/subte/" class="back-link">← Volver a demoras e interrupciones</a>
+    <a href="/subte/" class="back-link">← Volver a estado en vivo</a>
   </div>
+
+  <!-- ═══════════════════════════════════════════════════════════════ -->
+  <!-- TABS                                                              -->
+  <!-- ═══════════════════════════════════════════════════════════════ -->
+  <div class="tabs-bar" role="tablist">
+    <button type="button" class="tab-btn active" data-tab="pasajeros" role="tab" aria-selected="true">📊 Pasajeros</button>
+    <button type="button" class="tab-btn" data-tab="interrupciones" role="tab" aria-selected="false">⚠️ Interrupciones y demoras</button>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════════════ -->
+  <!-- TAB: PASAJEROS                                                    -->
+  <!-- ═══════════════════════════════════════════════════════════════ -->
+  <div id="tab-pasajeros" class="tab-pane active" role="tabpanel">
 
   <div class="context-box">
     <div class="ctx-title">Sobre los datos</div>
     <p>
-      Esta página muestra la cantidad de pasajeros que pagaron su boleto en cada línea del subte mes a mes. <strong>No incluye Premetro</strong> (que sí aparece como serie aparte cuando IDECBA lo publica).
+      Esta sección muestra la cantidad de pasajeros que pagaron su boleto en cada línea del subte mes a mes. <strong>No incluye Premetro</strong> (que sí aparece como serie aparte cuando IDECBA lo publica).
     </p>
     <p>
       La fuente original cambió de operador a lo largo del tiempo: hasta agosto de 2020 los datos vienen de <strong>CNRT</strong> y desde septiembre de 2020 los publica <strong>SBASE</strong>. La serie es continua y comparable, pero ese cambio explica algún quiebre metodológico menor en 2020.
@@ -522,6 +1046,188 @@
   <div class="nota-final">
     <strong>Fuente:</strong> <a href="https://www.estadisticaciudad.gob.ar/eyc/?cat=110" target="_blank" rel="noopener">IDECBA — Estadística y Censos GCBA</a>. Operadores: CNRT (hasta agosto de 2020) y SBASE (desde septiembre de 2020). Los datos se actualizan mensualmente. Si encontrás algún error o querés sugerir mejoras, escribinos a <a href="mailto:admin.canuto.ar@gmail.com">admin.canuto.ar@gmail.com</a>.
   </div>
+
+  </div><!-- /tab-pasajeros -->
+
+  <!-- ═══════════════════════════════════════════════════════════════ -->
+  <!-- TAB: INTERRUPCIONES Y DEMORAS                                     -->
+  <!-- ═══════════════════════════════════════════════════════════════ -->
+  <div id="tab-interrupciones" class="tab-pane" role="tabpanel">
+
+    <div class="context-box">
+      <div class="ctx-title">Sobre los datos</div>
+      <p>
+        Registro de demoras, paros e interrupciones del subte desde 2024. Combina tweets de <a href="https://x.com/Emova_arg" target="_blank" rel="noopener">@Emova_arg</a> (la cuenta oficial del operador) con tweets de <a href="https://x.com/basubte" target="_blank" rel="noopener">@basubte</a> (GCBA) y alertas de la API GTFS-RT del GCBA.
+      </p>
+      <p>
+        Cada incidente se cuenta una sola vez aunque aparezca en varias fuentes. Los filtros se aplican a TODOS los gráficos a la vez.
+      </p>
+    </div>
+
+    <!-- Loading inicial mientras se carga data.json -->
+    <div id="int-loading" class="int-loading"><span class="int-spinner"></span>Cargando registro de incidentes…</div>
+
+    <!-- Contenido (se muestra cuando la data está lista) -->
+    <div id="int-content" style="display:none">
+
+      <!-- FILTROS -->
+      <div class="section">
+        <div class="section-header">
+          <div>
+            <div class="section-title">🔧 Filtros</div>
+            <div class="section-desc">Acotá el análisis por línea, día de la semana y hora. Los filtros se aplican a TODOS los gráficos de abajo.</div>
+          </div>
+          <div id="filter-summary" style="font-family:'IBM Plex Mono',monospace;font-size:0.7rem;color:var(--text3)"></div>
+        </div>
+
+        <div style="display:flex;flex-direction:column;gap:14px">
+          <div>
+            <div class="filter-label">Líneas</div>
+            <div class="lineas-collapsed">
+              <button type="button" class="lineas-pill" id="lineas-pill" aria-expanded="false">
+                <span id="lineas-pill-label">🚇 Todas las líneas</span>
+                <span class="lineas-pill-arrow" aria-hidden="true">▾</span>
+              </button>
+              <button type="button" class="lineas-clear" id="lineas-clear" hidden>✕ Volver a todas</button>
+            </div>
+            <div class="line-chips" id="line-chips" hidden></div>
+          </div>
+          <div>
+            <div class="filter-label">Días</div>
+            <div class="int-range-tabs" id="filter-dow">
+              <button type="button" class="int-range-tab active" data-dow="all">Todos</button>
+              <button type="button" class="int-range-tab" data-dow="weekday">L–V</button>
+              <button type="button" class="int-range-tab" data-dow="weekend">S–D</button>
+            </div>
+          </div>
+          <div>
+            <div class="filter-label">Horario</div>
+            <div class="int-range-tabs" id="filter-hora">
+              <button type="button" class="int-range-tab active" data-hora="all">Todo</button>
+              <button type="button" class="int-range-tab" data-hora="picos">Picos</button>
+              <button type="button" class="int-range-tab" data-hora="pico-am">Pico AM (7–11)</button>
+              <button type="button" class="int-range-tab" data-hora="pico-pm">Pico PM (16–20)</button>
+              <button type="button" class="int-range-tab" data-hora="off">Fuera de pico</button>
+            </div>
+          </div>
+          <div>
+            <div class="filter-label">Tipo de incidente</div>
+            <div class="lineas-collapsed">
+              <button type="button" class="lineas-pill" id="tipos-pill" aria-expanded="false">
+                <span id="tipos-pill-label">🏷️ Todos los tipos</span>
+                <span class="lineas-pill-arrow" aria-hidden="true">▾</span>
+              </button>
+              <button type="button" class="lineas-clear" id="tipos-clear" hidden>✕ Volver a todos</button>
+            </div>
+            <div class="line-chips" id="filter-tipo" hidden></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- CALENDARIO HEATMAP -->
+      <div class="section">
+        <div class="cal-header">
+          <div class="section-title">📅 Calendario</div>
+          <div class="int-range-tabs" id="hm-range">
+            <button type="button" class="int-range-tab" data-yr="2024">2024</button>
+            <button type="button" class="int-range-tab" data-yr="2025">2025</button>
+            <button type="button" class="int-range-tab active" data-yr="2026">2026</button>
+            <button type="button" class="int-range-tab" data-yr="all">Todo</button>
+          </div>
+        </div>
+        <div id="hm-year-title" class="hm-year-title"></div>
+        <div id="hm-wrap"></div>
+        <div class="hm-legend">
+          <span style="color:var(--text3);margin-right:6px">Color = severidad del peor incidente del día:</span>
+          <span class="hm-legend-item"><span class="hm-legend-cell" style="background:var(--surface2);opacity:0.4"></span>Sin datos</span>
+          <span class="hm-legend-item"><span class="hm-legend-cell" style="background:rgba(251,191,36,0.55)"></span>Demora</span>
+          <span class="hm-legend-item"><span class="hm-legend-cell" style="background:rgba(249,115,22,0.65)"></span>Estación cerrada</span>
+          <span class="hm-legend-item"><span class="hm-legend-cell" style="background:rgba(239,68,68,0.78)"></span>Limitado</span>
+          <span class="hm-legend-item"><span class="hm-legend-cell" style="background:rgba(220,38,38,0.92)"></span>Interrumpido</span>
+          <span class="hm-legend-item"><span class="hm-legend-cell" style="background:#a855f7"></span>Paro</span>
+        </div>
+      </div>
+
+      <!-- DETALLE / DATEPICKER -->
+      <div class="section">
+        <div class="section-header">
+          <div>
+            <div class="section-title">🔍 Detalle por día o mes</div>
+            <div class="section-desc">Elegí un día o un mes y mirá los incidentes registrados.</div>
+          </div>
+        </div>
+        <div class="picker-row">
+          <label for="pick-day">Día:</label>
+          <input type="date" id="pick-day" />
+          <label for="pick-month" style="margin-left: 14px">Mes:</label>
+          <input type="month" id="pick-month" />
+          <button type="button" class="btn-clear" id="btn-clear">Limpiar</button>
+        </div>
+        <div id="detail-panel">
+          <div class="inc-empty"><div class="big">📅</div>Elegí un día o un mes para ver el detalle.</div>
+        </div>
+      </div>
+
+      <!-- TIMELINE GRÁFICO -->
+      <div class="section">
+        <div class="section-header">
+          <div>
+            <div class="section-title">📈 Línea de tiempo</div>
+            <div class="section-desc">Cantidad de incidentes y duración total por mes. Click en una barra para ver el mes en detalle.</div>
+          </div>
+          <div class="int-range-tabs" id="tl-vista">
+            <button type="button" class="int-range-tab active" data-vista="cantidad">Cantidad</button>
+            <button type="button" class="int-range-tab" data-vista="duracion">Duración (hs)</button>
+          </div>
+        </div>
+        <div class="int-chart-wrap tall">
+          <canvas id="chart-timeline"></canvas>
+        </div>
+        <div class="int-chart-legend" id="int-chart-legend"></div>
+      </div>
+
+      <!-- DISTRIBUCIÓN POR HORA / DOW -->
+      <div class="section">
+        <div class="section-header">
+          <div>
+            <div class="section-title">⏰ ¿Cuándo se rompe más?</div>
+            <div class="section-desc">Distribución por día de semana y hora del día.</div>
+          </div>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px" class="dowhora-grid">
+          <div>
+            <div class="filter-label">Por día de semana</div>
+            <div class="int-chart-wrap" style="height:220px"><canvas id="chart-dow"></canvas></div>
+          </div>
+          <div>
+            <div class="filter-label">Por hora del día</div>
+            <div class="int-chart-wrap" style="height:220px"><canvas id="chart-hora"></canvas></div>
+          </div>
+        </div>
+        <style>
+          @media (max-width: 720px) {
+            #chart-dow, #chart-hora { height: 180px; }
+            .dowhora-grid { grid-template-columns: 1fr !important; }
+          }
+        </style>
+      </div>
+
+      <!-- FUENTE / NOTA -->
+      <div class="section">
+        <p class="int-nota">
+          Fuente: <a href="https://x.com/Emova_arg" target="_blank" rel="noopener">@Emova_arg</a>, <a href="https://x.com/basubte" target="_blank" rel="noopener">@basubte</a> y API GCBA. Período: <span id="int-data-rango">—</span>. Última actualización: <span id="int-data-last-update">—</span>.
+        </p>
+        <div class="int-nota gap-warn" id="int-data-gaps" style="display:none;margin-top:8px"></div>
+      </div>
+
+    </div><!-- /int-content -->
+
+    <div class="nota-final">
+      <strong>Fuente:</strong> tweets de <a href="https://x.com/Emova_arg" target="_blank" rel="noopener">@Emova_arg</a> y <a href="https://x.com/basubte" target="_blank" rel="noopener">@basubte</a>, alertas de la API GTFS-RT del GCBA. Para el <a href="/subte/">estado en vivo del servicio</a> revisá la página principal del subte. Si encontrás algún error o querés sugerir mejoras, escribinos a <a href="mailto:admin.canuto.ar@gmail.com">admin.canuto.ar@gmail.com</a>.
+    </div>
+
+  </div><!-- /tab-interrupciones -->
+
 </main>
 
 <footer>
@@ -1121,6 +1827,711 @@ async function initSubte() {
 }
 
 initSubte();
+
+// ═══════════════════════════════════════════════════════════════════════════
+// INTERRUPCIONES Y DEMORAS — heatmap, timeline, dow/hora, detalle
+// (Movido desde /subte/index.html para alivianar esa página)
+// ═══════════════════════════════════════════════════════════════════════════
+
+const INT_MESES_ES = ['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];
+const INT_MESES_LARGOS = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
+const INT_DIAS_LARGOS = ['Domingo','Lunes','Martes','Miércoles','Jueves','Viernes','Sábado'];
+
+let INT_DATA = null;
+let _intLineasOn = null;
+let _intTiposOn = null;
+let _intHmYear = '2026';
+let _intTlVista = 'cantidad';
+let _intFiltroDow = 'all';
+let _intFiltroHora = 'all';
+let _intSelectedDay = null;
+let _intSelectedMonth = null;
+
+const INT_PICO_AM = { from: 7, to: 11 };
+const INT_PICO_PM = { from: 16, to: 20 };
+
+function intParseFecha(str) {
+  const m = String(str).match(/^(\d{4})-(\d{2})-(\d{2})$/);
+  if (m) return new Date(+m[1], +m[2] - 1, +m[3]);
+  return new Date(str);
+}
+
+function intFmtFecha(yyyymmdd) {
+  const d = intParseFecha(yyyymmdd);
+  return `${INT_DIAS_LARGOS[d.getDay()]}, ${d.getDate()} ${INT_MESES_ES[d.getMonth()].toLowerCase()} ${d.getFullYear()}`;
+}
+
+function intFmtMin(min) {
+  if (min == null) return '—';
+  if (min < 60) return min + ' min';
+  const h = Math.floor(min / 60), m = Math.round(min % 60);
+  return m ? `${h}h ${m}min` : `${h}h`;
+}
+
+function intPasaFiltroDow(fecha) {
+  if (_intFiltroDow === 'all') return true;
+  const dow = intParseFecha(fecha).getDay();
+  const esFinde = (dow === 0 || dow === 6);
+  if (_intFiltroDow === 'weekday') return !esFinde;
+  if (_intFiltroDow === 'weekend') return esFinde;
+  return true;
+}
+
+function intPasaFiltroHora(hora) {
+  if (_intFiltroHora === 'all') return true;
+  const h = parseInt(hora.split(':')[0], 10);
+  const enAM = (h >= INT_PICO_AM.from && h < INT_PICO_AM.to);
+  const enPM = (h >= INT_PICO_PM.from && h < INT_PICO_PM.to);
+  const enPico = enAM || enPM;
+  if (_intFiltroHora === 'picos') return enPico;
+  if (_intFiltroHora === 'pico-am') return enAM;
+  if (_intFiltroHora === 'pico-pm') return enPM;
+  if (_intFiltroHora === 'off') return !enPico;
+  return true;
+}
+
+function intInciActivos() {
+  if (!INT_DATA) return [];
+  return INT_DATA.incidentes.filter(i =>
+    _intLineasOn.has(i.linea) &&
+    _intTiposOn.has(i.tipo) &&
+    intPasaFiltroDow(i.fecha) &&
+    intPasaFiltroHora(i.hora)
+  );
+}
+
+function intRenderFilterSummary() {
+  const el = $('filter-summary');
+  if (!el) return;
+  const parts = [];
+  const lineasActivas = [...INT_DATA.lineas_disponibles].filter(l => _intLineasOn.has(l));
+  if (lineasActivas.length === INT_DATA.lineas_disponibles.length) parts.push('todas las líneas');
+  else if (lineasActivas.length === 0) parts.push('ninguna línea');
+  else parts.push('línea ' + lineasActivas.join('+'));
+  if (_intFiltroDow !== 'all') parts.push(_intFiltroDow === 'weekday' ? 'L–V' : 'S–D');
+  if (_intFiltroHora !== 'all') {
+    const lbls = { 'picos':'pico AM+PM', 'pico-am':'pico AM 7–11', 'pico-pm':'pico PM 16–20', 'off':'fuera de pico' };
+    parts.push(lbls[_intFiltroHora]);
+  }
+  const tiposActivos = Object.keys(INT_DATA.tipos).filter(t => _intTiposOn.has(t));
+  if (tiposActivos.length < Object.keys(INT_DATA.tipos).length) {
+    parts.push(tiposActivos.length + ' de ' + Object.keys(INT_DATA.tipos).length + ' tipos');
+  }
+  el.textContent = '🔧 ' + parts.join(' · ');
+}
+
+function intRenderTipoChips() {
+  const wrap = $('filter-tipo');
+  wrap.innerHTML = '';
+  const allTipos = Object.keys(INT_DATA.tipos);
+  for (const [tipo, info] of Object.entries(INT_DATA.tipos)) {
+    const on = _intTiposOn.has(tipo);
+    const chip = document.createElement('button');
+    chip.type = 'button';
+    chip.className = 'line-chip ' + (on ? 'on' : 'off');
+    chip.innerHTML = `<span class="dot" style="background:${info.color}"></span>${info.label}`;
+    chip.addEventListener('click', () => {
+      if (_intTiposOn.has(tipo)) _intTiposOn.delete(tipo);
+      else _intTiposOn.add(tipo);
+      intRenderAll();
+    });
+    wrap.appendChild(chip);
+  }
+  const all = document.createElement('button');
+  all.type = 'button';
+  const todosOn = allTipos.every(t => _intTiposOn.has(t));
+  all.className = 'lineas-clear';
+  all.style.marginLeft = '6px';
+  all.textContent = todosOn ? '✕ Ninguno' : '✓ Todos';
+  all.addEventListener('click', () => {
+    if (todosOn) _intTiposOn = new Set();
+    else _intTiposOn = new Set(allTipos);
+    intRenderAll();
+  });
+  wrap.appendChild(all);
+
+  const label = $('tipos-pill-label');
+  const clearBtn = $('tipos-clear');
+  if (label) {
+    const seleccionados = allTipos.filter(t => _intTiposOn.has(t));
+    if (seleccionados.length === allTipos.length) {
+      label.textContent = '🏷️ Todos los tipos';
+      if (clearBtn) clearBtn.hidden = true;
+    } else if (seleccionados.length === 0) {
+      label.textContent = '🏷️ Ningún tipo';
+      if (clearBtn) clearBtn.hidden = false;
+    } else {
+      const nombres = seleccionados.map(t => INT_DATA.tipos[t].label);
+      label.textContent = '🏷️ ' + (nombres.length > 2 ? `${nombres.length} tipos` : nombres.join(' · '));
+      if (clearBtn) clearBtn.hidden = false;
+    }
+  }
+}
+
+function intInitTiposPill() {
+  const pill = $('tipos-pill');
+  const wrap = $('filter-tipo');
+  const clearBtn = $('tipos-clear');
+  if (!pill || !wrap) return;
+  pill.addEventListener('click', () => {
+    const open = pill.getAttribute('aria-expanded') === 'true';
+    pill.setAttribute('aria-expanded', String(!open));
+    wrap.hidden = open;
+  });
+  if (clearBtn) {
+    clearBtn.addEventListener('click', () => {
+      _intTiposOn = new Set(Object.keys(INT_DATA.tipos));
+      intRenderAll();
+    });
+  }
+}
+
+function intRenderChips() {
+  const wrap = $('line-chips');
+  wrap.innerHTML = '';
+  const todas = ['A', 'B', 'C', 'D', 'E', 'H', 'Premetro'];
+  todas.forEach(L => {
+    const tieneDatos = INT_DATA.lineas_disponibles.includes(L);
+    const on = _intLineasOn.has(L);
+    const chip = document.createElement('button');
+    chip.type = 'button';
+    chip.className = 'line-chip ' + (tieneDatos ? (on ? 'on' : 'off') : 'disabled');
+    const color = INT_DATA.colores[L] || '#888';
+    chip.innerHTML = `<span class="dot" style="background:${color}"></span>Línea ${L}`;
+    if (tieneDatos) {
+      chip.addEventListener('click', () => {
+        if (_intLineasOn.has(L)) _intLineasOn.delete(L);
+        else _intLineasOn.add(L);
+        intRenderAll();
+      });
+    } else {
+      chip.title = 'Aún no se cargaron datos de esta línea';
+    }
+    wrap.appendChild(chip);
+  });
+
+  const all = document.createElement('button');
+  all.type = 'button';
+  const todasOn = INT_DATA.lineas_disponibles.every(L => _intLineasOn.has(L));
+  all.className = 'lineas-clear';
+  all.style.marginLeft = '6px';
+  all.textContent = todasOn ? '✕ Ninguna' : '✓ Todas';
+  all.addEventListener('click', () => {
+    if (todasOn) _intLineasOn = new Set();
+    else _intLineasOn = new Set(INT_DATA.lineas_disponibles);
+    intRenderAll();
+  });
+  wrap.appendChild(all);
+
+  const pillLabel = $('lineas-pill-label');
+  const clearBtn = $('lineas-clear');
+  if (pillLabel) {
+    const total = INT_DATA.lineas_disponibles.length;
+    const seleccionadas = INT_DATA.lineas_disponibles.filter(L => _intLineasOn.has(L));
+    if (seleccionadas.length === total) {
+      pillLabel.textContent = '🚇 Todas las líneas';
+      if (clearBtn) clearBtn.hidden = true;
+    } else if (seleccionadas.length === 0) {
+      pillLabel.textContent = '🚇 Ninguna línea';
+      if (clearBtn) clearBtn.hidden = false;
+    } else {
+      pillLabel.textContent = '🚇 Líneas: ' + seleccionadas.join(' · ');
+      if (clearBtn) clearBtn.hidden = false;
+    }
+  }
+}
+
+function intInitLineasPill() {
+  const pill = $('lineas-pill');
+  const wrap = $('line-chips');
+  const clearBtn = $('lineas-clear');
+  if (!pill || !wrap) return;
+  pill.addEventListener('click', () => {
+    const open = pill.getAttribute('aria-expanded') === 'true';
+    pill.setAttribute('aria-expanded', String(!open));
+    wrap.hidden = open;
+  });
+  if (clearBtn) {
+    clearBtn.addEventListener('click', () => {
+      _intLineasOn = new Set(INT_DATA.lineas_disponibles);
+      intRenderAll();
+    });
+  }
+}
+
+// ─── CALENDARIO TRADICIONAL ───────────────────────────────────────
+function intRenderHeatmap() {
+  const wrap = $('hm-wrap');
+  wrap.innerHTML = '';
+  const incs = intInciActivos();
+
+  const porDia = {};
+  for (const i of incs) {
+    const sev = (INT_DATA.tipos[i.tipo] || {}).severidad || 1;
+    if (!porDia[i.fecha]) porDia[i.fecha] = { sev: 0, count: 0, tipos: new Set() };
+    if (sev > porDia[i.fecha].sev) porDia[i.fecha].sev = sev;
+    porDia[i.fecha].count++;
+    porDia[i.fecha].tipos.add(i.tipo);
+  }
+
+  const dataStart = intParseFecha(INT_DATA.rango_cubierto.desde);
+  const dataEnd = intParseFecha(INT_DATA.rango_cubierto.hasta);
+  const todayStr = (() => {
+    const d = new Date();
+    return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0');
+  })();
+
+  let mesesARenderizar = [];
+  if (_intHmYear === 'all') {
+    let cur = new Date(dataEnd.getFullYear(), dataEnd.getMonth(), 1);
+    const min = new Date(dataStart.getFullYear(), dataStart.getMonth(), 1);
+    while (cur >= min) {
+      mesesARenderizar.push({ year: cur.getFullYear(), month: cur.getMonth() });
+      cur.setMonth(cur.getMonth() - 1);
+    }
+  } else {
+    for (let m = 11; m >= 0; m--) {
+      mesesARenderizar.push({ year: +_intHmYear, month: m });
+    }
+  }
+
+  mesesARenderizar = mesesARenderizar.filter(({year, month}) => {
+    const lastDay = new Date(year, month + 1, 0);
+    const firstDay = new Date(year, month, 1);
+    return lastDay >= dataStart && firstDay <= dataEnd;
+  });
+
+  const titleEl = $('hm-year-title');
+  if (_intHmYear === 'all') {
+    titleEl.innerHTML = `Todo el período <span class="sub">${INT_DATA.rango_cubierto.desde} → ${INT_DATA.rango_cubierto.hasta} · ${incs.length} incidentes</span>`;
+  } else {
+    const incsAño = incs.filter(i => i.fecha.startsWith(_intHmYear));
+    const totalMin = incsAño.filter(i => i.duracion_min).reduce((s, i) => s + i.duracion_min, 0);
+    titleEl.innerHTML = `Año ${_intHmYear} <span class="sub">${incsAño.length} incidentes · ${(totalMin/60).toFixed(0)} hs degradadas</span>`;
+  }
+
+  const grid = document.createElement('div');
+  grid.className = 'hm-months-grid';
+
+  const DOW_ALL = [
+    { label: 'L', dowJs: 1 }, { label: 'M', dowJs: 2 }, { label: 'M', dowJs: 3 },
+    { label: 'J', dowJs: 4 }, { label: 'V', dowJs: 5 },
+    { label: 'S', dowJs: 6 }, { label: 'D', dowJs: 0 },
+  ];
+  const DOW_WEEKDAY = DOW_ALL.slice(0, 5);
+  const DOW_WEEKEND = DOW_ALL.slice(5);
+  const DOW_ACTIVE =
+    _intFiltroDow === 'weekday' ? DOW_WEEKDAY :
+    _intFiltroDow === 'weekend' ? DOW_WEEKEND :
+    DOW_ALL;
+  const dowVisibles = new Set(DOW_ACTIVE.map(d => d.dowJs));
+  const dowToCol = {};
+  DOW_ACTIVE.forEach((d, idx) => { dowToCol[d.dowJs] = idx; });
+
+  for (const { year, month } of mesesARenderizar) {
+    const card = document.createElement('div');
+    card.className = 'hm-month-card';
+
+    const incsMes = incs.filter(i => i.fecha.startsWith(year + '-' + String(month + 1).padStart(2, '0')));
+    const dursMes = incsMes.filter(i => i.duracion_min).map(i => i.duracion_min);
+    const totalMinMes = dursMes.reduce((s, x) => s + x, 0);
+
+    const titleH = document.createElement('div');
+    titleH.className = 'hm-month-card-title';
+    titleH.innerHTML = `<span>${INT_MESES_LARGOS[month]} ${year}</span>` +
+      (incsMes.length
+        ? `<span class="count">${incsMes.length} incidente${incsMes.length === 1 ? '' : 's'}${totalMinMes ? ' · ' + (totalMinMes/60 >= 1 ? (totalMinMes/60).toFixed(1) + ' hs' : Math.round(totalMinMes) + ' min') : ''}</span>`
+        : `<span class="count">sin incidentes</span>`);
+    card.appendChild(titleH);
+
+    const calGrid = document.createElement('div');
+    calGrid.className = 'hm-cal-grid';
+    calGrid.style.gridTemplateColumns = `repeat(${DOW_ACTIVE.length}, 1fr)`;
+
+    DOW_ACTIVE.forEach(d => {
+      const lbl = document.createElement('div');
+      lbl.className = 'hm-cal-dow';
+      lbl.textContent = d.label;
+      calGrid.appendChild(lbl);
+    });
+
+    const lastDay = new Date(year, month + 1, 0);
+
+    for (let day = 1; day <= lastDay.getDate(); day++) {
+      const dt = new Date(year, month, day);
+      const dowJs = dt.getDay();
+      if (!dowVisibles.has(dowJs)) continue;
+
+      const ymd = year + '-' + String(month + 1).padStart(2, '0') + '-' + String(day).padStart(2, '0');
+      const inRange = dt >= dataStart && dt <= dataEnd;
+      const cell = document.createElement('div');
+      cell.className = 'hm-cal-cell';
+      cell.textContent = day;
+      cell.style.gridColumn = (dowToCol[dowJs] + 1) + ' / span 1';
+
+      if (!inRange) {
+        cell.classList.add('no-data');
+        cell.title = intFmtFecha(ymd) + ' — fuera del rango de datos';
+      } else {
+        cell.dataset.fecha = ymd;
+        const info = porDia[ymd];
+        if (info) {
+          cell.classList.add('l' + info.sev);
+          const tiposLst = [...info.tipos].map(t => (INT_DATA.tipos[t] || { label: t }).label).join(', ');
+          cell.title = `${intFmtFecha(ymd)}\n${info.count} incidente${info.count === 1 ? '' : 's'}\n${tiposLst}`;
+          if (info.count > 1) {
+            const dot = document.createElement('span');
+            dot.className = 'count-dot';
+            dot.textContent = info.count;
+            cell.appendChild(dot);
+          }
+        } else {
+          cell.classList.add('no-data');
+          cell.title = intFmtFecha(ymd) + ' — sin incidentes registrados';
+        }
+        if (ymd === todayStr) cell.classList.add('today');
+        if (_intSelectedDay === ymd) cell.classList.add('selected');
+        cell.addEventListener('click', () => {
+          _intSelectedDay = ymd;
+          _intSelectedMonth = null;
+          $('pick-day').value = ymd;
+          $('pick-month').value = '';
+          intRenderAll();
+          $('detail-panel').scrollIntoView({ behavior: 'smooth', block: 'center' });
+        });
+      }
+      calGrid.appendChild(cell);
+    }
+
+    card.appendChild(calGrid);
+    grid.appendChild(card);
+  }
+
+  wrap.appendChild(grid);
+}
+
+// ─── TIMELINE CHART ───────────────────────────────────────────────
+function intRenderTimeline() {
+  const incs = intInciActivos();
+  const porMes = {};
+  for (const i of incs) {
+    const m = i.fecha.slice(0, 7);
+    if (!porMes[m]) porMes[m] = { count: 0, totalMin: 0 };
+    porMes[m].count++;
+    if (i.duracion_min) porMes[m].totalMin += i.duracion_min;
+  }
+  const meses = Object.keys(porMes).sort();
+  if (!meses.length) return;
+  const labels = [];
+  const counts = [];
+  const horas = [];
+  let cur = intParseFecha(meses[0] + '-01');
+  const end = intParseFecha(meses[meses.length - 1] + '-01');
+  while (cur <= end) {
+    const k = cur.getFullYear() + '-' + String(cur.getMonth() + 1).padStart(2, '0');
+    labels.push(INT_MESES_ES[cur.getMonth()] + ' ' + String(cur.getFullYear()).slice(2));
+    counts.push(porMes[k]?.count || 0);
+    horas.push(porMes[k] ? +(porMes[k].totalMin / 60).toFixed(1) : 0);
+    cur.setMonth(cur.getMonth() + 1);
+  }
+  const ctx = $('chart-timeline').getContext('2d');
+  const existing = Chart.getChart('chart-timeline');
+  if (existing) existing.destroy();
+  const isCount = _intTlVista === 'cantidad';
+  new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels,
+      datasets: [{
+        label: isCount ? 'Incidentes' : 'Horas degradadas',
+        data: isCount ? counts : horas,
+        backgroundColor: isCount ? '#22d3eebb' : '#ef4444cc',
+        borderColor: isCount ? '#22d3ee' : '#ef4444',
+        borderWidth: 1,
+        borderRadius: 4,
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      animation: false,
+      onClick: (evt, els) => {
+        if (!els.length) return;
+        const idx = els[0].index;
+        const c = intParseFecha(meses[0] + '-01');
+        c.setMonth(c.getMonth() + idx);
+        const ym = c.getFullYear() + '-' + String(c.getMonth() + 1).padStart(2, '0');
+        _intSelectedMonth = ym;
+        _intSelectedDay = null;
+        $('pick-month').value = ym;
+        $('pick-day').value = '';
+        intRenderAll();
+        $('detail-panel').scrollIntoView({ behavior: 'smooth', block: 'center' });
+      },
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          backgroundColor: 'rgba(15,15,20,0.95)',
+          borderColor: 'rgba(80,80,100,0.5)',
+          borderWidth: 1,
+          titleFont: { family: "'IBM Plex Mono', monospace", size: 11 },
+          bodyFont: { family: "'IBM Plex Mono', monospace", size: 11 },
+          callbacks: {
+            label: c => isCount
+              ? `${c.parsed.y} incidente${c.parsed.y === 1 ? '' : 's'}`
+              : `${c.parsed.y} hs degradadas`
+          }
+        }
+      },
+      scales: {
+        x: {
+          ticks: { color: '#9090a0', font: { family: "'IBM Plex Mono', monospace", size: 10 }, maxRotation: 0, autoSkip: true, maxTicksLimit: 14 },
+          grid: { color: 'rgba(80,80,100,0.08)' }
+        },
+        y: {
+          beginAtZero: true,
+          ticks: { color: '#9090a0', font: { family: "'IBM Plex Mono', monospace", size: 10 }, precision: 0 },
+          grid: { color: 'rgba(80,80,100,0.12)' }
+        }
+      }
+    }
+  });
+  $('int-chart-legend').innerHTML = `<span><span class="ck" style="background:${isCount ? '#22d3ee' : '#ef4444'}"></span>${isCount ? 'Incidentes por mes' : 'Horas degradadas por mes'}</span><span style="color:var(--text3);margin-left:auto">Click en una barra → detalle del mes ↓</span>`;
+}
+
+// ─── DOW + HORA ────────────────────────────────────────────────────
+function intRenderDowHora() {
+  const incs = intInciActivos();
+  const dow = [0, 0, 0, 0, 0, 0, 0];
+  const hor = new Array(24).fill(0);
+  for (const i of incs) {
+    const d = intParseFecha(i.fecha);
+    dow[d.getDay()]++;
+    const [h] = i.hora.split(':').map(Number);
+    hor[h]++;
+  }
+  const dowOrdered = [dow[1], dow[2], dow[3], dow[4], dow[5], dow[6], dow[0]];
+  const dowLabels = ['Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb', 'Dom'];
+
+  for (const [id, labels, data, color] of [
+    ['chart-dow', dowLabels, dowOrdered, '#22d3ee'],
+    ['chart-hora', hor.map((_, i) => String(i).padStart(2, '0')), hor, '#fbbf24'],
+  ]) {
+    const ctx = $(id).getContext('2d');
+    const existing = Chart.getChart(id);
+    if (existing) existing.destroy();
+    new Chart(ctx, {
+      type: 'bar',
+      data: { labels, datasets: [{ data, backgroundColor: color + 'cc', borderColor: color, borderWidth: 1, borderRadius: 3 }] },
+      options: {
+        responsive: true, maintainAspectRatio: false, animation: false,
+        plugins: { legend: { display: false }, tooltip: { backgroundColor: 'rgba(15,15,20,0.95)', titleFont: { family: "'IBM Plex Mono', monospace", size: 11 }, bodyFont: { family: "'IBM Plex Mono', monospace", size: 11 } } },
+        scales: {
+          x: { ticks: { color: '#9090a0', font: { family: "'IBM Plex Mono', monospace", size: 9 }, maxRotation: 0, autoSkip: id === 'chart-hora', maxTicksLimit: id === 'chart-hora' ? 12 : 7 }, grid: { display: false } },
+          y: { beginAtZero: true, ticks: { color: '#9090a0', font: { family: "'IBM Plex Mono', monospace", size: 9 }, precision: 0 }, grid: { color: 'rgba(80,80,100,0.12)' } }
+        }
+      }
+    });
+  }
+}
+
+// ─── DETALLE ──────────────────────────────────────────────────────
+function intRenderDetail() {
+  const panel = $('detail-panel');
+  const incs = intInciActivos();
+  let filtrados = [];
+  let titulo = '';
+  let resumen = '';
+  if (_intSelectedDay) {
+    filtrados = incs.filter(i => i.fecha === _intSelectedDay);
+    titulo = intFmtFecha(_intSelectedDay);
+    const totalMin = filtrados.filter(i => i.duracion_min).reduce((s, i) => s + i.duracion_min, 0);
+    resumen = `${filtrados.length} incidente${filtrados.length === 1 ? '' : 's'} · ${intFmtMin(totalMin)} de servicio degradado`;
+  } else if (_intSelectedMonth) {
+    filtrados = incs.filter(i => i.fecha.startsWith(_intSelectedMonth));
+    const [y, m] = _intSelectedMonth.split('-');
+    titulo = `${INT_MESES_LARGOS[+m - 1]} ${y}`;
+    const totalMin = filtrados.filter(i => i.duracion_min).reduce((s, i) => s + i.duracion_min, 0);
+    resumen = `${filtrados.length} incidente${filtrados.length === 1 ? '' : 's'} · ${intFmtMin(totalMin)} de servicio degradado · ~${(filtrados.length / new Date(+y, +m, 0).getDate()).toFixed(1)} por día`;
+  } else {
+    panel.innerHTML = '<div class="inc-empty"><div class="big">📅</div>Elegí un día o un mes para ver el detalle.</div>';
+    return;
+  }
+
+  if (!filtrados.length) {
+    panel.innerHTML = `<div class="detail-header"><div class="detail-title">${titulo}</div></div><div class="inc-empty"><div class="big">✨</div>Sin incidentes registrados.</div>`;
+    return;
+  }
+
+  function renderFuentes(inc) {
+    const origen = inc.fuente_origen || 'Emova_arg';
+    let badge = '';
+    if (origen === 'ambas') badge = `<span class="fuente-badge ambas" title="Confirmado por Emova y BAsubte">✓ Ambas</span>`;
+    else if (origen === 'basubte') badge = `<span class="fuente-badge basubte" title="Solo BAsubte">BA</span>`;
+    else badge = `<span class="fuente-badge emova" title="Solo Emova">E</span>`;
+    let links = '';
+    if (inc.fuentes && inc.fuentes.length) {
+      links = inc.fuentes.slice(0, 6).map(f => {
+        const cls = f.user === 'basubte' ? 'bx' : 'em';
+        const userShort = f.user === 'basubte' ? 'BA' : 'E';
+        return `<a class="int-tweet-link ${cls}" href="${f.url}" target="_blank" rel="noopener" title="${(f.text||'').replace(/"/g,'&quot;')}">↗ ${userShort}</a>`;
+      }).join('');
+      if (inc.fuentes.length > 6) links += `<span class="int-tweet-link" style="cursor:default">+${inc.fuentes.length - 6}</span>`;
+    }
+    return badge + (links ? '<div style="margin-top:4px">' + links + '</div>' : '');
+  }
+
+  let html = `<div class="detail-header"><div class="detail-title">${titulo}</div><div class="detail-summary">${resumen}</div></div>`;
+  html += '<div class="inc-table-wrap"><table class="inc-table"><thead><tr><th>Fecha</th><th>Hora</th><th>Línea</th><th>Tipo</th><th>Duración</th><th>Estaciones</th><th>Fuente</th></tr></thead><tbody>';
+  filtrados.sort((a, b) => a.inicio_iso.localeCompare(b.inicio_iso));
+  for (const i of filtrados) {
+    const t = INT_DATA.tipos[i.tipo] || { label: i.tipo, color: '#888' };
+    const fechaCorta = intParseFecha(i.fecha).toLocaleDateString('es-AR', { day: '2-digit', month: 'short' });
+    const dur = i.duracion_min != null ? intFmtMin(i.duracion_min) : '<span style="color:var(--text3)">sin cierre</span>';
+    const ests = (i.estaciones || []).slice(0, 3).map(e => `<span class="est-pill">${e}</span>`).join('');
+    html += `<tr>
+      <td>${fechaCorta}</td>
+      <td>${i.hora}</td>
+      <td><span class="badge" style="border-color:${INT_DATA.colores[i.linea]};color:${INT_DATA.colores[i.linea]}">L.${i.linea}</span></td>
+      <td class="col-tipo" style="color:${t.color}">${t.label}</td>
+      <td>${dur}</td>
+      <td>${ests || '<span style="color:var(--text3)">—</span>'}</td>
+      <td>${renderFuentes(i)}</td>
+    </tr>`;
+  }
+  html += '</tbody></table></div>';
+  panel.innerHTML = html;
+}
+
+function intRenderAll() {
+  intRenderChips();
+  intRenderTipoChips();
+  intRenderFilterSummary();
+  intRenderHeatmap();
+  intRenderTimeline();
+  intRenderDowHora();
+  intRenderDetail();
+}
+
+let _intInited = false;
+async function initInterrupciones() {
+  if (_intInited) return;
+  _intInited = true;
+  const loadingEl = $('int-loading');
+  const contentEl = $('int-content');
+  try {
+    const r = await fetch('/subte/data.json', { cache: 'no-store' });
+    if (!r.ok) throw new Error('HTTP ' + r.status);
+    INT_DATA = await r.json();
+
+    _intLineasOn = new Set(INT_DATA.lineas_disponibles);
+    _intTiposOn = new Set(Object.keys(INT_DATA.tipos));
+    const maxYear = INT_DATA.rango_cubierto.hasta.slice(0, 4);
+    _intHmYear = maxYear;
+    document.querySelectorAll('#hm-range .int-range-tab').forEach(b => {
+      b.classList.toggle('active', b.dataset.yr === _intHmYear);
+    });
+
+    $('pick-day').min = INT_DATA.rango_cubierto.desde;
+    $('pick-day').max = INT_DATA.rango_cubierto.hasta;
+    $('pick-month').min = INT_DATA.rango_cubierto.desde.slice(0, 7);
+    $('pick-month').max = INT_DATA.rango_cubierto.hasta.slice(0, 7);
+
+    setText('int-data-rango', `${INT_DATA.rango_cubierto.desde} → ${INT_DATA.rango_cubierto.hasta}`);
+    if (INT_DATA.last_update) {
+      setText('int-data-last-update', new Date(INT_DATA.last_update).toLocaleString('es-AR', { dateStyle: 'long', timeStyle: 'short' }));
+    }
+    if (INT_DATA.gaps_conocidos && INT_DATA.gaps_conocidos.length) {
+      const g = INT_DATA.gaps_conocidos[0];
+      $('int-data-gaps').style.display = 'block';
+      $('int-data-gaps').innerHTML = `⚠ <strong>Gap conocido:</strong> ${g.desde} → ${g.hasta}. ${g.motivo}.`;
+    }
+
+    document.querySelectorAll('#hm-range .int-range-tab').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('#hm-range .int-range-tab').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        _intHmYear = btn.dataset.yr;
+        intRenderHeatmap();
+      });
+    });
+    document.querySelectorAll('#tl-vista .int-range-tab').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('#tl-vista .int-range-tab').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        _intTlVista = btn.dataset.vista;
+        intRenderTimeline();
+      });
+    });
+    document.querySelectorAll('#filter-dow .int-range-tab').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('#filter-dow .int-range-tab').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        _intFiltroDow = btn.dataset.dow;
+        intRenderAll();
+      });
+    });
+    document.querySelectorAll('#filter-hora .int-range-tab').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('#filter-hora .int-range-tab').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        _intFiltroHora = btn.dataset.hora;
+        intRenderAll();
+      });
+    });
+    $('pick-day').addEventListener('change', () => {
+      _intSelectedDay = $('pick-day').value || null;
+      _intSelectedMonth = null;
+      if (_intSelectedDay) $('pick-month').value = '';
+      intRenderAll();
+    });
+    $('pick-month').addEventListener('change', () => {
+      _intSelectedMonth = $('pick-month').value || null;
+      _intSelectedDay = null;
+      if (_intSelectedMonth) $('pick-day').value = '';
+      intRenderAll();
+    });
+    $('btn-clear').addEventListener('click', () => {
+      _intSelectedDay = null;
+      _intSelectedMonth = null;
+      $('pick-day').value = '';
+      $('pick-month').value = '';
+      intRenderAll();
+    });
+    intInitLineasPill();
+    intInitTiposPill();
+
+    loadingEl.style.display = 'none';
+    contentEl.style.display = 'block';
+    intRenderAll();
+  } catch (e) {
+    _intInited = false; // permitir reintento si falla
+    loadingEl.innerHTML = `<span style="color:var(--red)">No se pudieron cargar los incidentes: ${e.message}</span>`;
+  }
+}
+
+// ─── TAB SWITCHING (+ lazy init para interrupciones) ──────────────
+function setupTabs() {
+  const btns = document.querySelectorAll('.tabs-bar .tab-btn');
+  const panes = document.querySelectorAll('.tab-pane');
+  function activate(target) {
+    btns.forEach(b => {
+      const on = b.dataset.tab === target;
+      b.classList.toggle('active', on);
+      b.setAttribute('aria-selected', String(on));
+    });
+    panes.forEach(p => p.classList.toggle('active', p.id === 'tab-' + target));
+    if (target === 'interrupciones') initInterrupciones();
+    try { history.replaceState(null, '', '#' + target); } catch (e) {}
+  }
+  btns.forEach(btn => btn.addEventListener('click', () => activate(btn.dataset.tab)));
+  // Deep-link via hash
+  const initialTab = (location.hash || '').replace('#', '');
+  if (initialTab === 'interrupciones' || initialTab === 'pasajeros') {
+    activate(initialTab);
+  }
+}
+setupTabs();
 </script>
 
 </body>

@@ -1,0 +1,2840 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Subte CABA — Canuto.ar</title>
+<meta name="description" content="Estadísticas de demoras, paros y interrupciones del subte de Buenos Aires. Datos de @Emova_arg desde 2024." />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<script defer src="/canuto-nav.js"></script>
+<style>
+  :root {
+    --bg:         #0d0f14;
+    --surface:    #13161e;
+    --surface2:   #1a1e28;
+    --border:     #232736;
+    --border2:    #2d3245;
+    --text:       #e8eaf0;
+    --text2:      #8b90a4;
+    --text3:      #545870;
+    --accent:     #22d3ee;
+    --green:      #22c55e;
+    --red:        #ef4444;
+    --orange:     #f97316;
+    --yellow:     #fbbf24;
+    --purple:     #a855f7;
+    /* Líneas */
+    --la: #14a1d5; --lb: #e5292b; --lc: #0a3a8a; --ld: #00a85f;
+    --le: #7c3f9f; --lh: #f2c500; --lp: #f97316;
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { font-size: 16px; scroll-behavior: smooth; }
+  body { background: var(--bg); color: var(--text); font-family: 'IBM Plex Sans', sans-serif; min-height: 100vh; -webkit-font-smoothing: antialiased; }
+  main { max-width: 1100px; margin: 0 auto; padding: 36px 20px 80px; }
+  a { color: var(--accent); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+
+  /* ── HEADER ── */
+  .eyebrow { font-family: 'IBM Plex Mono', monospace; font-size: 0.68rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--accent); margin-bottom: 8px; }
+  h1 { font-size: clamp(1.7rem, 4vw, 2.2rem); font-weight: 600; letter-spacing: -0.03em; line-height: 1.1; margin-bottom: 8px; }
+  .subtitle { color: var(--text2); font-size: 0.92rem; margin-bottom: 28px; line-height: 1.6; max-width: 760px; }
+  .subtitle code { font-family: 'IBM Plex Mono', monospace; background: var(--surface2); padding: 1px 6px; border-radius: 4px; color: var(--text); font-size: 0.85em; }
+
+  /* ── CARD DESTACADA "ESTADÍSTICAS" (arriba a la derecha) ── */
+  .page-head-row {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 24px;
+    flex-wrap: wrap;
+  }
+  .page-head-text { flex: 1 1 360px; min-width: 0; }
+  .stats-cta {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px 16px;
+    background: linear-gradient(135deg, rgba(45,212,191,0.10), rgba(34,211,238,0.06));
+    border: 1px solid rgba(45,212,191,0.35);
+    border-radius: 14px;
+    text-decoration: none;
+    color: var(--text);
+    box-shadow: 0 6px 24px -10px rgba(45,212,191,0.35);
+    transition: all 0.18s ease;
+    flex-shrink: 0;
+    max-width: 320px;
+    position: relative;
+    overflow: hidden;
+  }
+  .stats-cta::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, rgba(45,212,191,0.0), rgba(45,212,191,0.18));
+    opacity: 0;
+    transition: opacity 0.18s ease;
+  }
+  .stats-cta:hover {
+    border-color: rgba(45,212,191,0.7);
+    transform: translateY(-2px);
+    box-shadow: 0 12px 28px -10px rgba(45,212,191,0.55);
+    text-decoration: none;
+  }
+  .stats-cta:hover::before { opacity: 1; }
+  .stats-cta-icon {
+    font-size: 1.7rem;
+    line-height: 1;
+    flex-shrink: 0;
+    position: relative;
+    z-index: 1;
+  }
+  .stats-cta-body { position: relative; z-index: 1; min-width: 0; }
+  .stats-cta-title {
+    font-family: 'IBM Plex Sans', sans-serif;
+    font-size: 0.96rem;
+    font-weight: 600;
+    color: var(--text);
+    line-height: 1.2;
+    letter-spacing: -0.01em;
+    margin-bottom: 3px;
+  }
+  .stats-cta-desc {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.64rem;
+    color: #5eead4;
+    letter-spacing: 0.02em;
+    line-height: 1.4;
+  }
+  .stats-cta-arrow {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 1.1rem;
+    color: #2dd4bf;
+    margin-left: 4px;
+    transition: transform 0.18s ease;
+    position: relative;
+    z-index: 1;
+    flex-shrink: 0;
+  }
+  .stats-cta:hover .stats-cta-arrow { transform: translateX(4px); }
+  .stats-cta-new {
+    position: absolute;
+    top: 8px;
+    right: 10px;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.52rem;
+    font-weight: 700;
+    color: #2dd4bf;
+    background: rgba(45,212,191,0.10);
+    padding: 2px 6px;
+    border-radius: 99px;
+    letter-spacing: 0.06em;
+    border: 1px solid rgba(45,212,191,0.30);
+    z-index: 2;
+  }
+  @media (max-width: 720px) {
+    .stats-cta { width: 100%; max-width: none; }
+  }
+
+  /* ── KPIs ── */
+  .kpi-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+    margin-bottom: 28px;
+  }
+  @media (max-width: 720px) { .kpi-grid { grid-template-columns: repeat(2, 1fr); } }
+  .kpi {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 16px 18px;
+    position: relative;
+    overflow: hidden;
+  }
+  .kpi::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: var(--accent);
+    opacity: 0.7;
+  }
+  .kpi-label {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.62rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--text3);
+    margin-bottom: 6px;
+  }
+  .kpi-value {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: clamp(1.3rem, 3vw, 1.7rem);
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    color: var(--text);
+    line-height: 1;
+  }
+  .kpi-sub {
+    font-size: 0.74rem;
+    color: var(--text3);
+    margin-top: 4px;
+  }
+
+  /* ── SECCIONES ── */
+  .section {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 22px 24px;
+    margin-bottom: 22px;
+  }
+  .section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    gap: 14px;
+    margin-bottom: 16px;
+    flex-wrap: wrap;
+  }
+  .section-title {
+    font-size: 1.05rem;
+    font-weight: 600;
+    color: var(--text);
+    letter-spacing: -0.01em;
+  }
+  .section-desc {
+    color: var(--text3);
+    font-size: 0.78rem;
+    margin-top: 2px;
+  }
+
+  /* ── FILTER LABEL ── */
+  .filter-label {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.62rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--text3);
+    margin-bottom: 8px;
+    font-weight: 600;
+  }
+
+  /* ── CHIPS LÍNEA ── */
+  .line-chips {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+    margin-top: 8px;
+  }
+  .line-chips[hidden] { display: none; }
+  .lineas-collapsed { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+  .lineas-pill {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 8px 14px; border-radius: 999px;
+    background: var(--surface); border: 1px solid var(--border);
+    color: var(--text); font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.78rem; font-weight: 600; cursor: pointer;
+    transition: all 0.15s;
+  }
+  .lineas-pill:hover { background: var(--surface2); border-color: var(--border2); }
+  .lineas-pill[aria-expanded="true"] { border-color: var(--accent); }
+  .lineas-pill[aria-expanded="true"] .lineas-pill-arrow { transform: rotate(180deg); }
+  .lineas-pill-arrow { font-size: 0.7rem; color: var(--text2); transition: transform 0.15s; }
+  .lineas-clear {
+    background: transparent; border: 1px solid var(--border);
+    color: var(--text2); padding: 6px 10px; border-radius: 7px;
+    font-family: 'IBM Plex Mono', monospace; font-size: 0.7rem;
+    cursor: pointer; transition: all 0.15s;
+  }
+  .lineas-clear:hover { color: var(--text); border-color: var(--border2); }
+  .lineas-clear[hidden] { display: none; }
+  .line-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 14px;
+    border-radius: 20px;
+    border: 1px solid var(--border);
+    background: var(--surface2);
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.72rem;
+    font-weight: 600;
+    color: var(--text2);
+    cursor: pointer;
+    transition: all 0.12s;
+    user-select: none;
+  }
+  .line-chip:hover { border-color: var(--border2); }
+  .line-chip.on  { color: var(--text); border-color: var(--text); }
+  .line-chip.off { opacity: 0.45; }
+  .line-chip.disabled { opacity: 0.35; cursor: not-allowed; }
+  .line-chip .dot {
+    width: 9px; height: 9px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  /* ── CALENDARIO TRADICIONAL (mini-calendarios mensuales) ── */
+  .cal-header {
+    display: flex; align-items: center; gap: 12px;
+    flex-wrap: wrap; margin-bottom: 14px;
+  }
+  .cal-header .section-title { margin: 0; }
+  .cal-header .range-tabs { margin-left: auto; }
+  @media (max-width: 540px) {
+    .cal-header .range-tabs { margin-left: 0; width: 100%; }
+  }
+  .hm-year-title {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.95rem;
+    color: var(--text);
+    font-weight: 700;
+    margin-bottom: 16px;
+    letter-spacing: 0.05em;
+  }
+  .hm-year-title .sub {
+    font-weight: 400;
+    color: var(--text3);
+    margin-left: 10px;
+    font-size: 0.78rem;
+  }
+  .hm-months-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 12px;
+  }
+  .hm-month-card {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 8px 10px;
+    min-width: 0;
+  }
+  .hm-month-card-title {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.7rem;
+    font-weight: 700;
+    color: var(--text);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    margin-bottom: 6px;
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+  }
+  .hm-month-card-title .count {
+    font-weight: 400;
+    font-size: 0.6rem;
+    color: var(--text3);
+    text-transform: none;
+    letter-spacing: 0;
+  }
+  .hm-cal-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 2px;
+  }
+  .hm-cal-dow {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.52rem;
+    color: var(--text3);
+    text-align: center;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    padding-bottom: 2px;
+  }
+  .hm-cal-cell {
+    aspect-ratio: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 4px;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.62rem;
+    font-weight: 600;
+    color: var(--text2);
+    background: transparent;
+    border: 1px solid transparent;
+    cursor: pointer;
+    transition: transform 0.08s, border-color 0.08s, box-shadow 0.08s;
+    user-select: none;
+    position: relative;
+  }
+  .hm-cal-cell:hover { transform: scale(1.12); border-color: var(--text); z-index: 5; box-shadow: 0 2px 8px rgba(0,0,0,0.4); }
+  .hm-cal-cell.empty { cursor: default; visibility: hidden; }
+  .hm-cal-cell.no-data {
+    color: var(--text3);
+    background: rgba(255,255,255,0.02);
+  }
+  .hm-cal-cell.no-data:hover { transform: none; border-color: transparent; box-shadow: none; }
+  .hm-cal-cell.l1 { background: rgba(251,191,36,0.65); color: #1a1300; }
+  .hm-cal-cell.l2 { background: rgba(249,115,22,0.78); color: #1f0f00; }
+  .hm-cal-cell.l3 { background: rgba(239,68,68,0.85); color: #fff; }
+  .hm-cal-cell.l4 { background: rgba(220,38,38,0.95); color: #fff; }
+  .hm-cal-cell.l5 { background: #a855f7; color: #fff; }
+  .hm-cal-cell.selected {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 2px var(--bg), 0 0 0 3px var(--accent);
+    z-index: 6;
+  }
+  .hm-cal-cell.today {
+    border: 1.5px dashed var(--text);
+  }
+  .hm-cal-cell .count-dot {
+    position: absolute;
+    top: 1px;
+    right: 2px;
+    background: rgba(0,0,0,0.55);
+    color: #fff;
+    border-radius: 7px;
+    font-size: 0.48rem;
+    line-height: 1;
+    padding: 1px 3px;
+    font-weight: 700;
+    min-width: 8px;
+    text-align: center;
+  }
+  .hm-legend {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 12px;
+    padding-top: 10px;
+    border-top: 1px solid var(--border);
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.6rem;
+    color: var(--text3);
+    flex-wrap: wrap;
+  }
+  .hm-legend-item { display: inline-flex; align-items: center; gap: 5px; color: var(--text2); }
+  .hm-legend-cell { width: 11px; height: 11px; border-radius: 3px; flex-shrink: 0; }
+
+  /* ── TIMELINE / CHART ── */
+  .chart-wrap {
+    position: relative;
+    width: 100%;
+    height: 320px;
+    margin-top: 8px;
+  }
+  .chart-wrap.tall { height: 280px; }
+
+  /* ── TOOLBAR (rangos) ── */
+  .toolbar {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    align-items: center;
+    margin-bottom: 14px;
+  }
+  .range-tabs {
+    display: flex;
+    gap: 1px;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 3px;
+  }
+  .range-tab {
+    background: transparent;
+    border: none;
+    color: var(--text3);
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.7rem;
+    font-weight: 600;
+    padding: 6px 12px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.12s;
+  }
+  .range-tab:hover { color: var(--text); }
+  .range-tab.active { background: var(--accent); color: var(--bg); }
+
+  /* ── DATEPICKER + DETALLES ── */
+  .picker-row {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    flex-wrap: wrap;
+    margin-bottom: 14px;
+  }
+  input[type="date"], input[type="month"] {
+    background: var(--surface2);
+    border: 1px solid var(--border2);
+    border-radius: 8px;
+    padding: 0 12px;
+    height: 36px;
+    color: var(--text);
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.82rem;
+    outline: none;
+    color-scheme: dark;
+  }
+  input[type="date"]:focus, input[type="month"]:focus { border-color: var(--accent); }
+  .picker-row label {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.7rem;
+    color: var(--text3);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+  }
+  .btn-clear {
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--text3);
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.7rem;
+    font-weight: 600;
+    padding: 6px 12px;
+    border-radius: 6px;
+    cursor: pointer;
+  }
+  .btn-clear:hover { color: var(--text); border-color: var(--border2); }
+
+  /* ── FUENTES BADGES ── */
+  .fuente-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 0.62rem;
+    font-weight: 700;
+    font-family: 'IBM Plex Mono', monospace;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    margin-right: 4px;
+    text-decoration: none;
+    border: 1px solid transparent;
+  }
+  .fuente-badge.emova { background: rgba(34,211,238,0.12); color: #22d3ee; border-color: rgba(34,211,238,0.3); }
+  .fuente-badge.basubte { background: rgba(251,191,36,0.12); color: #fbbf24; border-color: rgba(251,191,36,0.3); }
+  .fuente-badge.ambas { background: rgba(34,197,94,0.12); color: #22c55e; border-color: rgba(34,197,94,0.3); }
+  .fuente-badge:hover { filter: brightness(1.2); }
+  .tweet-link {
+    display: inline-block;
+    font-size: 0.65rem;
+    color: var(--text3);
+    text-decoration: none;
+    padding: 1px 5px;
+    border-radius: 3px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    margin-right: 3px;
+    margin-bottom: 2px;
+    font-family: 'IBM Plex Mono', monospace;
+    transition: all 0.12s;
+  }
+  .tweet-link:hover { color: var(--accent); border-color: var(--accent); text-decoration: none; }
+  .tweet-link.bx { color: #fbbf24aa; }
+  .tweet-link.em { color: #22d3eeaa; }
+  .tweet-link.bx:hover { color: #fbbf24; border-color: #fbbf24; }
+  .tweet-link.em:hover { color: #22d3ee; border-color: #22d3ee; }
+
+  /* ── TABLA INCIDENTES ── */
+  .inc-table-wrap { overflow-x: auto; }
+  table.inc-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.78rem;
+    margin-top: 6px;
+  }
+  .inc-table th {
+    text-align: left;
+    font-weight: 600;
+    color: var(--text3);
+    font-size: 0.6rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 8px 10px;
+    border-bottom: 1px solid var(--border);
+    white-space: nowrap;
+  }
+  .inc-table td {
+    padding: 10px;
+    border-bottom: 1px solid var(--border);
+    color: var(--text2);
+    vertical-align: top;
+  }
+  .inc-table tr:hover td { background: var(--surface2); color: var(--text); }
+  .inc-table .col-tipo { font-weight: 700; }
+  .inc-table .badge {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 0.65rem;
+    font-weight: 700;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    color: var(--text);
+  }
+  .inc-table .est-pill {
+    display: inline-block;
+    padding: 1px 6px;
+    border-radius: 4px;
+    background: var(--surface2);
+    color: var(--text2);
+    font-size: 0.7rem;
+    margin-right: 4px;
+  }
+  .inc-empty {
+    padding: 36px 20px;
+    text-align: center;
+    color: var(--text3);
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.85rem;
+  }
+  .inc-empty .big { font-size: 2rem; margin-bottom: 8px; opacity: 0.5; }
+
+  /* ── CHART LEGEND CUSTOM ── */
+  .chart-legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 14px;
+    margin-top: 12px;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.7rem;
+    color: var(--text2);
+  }
+  .chart-legend .ck { width: 12px; height: 12px; border-radius: 3px; display: inline-block; vertical-align: middle; margin-right: 6px; }
+
+  /* ── NOTA / FOOTER ── */
+  .nota {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.66rem;
+    color: var(--text3);
+    margin-top: 14px;
+    line-height: 1.6;
+  }
+  .nota strong { color: var(--text2); }
+  .nota .gap-warn {
+    background: rgba(251,191,36,0.08);
+    border: 1px solid rgba(251,191,36,0.25);
+    border-radius: 8px;
+    padding: 8px 12px;
+    margin-top: 8px;
+    color: var(--yellow);
+  }
+
+  /* ── ESTADO HOY (banner servicio) ── */
+  .svc-banner {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 14px 16px;
+    margin-bottom: 18px;
+    border-left: 4px solid var(--svc-color, var(--green));
+  }
+  .svc-banner.cerrado { --svc-color: var(--red); }
+  .svc-banner.activo { --svc-color: var(--green); }
+  .svc-banner.ultima-hora { --svc-color: var(--yellow); }
+  .svc-row1 {
+    display: flex; align-items: center; gap: 10px;
+    flex-wrap: wrap; margin-bottom: 6px;
+  }
+  .svc-status {
+    font-family: 'IBM Plex Mono', monospace;
+    font-weight: 700; font-size: 0.8rem;
+    color: var(--svc-color);
+    letter-spacing: 0.04em; text-transform: uppercase;
+  }
+  .svc-day {
+    color: var(--text); font-size: 0.85rem;
+    text-transform: capitalize;
+  }
+  .svc-feriado-tag {
+    background: rgba(168,85,247,0.15); color: #a855f7;
+    border: 1px solid rgba(168,85,247,0.3);
+    padding: 2px 8px; border-radius: 4px;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.65rem; font-weight: 600;
+    text-transform: uppercase; letter-spacing: 0.04em;
+  }
+  .svc-row2 {
+    color: var(--text2); font-size: 0.78rem;
+    line-height: 1.55; display: flex; flex-wrap: wrap;
+    gap: 4px 14px; align-items: center;
+  }
+  .svc-row2 .label { color: var(--text3); font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.04em; margin-right: 3px; }
+  .svc-row2 .v { color: var(--text); font-weight: 600; }
+  .svc-noct-b {
+    background: rgba(251,191,36,0.12); color: var(--yellow);
+    border: 1px solid rgba(251,191,36,0.3);
+    padding: 2px 8px; border-radius: 5px;
+    font-size: 0.7rem; font-family: 'IBM Plex Mono', monospace;
+  }
+  .svc-detalle { margin-top: 10px; padding-top: 10px; border-top: 1px solid var(--border); }
+  .svc-detalle table { width: 100%; border-collapse: collapse; font-size: 0.68rem; font-family: 'IBM Plex Mono', monospace; }
+  .svc-detalle th { text-align: left; padding: 4px 6px; color: var(--text3); border-bottom: 1px solid var(--border); font-weight: 600; font-size: 0.58rem; text-transform: uppercase; letter-spacing: 0.04em; }
+  .svc-detalle td { padding: 4px 6px; border-bottom: 1px solid var(--border); color: var(--text); }
+  .svc-detalle tr:last-child td { border-bottom: 0; }
+  .svc-detalle .linea-badge {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 18px; height: 18px; border-radius: 50%;
+    font-weight: 700; font-size: 0.62rem; color: #0d0f14;
+  }
+  .svc-detalle .cerrada { color: var(--text3); }
+  .svc-detalle .cerrada .v { color: var(--red); }
+  .svc-detalle .nota-pie { margin-top: 6px; font-size: 0.6rem; color: var(--text3); font-family: 'IBM Plex Mono', monospace; }
+  .svc-detalle .novedad {
+    color: var(--orange); font-weight: 600;
+    font-family: 'IBM Plex Sans', sans-serif; font-size: 0.7rem;
+    line-height: 1.3;
+  }
+  .svc-detalle .novedad-ok { color: var(--text3); font-size: 0.7rem; font-family: 'IBM Plex Sans', sans-serif; }
+  .svc-detalle .novedad small { display: block; color: var(--text3); font-weight: 400; font-size: 0.6rem; margin-top: 2px; }
+
+  /* ── Responsive: en mobile la tabla del servicio pasa a cards verticales ── */
+  @media (max-width: 720px) {
+    .svc-detalle table, .svc-detalle thead, .svc-detalle tbody, .svc-detalle tr, .svc-detalle td, .svc-detalle th {
+      display: block;
+    }
+    .svc-detalle thead { display: none; }
+    .svc-detalle tr {
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 8px 10px;
+      margin-bottom: 8px;
+      display: grid;
+      grid-template-columns: 24px 1fr auto;
+      grid-template-rows: auto auto auto auto;
+      gap: 4px 10px;
+      align-items: center;
+    }
+    .svc-detalle tr.cerrada { opacity: 0.7; }
+    .svc-detalle td { padding: 0; border: none !important; font-size: 0.72rem; }
+    /* td 1: badge */
+    .svc-detalle td:nth-child(1) { grid-row: 1; grid-column: 1; }
+    /* td 2: nombre */
+    .svc-detalle td:nth-child(2) {
+      grid-row: 1; grid-column: 2;
+      font-weight: 700; color: var(--text);
+    }
+    /* td 3: frec, alineada a la derecha */
+    .svc-detalle td:nth-child(3) {
+      grid-row: 1; grid-column: 3;
+      text-align: right; color: var(--text2); font-size: 0.66rem;
+    }
+    /* td 4 y 5: cabeceras, full width abajo en filas separadas */
+    .svc-detalle td:nth-child(4) {
+      grid-row: 2; grid-column: 1 / -1; padding-left: 34px;
+      font-size: 0.68rem; color: var(--text2);
+    }
+    .svc-detalle td:nth-child(5) {
+      grid-row: 3; grid-column: 1 / -1; padding-left: 34px;
+      font-size: 0.68rem; color: var(--text2);
+    }
+    .svc-detalle td:nth-child(4)::before { content: '↑ '; color: var(--text3); }
+    .svc-detalle td:nth-child(5)::before { content: '↓ '; color: var(--text3); }
+    /* td 6: novedades, full width abajo, destacada */
+    .svc-detalle td:nth-child(6) {
+      grid-row: 4; grid-column: 1 / -1; padding-left: 34px;
+      padding-top: 4px; border-top: 1px dashed var(--border) !important;
+      margin-top: 2px;
+    }
+    .svc-detalle .novedad { font-size: 0.74rem; }
+    .svc-detalle .novedad-ok { font-size: 0.68rem; }
+    .svc-detalle .nota-pie { padding-left: 0; }
+  }
+  @media (max-width: 540px) {
+    .svc-row1 { gap: 6px; }
+    .svc-status { font-size: 0.72rem; }
+    .svc-day { font-size: 0.78rem; }
+    .svc-banner { padding: 12px 12px; }
+  }
+
+  /* ── ESTADO EN VIVO (delays por linea desde forecastGTFS) ── */
+  .estado-vivo {
+    margin: -8px 0 18px;
+    padding: 10px 14px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+  }
+  .estado-title {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.7rem; letter-spacing: 0.06em; text-transform: uppercase;
+    color: var(--text2); margin-bottom: 8px;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .estado-title .meta {
+    font-weight: 400; color: var(--text3); text-transform: none;
+    margin-left: auto; letter-spacing: 0;
+  }
+  .estado-row { display: flex; flex-wrap: wrap; gap: 8px; }
+  .linea-chip {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 5px 10px;
+    background: var(--surface2, rgba(255,255,255,0.03));
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.78rem;
+  }
+  .linea-chip .letra {
+    width: 22px; height: 22px; border-radius: 50%;
+    display: inline-flex; align-items: center; justify-content: center;
+    font-weight: 700; font-size: 0.72rem; color: #0d0f14;
+  }
+  .linea-chip .delay { font-weight: 600; color: var(--text); }
+  .linea-chip .dot {
+    width: 7px; height: 7px; border-radius: 50%;
+    flex-shrink: 0;
+  }
+  .linea-chip .dot.ok { background: var(--green); }
+  .linea-chip .dot.warn { background: var(--yellow); }
+  .linea-chip .dot.high { background: #f97316; box-shadow: 0 0 4px rgba(249,115,22,0.4); }
+  .linea-chip .dot.bad { background: var(--red); box-shadow: 0 0 6px rgba(239,68,68,0.5); animation: estadopulse 1.6s ease-in-out infinite; }
+  @keyframes estadopulse {
+    0%,100% { opacity: 1; }
+    50% { opacity: 0.55; }
+  }
+  .linea-chip .trend {
+    font-size: 0.7rem; color: var(--text3);
+    font-weight: 600;
+  }
+  .linea-chip .trend.up { color: var(--red); }
+  .linea-chip .trend.down { color: var(--green); }
+  .linea-chip .freq-ast { color: var(--yellow); margin-left: 1px; cursor: help; font-weight: 700; }
+  .linea-chip .stuck-icon { font-size: 0.85rem; line-height: 1; animation: stuckpulse 1.4s ease-in-out infinite; cursor: help; }
+  @keyframes stuckpulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.6; transform: scale(0.9); }
+  }
+  .estado-legend { margin-top: 10px; }
+  .estado-legend > summary {
+    cursor: pointer; font-size: 0.72rem; color: var(--text3);
+    font-family: 'IBM Plex Mono', monospace;
+    padding: 4px 0;
+    list-style: none;
+  }
+  .estado-legend > summary::-webkit-details-marker { display: none; }
+  .estado-legend > summary::before { content: '▸ '; }
+  .estado-legend[open] > summary::before { content: '▾ '; }
+  .estado-legend > summary:hover { color: var(--text2); }
+  .legend-content {
+    margin-top: 6px; padding: 8px 12px;
+    background: var(--surface2, rgba(255,255,255,0.02));
+    border-radius: 6px;
+    font-size: 0.76rem; line-height: 1.55;
+    color: var(--text2);
+  }
+  .legend-content p { margin: 0 0 6px; }
+  .legend-content ul { margin: 6px 0; padding-left: 0; list-style: none; }
+  .legend-content li { padding: 3px 0; display: flex; align-items: center; gap: 8px; }
+  .legend-content li .dot,
+  .legend-content li .trend,
+  .legend-content li .freq-ast { flex-shrink: 0; min-width: 14px; text-align: center; font-weight: 700; }
+  .legend-source { font-size: 0.7rem; color: var(--text3); margin-top: 8px !important; }
+  .legend-content code { background: var(--bg); padding: 1px 4px; border-radius: 3px; font-size: 0.72rem; }
+  .linea-chip.nodata { opacity: 0.45; }
+  .linea-chip.nodata .delay { color: var(--text3); }
+  @media (max-width: 540px) {
+    .estado-row { gap: 6px; }
+    .linea-chip { padding: 4px 7px; font-size: 0.72rem; gap: 4px; }
+    .linea-chip .letra { width: 18px; height: 18px; font-size: 0.65rem; }
+    .estado-title .meta { display: none; }
+  }
+
+  /* ── ÚLTIMOS TWEETS CIUDADANOS ── */
+  .latest-tw {
+    margin: -8px 0 24px;
+    padding: 10px 14px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+  }
+  .latest-tw-title {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.7rem; letter-spacing: 0.06em; text-transform: uppercase;
+    color: var(--text2); margin-bottom: 8px;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .latest-tw-title .meta {
+    font-weight: 400; color: var(--text3); text-transform: none;
+    margin-left: auto; letter-spacing: 0;
+  }
+  .latest-tw-list { display: flex; flex-direction: column; gap: 3px; }
+  .latest-tw-item {
+    font-size: 0.74rem; line-height: 1.35;
+    color: var(--text); padding: 3px 0;
+    border-bottom: 1px dashed var(--border);
+    /* Max 2 lineas por tweet — evita que long tweets dominen el cuadrito */
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  .latest-tw-item:last-child { border-bottom: 0; }
+  .latest-tw-item .user {
+    color: var(--accent); font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.72rem; font-weight: 600;
+    text-decoration: none; margin-right: 6px;
+  }
+  .latest-tw-item .user:hover { text-decoration: underline; }
+  .latest-tw-item .ago {
+    color: var(--text3); font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.65rem; margin-left: 6px;
+  }
+
+  /* ── MONITOR DE FUENTES ── */
+  .fuentes-monitor {
+    display: flex; flex-wrap: wrap; gap: 14px;
+    padding: 10px 14px; margin: 0 0 18px;
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 8px; align-items: center;
+  }
+  .fuentes-title {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.68rem; letter-spacing: 0.08em; text-transform: uppercase;
+    color: var(--text2); margin-right: 4px;
+  }
+  .fuente-item {
+    display: inline-flex; align-items: center; gap: 6px;
+    font-size: 0.78rem; color: var(--text2);
+  }
+  .fuente-dot {
+    width: 8px; height: 8px; border-radius: 50%;
+    background: var(--green); flex-shrink: 0;
+    animation: fuentepulse 1.8s ease-in-out infinite;
+  }
+  .fuente-dot.warn { background: var(--yellow); animation: fuentepulse 2.4s ease-in-out infinite; }
+  .fuente-dot.fail { background: var(--red); animation: none; box-shadow: 0 0 6px rgba(239,68,68,0.5); }
+  @keyframes fuentepulse {
+    0%, 100% { opacity: 1; box-shadow: 0 0 0 0 currentColor; }
+    50% { opacity: 0.55; box-shadow: 0 0 0 4px transparent; }
+  }
+  .fuente-label { font-weight: 600; color: var(--text); }
+  .fuente-time { font-family: 'IBM Plex Mono', monospace; font-size: 0.7rem; color: var(--text3); }
+  @media (max-width: 540px) {
+    .fuentes-monitor { gap: 10px; padding: 8px 10px; font-size: 0.72rem; }
+    .fuentes-title { width: 100%; margin-bottom: 2px; }
+  }
+
+  /* ── BANNER LIVE (alertas activas GCBA) ── */
+  #live-banner { display: none; margin: 0 0 24px; }
+  #live-banner.show { display: block; }
+  .live-header {
+    display: flex; align-items: center; gap: 8px;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.72rem; letter-spacing: 0.08em; text-transform: uppercase;
+    color: var(--text2); margin-bottom: 8px;
+  }
+  .live-dot {
+    width: 8px; height: 8px; border-radius: 50%;
+    background: var(--red); flex-shrink: 0;
+    animation: livepulse 1.6s ease-in-out infinite;
+  }
+  @keyframes livepulse {
+    0%, 100% { opacity: 1; box-shadow: 0 0 0 0 rgba(239,68,68,0.6); }
+    50% { opacity: 0.7; box-shadow: 0 0 0 6px rgba(239,68,68,0); }
+  }
+  .live-tag { color: var(--red); font-weight: 700; }
+  .live-meta { margin-left: auto; color: var(--text3); font-weight: 400; text-transform: none; letter-spacing: 0; }
+  .live-list { display: grid; grid-template-columns: 1fr; gap: 8px; }
+  .live-card {
+    background: var(--surface); border: 1px solid var(--border);
+    border-left: 3px solid var(--linecolor, var(--text2));
+    border-radius: 8px; padding: 10px 14px;
+    display: grid; grid-template-columns: auto 1fr auto; gap: 12px; align-items: center;
+  }
+  .live-line {
+    width: 26px; height: 26px; border-radius: 50%;
+    background: var(--linecolor, var(--text2)); color: #0d0f14;
+    font-family: 'IBM Plex Mono', monospace; font-weight: 700;
+    font-size: 0.85rem;
+    display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+  }
+  .live-body { min-width: 0; }
+  .live-text {
+    color: var(--text); font-size: 0.88rem; line-height: 1.35;
+    overflow: hidden; text-overflow: ellipsis; display: -webkit-box;
+    -webkit-line-clamp: 2; -webkit-box-orient: vertical;
+  }
+  .live-tipo {
+    font-family: 'IBM Plex Mono', monospace; font-size: 0.68rem;
+    color: var(--text2); margin-top: 3px; letter-spacing: 0.04em;
+  }
+  .live-since {
+    font-family: 'IBM Plex Mono', monospace; font-size: 0.72rem;
+    color: var(--text2); text-align: right; flex-shrink: 0;
+    line-height: 1.3;
+  }
+  .live-since strong { color: var(--text); display: block; font-weight: 600; }
+  @media (max-width: 540px) {
+    .live-card { grid-template-columns: auto 1fr; }
+    .live-since { grid-column: 1 / -1; text-align: left; padding-left: 38px; }
+  }
+
+  /* ── LOADING ── */
+  .loading {
+    text-align: center;
+    padding: 60px 20px;
+    color: var(--text3);
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.85rem;
+  }
+  .spinner {
+    display: inline-block;
+    width: 12px; height: 12px;
+    border: 2px solid var(--border);
+    border-top-color: var(--accent);
+    border-radius: 50%;
+    margin-right: 8px;
+    animation: spin 0.8s linear infinite;
+    vertical-align: middle;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* ── DAY DETAIL HEADER ── */
+  .detail-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 12px;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+  .detail-title {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--text);
+  }
+  .detail-summary {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.72rem;
+    color: var(--text2);
+  }
+</style>
+</head>
+<body>
+
+<div id="canuto-nav"></div>
+
+<main>
+  <div class="page-head-row">
+    <div class="page-head-text">
+      <h1>Demoras, paros e interrupciones del subte</h1>
+      <p class="subtitle">
+        Demoras, paros e interrupciones registradas. Datos de <a href="https://x.com/Emova_arg" target="_blank" rel="noopener">@Emova_arg</a>, <a href="https://x.com/basubte" target="_blank" rel="noopener">@basubte</a> y la API GCBA.
+      </p>
+    </div>
+    <a href="/subte/estadisticas/" class="stats-cta" aria-label="Ver estadísticas de pasajeros del subte">
+      <span class="stats-cta-new">NUEVO</span>
+      <div class="stats-cta-icon">📊</div>
+      <div class="stats-cta-body">
+        <div class="stats-cta-title">Estadísticas del subte</div>
+        <div class="stats-cta-desc">Pasajeros pagos por línea · desde 2010</div>
+      </div>
+      <div class="stats-cta-arrow">→</div>
+    </a>
+  </div>
+
+  <!-- Monitor de fuentes (estado de cada feed que alimenta la pagina) -->
+  <div id="fuentes-monitor" class="fuentes-monitor" aria-label="Estado de las fuentes de informacion">
+    <span class="fuentes-title">Fuentes en vivo</span>
+    <div class="fuente-item" data-src="gcba">
+      <span class="fuente-dot fail" id="fdot-gcba"></span>
+      <span class="fuente-label">GCBA alertas</span>
+      <span class="fuente-time" id="ftime-gcba">—</span>
+    </div>
+    <div class="fuente-item" data-src="forecast">
+      <span class="fuente-dot fail" id="fdot-forecast"></span>
+      <span class="fuente-label">GCBA forecast</span>
+      <span class="fuente-time" id="ftime-forecast">—</span>
+    </div>
+    <div class="fuente-item" data-src="tweets">
+      <span class="fuente-dot fail" id="fdot-tweets"></span>
+      <span class="fuente-label">@Emova_arg / @basubte</span>
+      <span class="fuente-time" id="ftime-tweets">—</span>
+    </div>
+    <div class="fuente-item" data-src="ciudadano">
+      <span class="fuente-dot fail" id="fdot-ciudadano"></span>
+      <span class="fuente-label">Twitter ciudadano</span>
+      <span class="fuente-time" id="ftime-ciudadano">—</span>
+    </div>
+  </div>
+
+  <!-- Estado del servicio HOY (datos de Emova) -->
+  <div id="svc-banner" class="svc-banner" style="display:none">
+    <div class="svc-row1">
+      <span class="svc-status" id="svc-status">—</span>
+      <span class="svc-day" id="svc-day"></span>
+      <span class="svc-feriado-tag" id="svc-feriado" style="display:none"></span>
+      <span class="svc-noct-b" id="svc-noct" style="display:none">🌙 Línea B nocturno hasta 1:30</span>
+    </div>
+    <div class="svc-detalle show" id="svc-detalle"></div>
+  </div>
+
+  <!-- Banner de alertas activas (GCBA GTFS-RT en vivo) -->
+  <section id="live-banner" aria-live="polite">
+    <div class="live-header">
+      <span class="live-dot" aria-hidden="true"></span>
+      <span class="live-tag">En vivo · GCBA</span>
+      <span class="live-meta" id="live-meta"></span>
+    </div>
+    <div class="live-list" id="live-list"></div>
+  </section>
+
+  <!-- Estado en vivo por linea (delays desde forecastGTFS GCBA) -->
+  <div id="estado-vivo" class="estado-vivo" style="display:none">
+    <div class="estado-title">
+      <span>📊 Estado en vivo</span>
+      <span class="meta">Frecuencia teórica (GTFS) · <span id="estado-time">—</span></span>
+    </div>
+    <div class="estado-row" id="estado-row"></div>
+    <details class="estado-legend">
+      <summary>¿Qué significa cada cosa?</summary>
+      <div class="legend-content">
+        <p><strong>El número</strong> es la frecuencia estimada AHORA — cada cuánto pasa un tren en este momento. Se ajusta automáticamente si detectamos que el sistema empeora o mejora.</p>
+        <ul>
+          <li><span class="dot ok" style="display:inline-block"></span> <strong>Verde</strong>: servicio en operación normal</li>
+          <li><span class="dot warn" style="display:inline-block"></span> <strong>Amarillo</strong>: observación — el delay está creciendo levemente</li>
+          <li><span class="dot bad" style="display:inline-block;animation:none"></span> <strong>Rojo</strong>: alerta — probable incidente en curso (delay creciendo &gt;3 min en 5 min)</li>
+          <li><span class="trend up" style="display:inline-block">↑</span> <strong>Flecha arriba</strong>: la frecuencia está empeorando (trenes más espaciados)</li>
+          <li><span class="trend down" style="display:inline-block">↓</span> <strong>Flecha abajo</strong>: el sistema está recuperándose</li>
+          <li><span class="freq-ast" style="display:inline-block">*</span> <strong>Asterisco</strong>: solo estimación del horario oficial, sin medición en vivo (líneas C, H, P)</li>
+          <li>🛑 <strong>Ícono parado</strong>: hay un tren que no avanzó por más de 3 minutos en una estación específica (probable tren detenido por incidente)</li>
+        </ul>
+        <p class="legend-source">Datos: GCBA <code>forecastGTFS</code> + horario oficial GTFS. Se actualiza cada minuto.</p>
+      </div>
+    </details>
+  </div>
+
+  <!-- Últimos tweets ciudadanos arrobando a las cuentas oficiales -->
+  <div id="latest-tw" class="latest-tw" style="display:none">
+    <div class="latest-tw-title">
+      <span>💬 Últimos tweets a @Emova_arg / @basubte</span>
+      <span class="meta" id="latest-tw-meta"></span>
+    </div>
+    <div class="latest-tw-list" id="latest-tw-list"></div>
+  </div>
+
+  <!-- FILTROS -->
+  <div class="section">
+    <div class="section-header">
+      <div>
+        <div class="section-title">🔧 Filtros</div>
+        <div class="section-desc">Acotá el análisis por línea, día de la semana y hora. Los filtros se aplican a TODOS los gráficos y KPIs de abajo.</div>
+      </div>
+      <div id="filter-summary" style="font-family:'IBM Plex Mono',monospace;font-size:0.7rem;color:var(--text3)"></div>
+    </div>
+
+    <div style="display:flex;flex-direction:column;gap:14px">
+      <div>
+        <div class="filter-label">Líneas</div>
+        <div class="lineas-collapsed">
+          <button type="button" class="lineas-pill" id="lineas-pill" aria-expanded="false">
+            <span id="lineas-pill-label">🚇 Todas las líneas</span>
+            <span class="lineas-pill-arrow" aria-hidden="true">▾</span>
+          </button>
+          <button type="button" class="lineas-clear" id="lineas-clear" hidden>✕ Volver a todas</button>
+        </div>
+        <div class="line-chips" id="line-chips" hidden></div>
+      </div>
+      <div>
+        <div class="filter-label">Días</div>
+        <div class="range-tabs" id="filter-dow">
+          <button class="range-tab active" data-dow="all">Todos</button>
+          <button class="range-tab" data-dow="weekday">L–V</button>
+          <button class="range-tab" data-dow="weekend">S–D</button>
+        </div>
+      </div>
+      <div>
+        <div class="filter-label">Horario</div>
+        <div class="range-tabs" id="filter-hora">
+          <button class="range-tab active" data-hora="all">Todo</button>
+          <button class="range-tab" data-hora="picos">Picos</button>
+          <button class="range-tab" data-hora="pico-am">Pico AM (7–11)</button>
+          <button class="range-tab" data-hora="pico-pm">Pico PM (16–20)</button>
+          <button class="range-tab" data-hora="off">Fuera de pico</button>
+        </div>
+      </div>
+      <div>
+        <div class="filter-label">Tipo de incidente</div>
+        <div class="lineas-collapsed">
+          <button type="button" class="lineas-pill" id="tipos-pill" aria-expanded="false">
+            <span id="tipos-pill-label">🏷️ Todos los tipos</span>
+            <span class="lineas-pill-arrow" aria-hidden="true">▾</span>
+          </button>
+          <button type="button" class="lineas-clear" id="tipos-clear" hidden>✕ Volver a todos</button>
+        </div>
+        <div class="line-chips" id="filter-tipo" hidden></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CALENDARIO HEATMAP -->
+  <div class="section">
+    <div class="cal-header">
+      <div class="section-title">📅 Calendario</div>
+      <div class="range-tabs" id="hm-range">
+        <button class="range-tab" data-yr="2024">2024</button>
+        <button class="range-tab" data-yr="2025">2025</button>
+        <button class="range-tab active" data-yr="2026">2026</button>
+        <button class="range-tab" data-yr="all">Todo</button>
+      </div>
+    </div>
+    <div id="hm-year-title" class="hm-year-title"></div>
+    <div id="hm-wrap">
+      <div class="loading"><span class="spinner"></span>Generando calendario…</div>
+    </div>
+    <div class="hm-legend">
+      <span style="color:var(--text3);margin-right:6px">Color = severidad del peor incidente del día:</span>
+      <span class="hm-legend-item"><span class="hm-legend-cell" style="background:var(--surface2);opacity:0.4"></span>Sin datos</span>
+      <span class="hm-legend-item"><span class="hm-legend-cell" style="background:rgba(251,191,36,0.55)"></span>Demora</span>
+      <span class="hm-legend-item"><span class="hm-legend-cell" style="background:rgba(249,115,22,0.65)"></span>Estación cerrada</span>
+      <span class="hm-legend-item"><span class="hm-legend-cell" style="background:rgba(239,68,68,0.78)"></span>Limitado</span>
+      <span class="hm-legend-item"><span class="hm-legend-cell" style="background:rgba(220,38,38,0.92)"></span>Interrumpido</span>
+      <span class="hm-legend-item"><span class="hm-legend-cell" style="background:#a855f7"></span>Paro</span>
+    </div>
+  </div>
+
+  <!-- DETALLE / DATEPICKER -->
+  <div class="section">
+    <div class="section-header">
+      <div>
+        <div class="section-title">🔍 Detalle por día o mes</div>
+        <div class="section-desc">Elegí un día o un mes y mirá los incidentes registrados.</div>
+      </div>
+    </div>
+    <div class="picker-row">
+      <label for="pick-day">Día:</label>
+      <input type="date" id="pick-day" />
+      <label for="pick-month" style="margin-left: 14px">Mes:</label>
+      <input type="month" id="pick-month" />
+      <button class="btn-clear" id="btn-clear">Limpiar</button>
+    </div>
+    <div id="detail-panel">
+      <div class="inc-empty"><div class="big">📅</div>Elegí un día o un mes para ver el detalle.</div>
+    </div>
+  </div>
+
+  <!-- TIMELINE GRÁFICO -->
+  <div class="section">
+    <div class="section-header">
+      <div>
+        <div class="section-title">📈 Línea de tiempo</div>
+        <div class="section-desc">Cantidad de incidentes y duración total por mes. Click en una barra para ver el mes en detalle.</div>
+      </div>
+      <div class="range-tabs" id="tl-vista">
+        <button class="range-tab active" data-vista="cantidad">Cantidad</button>
+        <button class="range-tab" data-vista="duracion">Duración (hs)</button>
+      </div>
+    </div>
+    <div class="chart-wrap tall">
+      <canvas id="chart-timeline"></canvas>
+    </div>
+    <div class="chart-legend" id="chart-legend"></div>
+  </div>
+
+  <!-- DISTRIBUCIÓN POR HORA / DOW -->
+  <div class="section">
+    <div class="section-header">
+      <div>
+        <div class="section-title">⏰ ¿Cuándo se rompe más?</div>
+        <div class="section-desc">Distribución por día de semana y hora del día.</div>
+      </div>
+    </div>
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+      <div>
+        <div class="kpi-label" style="margin-bottom: 8px">Por día de semana</div>
+        <div class="chart-wrap" style="height: 220px"><canvas id="chart-dow"></canvas></div>
+      </div>
+      <div>
+        <div class="kpi-label" style="margin-bottom: 8px">Por hora del día</div>
+        <div class="chart-wrap" style="height: 220px"><canvas id="chart-hora"></canvas></div>
+      </div>
+    </div>
+    <style>
+      @media (max-width: 720px) {
+        #chart-dow, #chart-hora { height: 180px; }
+        .section [style*="grid-template-columns: 1fr 1fr"] { grid-template-columns: 1fr !important; }
+      }
+    </style>
+  </div>
+
+  <!-- FUENTE / NOTA -->
+  <div class="section">
+    <p class="nota" style="margin: 0">
+      Fuente: <a href="https://x.com/Emova_arg" target="_blank" rel="noopener">@Emova_arg</a>, <a href="https://x.com/basubte" target="_blank" rel="noopener">@basubte</a> y API GCBA. Período: <span id="data-rango">—</span>. Última actualización: <span id="data-last-update">—</span>.
+    </p>
+    <div class="nota gap-warn" id="data-gaps" style="display:none; margin-top:8px"></div>
+  </div>
+
+</main>
+
+<script>
+const $ = id => document.getElementById(id);
+const setText = (id, val) => { const el = $(id); if (el) el.textContent = val; };
+
+const MESES_ES = ['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];
+const MESES_LARGOS = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
+const DIAS_ES = ['Dom','Lun','Mar','Mié','Jue','Vie','Sáb'];
+const DIAS_LARGOS = ['Domingo','Lunes','Martes','Miércoles','Jueves','Viernes','Sábado'];
+
+let DATA = null;
+let _lineasOn = null;     // Set de líneas activas
+let _tiposOn = null;      // Set de tipos activos
+let _hmYear = '2026';     // año del heatmap
+let _tlVista = 'cantidad';
+let _filtroDow = 'all';   // all | weekday | weekend
+let _filtroHora = 'all';  // all | picos | pico-am | pico-pm | off
+let _selectedDay = null;
+let _selectedMonth = null;
+
+// Definición de horarios pico (subte CABA)
+const PICO_AM = { from: 7, to: 11 };  // 7:00 a 10:59 (L-V)
+const PICO_PM = { from: 16, to: 20 }; // 16:00 a 19:59 (L-V)
+
+// Parser de fechas que evita off-by-one timezone (canuto.ar convención)
+function parseFecha(str) {
+  const m = String(str).match(/^(\d{4})-(\d{2})-(\d{2})$/);
+  if (m) return new Date(+m[1], +m[2] - 1, +m[3]);
+  return new Date(str);
+}
+
+function fmtFecha(yyyymmdd) {
+  const d = parseFecha(yyyymmdd);
+  return `${DIAS_LARGOS[d.getDay()]}, ${d.getDate()} ${MESES_ES[d.getMonth()].toLowerCase()} ${d.getFullYear()}`;
+}
+
+function fmtMin(min) {
+  if (min == null) return '—';
+  if (min < 60) return min + ' min';
+  const h = Math.floor(min / 60), m = Math.round(min % 60);
+  return m ? `${h}h ${m}min` : `${h}h`;
+}
+
+function pasaFiltroDow(fecha) {
+  if (_filtroDow === 'all') return true;
+  const dow = parseFecha(fecha).getDay(); // 0=dom, 6=sáb
+  const esFinde = (dow === 0 || dow === 6);
+  if (_filtroDow === 'weekday') return !esFinde;
+  if (_filtroDow === 'weekend') return esFinde;
+  return true;
+}
+
+function pasaFiltroHora(hora) {
+  if (_filtroHora === 'all') return true;
+  const h = parseInt(hora.split(':')[0], 10);
+  const enAM = (h >= PICO_AM.from && h < PICO_AM.to);
+  const enPM = (h >= PICO_PM.from && h < PICO_PM.to);
+  const enPico = enAM || enPM;
+  if (_filtroHora === 'picos') return enPico;
+  if (_filtroHora === 'pico-am') return enAM;
+  if (_filtroHora === 'pico-pm') return enPM;
+  if (_filtroHora === 'off') return !enPico;
+  return true;
+}
+
+function inciActivos() {
+  if (!DATA) return [];
+  return DATA.incidentes.filter(i =>
+    _lineasOn.has(i.linea) &&
+    _tiposOn.has(i.tipo) &&
+    pasaFiltroDow(i.fecha) &&
+    pasaFiltroHora(i.hora)
+  );
+}
+
+function renderFilterSummary() {
+  const el = $('filter-summary');
+  if (!el) return;
+  const parts = [];
+  const lineasActivas = [...DATA.lineas_disponibles].filter(l => _lineasOn.has(l));
+  if (lineasActivas.length === DATA.lineas_disponibles.length) parts.push('todas las líneas');
+  else if (lineasActivas.length === 0) parts.push('ninguna línea');
+  else parts.push('línea ' + lineasActivas.join('+'));
+  if (_filtroDow !== 'all') parts.push(_filtroDow === 'weekday' ? 'L–V' : 'S–D');
+  if (_filtroHora !== 'all') {
+    const lbls = { 'picos':'pico AM+PM', 'pico-am':'pico AM 7–11', 'pico-pm':'pico PM 16–20', 'off':'fuera de pico' };
+    parts.push(lbls[_filtroHora]);
+  }
+  const tiposActivos = Object.keys(DATA.tipos).filter(t => _tiposOn.has(t));
+  if (tiposActivos.length < Object.keys(DATA.tipos).length) {
+    parts.push(tiposActivos.length + ' de ' + Object.keys(DATA.tipos).length + ' tipos');
+  }
+  el.textContent = '🔧 ' + parts.join(' · ');
+}
+
+function renderTipoChips() {
+  const wrap = $('filter-tipo');
+  wrap.innerHTML = '';
+  const allTipos = Object.keys(DATA.tipos);
+  for (const [tipo, info] of Object.entries(DATA.tipos)) {
+    const on = _tiposOn.has(tipo);
+    const chip = document.createElement('button');
+    chip.className = 'line-chip ' + (on ? 'on' : 'off');
+    chip.innerHTML = `<span class="dot" style="background:${info.color}"></span>${info.label}`;
+    chip.addEventListener('click', () => {
+      if (_tiposOn.has(tipo)) _tiposOn.delete(tipo);
+      else _tiposOn.add(tipo);
+      renderAll();
+    });
+    wrap.appendChild(chip);
+  }
+  // Botón "Todos / Ninguno"
+  const all = document.createElement('button');
+  const todosOn = allTipos.every(t => _tiposOn.has(t));
+  all.className = 'lineas-clear';
+  all.style.marginLeft = '6px';
+  all.textContent = todosOn ? '✕ Ninguno' : '✓ Todos';
+  all.addEventListener('click', () => {
+    if (todosOn) _tiposOn = new Set();
+    else _tiposOn = new Set(allTipos);
+    renderAll();
+  });
+  wrap.appendChild(all);
+
+  // Actualizar pill de tipos
+  const label = $('tipos-pill-label');
+  const clearBtn = $('tipos-clear');
+  if (label) {
+    const seleccionados = allTipos.filter(t => _tiposOn.has(t));
+    if (seleccionados.length === allTipos.length) {
+      label.textContent = '🏷️ Todos los tipos';
+      if (clearBtn) clearBtn.hidden = true;
+    } else if (seleccionados.length === 0) {
+      label.textContent = '🏷️ Ningún tipo';
+      if (clearBtn) clearBtn.hidden = false;
+    } else {
+      const nombres = seleccionados.map(t => DATA.tipos[t].label);
+      label.textContent = '🏷️ ' + (nombres.length > 2 ? `${nombres.length} tipos` : nombres.join(' · '));
+      if (clearBtn) clearBtn.hidden = false;
+    }
+  }
+}
+
+function initTiposPill() {
+  const pill = $('tipos-pill');
+  const wrap = $('filter-tipo');
+  const clearBtn = $('tipos-clear');
+  if (!pill || !wrap) return;
+  pill.addEventListener('click', () => {
+    const open = pill.getAttribute('aria-expanded') === 'true';
+    pill.setAttribute('aria-expanded', String(!open));
+    wrap.hidden = open;
+  });
+  if (clearBtn) {
+    clearBtn.addEventListener('click', () => {
+      _tiposOn = new Set(Object.keys(DATA.tipos));
+      renderAll();
+    });
+  }
+}
+
+// ─── KPIs ─────────────────────────────────────────────────────────
+function renderKPIs() {
+  const incs = inciActivos();
+  setText('kpi-total', incs.length.toLocaleString('es-AR'));
+  const cerrados = incs.filter(i => i.duracion_min != null);
+  const totalMin = cerrados.reduce((s, i) => s + i.duracion_min, 0);
+  const horas = totalMin / 60;
+  setText('kpi-horas', horas.toFixed(0) + ' hs');
+  setText('kpi-horas-sub', `${cerrados.length} con duración medida`);
+  if (cerrados.length) {
+    const sorted = cerrados.map(i => i.duracion_min).sort((a, b) => a - b);
+    const median = sorted[Math.floor(sorted.length / 2)];
+    setText('kpi-mediana', median.toFixed(0) + ' min');
+  }
+  // Mes peor (más incidentes)
+  const porMes = {};
+  for (const i of incs) {
+    const m = i.fecha.slice(0, 7);
+    porMes[m] = (porMes[m] || 0) + 1;
+  }
+  const peor = Object.entries(porMes).sort((a, b) => b[1] - a[1])[0];
+  if (peor) {
+    const [y, mNum] = peor[0].split('-');
+    setText('kpi-peormes', `${MESES_ES[+mNum - 1]} '${y.slice(2)}`);
+    setText('kpi-peormes-sub', `${peor[1]} incidentes`);
+  }
+  // Sub del total
+  const sinCierre = incs.length - cerrados.length;
+  setText('kpi-total-sub', sinCierre ? `${sinCierre} sin cierre tuiteado` : 'todos cerrados');
+  // Meta
+  setText('data-rango', `${DATA.rango_cubierto.desde} → ${DATA.rango_cubierto.hasta}`);
+  setText('data-tweets', '~477');  // total crudo de la fuente
+  setText('data-incidentes', incs.length);
+  setText('data-last-update', new Date(DATA.last_update).toLocaleString('es-AR', { dateStyle: 'long', timeStyle: 'short' }));
+  // Gaps
+  if (DATA.gaps_conocidos && DATA.gaps_conocidos.length) {
+    const g = DATA.gaps_conocidos[0];
+    $('data-gaps').style.display = 'block';
+    $('data-gaps').innerHTML = `⚠ <strong>Gap conocido:</strong> ${g.desde} → ${g.hasta}. ${g.motivo}.`;
+  }
+}
+
+// ─── CHIPS LÍNEA ──────────────────────────────────────────────────
+function renderChips() {
+  const wrap = $('line-chips');
+  wrap.innerHTML = '';
+  const todas = ['A', 'B', 'C', 'D', 'E', 'H', 'Premetro'];
+  todas.forEach(L => {
+    const tieneDatos = DATA.lineas_disponibles.includes(L);
+    const on = _lineasOn.has(L);
+    const chip = document.createElement('button');
+    chip.className = 'line-chip ' + (tieneDatos ? (on ? 'on' : 'off') : 'disabled');
+    const color = DATA.colores[L] || '#888';
+    chip.innerHTML = `<span class="dot" style="background:${color}"></span>Línea ${L}`;
+    if (tieneDatos) {
+      chip.addEventListener('click', () => {
+        if (_lineasOn.has(L)) _lineasOn.delete(L);
+        else _lineasOn.add(L);
+        renderAll();
+      });
+    } else {
+      chip.title = 'Aún no se cargaron datos de esta línea';
+    }
+    wrap.appendChild(chip);
+  });
+
+  // Botón "Seleccionar todas / Ninguna" al final del grupo
+  const all = document.createElement('button');
+  const todasOn = DATA.lineas_disponibles.every(L => _lineasOn.has(L));
+  all.className = 'lineas-clear';
+  all.style.marginLeft = '6px';
+  all.textContent = todasOn ? '✕ Ninguna' : '✓ Todas';
+  all.addEventListener('click', () => {
+    if (todasOn) _lineasOn = new Set();
+    else _lineasOn = new Set(DATA.lineas_disponibles);
+    renderAll();
+  });
+  wrap.appendChild(all);
+
+  // Actualizar pill (resumen + botón limpiar)
+  const pillLabel = $('lineas-pill-label');
+  const clearBtn = $('lineas-clear');
+  if (pillLabel) {
+    const total = DATA.lineas_disponibles.length;
+    const seleccionadas = DATA.lineas_disponibles.filter(L => _lineasOn.has(L));
+    if (seleccionadas.length === total) {
+      pillLabel.textContent = '🚇 Todas las líneas';
+      if (clearBtn) clearBtn.hidden = true;
+    } else if (seleccionadas.length === 0) {
+      pillLabel.textContent = '🚇 Ninguna línea';
+      if (clearBtn) clearBtn.hidden = false;
+    } else {
+      pillLabel.textContent = '🚇 Líneas: ' + seleccionadas.join(' · ');
+      if (clearBtn) clearBtn.hidden = false;
+    }
+  }
+}
+
+// Listeners del pill (se inicializan en init() — los pongo acá para mantener todo agrupado)
+function initLineasPill() {
+  const pill = $('lineas-pill');
+  const wrap = $('line-chips');
+  const clearBtn = $('lineas-clear');
+  if (!pill || !wrap) return;
+  pill.addEventListener('click', () => {
+    const open = pill.getAttribute('aria-expanded') === 'true';
+    pill.setAttribute('aria-expanded', String(!open));
+    wrap.hidden = open;
+  });
+  if (clearBtn) {
+    clearBtn.addEventListener('click', () => {
+      _lineasOn = new Set(DATA.lineas_disponibles);
+      renderAll();
+    });
+  }
+}
+
+// ─── CALENDARIO TRADICIONAL (mini-calendarios mensuales) ─────────
+function renderHeatmap() {
+  const wrap = $('hm-wrap');
+  wrap.innerHTML = '';
+  const incs = inciActivos();
+
+  // Indexar por día: severidad máxima + count + lista de tipos
+  const porDia = {};
+  for (const i of incs) {
+    const sev = (DATA.tipos[i.tipo] || {}).severidad || 1;
+    if (!porDia[i.fecha]) porDia[i.fecha] = { sev: 0, count: 0, tipos: new Set() };
+    if (sev > porDia[i.fecha].sev) porDia[i.fecha].sev = sev;
+    porDia[i.fecha].count++;
+    porDia[i.fecha].tipos.add(i.tipo);
+  }
+
+  // Determinar qué meses dibujar
+  const dataStart = parseFecha(DATA.rango_cubierto.desde);
+  const dataEnd = parseFecha(DATA.rango_cubierto.hasta);
+  const todayStr = (() => {
+    const d = new Date();
+    return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0');
+  })();
+
+  let mesesARenderizar = []; // [{year, month}]
+  if (_hmYear === 'all') {
+    // Todos los meses en el rango (de más reciente a más antiguo)
+    let cur = new Date(dataEnd.getFullYear(), dataEnd.getMonth(), 1);
+    const min = new Date(dataStart.getFullYear(), dataStart.getMonth(), 1);
+    while (cur >= min) {
+      mesesARenderizar.push({ year: cur.getFullYear(), month: cur.getMonth() });
+      cur.setMonth(cur.getMonth() - 1);
+    }
+  } else {
+    // Solo los 12 meses del año seleccionado, de más reciente a más antiguo
+    for (let m = 11; m >= 0; m--) {
+      mesesARenderizar.push({ year: +_hmYear, month: m });
+    }
+  }
+
+  // Filtrar meses que no tengan ningún día en el rango
+  mesesARenderizar = mesesARenderizar.filter(({year, month}) => {
+    const lastDay = new Date(year, month + 1, 0);
+    const firstDay = new Date(year, month, 1);
+    return lastDay >= dataStart && firstDay <= dataEnd;
+  });
+
+  // Título
+  const titleEl = $('hm-year-title');
+  if (_hmYear === 'all') {
+    titleEl.innerHTML = `Todo el período <span class="sub">${DATA.rango_cubierto.desde} → ${DATA.rango_cubierto.hasta} · ${incs.length} incidentes</span>`;
+  } else {
+    const incsAño = incs.filter(i => i.fecha.startsWith(_hmYear));
+    const totalMin = incsAño.filter(i => i.duracion_min).reduce((s, i) => s + i.duracion_min, 0);
+    titleEl.innerHTML = `Año ${_hmYear} <span class="sub">${incsAño.length} incidentes · ${(totalMin/60).toFixed(0)} hs degradadas</span>`;
+  }
+
+  // Container con grilla responsive
+  const grid = document.createElement('div');
+  grid.className = 'hm-months-grid';
+
+  // Definir qué días de la semana mostrar según filtro DOW
+  // Estructura: [{label, dowJs}] donde dowJs es 0=dom, 1=lun, ..., 6=sáb
+  const DOW_ALL = [
+    { label: 'L', dowJs: 1 }, { label: 'M', dowJs: 2 }, { label: 'M', dowJs: 3 },
+    { label: 'J', dowJs: 4 }, { label: 'V', dowJs: 5 },
+    { label: 'S', dowJs: 6 }, { label: 'D', dowJs: 0 },
+  ];
+  const DOW_WEEKDAY = DOW_ALL.slice(0, 5);
+  const DOW_WEEKEND = DOW_ALL.slice(5);
+  const DOW_ACTIVE =
+    _filtroDow === 'weekday' ? DOW_WEEKDAY :
+    _filtroDow === 'weekend' ? DOW_WEEKEND :
+    DOW_ALL;
+  // Set de dowJs visibles para chequeo rápido
+  const dowVisibles = new Set(DOW_ACTIVE.map(d => d.dowJs));
+
+  // Helper: índice de columna (0-based) de un dowJs según la grilla activa
+  const dowToCol = {};
+  DOW_ACTIVE.forEach((d, idx) => { dowToCol[d.dowJs] = idx; });
+
+  for (const { year, month } of mesesARenderizar) {
+    const card = document.createElement('div');
+    card.className = 'hm-month-card';
+
+    // Resumen del mes (solo cuenta incidentes que matchean filtros)
+    const incsMes = incs.filter(i => i.fecha.startsWith(year + '-' + String(month + 1).padStart(2, '0')));
+    const dursMes = incsMes.filter(i => i.duracion_min).map(i => i.duracion_min);
+    const totalMinMes = dursMes.reduce((s, x) => s + x, 0);
+
+    // Header
+    const titleH = document.createElement('div');
+    titleH.className = 'hm-month-card-title';
+    titleH.innerHTML = `<span>${MESES_LARGOS[month]} ${year}</span>` +
+      (incsMes.length
+        ? `<span class="count">${incsMes.length} incidente${incsMes.length === 1 ? '' : 's'}${totalMinMes ? ' · ' + (totalMinMes/60 >= 1 ? (totalMinMes/60).toFixed(1) + ' hs' : Math.round(totalMinMes) + ' min') : ''}</span>`
+        : `<span class="count">sin incidentes</span>`);
+    card.appendChild(titleH);
+
+    // Calendar grid: N columnas según filtro DOW (5 / 2 / 7)
+    const calGrid = document.createElement('div');
+    calGrid.className = 'hm-cal-grid';
+    calGrid.style.gridTemplateColumns = `repeat(${DOW_ACTIVE.length}, 1fr)`;
+
+    // DOW labels (header)
+    DOW_ACTIVE.forEach(d => {
+      const lbl = document.createElement('div');
+      lbl.className = 'hm-cal-dow';
+      lbl.textContent = d.label;
+      calGrid.appendChild(lbl);
+    });
+
+    // Recorrer los días del mes pero usando grid-column explícito
+    // para alinear cada día a su columna DOW correspondiente.
+    const firstDay = new Date(year, month, 1);
+    const lastDay = new Date(year, month + 1, 0);
+
+    // Necesitamos calcular cuántas "filas" tiene el mes en la grilla activa
+    // y cada celda usa grid-column = dowToCol[dowJs] + 1
+    let currentRowJs = null; // tracker de fila lógica (basada en semanas)
+
+    for (let day = 1; day <= lastDay.getDate(); day++) {
+      const dt = new Date(year, month, day);
+      const dowJs = dt.getDay();
+      // Si este día NO está en la vista (sáb/dom cuando filtro=weekday), saltar
+      if (!dowVisibles.has(dowJs)) continue;
+
+      const ymd = year + '-' + String(month + 1).padStart(2, '0') + '-' + String(day).padStart(2, '0');
+      const inRange = dt >= dataStart && dt <= dataEnd;
+      const cell = document.createElement('div');
+      cell.className = 'hm-cal-cell';
+      cell.textContent = day;
+      // Forzar columna según DOW
+      cell.style.gridColumn = (dowToCol[dowJs] + 1) + ' / span 1';
+
+      if (!inRange) {
+        cell.classList.add('no-data');
+        cell.title = fmtFecha(ymd) + ' — fuera del rango de datos';
+      } else {
+        cell.dataset.fecha = ymd;
+        const info = porDia[ymd];
+        if (info) {
+          cell.classList.add('l' + info.sev);
+          const tiposLst = [...info.tipos].map(t => (DATA.tipos[t] || { label: t }).label).join(', ');
+          cell.title = `${fmtFecha(ymd)}\n${info.count} incidente${info.count === 1 ? '' : 's'}\n${tiposLst}`;
+          if (info.count > 1) {
+            const dot = document.createElement('span');
+            dot.className = 'count-dot';
+            dot.textContent = info.count;
+            cell.appendChild(dot);
+          }
+        } else {
+          cell.classList.add('no-data');
+          cell.title = fmtFecha(ymd) + ' — sin incidentes registrados';
+        }
+        if (ymd === todayStr) cell.classList.add('today');
+        if (_selectedDay === ymd) cell.classList.add('selected');
+        cell.addEventListener('click', () => {
+          _selectedDay = ymd;
+          _selectedMonth = null;
+          $('pick-day').value = ymd;
+          $('pick-month').value = '';
+          renderAll();
+          $('detail-panel').scrollIntoView({ behavior: 'smooth', block: 'center' });
+        });
+      }
+      calGrid.appendChild(cell);
+    }
+
+    card.appendChild(calGrid);
+    grid.appendChild(card);
+  }
+
+  wrap.appendChild(grid);
+}
+
+// ─── TIMELINE CHART ────────────────────────────────────────────────
+function renderTimeline() {
+  const incs = inciActivos();
+  const porMes = {};
+  for (const i of incs) {
+    const m = i.fecha.slice(0, 7);
+    if (!porMes[m]) porMes[m] = { count: 0, totalMin: 0 };
+    porMes[m].count++;
+    if (i.duracion_min) porMes[m].totalMin += i.duracion_min;
+  }
+  // Asegurar todos los meses entre primero y último
+  const meses = Object.keys(porMes).sort();
+  if (!meses.length) return;
+  const labels = [];
+  const counts = [];
+  const horas = [];
+  let cur = parseFecha(meses[0] + '-01');
+  const end = parseFecha(meses[meses.length - 1] + '-01');
+  while (cur <= end) {
+    const k = cur.getFullYear() + '-' + String(cur.getMonth() + 1).padStart(2, '0');
+    labels.push(MESES_ES[cur.getMonth()] + ' ' + String(cur.getFullYear()).slice(2));
+    counts.push(porMes[k]?.count || 0);
+    horas.push(porMes[k] ? +(porMes[k].totalMin / 60).toFixed(1) : 0);
+    cur.setMonth(cur.getMonth() + 1);
+  }
+  const ctx = $('chart-timeline').getContext('2d');
+  const existing = Chart.getChart('chart-timeline');
+  if (existing) existing.destroy();
+  const isCount = _tlVista === 'cantidad';
+  new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels,
+      datasets: [{
+        label: isCount ? 'Incidentes' : 'Horas degradadas',
+        data: isCount ? counts : horas,
+        backgroundColor: isCount ? '#22d3eebb' : '#ef4444cc',
+        borderColor: isCount ? '#22d3ee' : '#ef4444',
+        borderWidth: 1,
+        borderRadius: 4,
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      animation: false,
+      onClick: (evt, els) => {
+        if (!els.length) return;
+        const idx = els[0].index;
+        // Reconstruir el ym desde la cur loop original
+        const c = parseFecha(meses[0] + '-01');
+        c.setMonth(c.getMonth() + idx);
+        const ym = c.getFullYear() + '-' + String(c.getMonth() + 1).padStart(2, '0');
+        _selectedMonth = ym;
+        _selectedDay = null;
+        $('pick-month').value = ym;
+        $('pick-day').value = '';
+        renderAll();
+        $('detail-panel').scrollIntoView({ behavior: 'smooth', block: 'center' });
+      },
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          backgroundColor: 'rgba(15,15,20,0.95)',
+          borderColor: 'rgba(80,80,100,0.5)',
+          borderWidth: 1,
+          titleFont: { family: "'IBM Plex Mono', monospace", size: 11 },
+          bodyFont: { family: "'IBM Plex Mono', monospace", size: 11 },
+          callbacks: {
+            label: c => isCount
+              ? `${c.parsed.y} incidente${c.parsed.y === 1 ? '' : 's'}`
+              : `${c.parsed.y} hs degradadas`
+          }
+        }
+      },
+      scales: {
+        x: {
+          ticks: { color: '#9090a0', font: { family: "'IBM Plex Mono', monospace", size: 10 }, maxRotation: 0, autoSkip: true, maxTicksLimit: 14 },
+          grid: { color: 'rgba(80,80,100,0.08)' }
+        },
+        y: {
+          beginAtZero: true,
+          ticks: { color: '#9090a0', font: { family: "'IBM Plex Mono', monospace", size: 10 }, precision: 0 },
+          grid: { color: 'rgba(80,80,100,0.12)' }
+        }
+      }
+    }
+  });
+  $('chart-legend').innerHTML = `<span><span class="ck" style="background:${isCount ? '#22d3ee' : '#ef4444'}"></span>${isCount ? 'Incidentes por mes' : 'Horas degradadas por mes'}</span><span style="color:var(--text3);margin-left:auto">Click en una barra → detalle del mes ↓</span>`;
+}
+
+// ─── DOW + HORA ────────────────────────────────────────────────────
+function renderDowHora() {
+  const incs = inciActivos();
+  const dow = [0, 0, 0, 0, 0, 0, 0]; // 0=dom
+  const hor = new Array(24).fill(0);
+  for (const i of incs) {
+    const d = parseFecha(i.fecha);
+    dow[d.getDay()]++;
+    const [h] = i.hora.split(':').map(Number);
+    hor[h]++;
+  }
+  // DOW: reordenar para empezar lunes
+  const dowOrdered = [dow[1], dow[2], dow[3], dow[4], dow[5], dow[6], dow[0]];
+  const dowLabels = ['Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb', 'Dom'];
+
+  for (const [id, labels, data, color] of [
+    ['chart-dow', dowLabels, dowOrdered, '#22d3ee'],
+    ['chart-hora', hor.map((_, i) => String(i).padStart(2, '0')), hor, '#fbbf24'],
+  ]) {
+    const ctx = $(id).getContext('2d');
+    const existing = Chart.getChart(id);
+    if (existing) existing.destroy();
+    new Chart(ctx, {
+      type: 'bar',
+      data: { labels, datasets: [{ data, backgroundColor: color + 'cc', borderColor: color, borderWidth: 1, borderRadius: 3 }] },
+      options: {
+        responsive: true, maintainAspectRatio: false, animation: false,
+        plugins: { legend: { display: false }, tooltip: { backgroundColor: 'rgba(15,15,20,0.95)', titleFont: { family: "'IBM Plex Mono', monospace", size: 11 }, bodyFont: { family: "'IBM Plex Mono', monospace", size: 11 } } },
+        scales: {
+          x: { ticks: { color: '#9090a0', font: { family: "'IBM Plex Mono', monospace", size: 9 }, maxRotation: 0, autoSkip: id === 'chart-hora', maxTicksLimit: id === 'chart-hora' ? 12 : 7 }, grid: { display: false } },
+          y: { beginAtZero: true, ticks: { color: '#9090a0', font: { family: "'IBM Plex Mono', monospace", size: 9 }, precision: 0 }, grid: { color: 'rgba(80,80,100,0.12)' } }
+        }
+      }
+    });
+  }
+}
+
+// ─── DETALLE (día o mes) ───────────────────────────────────────────
+function renderDetail() {
+  const panel = $('detail-panel');
+  const incs = inciActivos();
+  let filtrados = [];
+  let titulo = '';
+  let resumen = '';
+  if (_selectedDay) {
+    filtrados = incs.filter(i => i.fecha === _selectedDay);
+    titulo = fmtFecha(_selectedDay);
+    const totalMin = filtrados.filter(i => i.duracion_min).reduce((s, i) => s + i.duracion_min, 0);
+    resumen = `${filtrados.length} incidente${filtrados.length === 1 ? '' : 's'} · ${fmtMin(totalMin)} de servicio degradado`;
+  } else if (_selectedMonth) {
+    filtrados = incs.filter(i => i.fecha.startsWith(_selectedMonth));
+    const [y, m] = _selectedMonth.split('-');
+    titulo = `${MESES_LARGOS[+m - 1]} ${y}`;
+    const totalMin = filtrados.filter(i => i.duracion_min).reduce((s, i) => s + i.duracion_min, 0);
+    resumen = `${filtrados.length} incidente${filtrados.length === 1 ? '' : 's'} · ${fmtMin(totalMin)} de servicio degradado · ~${(filtrados.length / new Date(+y, +m, 0).getDate()).toFixed(1)} por día`;
+  } else {
+    panel.innerHTML = '<div class="inc-empty"><div class="big">📅</div>Elegí un día o un mes para ver el detalle.</div>';
+    return;
+  }
+
+  if (!filtrados.length) {
+    panel.innerHTML = `<div class="detail-header"><div class="detail-title">${titulo}</div></div><div class="inc-empty"><div class="big">✨</div>Sin incidentes registrados.</div>`;
+    return;
+  }
+
+  // Helper para renderizar fuentes
+  function renderFuentes(inc) {
+    const origen = inc.fuente_origen || 'Emova_arg';
+    const meta = (DATA.fuentes_meta || {})[origen] || { label: origen };
+    let badge = '';
+    if (origen === 'ambas') badge = `<span class="fuente-badge ambas" title="Confirmado por Emova y BAsubte">✓ Ambas</span>`;
+    else if (origen === 'basubte') badge = `<span class="fuente-badge basubte" title="Solo BAsubte">BA</span>`;
+    else badge = `<span class="fuente-badge emova" title="Solo Emova">E</span>`;
+    let links = '';
+    if (inc.fuentes && inc.fuentes.length) {
+      links = inc.fuentes.slice(0, 6).map(f => {
+        const cls = f.user === 'basubte' ? 'bx' : 'em';
+        const userShort = f.user === 'basubte' ? 'BA' : 'E';
+        return `<a class="tweet-link ${cls}" href="${f.url}" target="_blank" rel="noopener" title="${(f.text||'').replace(/"/g,'&quot;')}">↗ ${userShort}</a>`;
+      }).join('');
+      if (inc.fuentes.length > 6) links += `<span class="tweet-link" style="cursor:default">+${inc.fuentes.length - 6}</span>`;
+    }
+    return badge + (links ? '<div style="margin-top:4px">' + links + '</div>' : '');
+  }
+
+  // Tabla
+  let html = `<div class="detail-header"><div class="detail-title">${titulo}</div><div class="detail-summary">${resumen}</div></div>`;
+  html += '<div class="inc-table-wrap"><table class="inc-table"><thead><tr><th>Fecha</th><th>Hora</th><th>Línea</th><th>Tipo</th><th>Duración</th><th>Estaciones</th><th>Fuente</th></tr></thead><tbody>';
+  filtrados.sort((a, b) => a.inicio_iso.localeCompare(b.inicio_iso));
+  for (const i of filtrados) {
+    const t = DATA.tipos[i.tipo] || { label: i.tipo, color: '#888' };
+    const fechaCorta = parseFecha(i.fecha).toLocaleDateString('es-AR', { day: '2-digit', month: 'short' });
+    const dur = i.duracion_min != null ? fmtMin(i.duracion_min) : '<span style="color:var(--text3)">sin cierre</span>';
+    const ests = (i.estaciones || []).slice(0, 3).map(e => `<span class="est-pill">${e}</span>`).join('');
+    html += `<tr>
+      <td>${fechaCorta}</td>
+      <td>${i.hora}</td>
+      <td><span class="badge" style="border-color:${DATA.colores[i.linea]};color:${DATA.colores[i.linea]}">L.${i.linea}</span></td>
+      <td class="col-tipo" style="color:${t.color}">${t.label}</td>
+      <td>${dur}</td>
+      <td>${ests || '<span style="color:var(--text3)">—</span>'}</td>
+      <td>${renderFuentes(i)}</td>
+    </tr>`;
+  }
+  html += '</tbody></table></div>';
+  panel.innerHTML = html;
+}
+
+// ─── TOP TABLA ─────────────────────────────────────────────────────
+function renderTop() {
+  const incs = inciActivos().filter(i => i.duracion_min != null);
+  incs.sort((a, b) => b.duracion_min - a.duracion_min);
+  const top = incs.slice(0, 10);
+  const tbl = $('top-table');
+  function renderFuentesTop(inc) {
+    const origen = inc.fuente_origen || 'Emova_arg';
+    let badge = '';
+    if (origen === 'ambas') badge = `<span class="fuente-badge ambas">✓ Ambas</span>`;
+    else if (origen === 'basubte') badge = `<span class="fuente-badge basubte">BA</span>`;
+    else badge = `<span class="fuente-badge emova">E</span>`;
+    const link = (inc.fuentes && inc.fuentes[0]) ? `<a class="tweet-link ${inc.fuentes[0].user === 'basubte' ? 'bx' : 'em'}" href="${inc.fuentes[0].url}" target="_blank" rel="noopener" title="${(inc.fuentes[0].text||'').replace(/"/g,'&quot;')}">↗</a>` : '';
+    return badge + ' ' + link;
+  }
+  let html = '<thead><tr><th>#</th><th>Fecha</th><th>Hora</th><th>Línea</th><th>Tipo</th><th>Duración</th><th>Estaciones</th><th>Fuente</th></tr></thead><tbody>';
+  top.forEach((i, idx) => {
+    const t = DATA.tipos[i.tipo] || { label: i.tipo, color: '#888' };
+    const ests = (i.estaciones || []).slice(0, 2).map(e => `<span class="est-pill">${e}</span>`).join('');
+    html += `<tr>
+      <td>${idx + 1}</td>
+      <td>${parseFecha(i.fecha).toLocaleDateString('es-AR', { day: '2-digit', month: 'short', year: 'numeric' })}</td>
+      <td>${i.hora}</td>
+      <td><span class="badge" style="border-color:${DATA.colores[i.linea]};color:${DATA.colores[i.linea]}">L.${i.linea}</span></td>
+      <td class="col-tipo" style="color:${t.color}">${t.label}</td>
+      <td><strong style="color:var(--text)">${fmtMin(i.duracion_min)}</strong></td>
+      <td>${ests || '<span style="color:var(--text3)">—</span>'}</td>
+      <td>${renderFuentesTop(i)}</td>
+    </tr>`;
+  });
+  html += '</tbody>';
+  tbl.innerHTML = html;
+}
+
+// ─── RENDER ALL ────────────────────────────────────────────────────
+function renderAll() {
+  renderChips();
+  renderTipoChips();
+  renderFilterSummary();
+  renderHeatmap();
+  renderTimeline();
+  renderDowHora();
+  renderDetail();
+}
+
+// ─── WORKER LIVE: incidentes nuevos desde Cloudflare Worker ────────
+// URL del worker que polea la API GTFS-RT de GCBA cada 5 min.
+// Dejar como '' si todavía no se deployó — en ese caso solo se usa data.json estático.
+const WORKER_URL = 'https://canuto-subte.lenzimartin.workers.dev';
+
+async function fetchWorkerData() {
+  const empty = { activasGcba: [], activasTweets: [], quejasCiudadanas: null, volumenCiudadano: null, delaysForecast: null, cerrados: [], lastPolls: null };
+  if (!WORKER_URL) return empty;
+  try {
+    const r = await fetch(WORKER_URL.replace(/\/$/, '') + '/data.json', { cache: 'no-store' });
+    if (!r.ok) throw new Error('HTTP ' + r.status);
+    const j = await r.json();
+    const cerrGcba = (j.cerrados_gcba || []).map(workerToIncidente).filter(Boolean);
+    const cerrTw = (j.cerrados_tweets || []).map(twIncToIncidente).filter(Boolean);
+    return {
+      activasGcba: j.activas_gcba || [],
+      activasTweets: j.activas_tweets || [],
+      quejasCiudadanas: j.quejas_ciudadanas || null,
+      volumenCiudadano: j.volumen_ciudadano || null,
+      delaysForecast: j.delays_forecast || null,
+      cerrados: [...cerrGcba, ...cerrTw],
+      lastPolls: j.last_polls || null,
+    };
+  } catch (e) {
+    console.warn('[canuto-subte] worker fetch fail (uso solo data.json):', e.message);
+    return empty;
+  }
+}
+
+// Convierte un incidente pareado de tweets al formato canónico de DATA.incidentes
+function twIncToIncidente(inc) {
+  if (!inc || !inc.linea || !inc.fecha_inicio_iso) return null;
+  const dt = new Date(inc.fecha_inicio_iso);
+  if (isNaN(dt.getTime())) return null;
+  const yyyy = dt.getFullYear();
+  const mm = String(dt.getMonth()+1).padStart(2,'0');
+  const dd = String(dt.getDate()).padStart(2,'0');
+  const hh = String(dt.getHours()).padStart(2,'0');
+  const mi = String(dt.getMinutes()).padStart(2,'0');
+  const fuentes = (inc.tweets || []).map(t => ({
+    user: t.user, tweet_id: t.tweet_id,
+    url: t.url || `https://x.com/${t.user}/status/${t.tweet_id}`,
+    text: t.text || '', datetime: t.fecha_iso, kind: t.kind,
+  }));
+  // origen: si hay tweets de Emova y basubte → 'ambas', sino el único
+  const users = new Set(fuentes.map(f => f.user));
+  const origen = users.size >= 2 ? 'ambas' : ([...users][0] || 'tweet');
+  return {
+    linea: inc.linea,
+    fecha: `${yyyy}-${mm}-${dd}`,
+    hora: `${hh}:${mi}`,
+    inicio_iso: inc.fecha_inicio_iso,
+    tipo: inc.tipo || 'otro',
+    duracion_min: inc.duracion_min || null,
+    cerrado: !!inc.fecha_fin_ms,
+    estaciones: null,
+    tweets_count: fuentes.length,
+    fuente_origen: origen,
+    fuentes,
+  };
+}
+
+// Convierte un incidente del worker (formato GTFS-RT diff) al formato canónico de DATA.incidentes
+function workerToIncidente(w) {
+  if (!w || !w.linea || !w.first_seen) return null;
+  const dt = new Date(w.first_seen);
+  if (isNaN(dt.getTime())) return null;
+  const yyyy = dt.getFullYear();
+  const mm = String(dt.getMonth() + 1).padStart(2, '0');
+  const dd = String(dt.getDate()).padStart(2, '0');
+  const hh = String(dt.getHours()).padStart(2, '0');
+  const mi = String(dt.getMinutes()).padStart(2, '0');
+  return {
+    linea: w.linea,
+    fecha: `${yyyy}-${mm}-${dd}`,
+    hora: `${hh}:${mi}`,
+    inicio_iso: w.first_seen,
+    tipo: w.tipo || 'otro',
+    duracion_min: w.duration_min || null,
+    cerrado: !!w.cerrado_at,
+    estaciones: null,
+    tweets_count: 0,
+    fuente_origen: 'GCBA_GTFS',
+    fuentes: [{
+      user: 'GCBA',
+      tweet_id: w.id,
+      url: null,
+      text: w.text || w.header || '',
+      datetime: w.first_seen,
+      kind: w.tipo || 'otro',
+    }],
+  };
+}
+
+// Mergea incidentes del worker con los de data.json sin duplicar.
+// Heurística: misma línea + diferencia <30 min + tipo compatible -> mismo incidente.
+function mergeWorkerWithStatic(workerIncs) {
+  if (!workerIncs.length) return;
+  const W = 30 * 60 * 1000;
+  let agregados = 0;
+  for (const w of workerIncs) {
+    const wMs = new Date(w.inicio_iso).getTime();
+    const dup = DATA.incidentes.find(i => {
+      if (i.linea !== w.linea) return false;
+      const iMs = new Date(i.inicio_iso || (i.fecha + 'T' + (i.hora || '00:00') + ':00')).getTime();
+      return Math.abs(iMs - wMs) < W;
+    });
+    if (!dup) {
+      DATA.incidentes.push(w);
+      agregados++;
+    } else {
+      // si el estático no tiene duración pero el worker sí, completar
+      if (!dup.duracion_min && w.duracion_min) dup.duracion_min = w.duracion_min;
+      if (!dup.cerrado && w.cerrado) dup.cerrado = true;
+      // marcar que también lo vio el worker
+      dup.fuentes = dup.fuentes || [];
+      if (!dup.fuentes.some(f => f.user === 'GCBA')) {
+        dup.fuentes.push(w.fuentes[0]);
+      }
+    }
+  }
+  if (agregados) {
+    // ordenar cronológicamente
+    DATA.incidentes.sort((a, b) => (a.inicio_iso < b.inicio_iso ? -1 : 1));
+    // extender rango_cubierto.hasta si hace falta
+    const ultimoFecha = DATA.incidentes[DATA.incidentes.length - 1].fecha;
+    if (ultimoFecha > DATA.rango_cubierto.hasta) DATA.rango_cubierto.hasta = ultimoFecha;
+    console.info(`[canuto-subte] +${agregados} incidentes nuevos del worker GCBA`);
+  }
+}
+
+// ─── BANNER LIVE ───────────────────────────────────────────────────
+const TIPO_LBL_LIVE = {
+  'inicio_demora':           'Demora',
+  'inicio_limitado':         'Servicio limitado',
+  'inicio_estacion_cerrada': 'Estación cerrada',
+  'inicio_interrumpido':     'Servicio interrumpido',
+  'info_operativa':          'Info operativa',
+  'reporte_ciudadano':       'Reporte ciudadano (no oficial)',
+  'posible_incidencia':      'Posible incidencia en curso (sin confirmar)',
+  'otro':                    'Alerta',
+  atraso_detectado: 'Demoras detectadas',
+};
+
+function _hace(ms) {
+  const seg = Math.max(0, Math.floor((Date.now() - ms) / 1000));
+  if (seg < 60) return 'hace <1 min';
+  const m = Math.floor(seg / 60);
+  if (m < 60) return `hace ${m} min`;
+  const h = Math.floor(m / 60);
+  const rm = m - h * 60;
+  if (h < 24) return rm > 0 ? `hace ${h}h ${rm}m` : `hace ${h}h`;
+  const d = Math.floor(h / 24);
+  return `hace ${d}d`;
+}
+
+// Unifica activas de GCBA + tweets + quejas ciudadanas + volumen. Deduplica por (línea, tipo) cercanos en tiempo (<30 min).
+function combineActivas(actGcba, actTw, quejasObj, volumenObj, delaysObj) {
+  const W = 30 * 60 * 1000;
+  const out = [];
+  for (const t of (actTw || [])) {
+    out.push({
+      _src: 'tweet', linea: t.linea, tipo: t.tipo,
+      text: (t.tweets && t.tweets[0] && t.tweets[0].text) || '',
+      sinceMs: t.fecha_inicio_ms || (t.fecha_inicio_iso ? Date.parse(t.fecha_inicio_iso) : Date.now()),
+      tweets: t.tweets || [],
+    });
+  }
+  for (const g of (actGcba || [])) {
+    const sinceMs = g.first_seen_ms || (g.first_seen ? Date.parse(g.first_seen) : Date.now());
+    const dup = out.find(o => o.linea === g.linea && o.tipo === g.tipo && Math.abs(o.sinceMs - sinceMs) < W);
+    if (dup) { dup._src = 'ambas'; continue; }
+    out.push({ _src: 'gcba', linea: g.linea, tipo: g.tipo, text: g.text || g.header || '', sinceMs, tweets: [] });
+  }
+  // Quejas ciudadanas: cluster de tweets de usuarios reclamando misma línea
+  if (quejasObj && Array.isArray(quejasObj.alertas)) {
+    for (const q of quejasObj.alertas) {
+      // Si ya hay una alerta oficial de la misma línea, marcar como "confirmada" sumando contador
+      const dup = out.find(o => o.linea === q.linea);
+      if (dup) {
+        dup._ciudadana_count = q.cantidad;
+        dup._ciudadana_tweets = q.tweets;
+        continue;
+      }
+      // Si no, agregar como alerta ciudadana standalone
+      out.push({
+        _src: 'ciudadana',
+        linea: q.linea,
+        tipo: 'reporte_ciudadano',
+        text: `${q.cantidad} usuarios reportan problemas en línea ${q.linea} en los últimos ${quejasObj.window_min || 30} min`,
+        sinceMs: q.primer_ms || Date.now(),
+        tweets: (q.tweets || []).map(t => ({ user: t.user, tweet_id: t.tweet_id, text: t.text, url: t.url })),
+        _ciudadana_count: q.cantidad,
+      });
+    }
+  }
+  // Mostrar TODAS las alertas activas (incluyendo info_operativa para que se vean obras estructurales).
+  // El distintivo visual de urgencia se hace en renderLiveBanner según el tipo.
+  const filtradas = out.sort((a,b) => (a.linea||'').localeCompare(b.linea||''));
+
+  // Detector de delays vía forecastGTFS: si hay línea(s) con status 'alerta' en el feed forecast,
+  // agregarlas como cards. Si ya hay una alerta oficial/tweet/ciudadana de esa línea, sumar como corroboración.
+  if (delaysObj && Array.isArray(delaysObj.alertas)) {
+    for (const d of delaysObj.alertas) {
+      const dup = filtradas.find(o => o.linea === d.linea);
+      if (dup) {
+        // Corroboracion: tagear con info de delay + crecimiento
+        dup._forecast_avg_s = d.avg_delay_s;
+        dup._forecast_max_s = d.max_delay_s;
+        dup._forecast_trips = d.trips_alerta;
+        dup._forecast_growth_s = d.delay_growth_5min_s;
+        continue;
+      }
+      // Standalone: deteccion automatica por CRECIMIENTO de delay (probable incidente en curso)
+      const avgMin = Math.round(d.avg_delay_s / 60);
+      const growMin = d.delay_growth_5min_s != null ? Math.round(d.delay_growth_5min_s / 60) : null;
+      const txt = growMin != null
+        ? `Demoras en aumento. Trenes con +${avgMin} min de retraso vs horario, subió ${growMin} min en los últimos 5 min.`
+        : `Demoras observadas. Trenes con +${avgMin} min de retraso vs horario teórico.`;
+      filtradas.push({
+        _src: 'forecast',
+        linea: d.linea,
+        tipo: 'atraso_detectado',
+        text: txt,
+        sinceMs: Date.now(),
+        tweets: [],
+        _forecast_avg_s: d.avg_delay_s,
+        _forecast_max_s: d.max_delay_s,
+        _forecast_trips: d.trips_alerta,
+        _forecast_growth_s: d.delay_growth_5min_s,
+      });
+    }
+  }
+
+  // Detector de VOLUMEN (sin filtros): si hay cluster de usuarios distintos arrobando a las cuentas oficiales
+  // y NO hay otra alerta activa, agregar una "posible incidencia" general (sin línea identificada).
+  if (volumenObj && volumenObj.alerta) {
+    const v = volumenObj.alerta;
+    filtradas.push({
+      _src: 'volumen',
+      linea: '?',
+      tipo: 'posible_incidencia',
+      text: `${v.usuarios_distintos} usuarios distintos arrobando a Emova/basubte en los últimos ${volumenObj.window_min} min. Posible evento en curso.`,
+      sinceMs: v.primer_ms || Date.now(),
+      tweets: (v.muestra || []).map(t => ({ user: t.user, tweet_id: t.tweet_id, text: t.text, url: t.url })),
+      _volumen_count: v.usuarios_distintos,
+    });
+  }
+  return filtradas;
+}
+
+const SRC_BADGES = {
+  gcba:      { label: 'GCBA',          bg: 'rgba(34,211,238,0.15)',  color: '#22d3ee' },
+  tweet:     { label: 'Twitter',       bg: 'rgba(168,85,247,0.15)',  color: '#a855f7' },
+  ambas:     { label: 'GCBA+Twitter',  bg: 'rgba(34,197,94,0.18)',   color: '#22c55e' },
+  ciudadana: { label: 'Reporte ciudadano', bg: 'rgba(251,191,36,0.18)', color: '#fbbf24' },
+  volumen:   { label: 'Volumen ciudadano', bg: 'rgba(249,115,22,0.18)', color: '#f97316' },
+  forecast:  { label: 'GCBA forecast (auto)', bg: 'rgba(244,114,182,0.18)', color: '#f472b6' },
+};
+
+function renderFuentesMonitor(wd) {
+  // wd: el objeto que devuelve fetchWorkerData(). Mirar timestamps de cada fuente y pintar verde/amarillo/rojo.
+  const now = Date.now();
+  const OK_MS = 2 * 60 * 1000;       // <2 min: verde
+  const WARN_MS = 10 * 60 * 1000;    // 2-10 min: amarillo. >10: rojo.
+
+  function classify(ts) {
+    if (!ts) return 'fail';
+    const age = now - ts;
+    if (age < OK_MS) return 'ok';
+    if (age < WARN_MS) return 'warn';
+    return 'fail';
+  }
+  function fmtAge(ts) {
+    if (!ts) return '—';
+    return _hace(ts);
+  }
+  function setSource(id, ts) {
+    const dot = document.getElementById('fdot-' + id);
+    const time = document.getElementById('ftime-' + id);
+    if (!dot) return;
+    const cls = classify(ts);
+    dot.classList.remove('warn', 'fail');
+    if (cls === 'warn') dot.classList.add('warn');
+    if (cls === 'fail') dot.classList.add('fail');
+    if (time) time.textContent = fmtAge(ts);
+  }
+
+  // GCBA alertas oficiales: last_polls.gcba.last_run_ms
+  const tsGcba = wd?.lastPolls?.gcba?.last_run_ms || null;
+  setSource('gcba', tsGcba);
+
+  // GCBA forecast (delays). El timestamp viene en el snapshot de delays_forecast.generated_at
+  // wd.delaysForecast no esta en lastPolls, lo leemos directamente
+  const tsForecast = wd?.delaysForecast?.generated_at ? Date.parse(wd.delaysForecast.generated_at) : null;
+  setSource('forecast', tsForecast);
+
+  // Twitter oficial: last_polls.tweets.last_run_ms (poolea @Emova_arg + @basubte)
+  const tsTweets = wd?.lastPolls?.tweets?.last_run_ms || null;
+  setSource('tweets', tsTweets);
+
+  // Twitter ciudadano: max entre quejas_ciudadanas.generated_at y volumen_ciudadano.generated_at
+  const tQ = wd?.quejasCiudadanas?.generated_at ? Date.parse(wd.quejasCiudadanas.generated_at) : 0;
+  const tV = wd?.volumenCiudadano?.generated_at ? Date.parse(wd.volumenCiudadano.generated_at) : 0;
+  const tsCiud = Math.max(tQ, tV) || null;
+  setSource('ciudadano', tsCiud);
+}
+
+function renderLiveBanner(activas, lastPolls) {
+  const banner = $('live-banner');
+  const list = $('live-list');
+  const meta = $('live-meta');
+  const dot = banner ? banner.querySelector('.live-dot') : null;
+  const tag = banner ? banner.querySelector('.live-tag') : null;
+  if (!banner || !list) return;
+
+  // Helper: ok (verde, sin alertas), aviso (amarillo, solo info_operativa), alert (rojo, hay urgentes)
+  const setHeader = (state) => {
+    if (!dot || !tag) return;
+    if (state === 'ok') {
+      dot.style.background = 'var(--green)';
+      dot.style.animation = 'none';
+      tag.textContent = '✓ Sin alertas activas';
+      tag.style.color = 'var(--green)';
+    } else if (state === 'aviso') {
+      dot.style.background = 'var(--yellow)';
+      dot.style.animation = 'none';
+      tag.textContent = 'Avisos del servicio';
+      tag.style.color = 'var(--yellow)';
+    } else {
+      dot.style.background = 'var(--red)';
+      dot.style.animation = '';  // restaurar default
+      tag.textContent = 'En vivo · GCBA';
+      tag.style.color = 'var(--red)';
+    }
+  };
+
+  if (!activas || activas.length === 0) {
+    banner.classList.add('show');
+    list.innerHTML = '';
+    setHeader('ok');
+    if (meta && lastPolls) {
+      const partes = [];
+      if (lastPolls.gcba && lastPolls.gcba.last_run_ms) partes.push('GCBA: ' + _hace(lastPolls.gcba.last_run_ms));
+      if (lastPolls.tweets && lastPolls.tweets.last_run_ms) partes.push('Twitter: ' + _hace(lastPolls.tweets.last_run_ms));
+      meta.textContent = partes.join(' · ');
+    }
+    return;
+  }
+  // Si TODAS las alertas son info_operativa → header amarillo "aviso"; si hay alguna urgente → rojo "alerta"
+  const hayUrgentes = activas.some(a => a.tipo !== 'info_operativa');
+  setHeader(hayUrgentes ? 'alert' : 'aviso');
+
+  list.innerHTML = activas.map(a => {
+    const linea = a.linea || '?';
+    const colorVar = (linea === 'P') ? 'var(--lp)' : `var(--l${linea.toLowerCase()})`;
+    const tipoLbl = TIPO_LBL_LIVE[a.tipo] || 'Alerta';
+    const text = (a.text || '').trim() || 'Sin descripción.';
+    const desde = new Date(a.sinceMs);
+    const horaInicio = String(desde.getHours()).padStart(2,'0') + ':' + String(desde.getMinutes()).padStart(2,'0');
+    const badge = SRC_BADGES[a._src] || SRC_BADGES.gcba;
+    // Si oficial + tiene corroboración ciudadana o de forecast, agregar contadores
+    let corrob = '';
+    if (a._ciudadana_count) corrob += ` · 👥 ${a._ciudadana_count} reportes`;
+    if (a._forecast_growth_s != null) {
+      const growMin = Math.round(a._forecast_growth_s / 60);
+      const avgMin = Math.round((a._forecast_avg_s || 0) / 60);
+      corrob += ` · ⏱ +${avgMin}min delay creciendo (+${growMin}min en 5min)`;
+    } else if (a._forecast_avg_s) {
+      const avgMin = Math.round(a._forecast_avg_s / 60);
+      corrob += ` · ⏱ +${avgMin}min delay vs horario`;
+    }
+    const allTweets = (a.tweets || []).concat(a._ciudadana_tweets || []);
+    const tweetsLinks = allTweets.length
+      ? allTweets.slice(0, 3).map(t => `<a href="${t.url}" target="_blank" rel="noopener" style="color:${badge.color};text-decoration:none;font-size:0.7rem;margin-right:6px">↗ @${t.user}</a>`).join('')
+      : '';
+    return `
+      <div class="live-card" style="--linecolor:${colorVar}">
+        <div class="live-line">${linea}</div>
+        <div class="live-body">
+          <div class="live-text">${text.replace(/&/g,'&amp;').replace(/</g,'&lt;')}</div>
+          <div class="live-tipo">
+            ${tipoLbl}
+            <span style="display:inline-block;margin-left:6px;padding:1px 6px;border-radius:3px;background:${badge.bg};color:${badge.color};font-size:0.62rem;font-weight:600">${badge.label}${corrob}</span>
+            ${tweetsLinks ? '<span style="margin-left:8px">' + tweetsLinks + '</span>' : ''}
+          </div>
+        </div>
+        <div class="live-since">
+          <strong>${horaInicio}</strong>
+          ${_hace(a.sinceMs)}
+        </div>
+      </div>
+    `;
+  }).join('');
+
+  // Meta: cuándo fue el último poll de cada fuente
+  if (meta) {
+    const partes = [];
+    if (lastPolls && lastPolls.gcba && lastPolls.gcba.last_run_ms) partes.push('GCBA: ' + _hace(lastPolls.gcba.last_run_ms));
+    if (lastPolls && lastPolls.tweets && lastPolls.tweets.last_run_ms) partes.push('Twitter: ' + _hace(lastPolls.tweets.last_run_ms));
+    meta.textContent = partes.join(' · ');
+  }
+
+  banner.classList.add('show');
+}
+
+// ─── ESTADO DEL SERVICIO HOY (datos de emova.com.ar/horarios) ─────
+const SVC_HORARIOS = {
+  apertura: { weekday: '05:30', sat: '06:00', sun: '08:00' },
+  // Frecuencia en minutos por línea/tipo de día
+  frecuencia: {
+    A: { weekday: 3, sat: 6, sun: 7 },
+    B: { weekday: 4, sat: 6, sun: 7 },
+    C: { weekday: 3, sat: 5, sun: 7 },
+    D: { weekday: 3, sat: 7, sun: 7 },
+    E: { weekday: 5, sat: 8, sun: 9 },
+    H: { weekday: 3, sat: 7, sun: 7 },
+    P: { weekday: 9, sat: 13, sun: 13 },
+  },
+  // Hora del último tren saliendo de cada cabecera
+  ultimoTren: {
+    A: { cab1: 'San Pedrito', cab2: 'Plaza de Mayo',
+         weekday: ['23:00','23:26'], sat: ['23:30','23:57'], sun: ['22:08','22:36'] },
+    B: { cab1: 'L.N. Alem', cab2: 'J.M. de Rosas',
+         weekday: ['23:32','23:00'], sat: ['23:56','23:25'], sun: ['22:31','22:00'] },
+    C: { cab1: 'Constitución', cab2: 'Retiro',
+         weekday: ['23:19','23:33'], sat: ['23:40','23:54'], sun: ['22:21','22:34'] },
+    D: { cab1: 'Congreso de Tucumán', cab2: 'Catedral',
+         weekday: ['23:00','23:32'], sat: ['23:30','00:01'], sun: ['22:00','22:31'] },
+    E: { cab1: 'Retiro', cab2: 'Pza. de los Virreyes',
+         weekday: ['23:30','22:56'], sat: ['23:58','23:26'], sun: ['22:28','21:56'] },
+    H: { cab1: 'Hospitales', cab2: 'F. de Derecho',
+         weekday: ['23:51','23:30'], sat: ['00:20','23:59'], sun: ['22:51','22:29'] },
+    P: { cab1: 'Int. Saguier', cab2: 'C.C. Lugano / Gral. Savio',
+         weekday: ['21:00','21:31'], sat: ['21:07','21:36'], sun: ['21:00','21:32'] },
+  },
+};
+const SVC_LINEA_COLORES = { A: '#14a1d5', B: '#e5292b', C: '#0a3a8a', D: '#00a85f', E: '#7c3f9f', H: '#f2c500', P: '#f97316' };
+const SVC_LINEA_TXT = { A: '#fff', B: '#fff', C: '#fff', D: '#fff', E: '#fff', H: '#0d0f14', P: '#fff' };
+
+let _feriadosArg = null;  // cache de feriados argentinos del año actual
+let _alertasCache = { gcba: [], tweets: [] };  // cache para que renderServicioHoy pueda mostrar novedades por línea
+
+async function fetchFeriadosArg(year) {
+  if (_feriadosArg && _feriadosArg.year === year) return _feriadosArg.list;
+  try {
+    const r = await fetch(`https://api.argentinadatos.com/v1/feriados/${year}`, { cache: 'force-cache' });
+    if (!r.ok) throw new Error('HTTP ' + r.status);
+    const data = await r.json();
+    _feriadosArg = { year, list: data };
+    return data;
+  } catch (e) {
+    console.warn('[subte] feriados fetch fail:', e.message);
+    _feriadosArg = { year, list: [] };
+    return [];
+  }
+}
+
+// HH:MM a minutos desde medianoche
+function _hmToMin(hm) {
+  const [h, m] = hm.split(':').map(Number);
+  return h * 60 + m;
+}
+
+function _hmFromMin(min) {
+  const h = Math.floor(((min % 1440) + 1440) % 1440 / 60);
+  const m = ((min % 60) + 60) % 60;
+  return String(h).padStart(2,'0') + ':' + String(m).padStart(2,'0');
+}
+
+function _formatDuracion(min) {
+  if (min < 60) return `${min}min`;
+  const h = Math.floor(min / 60);
+  const r = min % 60;
+  return r ? `${h}h ${r}min` : `${h}h`;
+}
+
+function getTipoDia(date, feriados) {
+  const ymd = date.getFullYear() + '-' + String(date.getMonth()+1).padStart(2,'0') + '-' + String(date.getDate()).padStart(2,'0');
+  const feriado = (feriados || []).find(f => f.fecha === ymd);
+  const dow = date.getDay(); // 0=dom, 6=sáb
+  if (feriado) return { tipo: 'sun', label: 'Feriado', feriadoNombre: feriado.nombre || feriado.tipo };
+  if (dow === 0) return { tipo: 'sun', label: 'Domingo' };
+  if (dow === 6) return { tipo: 'sat', label: 'Sábado' };
+  return { tipo: 'weekday', label: ['Lunes','Martes','Miércoles','Jueves','Viernes'][dow-1] };
+}
+
+async function renderServicioHoy() {
+  const banner = $('svc-banner');
+  if (!banner) return;
+  const now = new Date();
+  const year = now.getFullYear();
+  const feriados = await fetchFeriadosArg(year);
+  const tipoDia = getTipoDia(now, feriados);
+  const apertura = SVC_HORARIOS.apertura[tipoDia.tipo];
+  const aperturaMin = _hmToMin(apertura);
+
+  // Calcular el último tren más tardío del día (cuándo "cierra el subte hoy")
+  // y el más temprano (primera línea en cerrar)
+  let ultimosCierres = [];
+  for (const linea in SVC_HORARIOS.ultimoTren) {
+    const u = SVC_HORARIOS.ultimoTren[linea];
+    const horas = u[tipoDia.tipo];
+    for (const h of horas) {
+      let mins = _hmToMin(h);
+      if (mins < 12*60) mins += 24*60;  // 00:01 = pasada medianoche
+      ultimosCierres.push({ linea, hora: h, mins });
+    }
+  }
+  ultimosCierres.sort((a, b) => a.mins - b.mins);
+  const primerCierre = ultimosCierres[0];
+  const ultimoCierre = ultimosCierres[ultimosCierres.length - 1];
+
+  const nowMin = now.getHours() * 60 + now.getMinutes();
+  // Si pasó medianoche (entre 0 y aperturaMin), considerar "todavía servicio extendido"
+  const nowMinAdj = (nowMin < aperturaMin && nowMin < 6*60) ? nowMin + 24*60 : nowMin;
+
+  let estado, statusText, infoCierre, countdown = '';
+  if (nowMinAdj < aperturaMin) {
+    estado = 'cerrado'; statusText = '🔴 Cerrado';
+    infoCierre = `Reabre a las ${apertura}`;
+    const faltan = aperturaMin - nowMin;
+    countdown = `en ${_formatDuracion(faltan)}`;
+  } else if (nowMinAdj > ultimoCierre.mins) {
+    estado = 'cerrado'; statusText = '🔴 Cerrado';
+    // próximo día: si fue sábado, mañana domingo abre 8:00. etc.
+    const tomorrow = new Date(now); tomorrow.setDate(tomorrow.getDate() + 1);
+    const tipoMañana = getTipoDia(tomorrow, feriados);
+    const aperturaMañana = SVC_HORARIOS.apertura[tipoMañana.tipo];
+    infoCierre = `Reabre mañana ${aperturaMañana} (${tipoMañana.label.toLowerCase()})`;
+  } else if ((primerCierre.mins - nowMinAdj) <= 30 && (primerCierre.mins - nowMinAdj) > 0) {
+    estado = 'ultima-hora'; statusText = '🟡 Última hora';
+    infoCierre = `Próximo cierre: ${primerCierre.hora} (Línea ${primerCierre.linea})`;
+    countdown = 'en ' + _formatDuracion(primerCierre.mins - nowMinAdj);
+  } else {
+    estado = 'activo'; statusText = '🟢 Servicio activo';
+    infoCierre = `Próximo cierre: ${primerCierre.hora} (Línea ${primerCierre.linea})`;
+    if (primerCierre.mins > nowMinAdj) countdown = 'en ' + _formatDuracion(primerCierre.mins - nowMinAdj);
+  }
+
+  banner.className = 'svc-banner ' + estado;
+  $('svc-status').textContent = statusText;
+  const fechaStr = now.toLocaleDateString('es-AR', { day: 'numeric', month: 'short', year: 'numeric' });
+  $('svc-day').textContent = `${tipoDia.label} ${fechaStr}`;
+
+  if (tipoDia.feriadoNombre) {
+    $('svc-feriado').textContent = '🎉 ' + tipoDia.feriadoNombre;
+    $('svc-feriado').style.display = 'inline-block';
+  } else {
+    $('svc-feriado').style.display = 'none';
+  }
+
+  // Línea B nocturno extendido (viernes o sábado, después de 21:30)
+  const dow = now.getDay();
+  const noctActivo = (dow === 5 || dow === 6) && nowMin >= 21*60+30 && nowMin <= 25*60+30;
+  const noctEl = $('svc-noct');
+  if (noctEl) noctEl.style.display = noctActivo ? 'inline-block' : 'none';
+
+  // Buscar novedades por línea (tomamos cualquier alerta activa: incluso info_operativa)
+  function novedadesPorLinea(linea) {
+    const items = [];
+    for (const a of (_alertasCache.gcba || [])) {
+      if (a.linea === linea) items.push((a.text || a.header || '').replace(/&/g,'&amp;').replace(/</g,'&lt;'));
+    }
+    for (const a of (_alertasCache.tweets || [])) {
+      if (a.linea === linea) {
+        const t = (a.tweets && a.tweets[0] && a.tweets[0].text) || '';
+        items.push(t.replace(/&/g,'&amp;').replace(/</g,'&lt;'));
+      }
+    }
+    return items;
+  }
+
+  // Detalle por línea (siempre visible)
+  const detalle = $('svc-detalle');
+  const rows = ['A','B','C','D','E','H','P'].map(linea => {
+    const u = SVC_HORARIOS.ultimoTren[linea];
+    const f = SVC_HORARIOS.frecuencia[linea];
+    const horas = u[tipoDia.tipo];
+    // ¿esta línea ya cerró?
+    let yaCerrada = true;
+    for (const h of horas) {
+      let m = _hmToMin(h);
+      if (m < 12*60) m += 24*60;
+      if (nowMinAdj <= m) yaCerrada = false;
+    }
+    const cls = yaCerrada ? 'cerrada' : '';
+    const bg = SVC_LINEA_COLORES[linea];
+    const txt = SVC_LINEA_TXT[linea];
+    const novedades = novedadesPorLinea(linea);
+    let novCell;
+    if (novedades.length === 0) {
+      novCell = `<span class="novedad-ok">— sin novedades</span>`;
+    } else {
+      const principal = novedades[0].length > 90 ? novedades[0].slice(0, 88) + '…' : novedades[0];
+      const restoMsg = novedades.length > 1 ? `<small>+${novedades.length - 1} más</small>` : '';
+      novCell = `<span class="novedad">⚠ ${principal}${restoMsg}</span>`;
+    }
+    return `
+      <tr class="${cls}">
+        <td><span class="linea-badge" style="background:${bg};color:${txt}">${linea}</span></td>
+        <td>${linea === 'P' ? 'Premetro' : 'Línea ' + linea}</td>
+        <td><span class="v">${f[tipoDia.tipo]} min</span></td>
+        <td><span class="v">${horas[0]}</span> ${u.cab1}</td>
+        <td><span class="v">${horas[1]}</span> ${u.cab2}</td>
+        <td>${novCell}</td>
+      </tr>
+    `;
+  }).join('');
+  detalle.innerHTML = `
+    <table>
+      <thead><tr>
+        <th></th><th>Línea</th><th>Frec.</th><th>Último tren cab. 1</th><th>Último tren cab. 2</th><th>Novedades</th>
+      </tr></thead>
+      <tbody>${rows}</tbody>
+    </table>
+    <p class="nota-pie">Frecuencias y horarios según emova.com.ar (+/- 5 min tolerancia)</p>
+  `;
+
+  banner.style.display = 'block';
+}
+
+// ─── ÚLTIMOS TWEETS CIUDADANOS ─────────────────────────────────────
+function renderEstadoVivo(wd) {
+  // Chip por linea: muestra freq_efectiva (ajustada por tendencia del delay), con dot status y flecha si hay growth.
+  const wrap = document.getElementById('estado-vivo');
+  const row = document.getElementById('estado-row');
+  const timeEl = document.getElementById('estado-time');
+  if (!wrap || !row) return;
+  const df = wd && wd.delaysForecast;
+  if (!df || !df.por_linea) {
+    wrap.style.display = 'none';
+    return;
+  }
+  const allLines = ['A', 'B', 'C', 'D', 'E', 'H', 'P'];
+  function fmtFreq(s) {
+    if (s === null || s === undefined) return null;
+    const m = Math.floor(s / 60);
+    const sec = s % 60;
+    if (sec === 0) return `${m}'`;
+    return `${m}'${String(sec).padStart(2,'0')}''`;
+  }
+  row.innerHTML = allLines.map(k => {
+    const v = df.por_linea[k];
+    if (!v) {
+      return `<div class="linea-chip nodata" title="Linea ${k} no disponible">
+        <span class="letra" style="background:var(--l${k.toLowerCase()})">${k}</span>
+        <span class="delay">—</span>
+      </div>`;
+    }
+    const teorica = v.scheduled_freq_s;
+    const efectiva = v.effective_freq_s;
+    const display = efectiva !== null && efectiva !== undefined ? efectiva : teorica;
+    const hasFeed = !v.from_schedule_only;
+    const freqText = fmtFreq(display);
+    // Status dot color
+    let dotClass = 'ok';
+    if (v.status === 'alerta') dotClass = 'bad';
+    else if (v.status === 'observacion') dotClass = 'warn';
+    // Trend arrow: solo si efectiva difiere significativamente de teorica
+    const g = v.delay_growth_5min_s;
+    let trend = '', trendClass = '';
+    if (g !== null && g !== undefined && teorica) {
+      const diffMin = (efectiva && teorica) ? (efectiva - teorica) / 60 : (g / 60);
+      if (diffMin >= 1) { trend = `↑${Math.round(diffMin)}m`; trendClass = 'up'; }
+      else if (diffMin <= -1) { trend = `↓${Math.abs(Math.round(diffMin))}m`; trendClass = 'down'; }
+    }
+    // Si linea no tiene feed (GTFS only), agregar asterisco al freq
+    const freqDisplay = freqText
+      ? `~${freqText}${!hasFeed ? '<span class="freq-ast" title="Estimado del GTFS oficial, sin medición en vivo">*</span>' : ''}`
+      : '<span style="color:var(--text3)">cerrado</span>';
+    const titleParts = [`Línea ${k}`];
+    if (efectiva !== null && efectiva !== undefined) titleParts.push(`Frecuencia ahora: cada ${fmtFreq(efectiva)}`);
+    if (teorica !== null && teorica !== undefined) titleParts.push(`Frecuencia teórica (horario): cada ${fmtFreq(teorica)}`);
+    if (!hasFeed) titleParts.push(`Sin medición en vivo — frecuencia estimada del horario oficial`);
+    if (hasFeed && v.avg_delay_s !== null) titleParts.push(`Delay vs horario (medido): +${Math.round((v.avg_delay_s||0)/60)} min`);
+    if (g !== null && g !== undefined) titleParts.push(`Tendencia 5 min: ${(g/60).toFixed(1)} min`);
+    const stuck = v.stuck_trains || [];
+    if (stuck.length > 0) {
+      titleParts.push(`🛑 ${stuck.length} tren${stuck.length>1?'es':''} parado${stuck.length>1?'s':''}: ${stuck.map(s => s.stop_name + ' (~' + s.stuck_minutes + 'min)').join('; ')}`);
+    }
+    titleParts.push(`Status: ${v.status}`);
+    const titleAttr = titleParts.join(' · ').replace(/"/g,'&quot;');
+    const stuckIcon = stuck.length > 0 ? `<span class="stuck-icon" title="${stuck.length} tren${stuck.length>1?'es':''} parado${stuck.length>1?'s':''}">🛑</span>` : '';
+    return `<div class="linea-chip" title="${titleAttr}">
+      <span class="letra" style="background:var(--l${k.toLowerCase()})">${k}</span>
+      <span class="delay">${freqDisplay}</span>
+      ${stuckIcon}
+      <span class="dot ${dotClass}"></span>
+      ${trend ? `<span class="trend ${trendClass}">${trend}</span>` : ''}
+    </div>`;
+  }).join('');
+  if (df.generated_at && timeEl) {
+    const ms = Date.parse(df.generated_at);
+    timeEl.textContent = _hace(ms);
+  }
+  wrap.style.display = 'block';
+}
+
+function renderLatestTweets(volumenObj) {
+  const wrap = $('latest-tw');
+  const list = $('latest-tw-list');
+  const meta = $('latest-tw-meta');
+  if (!wrap || !list) return;
+  const tweets = (volumenObj && volumenObj.ultimos_tweets) || [];
+  if (!tweets.length) {
+    wrap.style.display = 'none';
+    return;
+  }
+  // Tomar los 5 más recientes (matchea ULTIMOS_TWEETS_N del worker)
+  const topTweets = tweets.slice(0, 5);
+  list.innerHTML = topTweets.map(t => {
+    const txt = (t.text || '').replace(/&/g, '&amp;').replace(/</g, '&lt;');
+    const ago = t.fecha_ms ? _hace(t.fecha_ms) : '';
+    return `
+      <div class="latest-tw-item">
+        <a class="user" href="${t.url}" target="_blank" rel="noopener">@${t.user}</a>
+        ${txt}
+        <span class="ago">${ago}</span>
+      </div>
+    `;
+  }).join('');
+  if (meta) meta.textContent = `${tweets.length} tweets en KV · sin filtros`;
+  wrap.style.display = 'block';
+}
+
+// ─── INIT ──────────────────────────────────────────────────────────
+async function init() {
+  try {
+    const r = await fetch('/subte/data.json', { cache: 'no-store' });
+    if (!r.ok) throw new Error('HTTP ' + r.status);
+    DATA = await r.json();
+    // Bajar data del worker primero, así renderServicioHoy ya tiene novedades
+    const wd = await fetchWorkerData();
+    _alertasCache.gcba = wd.activasGcba || [];
+    _alertasCache.tweets = wd.activasTweets || [];
+    mergeWorkerWithStatic(wd.cerrados);
+    // Render del banner "Estado HOY" (con novedades por línea desde la cache)
+    renderServicioHoy();
+    setInterval(renderServicioHoy, 5 * 60 * 1000);  // refrescar countdown / cambio de estado
+    renderFuentesMonitor(wd);
+    renderLiveBanner(combineActivas(wd.activasGcba, wd.activasTweets, wd.quejasCiudadanas, wd.volumenCiudadano, wd.delaysForecast), wd.lastPolls);
+    renderEstadoVivo(wd);
+    renderLatestTweets(wd.volumenCiudadano);
+    // Auto-refresh cada 30s + countdown visible
+    const REFRESH_INTERVAL = 30;
+    let _refreshSec = REFRESH_INTERVAL;
+    const _cdEl = document.getElementById('refresh-countdown');
+    const _dotEl = document.querySelector('.refresh-dot');
+    async function _doRefresh() {
+      if (_dotEl) _dotEl.classList.add('active');
+      const wd2 = await fetchWorkerData();
+      _alertasCache.gcba = wd2.activasGcba || [];
+      _alertasCache.tweets = wd2.activasTweets || [];
+      renderFuentesMonitor(wd2);
+      renderLiveBanner(combineActivas(wd2.activasGcba, wd2.activasTweets, wd2.quejasCiudadanas, wd2.volumenCiudadano, wd2.delaysForecast), wd2.lastPolls);
+      renderEstadoVivo(wd2);
+      renderLatestTweets(wd2.volumenCiudadano);
+      renderServicioHoy();
+      setTimeout(() => { if (_dotEl) _dotEl.classList.remove('active'); }, 800);
+    }
+    setInterval(() => {
+      _refreshSec--;
+      if (_cdEl) _cdEl.textContent = _refreshSec;
+      if (_refreshSec <= 0) {
+        _refreshSec = REFRESH_INTERVAL;
+        _doRefresh();
+      }
+    }, 1000);
+    _lineasOn = new Set(DATA.lineas_disponibles);
+    _tiposOn = new Set(Object.keys(DATA.tipos));
+    // Setear hmYear al año más reciente con datos
+    const maxYear = DATA.rango_cubierto.hasta.slice(0, 4);
+    _hmYear = maxYear;
+    document.querySelectorAll('#hm-range .range-tab').forEach(b => {
+      b.classList.toggle('active', b.dataset.yr === _hmYear);
+    });
+    // Setear date pickers con rango válido
+    $('pick-day').min = DATA.rango_cubierto.desde;
+    $('pick-day').max = DATA.rango_cubierto.hasta;
+    $('pick-month').min = DATA.rango_cubierto.desde.slice(0, 7);
+    $('pick-month').max = DATA.rango_cubierto.hasta.slice(0, 7);
+    // Listeners
+    document.querySelectorAll('#hm-range .range-tab').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('#hm-range .range-tab').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        _hmYear = btn.dataset.yr;
+        renderHeatmap();
+      });
+    });
+    document.querySelectorAll('#tl-vista .range-tab').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('#tl-vista .range-tab').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        _tlVista = btn.dataset.vista;
+        renderTimeline();
+      });
+    });
+    // Filtros DOW
+    document.querySelectorAll('#filter-dow .range-tab').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('#filter-dow .range-tab').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        _filtroDow = btn.dataset.dow;
+        renderAll();
+      });
+    });
+    // Filtros Hora
+    document.querySelectorAll('#filter-hora .range-tab').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('#filter-hora .range-tab').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        _filtroHora = btn.dataset.hora;
+        renderAll();
+      });
+    });
+    $('pick-day').addEventListener('change', () => {
+      _selectedDay = $('pick-day').value || null;
+      _selectedMonth = null;
+      if (_selectedDay) $('pick-month').value = '';
+      renderAll();
+    });
+    $('pick-month').addEventListener('change', () => {
+      _selectedMonth = $('pick-month').value || null;
+      _selectedDay = null;
+      if (_selectedMonth) $('pick-day').value = '';
+      renderAll();
+    });
+    $('btn-clear').addEventListener('click', () => {
+      _selectedDay = null;
+      _selectedMonth = null;
+      $('pick-day').value = '';
+      $('pick-month').value = '';
+      renderAll();
+    });
+    initLineasPill();
+    initTiposPill();
+    renderAll();
+  } catch (e) {
+    document.querySelector('main').innerHTML = `<div style="padding:40px;text-align:center;color:var(--red);font-family:'IBM Plex Mono',monospace">Error cargando datos: ${e.message}</div>`;
+  }
+}
+
+// Scroll preservation: guardar tu posición antes de salir y restaurarla al volver.
+if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
+window.addEventListener('beforeunload', () => {
+  try { sessionStorage.setItem('subteScrollY', String(window.scrollY)); } catch (e) {}
+});
+window.addEventListener('load', () => {
+  try {
+    const saved = sessionStorage.getItem('subteScrollY');
+    if (saved && parseInt(saved, 10) > 0) {
+      const y = parseInt(saved, 10);
+      const tryRestore = (attempt) => {
+        if (document.documentElement.scrollHeight >= y + window.innerHeight) {
+          window.scrollTo(0, y);
+        } else if (attempt < 20) {
+          setTimeout(() => tryRestore(attempt + 1), 100);
+        } else {
+          window.scrollTo(0, Math.min(y, Math.max(0, document.documentElement.scrollHeight - window.innerHeight)));
+        }
+      };
+      setTimeout(() => tryRestore(0), 200);
+    }
+  } catch (e) {}
+});
+
+init();
+</script>
+</body>
+</html>
