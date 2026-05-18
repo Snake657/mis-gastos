@@ -7,7 +7,6 @@
 <meta name="description" content="Estado en vivo del subte de Buenos Aires: alertas activas, frecuencias por línea y últimos tweets. Histórico de demoras y pasajeros en /subte/estadisticas/." />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
-<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 <script defer src="/canuto-nav.js"></script>
 <style>
   :root {
@@ -731,7 +730,9 @@ const setText = (id, val) => { const el = $(id); if (el) el.textContent = val; }
 const WORKER_URL = 'https://canuto-subte.lenzimartin.workers.dev';
 
 async function fetchWorkerData() {
-  const empty = { activasGcba: [], activasTweets: [], quejasCiudadanas: null, volumenCiudadano: null, delaysForecast: null, lastPolls: null };
+  // _empty=true marca respuestas que vienen de un error/no-URL, para que el SWR
+  // no sobreescriba cache buena con basura ni repinte vacío encima del paint stale.
+  const empty = { _empty: true, activasGcba: [], activasTweets: [], quejasCiudadanas: null, volumenCiudadano: null, delaysForecast: null, lastPolls: null };
   if (!WORKER_URL) return empty;
   try {
     const r = await fetch(WORKER_URL.replace(/\/$/, '') + '/data.json', { cache: 'no-store' });
@@ -749,6 +750,31 @@ async function fetchWorkerData() {
     console.warn('[canuto-subte] worker fetch fail (uso solo data.json):', e.message);
     return empty;
   }
+}
+
+// ─── SWR: stale-while-revalidate de la data del worker ────────────
+// Pintamos inmediato desde localStorage en visitas recurrentes y revalidamos en bg.
+// El backend del worker poolea cada 5 min, así que 10 min de TTL = ~2 ciclos.
+// Las alertas tienen timestamps embebidos y _hace() calcula edad relativa a Date.now(),
+// así que la data cacheada se ve "honesta" sin código adicional.
+const _SWR_KEY = 'canuto-subte:worker-cache:v1';
+const _SWR_TTL_MS = 10 * 60 * 1000;
+function readCachedWorkerData() {
+  try {
+    const raw = localStorage.getItem(_SWR_KEY);
+    if (!raw) return null;
+    const { ts, wd } = JSON.parse(raw);
+    if (!ts || !wd) return null;
+    if (Date.now() - ts > _SWR_TTL_MS) return null;
+    return wd;
+  } catch (e) {
+    return null;
+  }
+}
+function writeCachedWorkerData(wd) {
+  try {
+    localStorage.setItem(_SWR_KEY, JSON.stringify({ ts: Date.now(), wd }));
+  } catch (e) { /* quota / private mode: ignorar */ }
 }
 
 // ─── BANNER LIVE ───────────────────────────────────────────────────
@@ -1107,12 +1133,14 @@ function getTipoDia(date, feriados) {
   return { tipo: 'weekday', label: ['Lunes','Martes','Miércoles','Jueves','Viernes'][dow-1] };
 }
 
-async function renderServicioHoy() {
+async function renderServicioHoy(feriadosArg) {
   const banner = $('svc-banner');
   if (!banner) return;
   const now = new Date();
   const year = now.getFullYear();
-  const feriados = await fetchFeriadosArg(year);
+  // Si nos pasaron los feriados ya resueltos (caso paralelizado en init), usarlos.
+  // Si no, fetchearlos (caso setInterval / _doRefresh).
+  const feriados = feriadosArg !== undefined ? feriadosArg : await fetchFeriadosArg(year);
   const tipoDia = getTipoDia(now, feriados);
   const apertura = SVC_HORARIOS.apertura[tipoDia.tipo];
   const aperturaMin = _hmToMin(apertura);
@@ -1347,19 +1375,53 @@ function renderLatestTweets(volumenObj) {
 }
 
 // ─── INIT ──────────────────────────────────────────────────────────
+// Helper: aplica una respuesta del worker a todos los renders que dependen de ella.
+// Si llega `feriados`, se usa para renderServicioHoy; si no, renderServicioHoy lo fetchea solo.
+function _renderAllFromWorker(wd, feriados, opts) {
+  opts = opts || {};
+  _alertasCache.gcba = wd.activasGcba || [];
+  _alertasCache.tweets = wd.activasTweets || [];
+  renderServicioHoy(feriados);
+  renderFuentesMonitor(wd);
+  renderLiveBanner(combineActivas(wd.activasGcba, wd.activasTweets, wd.quejasCiudadanas, wd.volumenCiudadano, wd.delaysForecast), wd.lastPolls);
+  // Below-the-fold: diferir al idle del browser para no bloquear el primer paint en mobile.
+  // En el primer paint desde cache lo saltamos: el render fresco se encarga.
+  if (!opts.skipBelowFold) {
+    const _idle = window.requestIdleCallback || (cb => setTimeout(cb, 1));
+    _idle(() => {
+      renderEstadoVivo(wd);
+      renderLatestTweets(wd.volumenCiudadano);
+    });
+  }
+}
+
 async function init() {
   try {
-    // Bajar data del worker primero, así renderServicioHoy ya tiene novedades
-    const wd = await fetchWorkerData();
-    _alertasCache.gcba = wd.activasGcba || [];
-    _alertasCache.tweets = wd.activasTweets || [];
-    // Render del banner "Estado HOY" (con novedades por línea desde la cache)
-    renderServicioHoy();
-    setInterval(renderServicioHoy, 5 * 60 * 1000);  // refrescar countdown / cambio de estado
-    renderFuentesMonitor(wd);
-    renderLiveBanner(combineActivas(wd.activasGcba, wd.activasTweets, wd.quejasCiudadanas, wd.volumenCiudadano, wd.delaysForecast), wd.lastPolls);
-    renderEstadoVivo(wd);
-    renderLatestTweets(wd.volumenCiudadano);
+    const yearNow = new Date().getFullYear();
+
+    // Paso 1 (SWR): si hay cache reciente, pintar inmediato — el usuario ve algo en ~0ms.
+    // Skippeamos below-the-fold para no doblar el trabajo cuando llegue el fetch fresco.
+    // Pasamos [] como feriados para no esperar el network del endpoint argentinadatos;
+    // si justo hoy es feriado, el banner dice "Lunes" por ~200ms y se corrige al llegar el fetch fresco.
+    const cached = readCachedWorkerData();
+    if (cached) {
+      _renderAllFromWorker(cached, [], { skipBelowFold: true });
+    }
+
+    // Paso 2: bajar data fresca del worker + feriados en paralelo.
+    const [wd, feriadosNow] = await Promise.all([
+      fetchWorkerData(),
+      fetchFeriadosArg(yearNow),
+    ]);
+    if (wd._empty && cached) {
+      // Fetch falló y ya estamos mostrando la cache stale → dejarla, no repintar vacío.
+      // Solo refrescamos el banner de servicio con feriados reales (no necesita worker data).
+      renderServicioHoy(feriadosNow);
+    } else {
+      if (!wd._empty) writeCachedWorkerData(wd);
+      _renderAllFromWorker(wd, feriadosNow);
+    }
+    setInterval(renderServicioHoy, 5 * 60 * 1000);  // refrescar countdown / cambio de estado (feriados cacheado en memoria)
     // Auto-refresh cada 30s + countdown visible
     const REFRESH_INTERVAL = 30;
     let _refreshSec = REFRESH_INTERVAL;
@@ -1368,13 +1430,13 @@ async function init() {
     async function _doRefresh() {
       if (_dotEl) _dotEl.classList.add('active');
       const wd2 = await fetchWorkerData();
-      _alertasCache.gcba = wd2.activasGcba || [];
-      _alertasCache.tweets = wd2.activasTweets || [];
-      renderFuentesMonitor(wd2);
-      renderLiveBanner(combineActivas(wd2.activasGcba, wd2.activasTweets, wd2.quejasCiudadanas, wd2.volumenCiudadano, wd2.delaysForecast), wd2.lastPolls);
-      renderEstadoVivo(wd2);
-      renderLatestTweets(wd2.volumenCiudadano);
-      renderServicioHoy();
+      // Si el fetch falló: mantener lo que estamos mostrando, no repintar vacío.
+      if (!wd2._empty) {
+        writeCachedWorkerData(wd2);
+        // En refresh ya no hay first paint que proteger: pintamos también below-the-fold.
+        // renderServicioHoy se llama sin feriados → fetcha del cache en memoria (_feriadosArg).
+        _renderAllFromWorker(wd2);
+      }
       setTimeout(() => { if (_dotEl) _dotEl.classList.remove('active'); }, 800);
     }
     setInterval(() => {
